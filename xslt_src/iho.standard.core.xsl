@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-											xmlns:iho="https://www.metanorma.org/ns/standoc" 
-											xmlns:mn="https://www.metanorma.org/ns/xslt" 
+											xmlns:mn="https://www.metanorma.org/ns/standoc" 
+											xmlns:mnx="https://www.metanorma.org/ns/xslt" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
 											xmlns:xalan="http://xml.apache.org/xalan" 
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
@@ -14,9 +14,7 @@
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
-	<xsl:include href="./common.xsl"/>
-
-	<xsl:key name="kfn" match="*[local-name() = 'fn'][not(ancestor::*[(local-name() = 'table' or local-name() = 'figure' or local-name() = 'localized-strings')] and not(ancestor::*[local-name() = 'name']))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
 	
 	<xsl:variable name="namespace">iho</xsl:variable>
 	
@@ -24,15 +22,15 @@
 	
 
 	<xsl:variable name="title-en">
-		<xsl:apply-templates select="/iho:metanorma/iho:bibdata/iho:title[@language = 'en']/node()"/>
+		<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en']/node()"/>
 	</xsl:variable>
-	<xsl:variable name="docidentifier" select="/iho:metanorma/iho:bibdata/iho:docidentifier[@type = 'IHO']"/>
-	<xsl:variable name="copyrightText" select="concat('© International Hydrographic Association ', /iho:metanorma/iho:bibdata/iho:copyright/iho:from ,' – All rights reserved')"/>
+	<xsl:variable name="docidentifier" select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IHO']"/>
+	<xsl:variable name="copyrightText" select="concat('© International Hydrographic Association ', /mn:metanorma/mn:bibdata/mn:copyright/mn:from ,' – All rights reserved')"/>
 	<xsl:variable name="edition">
-		<xsl:apply-templates select="/iho:metanorma/iho:bibdata/iho:edition[normalize-space(@language) = '']"/>
+		<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:edition[normalize-space(@language) = '']"/>
 	</xsl:variable>
 	<xsl:variable name="month_year">
-		<xsl:apply-templates select="/iho:metanorma/iho:bibdata/iho:date[@type = 'published']"/>
+		<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']"/>
 	</xsl:variable>
 
 	<!-- Example:
@@ -40,12 +38,12 @@
 		<item id="term-script" display="false">3.2</item>
 	-->
 	<xsl:variable name="contents_">
-		<mn:contents>
+		<mnx:contents>
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			
 			<xsl:call-template name="processTablesFigures_Contents"/>
-		</mn:contents>
+		</mnx:contents>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
@@ -172,9 +170,9 @@
 				<fo:page-sequence master-reference="cover">				
 					<fo:flow flow-name="xsl-region-body">
 					
-						<xsl:variable name="isCoverPageImage" select="normalize-space(/*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name'] = 'coverpage-image']/*[local-name() = 'value']/*[local-name() = 'image'] and 1 = 1)"/>
+						<xsl:variable name="isCoverPageImage" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image']/mn:value/mn:image and 1 = 1)"/>
 					
-						<xsl:variable name="document_scheme" select="normalize-space(/*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name'] = 'document-scheme']/*[local-name() = 'value'])"/>
+						<xsl:variable name="document_scheme" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'document-scheme']/mn:value)"/>
 						
 						<xsl:choose>
 							<xsl:when test="$document_scheme != '' and $document_scheme != '2019' and $isCoverPageImage = 'true'">
@@ -220,7 +218,7 @@
 															<fo:table-cell number-columns-spanned="2">
 																<fo:block-container font-size="0"> <!-- height="168mm" width="115mm"  -->
 																	<fo:block>
-																		<xsl:for-each select="/*[local-name() = 'metanorma']/*[local-name() = 'metanorma-extension']/*[local-name() = 'presentation-metadata'][*[local-name() = 'name'] = 'coverpage-image'][1]/*[local-name() = 'value']/*[local-name() = 'image'][1]">
+																		<xsl:for-each select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image'][1]/mn:value/mn:image[1]">
 																			<xsl:choose>
 																				<xsl:when test="*[local-name() = 'svg'] or java:endsWith(java:java.lang.String.new(@src), '.svg')">
 																					<fo:instream-foreign-object fox:alt-text="Image Front">
@@ -291,7 +289,7 @@
 														<fo:block-container width="79mm" height="72mm" margin-left="56.8mm" background-color="rgb(0, 172, 158)" text-align="right" display-align="after">
 															<fo:block-container margin-left="0mm">
 																<fo:block font-size="8pt" color="white" margin-right="5mm" margin-bottom="5mm" line-height-shift-adjustment="disregard-shifts">
-																	<xsl:apply-templates select="/iho:metanorma/iho:boilerplate/iho:feedback-statement"/>
+																	<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/>
 																</fo:block>
 															</fo:block-container>
 														</fo:block-container>					
@@ -301,8 +299,8 @@
 													<fo:table-cell number-columns-spanned="2" padding-top="2mm">
 														<fo:block-container width="51.5mm">
 															<fo:block>
-																<xsl:for-each select="/iho:metanorma/iho:bibdata/iho:contributor[iho:role/@type = 'publisher']/iho:organization[not(iho:abbreviation = 'IHO')]">
-																	<xsl:apply-templates select="*[local-name() = 'logo']/*[local-name() = 'image']">
+																<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'publisher']/mn:organization[not(mn:abbreviation = 'IHO')]">
+																	<xsl:apply-templates select="mn:logo/mn:image">
 																		<xsl:with-param name="logo_width">25.8mm</xsl:with-param>
 																	</xsl:apply-templates>
 																	<xsl:if test="position() != last()"><fo:inline> </fo:inline></xsl:if>
@@ -323,7 +321,7 @@
 				<!-- =========================== -->
 			
 				<xsl:choose>
-					<xsl:when test="/iho:metanorma/iho:boilerplate/*[local-name() != 'feedback-statement']">
+					<xsl:when test="/mn:metanorma/mn:boilerplate/*[not(self::mn:feedback-statement)]">
 						<fo:page-sequence master-reference="preface" format="i" force-page-count="no-force">
 							<xsl:call-template name="insertHeaderFooter">
 								<xsl:with-param name="font-weight">normal</xsl:with-param>
@@ -334,7 +332,7 @@
 										<fo:block-container margin-top="6.5mm" margin-left="7.5mm" margin-right="8.5mm" margin-bottom="7.5mm">
 											<fo:block-container margin="0">
 												<fo:block text-align="justify">
-													<xsl:apply-templates select="/iho:metanorma/iho:boilerplate/*[local-name() != 'feedback-statement']"/>
+													<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/*[not(self::mn:feedback-statement)]"/>
 												</fo:block>
 											</fo:block-container>
 										</fo:block-container>
@@ -361,7 +359,7 @@
 				
 				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
 					
-					<xsl:for-each select=".//*[local-name() = 'page_sequence'][parent::*[local-name() = 'preface']][normalize-space() != '' or .//*[local-name() = 'image'] or .//*[local-name() = 'svg']]">
+					<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 		
 						<!-- Preface Pages -->
 						<fo:page-sequence master-reference="preface" format="i" force-page-count="end-on-even">
@@ -384,7 +382,7 @@
 											<fo:block-container margin-top="6.5mm" margin-left="7.5mm" margin-right="8.5mm" margin-bottom="7.5mm">
 												<fo:block-container margin="0">
 													<fo:block text-align="justify">
-														<xsl:apply-templates select="/iho:metanorma/iho:boilerplate/*[local-name() != 'feedback-statement']"/>
+														<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/*[local-name() != 'feedback-statement']"/>
 													</fo:block>
 												</fo:block-container>
 											</fo:block-container>
@@ -395,7 +393,7 @@
 								
 								<!-- Contents, Document History, ... except Foreword and Introduction -->
 								<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
-								<xsl:apply-templates select="*[not(local-name() = 'foreword') and not(local-name() = 'introduction')]"/>
+								<xsl:apply-templates select="*[not(self::mn:foreword) and not(self::mn:introduction)]"/>
 								
 							</fo:flow>
 						</fo:page-sequence>
@@ -405,7 +403,7 @@
 					</xsl:for-each>
 					
 					
-					<xsl:for-each select=".//*[local-name() = 'page_sequence'][*[local-name() = 'foreword'] or *[local-name() = 'introduction']][parent::*[local-name() = 'preface']][normalize-space() != '' or .//*[local-name() = 'image'] or .//*[local-name() = 'svg']]">
+					<xsl:for-each select=".//mn:page_sequence[mn:foreword or mn:introduction][parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 		
 						<!-- Preface Pages -->
 						<fo:page-sequence master-reference="preface" format="i" force-page-count="end-on-even">
@@ -422,7 +420,7 @@
 							<fo:flow flow-name="xsl-region-body">
 								
 								<!-- Foreword, Introduction -->
-								<xsl:apply-templates select="*[local-name() = 'foreword' or local-name() = 'introduction']"/>
+								<xsl:apply-templates select="*[self::mn:foreword or self::mn:introduction]"/>
 								
 							</fo:flow>
 						</fo:page-sequence>
@@ -433,7 +431,7 @@
 					
 				
 				
-					<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::*[local-name() = 'preface'])][normalize-space() != '' or .//*[local-name() = 'image'] or .//*[local-name() = 'svg']]">
+					<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 				
 						<fo:page-sequence master-reference="document" format="1" force-page-count="end-on-even">
 						
@@ -473,7 +471,7 @@
 					</xsl:for-each>
 				</xsl:for-each>
 					
-					<!-- <xsl:if test="/iho:metanorma/iho:annex">
+					<!-- <xsl:if test="/mn:metanorma/mn:annex">
 						<fo:page-sequence master-reference="document">
 							<fo:static-content flow-name="xsl-footnote-separator">
 								<fo:block>
@@ -578,7 +576,7 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="iho:preface//iho:clause[@type = 'toc']" priority="4">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="4">
 		<!-- Table of Contents -->
 		<fo:block>
 			
@@ -590,11 +588,11 @@
 				</redirect:write>
 			</xsl:if>
 			
-			<xsl:if test="count(*) = 1 and *[local-name() = 'title']"> <!-- if there isn't user ToC -->
+			<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
 			
 				<fo:block line-height="115%" role="TOC">
 				
-					<xsl:for-each select="$contents//mn:item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
+					<xsl:for-each select="$contents//mnx:item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
 						<fo:block role="TOCI">
 							<fo:list-block>
 								<xsl:attribute name="provisional-distance-between-starts">
@@ -621,8 +619,8 @@
 									</fo:list-item-label>
 										<fo:list-item-body start-indent="body-start()">
 											<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:title}">
-													<xsl:apply-templates select="mn:title"/>
+												<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+													<xsl:apply-templates select="mnx:title"/>
 													<fo:inline keep-together.within-line="always">
 														<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
 														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
@@ -636,21 +634,21 @@
 					</xsl:for-each>
 					
 					<!-- List of Tables -->
-					<xsl:if test="$contents//mn:tables/mn:table">
+					<xsl:if test="$contents//mnx:tables/mnx:table">
 						<xsl:call-template name="insertListOf_Title">
 							<xsl:with-param name="title" select="$title-list-tables"/>
 						</xsl:call-template>
-						<xsl:for-each select="$contents//mn:tables/mn:table">
+						<xsl:for-each select="$contents//mnx:tables/mnx:table">
 							<xsl:call-template name="insertListOf_Item"/>
 						</xsl:for-each>
 					</xsl:if>
 					
 					<!-- List of Figures -->
-					<xsl:if test="$contents//mn:figures/mn:figure">
+					<xsl:if test="$contents//mnx:figures/mnx:figure">
 						<xsl:call-template name="insertListOf_Title">
 							<xsl:with-param name="title" select="$title-list-figures"/>
 						</xsl:call-template>
-						<xsl:for-each select="$contents//mn:figures/mn:figure">
+						<xsl:for-each select="$contents//mnx:figures/mnx:figure">
 							<xsl:call-template name="insertListOf_Item"/>
 						</xsl:for-each>
 					</xsl:if>
@@ -659,7 +657,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="iho:preface//iho:clause[@type = 'toc']/iho:title" priority="3">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:title" priority="3">
 		<fo:block font-weight="bold" margin-bottom="7.5pt" font-size="12pt" margin-top="4pt" role="SKIP">
 			<fo:block-container width="18.3mm" border-bottom="1.25pt solid black" role="SKIP">
 				<fo:block line-height="75%">
@@ -677,16 +675,16 @@
 	<!-- ============================= -->
 
 	<!-- element with title -->
-	<xsl:template match="*[iho:title or iho:fmt-title]" mode="contents">
+	<xsl:template match="*[mn:title or mn:fmt-title]" mode="contents">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="iho:fmt-title/@depth | iho:title/@depth"/>
+				<xsl:with-param name="depth" select="mn:fmt-title/@depth | mn:title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		
 		<xsl:variable name="display">
 			<xsl:choose>
-				<xsl:when test="@id = '_document_history' or iho:title = 'Document History'">false</xsl:when>
+				<xsl:when test="@id = '_document_history' or mn:title = 'Document History'">false</xsl:when>
 				<xsl:when test="$level &lt;= $toc_level">true</xsl:when>
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
@@ -695,8 +693,8 @@
 		<xsl:variable name="skip">
 			<xsl:choose>
 				<xsl:when test="@type = 'toc'">true</xsl:when>
-				<xsl:when test="ancestor-or-self::iho:bibitem">true</xsl:when>
-				<xsl:when test="ancestor-or-self::iho:term">true</xsl:when>				
+				<xsl:when test="ancestor-or-self::mn:bibitem">true</xsl:when>
+				<xsl:when test="ancestor-or-self::mn:term">true</xsl:when>				
 				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -716,22 +714,22 @@
 			</xsl:variable>
 			
 			<xsl:variable name="root">
-				<xsl:if test="ancestor-or-self::iho:preface">preface</xsl:if>
-				<xsl:if test="ancestor-or-self::iho:annex">annex</xsl:if>
+				<xsl:if test="ancestor-or-self::mn:preface">preface</xsl:if>
+				<xsl:if test="ancestor-or-self::mn:annex">annex</xsl:if>
 			</xsl:variable>
 			
-			<mn:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
-				<mn:title>
+			<mnx:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
+				<mnx:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
-				</mn:title>
+				</mnx:title>
 				<xsl:apply-templates  mode="contents" />
-			</mn:item>
+			</mnx:item>
 			
 		</xsl:if>	
 		
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'strong']" mode="contents_item" priority="2">
+	<xsl:template match="mn:strong" mode="contents_item" priority="2">
 		<xsl:apply-templates mode="contents_item"/>
 	</xsl:template>
 	
@@ -740,13 +738,13 @@
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
-	<xsl:template match="*[local-name() = 'requirement'] | *[local-name() = 'recommendation'] | *[local-name() = 'permission']" priority="2" mode="update_xml_step1">
+	<xsl:template match="mn:requirement | mn:recommendation | mn:permission" priority="2" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="update_xml_step1"/>
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'requirement'] | *[local-name() = 'recommendation'] | *[local-name() = 'permission']" priority="2">
+	<xsl:template match="mn:requirement | mn:recommendation | mn:permission" priority="2">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block-container id="{@id}" xsl:use-attribute-sets="recommendation-style">
 			<fo:block-container margin="2mm">
@@ -759,17 +757,17 @@
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'fmt-provision']" priority="2" mode="update_xml_step1">
+	<xsl:template match="mn:fmt-provision" priority="2" mode="update_xml_step1">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="update_xml_step1"/>
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'fmt-provision']/*[local-name() = 'div']" priority="2">
+	<xsl:template match="mn:fmt-provision/mn:div" priority="2">
 		<fo:inline><xsl:copy-of select="@id"/><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="/iho:metanorma/iho:bibdata/iho:edition">
+	<xsl:template match="/mn:metanorma/mn:bibdata/mn:edition">
 		<xsl:call-template name="capitalize">
 			<xsl:with-param name="str">
 				<xsl:call-template name="getLocalizedString">
@@ -781,18 +779,18 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 	
-	<xsl:template match="/iho:metanorma/iho:bibdata/iho:date[@type = 'published']">
+	<xsl:template match="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']">
 		<xsl:call-template name="convertDate">
 			<xsl:with-param name="date" select="."/>
 			<xsl:with-param name="format" select="'short'"/>
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="iho:feedback-statement//iho:br" priority="2">
+	<xsl:template match="mn:feedback-statement//mn:br" priority="2">
 		<fo:block/>
 	</xsl:template>
 	
-	<xsl:template match="iho:feedback-statement//iho:sup" priority="2">
+	<xsl:template match="mn:feedback-statement//mn:sup" priority="2">
 		<fo:inline font-size="62%" baseline-shift="35%">
 			<xsl:apply-templates />
 		</fo:inline>
@@ -808,25 +806,25 @@
 	<!-- title      -->
 	<!-- ====== -->
 	
-	<xsl:template match="iho:annex/iho:title">
+	<xsl:template match="mn:annex/mn:title">
 		<fo:block font-size="12pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always" role="H1">			
 			<xsl:apply-templates />
-			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
+			<xsl:apply-templates select="following-sibling::*[1][mn:variant-title][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
 	</xsl:template>
 		
-	<xsl:template match="iho:bibliography/iho:references[not(@normative='true')]/iho:title">
+	<xsl:template match="mn:bibliography/mn:references[not(@normative='true')]/mn:title">
 		<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always" role="H1">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'clause']" priority="3">
-		<xsl:if test="parent::iho:preface or (parent::*[local-name() = 'page_sequence'] and local-name(../..) = 'preface')">
+	<xsl:template match="mn:clause" priority="3">
+		<xsl:if test="parent::mn:preface or (parent::mn:page_sequence and local-name(../..) = 'preface')">
 			<fo:block break-after="page"/>
 		</xsl:if>
 		<xsl:choose>
-			<xsl:when test="iho:title">
+			<xsl:when test="mn:title">
 				<xsl:apply-templates />
 			</xsl:when>
 			<xsl:otherwise>
@@ -839,7 +837,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="iho:title" name="title">
+	<xsl:template match="mn:title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -862,7 +860,7 @@
 		</xsl:variable>
 		
 		<xsl:element name="{$element-name}">
-			<xsl:for-each select="parent::*[local-name() = 'clause']">
+			<xsl:for-each select="parent::mn:clause">
 				<xsl:call-template name="setId"/>
 			</xsl:for-each>
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>			
@@ -870,10 +868,10 @@
 			<xsl:attribute name="space-before">
 				<xsl:choose>
 					<xsl:when test="$level = 1">24pt</xsl:when>
-					<xsl:when test="$level = 2 and ../preceding-sibling::*[1][self::iho:title]">10pt</xsl:when>
+					<xsl:when test="$level = 2 and ../preceding-sibling::*[1][self::mn:title]">10pt</xsl:when>
 					<xsl:when test="$level = 2">24pt</xsl:when>
 					<xsl:when test="$level &gt;= 3">6pt</xsl:when>
-					<xsl:when test="ancestor::iho:preface">8pt</xsl:when>
+					<xsl:when test="ancestor::mn:preface">8pt</xsl:when>
 					<xsl:when test="$level = ''">6pt</xsl:when><!-- 13.5pt -->
 					<xsl:otherwise>12pt</xsl:otherwise>
 				</xsl:choose>
@@ -895,10 +893,10 @@
 			</xsl:if>
 			
 			<xsl:apply-templates />
-			<xsl:apply-templates select="following-sibling::*[1][local-name() = 'variant-title'][@type = 'sub']" mode="subtitle"/>
+			<xsl:apply-templates select="following-sibling::*[1][mn:variant-title][@type = 'sub']" mode="subtitle"/>
 		</xsl:element>
 		
-		<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::iho:p)">
+		<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::mn:p)">
 			<fo:block > <!-- margin-bottom="12pt" -->
 				<xsl:value-of select="$linebreak"/>
 			</fo:block>
@@ -909,7 +907,7 @@
 	<!-- ====== -->
 	
 	
-	<xsl:template match="iho:p" name="paragraph">
+	<xsl:template match="mn:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:param name="split_keep-within-line"/>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
@@ -917,55 +915,55 @@
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
 				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
-				<xsl:when test="local-name(..) = 'admonition'">fo:inline</xsl:when>
-				<xsl:when test="ancestor::*[local-name() = 'recommendation' or local-name() = 'requirement' or local-name() = 'permission'] and not(preceding-sibling::*[local-name() = 'p'])">fo:inline</xsl:when>
+				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
+				<xsl:when test="ancestor::*[self::mn:recommendation or self::mn:requirement or self::mn:permission] and not(preceding-sibling::mn:p)">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="text-align">
 				<xsl:choose>
-					<xsl:when test="ancestor::iho:quote">justify</xsl:when>
-					<xsl:when test="ancestor::iho:feedback-statement">right</xsl:when>
-					<xsl:when test="ancestor::iho:boilerplate and not(@align)">justify</xsl:when>
+					<xsl:when test="ancestor::mn:quote">justify</xsl:when>
+					<xsl:when test="ancestor::mn:feedback-statement">right</xsl:when>
+					<xsl:when test="ancestor::mn:boilerplate and not(@align)">justify</xsl:when>
 					<xsl:when test="@align = 'justified'">justify</xsl:when>
 					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-					<xsl:when test="ancestor::iho:td/@align"><xsl:value-of select="ancestor::iho:td/@align"/></xsl:when>
-					<xsl:when test="ancestor::iho:th/@align"><xsl:value-of select="ancestor::iho:th/@align"/></xsl:when>
+					<xsl:when test="ancestor::mn:td/@align"><xsl:value-of select="ancestor::mn:td/@align"/></xsl:when>
+					<xsl:when test="ancestor::mn:th/@align"><xsl:value-of select="ancestor::mn:th/@align"/></xsl:when>
 					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
 			<xsl:call-template name="setKeepAttributes"/>
 			<xsl:attribute name="space-after">6pt</xsl:attribute>
-			<xsl:if test="parent::iho:dd">
+			<xsl:if test="parent::mn:dd">
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::*[2][local-name() = 'license-statement'] and not(following-sibling::iho:p)">
+			<xsl:if test="ancestor::*[2][self::mn:license-statement] and not(following-sibling::mn:p)">
 				<xsl:attribute name="space-after">0pt</xsl:attribute>
 			</xsl:if>
 			<xsl:attribute name="line-height">115%</xsl:attribute>
 			<!-- <xsl:attribute name="border">1pt solid red</xsl:attribute> -->
-			<xsl:if test="ancestor::iho:boilerplate and not(ancestor::iho:feedback-statement)">
+			<xsl:if test="ancestor::mn:boilerplate and not(ancestor::mn:feedback-statement)">
 				<xsl:attribute name="line-height">125%</xsl:attribute>
 				<xsl:attribute name="space-after">14pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="following-sibling::*[1][self::iho:ol or self::iho:ul or self::iho:note or self::iho:termnote or self::iho:example or self::iho:dl]">
+			<xsl:if test="following-sibling::*[1][self::mn:ol or self::mn:ul or self::mn:note or self::mn:termnote or self::mn:example or self::mn:dl]">
 				<xsl:attribute name="space-after">3pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="following-sibling::*[1][self::iho:dl]">
+			<xsl:if test="following-sibling::*[1][self::mn:dl]">
 				<xsl:attribute name="space-after">6pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::iho:quote">
+			<xsl:if test="ancestor::mn:quote">
 				<xsl:attribute name="line-height">130%</xsl:attribute>
 				<!-- <xsl:attribute name="margin-bottom">12pt</xsl:attribute> -->
 			</xsl:if>
 			
-			<xsl:if test="ancestor::*[local-name() = 'recommendation' or local-name() = 'requirement' or local-name() = 'permission'] and
+			<xsl:if test="ancestor::*[self::mn:recommendation or self::mn:requirement or self::mn:permission] and
 			not(following-sibling::*)">
 				<xsl:attribute name="space-after">0pt</xsl:attribute>
 			</xsl:if>
 			
-			<xsl:if test=".//iho:fn">
+			<xsl:if test=".//mn:fn">
 				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 			</xsl:if>
 			
@@ -973,10 +971,10 @@
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 			</xsl:apply-templates>
 		</xsl:element>
-		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition') and
-		not(ancestor::*[local-name() = 'recommendation' or local-name() = 'requirement' or local-name() = 'permission'])">
+		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(parent::mn:admonition) and
+		not(ancestor::*[self::mn:recommendation or self::mn:requirement or self::mn:permission])">
 			<fo:block margin-bottom="12pt">
-				<!--  <xsl:if test="ancestor::iho:annex">
+				<!--  <xsl:if test="ancestor::mn:annex">
 					<xsl:attribute name="margin-bottom">0</xsl:attribute>
 				 </xsl:if> -->
 				<xsl:value-of select="$linebreak"/>
@@ -989,14 +987,14 @@
 	
 
 	<!-- note in list item -->
-	<!-- <xsl:template match="iho:ul//iho:note  | iho:ol//iho:note" priority="2">
+	<!-- <xsl:template match="mn:ul//mn:note  | mn:ol//mn:note" priority="2">
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template> -->
 	
 
-	<xsl:template match="iho:li//iho:p//text()">
+	<xsl:template match="mn:li//mn:p//text()">
 		<xsl:choose>
 			<xsl:when test="contains(., '&#x9;')">
 				<fo:inline white-space="pre"><xsl:value-of select="."/></fo:inline>
@@ -1009,7 +1007,7 @@
 	
 
 	
-	<!-- <xsl:template match="iho:example/iho:p" priority="2">
+	<!-- <xsl:template match="mn:example/mn:p" priority="2">
 			<fo:block-container xsl:use-attribute-sets="example-p-style">
 				<fo:block-container margin-left="0mm">
 					<fo:block>
@@ -1021,12 +1019,12 @@
 
 
 	
-	<xsl:template match="iho:pagebreak" priority="2">
+	<xsl:template match="mn:pagebreak" priority="2">
 		<xsl:copy-of select="."/>
 	</xsl:template>
 	
 	<!-- https://github.com/metanorma/mn-native-pdf/issues/214 -->
-	<xsl:template match="iho:index"/>
+	<xsl:template match="mn:index"/>
 	
 
 
@@ -1213,5 +1211,7 @@
 			</g>
 		</svg>
 	</xsl:variable>
+	
+	<xsl:include href="./common.xsl"/>
 	
 </xsl:stylesheet>

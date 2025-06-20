@@ -23,19 +23,23 @@
 	<xsl:template match="xsl:stylesheet">
 		<xsl:copy>
 				<xsl:apply-templates select="node()|@*"/>
-				<xsl:choose>
+				<!-- <xsl:choose>
 					<xsl:when test="contains($xslfile, 'presentation')">
 						<xsl:apply-templates select="document('common.presentation.xsl')/xsl:stylesheet/node()"/>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:apply-templates select="document('common.xsl')/xsl:stylesheet/node()"/>
 					</xsl:otherwise>
-				</xsl:choose>
+				</xsl:choose> -->
 
 		</xsl:copy>
 	</xsl:template>
 
-	<xsl:template match="xsl:include"/>
+	<!-- <xsl:template match="xsl:include"/> -->
+	<xsl:template match="xsl:include">
+		<xsl:apply-templates select="document(@href)/xsl:stylesheet/node()"/>
+	</xsl:template>
+	
 	<xsl:template match="xsl:variable[@name = 'namespace']"/>
 
 	<xsl:template match="xsl:if[contains(@test, '$namespace')]">
