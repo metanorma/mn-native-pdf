@@ -17,8 +17,6 @@
 	<xsl:param name="additionalXMLs" select="''"/> <!-- iec-rice.fr.xml  -->
 	
 	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
-	
-	<xsl:include href="./common.xsl"/>
 		
 	<xsl:variable name="additionalXMLsArray">
 		<xsl:call-template name="split">
