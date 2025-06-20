@@ -258,7 +258,11 @@
 	
 	<xsl:include href="./common.characters.xsl"/>
 	
+	<xsl:include href="./common.page.xsl"/>
+	
 	<xsl:include href="./common.fonts.xsl"/>
+
+	<xsl:include href="./common.updatexml.xsl"/>
 
 	<xsl:include href="./common.boilerplate.xsl"/>
 	
@@ -315,11 +319,7 @@
 	
 	<xsl:include href="./common.errata.xsl"/>
 
-	<xsl:include href="./common.updatexml.xsl"/>
-	
 	<xsl:include href="./common.ruby.xsl"/>
-	
-	<xsl:include href="./common.page.xsl"/>
 	
 	<xsl:template name="processPrefaceSectionsDefault">
 		<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition)]">
@@ -1025,6 +1025,33 @@
 		<fo:inline xml:lang="none"><xsl:value-of select="."/></fo:inline>
 	</xsl:template>
 	
+	<xsl:template name="replaceChar">
+		<xsl:param name="text" />
+		<xsl:param name="replace" />
+		<xsl:param name="by" />
+		<xsl:choose>
+			<xsl:when test="$text = '' or $replace = '' or not($replace)" >
+				<xsl:value-of select="$text" />
+			</xsl:when>
+			<xsl:when test="contains($text, $replace)">
+				<xsl:value-of select="substring-before($text,$replace)" />
+				<xsl:element name="inlineChar" namespace="{$namespace_full}"><xsl:value-of select="$by"/></xsl:element>
+				<xsl:call-template name="replaceChar">
+						<xsl:with-param name="text" select="substring-after($text,$replace)" />
+						<xsl:with-param name="replace" select="$replace" />
+						<xsl:with-param name="by" select="$by" />
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text" />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<!-- inlineChar added in the template replaceChar -->
+	<xsl:template match="mn:inlineChar">
+		<fo:inline><xsl:value-of select="."/></fo:inline>
+	</xsl:template>
 
 	
 	<xsl:template name="printEdition">
