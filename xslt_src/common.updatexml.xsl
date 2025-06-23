@@ -621,12 +621,14 @@
 	
 	<xsl:template match="mn:review-container" mode="update_xml_step1"/>
 	
-  <xsl:template match="mn:fmt-identifier[not(ancestor::*[local-name() = 'bibdata'])]//text()" mode="update_xml_step1">
-    <xsl:element name="{$element_name_keep-together_within-line}" namespace="{$namespace_full}">
-      <xsl:value-of select="."/>
-    </xsl:element>
-  </xsl:template>
+	<xsl:template match="mn:fmt-identifier[not(ancestor::*[local-name() = 'bibdata'])]//text()" mode="update_xml_step1">
+		<xsl:element name="{$element_name_keep-together_within-line}" namespace="{$namespace_full}">
+			<xsl:value-of select="."/>
+		</xsl:element>
+	</xsl:template>
   
+	<xsl:template match="@semx-id | @anchor" mode="update_xml_step1"/>
+	
 	<!-- END: update new Presentation XML -->
 	
 	<!-- =========================================================================== -->
