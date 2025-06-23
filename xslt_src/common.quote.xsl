@@ -148,13 +148,28 @@
 		<xsl:if test="../mn:author">
 			<xsl:text>, </xsl:text>
 		</xsl:if>
-		<xsl:call-template name="insert_basic_link">
-			<xsl:with-param name="element">
-				<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
-					<xsl:apply-templates />
-				</fo:basic-link>
-			</xsl:with-param>
-		</xsl:call-template>
+		<xsl:choose>
+			<xsl:when test="not(parent::quote)">
+				<fo:block>
+					<xsl:call-template name="insert_basic_link">
+						<xsl:with-param name="element">
+							<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
+								<xsl:apply-templates />
+							</fo:basic-link>
+						</xsl:with-param>
+					</xsl:call-template>
+				</fo:block>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="insert_basic_link">
+					<xsl:with-param name="element">
+						<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
+							<xsl:apply-templates />
+						</fo:basic-link>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="mn:author">
