@@ -1812,6 +1812,11 @@
 	<!-- Key title after the table -->
 	<!-- <xsl:template match="mn:table/mn:p[@class = 'ListTitle']" priority="2" mode="update_xml_step1"/> -->
   
+	<!-- prevent nested <font_en><font_en>...</font_en></font_en> in the auto-layout table width XSL-FO -->
+	<xsl:template match="*[local-name() = 'font_en'] | *[local-name() = 'font_en_bold']" mode="update_xml_step1">
+		<xsl:copy-of select="."/>
+	</xsl:template>
+	
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
 			<xsl:choose>
@@ -1846,6 +1851,7 @@
 	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'font_en'][normalize-space() != '']">
+		<!-- <debug><xsl:copy-of select="ancestor::mn:td"/></debug> -->
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
 			<xsl:choose>
 				<xsl:when test="$isGenerateTableIF = 'false'"><fo:inline font-size="0.1pt"><xsl:text> </xsl:text></fo:inline></xsl:when>

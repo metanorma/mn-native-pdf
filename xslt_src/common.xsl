@@ -1700,16 +1700,18 @@
 	</xsl:template>
 	
 	<xsl:template name="setNamedDestination">
-		<!-- skip GUID, e.g. _33eac3cb-9663-4291-ae26-1d4b6f4635fc -->
-		<xsl:if test="@id and 
-				normalize-space(java:matches(java:java.lang.String.new(@id), '_[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}')) = 'false'">
-			<fox:destination internal-destination="{@id}"/>
-		</xsl:if>
-		<xsl:for-each select=". | mn:title | mn:name">
-			<xsl:if test="@named_dest">
-				<fox:destination internal-destination="{@named_dest}"/>
+		<xsl:if test="$isGenerateTableIF = 'false'">
+			<!-- skip GUID, e.g. _33eac3cb-9663-4291-ae26-1d4b6f4635fc -->
+			<xsl:if test="@id and 
+					normalize-space(java:matches(java:java.lang.String.new(@id), '_[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}')) = 'false'">
+				<fox:destination internal-destination="{@id}"/>
 			</xsl:if>
-		</xsl:for-each>
+			<xsl:for-each select=". | mn:title | mn:name">
+				<xsl:if test="@named_dest">
+					<fox:destination internal-destination="{@named_dest}"/>
+				</xsl:if>
+			</xsl:for-each>
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template name="add-letter-spacing">
