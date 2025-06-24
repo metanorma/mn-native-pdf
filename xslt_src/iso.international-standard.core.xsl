@@ -1083,7 +1083,7 @@
 						
 						<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
 						
-							<xsl:for-each select=".//*[local-name() = 'page_sequence'][parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
+							<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 							
 								<fo:page-sequence format="i" force-page-count="no-force">
 								
@@ -1235,7 +1235,7 @@
 				
 				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to sections, if top element in 'sections' -->
 				
-					<xsl:for-each select=".//*[local-name() = 'page_sequence'][not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
+					<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 				
 						<!-- BODY -->
 						<fo:page-sequence force-page-count="no-force">
@@ -4437,7 +4437,7 @@
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
 				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
-				<xsl:when test="local-name(..) = 'admonition'">fo:inline</xsl:when>
+				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -4534,7 +4534,7 @@
 		
 		<xsl:apply-templates select="mn:note"/> <!-- [not(following-sibling::*) or count(following-sibling::*) = count(../mn:note) - 1] -->
 		
-		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(local-name(..) = 'admonition')">
+		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(parent::mn:admonition)">
 			<fo:block margin-bottom="12pt" role="SKIP">
 				 <xsl:if test="ancestor::mn:sections or ancestor::mn:annex or following-sibling::mn:table">
 					<xsl:attribute name="margin-bottom">0</xsl:attribute>
@@ -4779,7 +4779,7 @@
 	
 	
 	<!-- page_sequence/sections/clause -->
-	<xsl:template match="mn:sections/*[local-name() = 'page_sequence']/*[not(@top-level)]" priority="3">
+	<xsl:template match="mn:sections/mn:page_sequence/*[not(@top-level)]" priority="3">
 		<xsl:choose>
 			<xsl:when test="self::mn:clause and normalize-space() = '' and count(*) = 0"></xsl:when>
 			<xsl:otherwise>
