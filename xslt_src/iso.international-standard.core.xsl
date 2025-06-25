@@ -870,7 +870,7 @@
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
 			
-			<xsl:call-template name="insertCoverPage"/>
+			<xsl:call-template name="cover-page"/>
 			
 			<xsl:if test="$debug = 'true'">
 				<xsl:message>START updated_xml</xsl:message>
@@ -1460,7 +1460,8 @@
 			</xsl:for-each>
 		</fo:root>
 		
-	</xsl:template> 
+	</xsl:template>
+	
 
 	<xsl:template name="printAddendumTitle">
 		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($doctype))"/>
@@ -1553,7 +1554,7 @@
 		</xsl:call-template>
 	</xsl:template> <!-- END: processPrefaceAndMainSectionsISO_items -->
 
-	<xsl:template name="insertCoverPage">
+	<xsl:template name="cover-page">
 		<xsl:if test="$isGenerateTableIF = 'false'"> <!-- no need cover page for auto-layout algorithm -->
 			<xsl:variable name="fo_cover_page">
 			<!-- cover page -->
@@ -2991,7 +2992,7 @@
 			<xsl:apply-templates select="xalan:nodeset($fo_cover_page)" mode="set_table_role_skip"/>
 			
 		</xsl:if> <!-- $isGenerateTableIF = 'false' -->
-	</xsl:template> <!-- END insertCoverPage -->
+	</xsl:template> <!-- END cover-page -->
 		
 	
 	<xsl:template match="mn:preface/mn:introduction" mode="update_xml_step1" priority="3">

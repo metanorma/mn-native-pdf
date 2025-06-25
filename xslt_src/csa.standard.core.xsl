@@ -84,43 +84,7 @@
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
 			
-			<!-- Cover Page -->
-			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
-				<xsl:call-template name="insertFootnoteSeparatorCommon"/>
-				<fo:static-content flow-name="cover-page-header">
-					<fo:block-container height="2.5mm" background-color="rgb(55, 243, 244)">
-						<fo:block font-size="1pt">&#xA0;</fo:block>
-					</fo:block-container>
-					<fo:block-container position="absolute" top="2.5mm" height="{279.4 - 2.5}mm" width="100%" background-color="rgb(80, 203, 205)">
-						<fo:block>&#xA0;</fo:block>
-					</fo:block-container>
-				</fo:static-content>
-				
-				<fo:flow flow-name="xsl-region-body">
-					
-					<fo:block-container width="136mm" margin-bottom="12pt">
-						<fo:block font-size="36pt" font-weight="bold" color="rgb(54, 59, 74)" role="H1">
-							<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en']" />
-						</fo:block>
-					</fo:block-container>
-					
-					<fo:block font-size="26pt" color="rgb(55, 60, 75)" role="H2">
-						<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en' and @type = 'subtitle']"/>
-					</fo:block>
-					
-					<fo:block-container absolute-position="fixed" left="11mm" top="245mm">
-						<fo:block>
-							<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo))}" width="42mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/> -->
-							<fo:instream-foreign-object content-width="42mm" fox:alt-text="CSA Logo">
-								<xsl:copy-of select="$Image-Logo-SVG"/>
-							</fo:instream-foreign-object>
-						</fo:block>
-					</fo:block-container>
-					
-				</fo:flow>
-			</fo:page-sequence>
-			<!-- End Cover Page -->
-			
+			<xsl:call-template name="cover-page"/>
 			
 			<!-- Copyright, Content, Foreword, etc. pages -->
 			<fo:page-sequence master-reference="document" initial-page-number="2" format="1" force-page-count="no-force">
@@ -272,6 +236,45 @@
 			
 		</fo:root>
 	</xsl:template> 
+
+	<xsl:template name="cover-page">
+		<!-- Cover Page -->
+		<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
+			<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+			<fo:static-content flow-name="cover-page-header">
+				<fo:block-container height="2.5mm" background-color="rgb(55, 243, 244)">
+					<fo:block font-size="1pt">&#xA0;</fo:block>
+				</fo:block-container>
+				<fo:block-container position="absolute" top="2.5mm" height="{279.4 - 2.5}mm" width="100%" background-color="rgb(80, 203, 205)">
+					<fo:block>&#xA0;</fo:block>
+				</fo:block-container>
+			</fo:static-content>
+			
+			<fo:flow flow-name="xsl-region-body">
+				
+				<fo:block-container width="136mm" margin-bottom="12pt">
+					<fo:block font-size="36pt" font-weight="bold" color="rgb(54, 59, 74)" role="H1">
+						<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en']" />
+					</fo:block>
+				</fo:block-container>
+				
+				<fo:block font-size="26pt" color="rgb(55, 60, 75)" role="H2">
+					<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en' and @type = 'subtitle']"/>
+				</fo:block>
+				
+				<fo:block-container absolute-position="fixed" left="11mm" top="245mm">
+					<fo:block>
+						<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo))}" width="42mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/> -->
+						<fo:instream-foreign-object content-width="42mm" fox:alt-text="CSA Logo">
+							<xsl:copy-of select="$Image-Logo-SVG"/>
+						</fo:instream-foreign-object>
+					</fo:block>
+				</fo:block-container>
+				
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template> <!-- END: cover-page -->
+		
 
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>

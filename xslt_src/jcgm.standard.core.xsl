@@ -261,112 +261,7 @@
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
 			
-			<fo:page-sequence master-reference="cover-page-jcgm" font-family="Arial" font-size="10.5pt" force-page-count="no-force">
-				<fo:static-content flow-name="cover-page-jcgm-footer" font-size="10pt">
-					<fo:block font-size="10pt" border-bottom="0.5pt solid black" padding-bottom="2.5mm"  margin-left="-1mm" space-after="4mm">
-						<!-- Example: First edition  July 2009 -->
-						<xsl:call-template name="printEdition"/>
-						<xsl:text>&#xa0;&#xa0;&#xa0;</xsl:text>
-						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="(//mn:metanorma)[1]/mn:bibdata/mn:date[@type = 'published']/mn:on"/>
-						</xsl:call-template>
-					</fo:block>
-					<!-- Example © JCGM 2009 -->
-					<fo:block font-size="11pt">
-						<fo:inline font-family="Times New Roman" font-size="12pt"><xsl:text>© </xsl:text></fo:inline>
-						<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym"/>
-						<xsl:text> </xsl:text>
-						<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:from"/>
-					</fo:block>
-				</fo:static-content>
-				<fo:flow flow-name="xsl-region-body">
-					<xsl:call-template name="insert_Logo-BIPM-Metro"/>
-					<xsl:call-template name="insertDraftWatermark"/>
-					<fo:block-container font-weight="bold">
-						<fo:block font-size="16.5pt">
-							<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym"/>
-							<xsl:text> </xsl:text>
-							<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:docnumber"/>
-							<fo:inline font-weight="normal">:</fo:inline>
-							<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:from"/>
-						</fo:block>
-						<fo:block font-size="13pt" font-weight="normal" space-after="19.5mm">
-							<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@type = 'title-provenance']"/>
-						</fo:block>
-						<fo:block border-bottom="1pt solid black">&#xa0;</fo:block>
-						<fo:block font-size="16.5pt" margin-left="-0.5mm"  padding-top="3.5mm" space-after="7mm" margin-right="7mm" line-height="105%" role="H1">
-							<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $lang and @type = 'title-main']" mode="title"/>
-							<xsl:variable name="title_part">
-								<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']" mode="title"/>
-							</xsl:variable>
-							<xsl:if test="normalize-space($title_part) != ''">
-								<xsl:text> — </xsl:text>
-								<xsl:copy-of select="$title_part"/>
-							</xsl:if>
-						</fo:block>
-						<fo:block font-size="12pt" font-style="italic" line-height="140%" role="H1">
-							<xsl:variable name="secondLang" select="(//mn:metanorma)[1]/mn:bibdata/mn:title/@language[. != $lang]"/>
-							<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $secondLang and @type = 'title-main']" mode="title"/>
-							<xsl:variable name="title_part">
-								<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $secondLang and @type = 'title-part']" mode="title"/>
-							</xsl:variable>
-							<xsl:if test="normalize-space($title_part) != ''">
-								<xsl:text> — </xsl:text>
-								<xsl:copy-of select="$title_part"/>
-							</xsl:if>
-						</fo:block>
-					</fo:block-container>
-				</fo:flow>
-			</fo:page-sequence>
-			
-			<fo:page-sequence master-reference="internal-cover-page-jcgm" force-page-count="no-force">
-				<fo:static-content flow-name="internal-cover-page-jcgm-footer" font-size="9pt">
-					<!-- example: (c) JCGM 2009— All rights reserved -->
-					<fo:block text-align="right">
-						<xsl:value-of select="$copyrightText"/>
-					</fo:block>
-				</fo:static-content>
-				<fo:flow flow-name="xsl-region-body">
-					<xsl:call-template name="insertDraftWatermark"/>
-					<fo:table table-layout="fixed" width="100%" font-size="13pt">
-						<fo:table-column column-width="134mm"/>
-						<fo:table-column column-width="30mm"/>
-						<fo:table-body>
-							<fo:table-row>
-								<fo:table-cell>
-									<fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"/></fo:block>
-								</fo:table-cell>
-								<fo:table-cell line-height="140%">
-									<fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym"/></fo:block>
-									<fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:docnumber"/></fo:block>
-									<fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:from"/></fo:block>
-								</fo:table-cell>
-							</fo:table-row>
-						</fo:table-body>
-					</fo:table>
-					<fo:block font-size="18pt" space-before="70mm" role="H1">
-						<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $lang and @type = 'title-main']" mode="title"/>
-						<xsl:variable name="title_part">
-							<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']" mode="title"/>
-						</xsl:variable>
-						<xsl:if test="normalize-space($title_part) != ''">
-							<xsl:text> — </xsl:text>
-							<xsl:copy-of select="$title_part"/>
-						</xsl:if>
-					</fo:block>
-					<fo:block font-size="13pt" space-before="35mm" role="H1">
-						<xsl:variable name="secondLang" select="(//mn:metanorma)[1]/mn:bibdata/mn:title/@language[. != $lang]"/>
-						<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $secondLang and @type = 'title-main']" mode="title"/>
-						<xsl:variable name="title_part">
-							<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $secondLang and @type = 'title-part']" mode="title"/>
-						</xsl:variable>
-						<xsl:if test="normalize-space($title_part) != ''">
-							<xsl:text> — </xsl:text>
-							<xsl:copy-of select="$title_part"/>
-						</xsl:if>
-					</fo:block>
-				</fo:flow>
-			</fo:page-sequence> <!-- END: internal-cover-page-jcgm -->
+			<xsl:call-template name="cover-page"/>
 			
 			
 			<xsl:variable name="updated_xml">
@@ -491,6 +386,115 @@
 			
 		</fo:root>
 	</xsl:template>
+
+	<xsl:template name="cover-page">
+		<fo:page-sequence master-reference="cover-page-jcgm" font-family="Arial" font-size="10.5pt" force-page-count="no-force">
+			<fo:static-content flow-name="cover-page-jcgm-footer" font-size="10pt">
+				<fo:block font-size="10pt" border-bottom="0.5pt solid black" padding-bottom="2.5mm"  margin-left="-1mm" space-after="4mm">
+					<!-- Example: First edition  July 2009 -->
+					<xsl:call-template name="printEdition"/>
+					<xsl:text>&#xa0;&#xa0;&#xa0;</xsl:text>
+					<xsl:call-template name="convertDate">
+						<xsl:with-param name="date" select="(//mn:metanorma)[1]/mn:bibdata/mn:date[@type = 'published']/mn:on"/>
+					</xsl:call-template>
+				</fo:block>
+				<!-- Example © JCGM 2009 -->
+				<fo:block font-size="11pt">
+					<fo:inline font-family="Times New Roman" font-size="12pt"><xsl:text>© </xsl:text></fo:inline>
+					<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym"/>
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:from"/>
+				</fo:block>
+			</fo:static-content>
+			<fo:flow flow-name="xsl-region-body">
+				<xsl:call-template name="insert_Logo-BIPM-Metro"/>
+				<xsl:call-template name="insertDraftWatermark"/>
+				<fo:block-container font-weight="bold">
+					<fo:block font-size="16.5pt">
+						<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym"/>
+						<xsl:text> </xsl:text>
+						<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:docnumber"/>
+						<fo:inline font-weight="normal">:</fo:inline>
+						<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:from"/>
+					</fo:block>
+					<fo:block font-size="13pt" font-weight="normal" space-after="19.5mm">
+						<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@type = 'title-provenance']"/>
+					</fo:block>
+					<fo:block border-bottom="1pt solid black">&#xa0;</fo:block>
+					<fo:block font-size="16.5pt" margin-left="-0.5mm"  padding-top="3.5mm" space-after="7mm" margin-right="7mm" line-height="105%" role="H1">
+						<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $lang and @type = 'title-main']" mode="title"/>
+						<xsl:variable name="title_part">
+							<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']" mode="title"/>
+						</xsl:variable>
+						<xsl:if test="normalize-space($title_part) != ''">
+							<xsl:text> — </xsl:text>
+							<xsl:copy-of select="$title_part"/>
+						</xsl:if>
+					</fo:block>
+					<fo:block font-size="12pt" font-style="italic" line-height="140%" role="H1">
+						<xsl:variable name="secondLang" select="(//mn:metanorma)[1]/mn:bibdata/mn:title/@language[. != $lang]"/>
+						<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $secondLang and @type = 'title-main']" mode="title"/>
+						<xsl:variable name="title_part">
+							<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $secondLang and @type = 'title-part']" mode="title"/>
+						</xsl:variable>
+						<xsl:if test="normalize-space($title_part) != ''">
+							<xsl:text> — </xsl:text>
+							<xsl:copy-of select="$title_part"/>
+						</xsl:if>
+					</fo:block>
+				</fo:block-container>
+			</fo:flow>
+		</fo:page-sequence>
+		
+		<fo:page-sequence master-reference="internal-cover-page-jcgm" force-page-count="no-force">
+			<fo:static-content flow-name="internal-cover-page-jcgm-footer" font-size="9pt">
+				<!-- example: (c) JCGM 2009— All rights reserved -->
+				<fo:block text-align="right">
+					<xsl:value-of select="$copyrightText"/>
+				</fo:block>
+			</fo:static-content>
+			<fo:flow flow-name="xsl-region-body">
+				<xsl:call-template name="insertDraftWatermark"/>
+				<fo:table table-layout="fixed" width="100%" font-size="13pt">
+					<fo:table-column column-width="134mm"/>
+					<fo:table-column column-width="30mm"/>
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell>
+								<fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"/></fo:block>
+							</fo:table-cell>
+							<fo:table-cell line-height="140%">
+								<fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym"/></fo:block>
+								<fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:docnumber"/></fo:block>
+								<fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:from"/></fo:block>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+				<fo:block font-size="18pt" space-before="70mm" role="H1">
+					<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $lang and @type = 'title-main']" mode="title"/>
+					<xsl:variable name="title_part">
+						<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']" mode="title"/>
+					</xsl:variable>
+					<xsl:if test="normalize-space($title_part) != ''">
+						<xsl:text> — </xsl:text>
+						<xsl:copy-of select="$title_part"/>
+					</xsl:if>
+				</fo:block>
+				<fo:block font-size="13pt" space-before="35mm" role="H1">
+					<xsl:variable name="secondLang" select="(//mn:metanorma)[1]/mn:bibdata/mn:title/@language[. != $lang]"/>
+					<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $secondLang and @type = 'title-main']" mode="title"/>
+					<xsl:variable name="title_part">
+						<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $secondLang and @type = 'title-part']" mode="title"/>
+					</xsl:variable>
+					<xsl:if test="normalize-space($title_part) != ''">
+						<xsl:text> — </xsl:text>
+						<xsl:copy-of select="$title_part"/>
+					</xsl:if>
+				</fo:block>
+			</fo:flow>
+		</fo:page-sequence> <!-- END: internal-cover-page-jcgm -->
+		</xsl:template> <!-- END: cover-page -->
 
 
 	<xsl:template name="processPrefaceAndMainSectionsJCGM_items">

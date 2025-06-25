@@ -428,22 +428,7 @@
 				</redirect:write>
 			</xsl:if>
 			
-			<xsl:choose>
-			
-				<xsl:when test="$doctype = 'guide'">
-					<xsl:call-template name="insertCoverPageAppendix"/>				
-				</xsl:when>
-				
-				<xsl:when test="$independentAppendix = ''">
-					<xsl:call-template name="insertCoverPage"/>
-					<xsl:call-template name="insertInnerCoverPage"/>
-				</xsl:when>
-				
-				<xsl:when test="$independentAppendix != ''">
-					<xsl:call-template name="insertCoverPageAppendix"/>				
-				</xsl:when>
-			</xsl:choose>
-				
+			<xsl:call-template name="cover-page"/>
 			
 			<xsl:choose>
 				<xsl:when test="$root-element = 'metanorma-collection'">
@@ -1475,9 +1460,24 @@
 			</xsl:otherwise>
 		</xsl:choose>
 		
-		
 	</xsl:template>
 	
+	
+	<xsl:template name="cover-page">
+		<xsl:choose>
+			<xsl:when test="$doctype = 'guide'">
+				<xsl:call-template name="insertCoverPageAppendix"/>				
+			</xsl:when>
+			<xsl:when test="$independentAppendix = ''">
+				<xsl:call-template name="insertCoverPage"/>
+				<xsl:call-template name="insertInnerCoverPage"/>
+			</xsl:when>
+			<xsl:when test="$independentAppendix != ''">
+				<xsl:call-template name="insertCoverPageAppendix"/>				
+			</xsl:when>
+		</xsl:choose>
+	</xsl:template> <!-- END: cover-page -->
+			
 	
 	<!-- Cover Pages -->
 	<xsl:template name="insertCoverPage">	

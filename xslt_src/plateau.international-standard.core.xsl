@@ -260,7 +260,7 @@
 				<!-- <xsl:for-each select="xalan:nodeset($current_document)"> -->
 				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)">
 				
-					<xsl:call-template name="insertCoverPage">
+					<xsl:call-template name="cover-page">
 						<xsl:with-param name="num" select="$num"/>
 					</xsl:call-template>
 										
@@ -653,7 +653,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template name="insertCoverPage">
+	<xsl:template name="cover-page">
 		<xsl:param name="num"/>
 		<fo:page-sequence master-reference="cover-page" force-page-count="no-force" font-family="Noto Sans Condensed">
 			
@@ -792,7 +792,7 @@
 				<fo:block id="firstpage_id_{$num}">&#xa0;</fo:block>
 			</fo:flow>
 		</fo:page-sequence>
-	</xsl:template> <!-- insertCoverPage -->
+	</xsl:template> <!-- cover-page -->
 	
 	
 	<xsl:template match="mn:p[@class = 'JapaneseIndustrialStandard']" priority="4"/>
