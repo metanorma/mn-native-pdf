@@ -2940,8 +2940,8 @@
 								</xsl:if>
 								
 								<xsl:if test="$namespace = 'itu'">
-									<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
-									<xsl:if test="$doctype = 'service-publication'">
+									<xsl:variable name="doctype_ITU" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
+									<xsl:if test="$doctype_ITU = 'service-publication'">
 										<fo:block margin-top="7pt" margin-bottom="2pt" role="SKIP"><fo:inline>____________</fo:inline></fo:block>
 									</xsl:if>
 								</xsl:if>
