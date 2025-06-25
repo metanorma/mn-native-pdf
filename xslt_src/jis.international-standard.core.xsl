@@ -526,20 +526,9 @@
 						<xsl:apply-templates select="xalan:nodeset($docidentifier__)/node()"/>
 					</xsl:variable>
 					
-					<xsl:variable name="copyrightText_">
-						<xsl:variable name="backpage_boilerplate_text" select="normalize-space(/*/mn:metanorma-extension/mn:presentation-metadata/mn:backpage-boilerplate-text)"/>
-						<xsl:value-of select="$backpage_boilerplate_text"/>
-						<xsl:if test="$backpage_boilerplate_text = ''">
-							<xsl:call-template name="getLocalizedString">
-								<xsl:with-param name="key">permission_footer</xsl:with-param>
-								<xsl:with-param name="formatted" select="$vertical_layout"/> <!-- $vertical_layout = 'true' -->
-								<xsl:with-param name="bibdata_updated" select="/*/mn:bibdata"/> <!-- $vertical_layout = 'true' -->
-							</xsl:call-template>
-						</xsl:if>
-					</xsl:variable>
-					<xsl:variable name="copyrightText" select="normalize-space($copyrightText_)"/>
+					<xsl:variable name="copyrightText"><xsl:call-template name="get_copyrightText"/></xsl:variable>
 					
-					<xsl:variable name="doctype" select="/*/mn:bibdata/mn:ext/mn:doctype"/>
+					<xsl:variable name="doctype"><xsl:call-template name="get_doctype"/></xsl:variable>
 					
 					<xsl:variable name="title_ja" select="/*/mn:bibdata/mn:title[@language = 'ja' and @type = 'main']"/>
 					<xsl:variable name="title_en" select="/*/mn:bibdata/mn:title[@language = 'en' and @type = 'main']"/>
@@ -551,51 +540,22 @@
 					</xsl:variable>
 					<xsl:variable name="cover_header_footer_background" select="normalize-space($cover_header_footer_background_)"/>
 					
-					<xsl:variable name="docidentifier_JIS_" select="/*/mn:bibdata/mn:docidentifier[@type = 'JIS']"/>
-					<xsl:variable name="docidentifier_JIS">
+					<xsl:variable name="docidentifier_JIS"><xsl:call-template name="get_docidentifier_JIS"/></xsl:variable>
+					<xsl:variable name="docidentifier_JIS_no_year">
 						<xsl:choose>
-							<xsl:when test="contains($docidentifier_JIS_, ':')"><xsl:value-of select="substring-before($docidentifier_JIS_, ':')"/></xsl:when>
-							<xsl:otherwise><xsl:value-of select="$docidentifier_JIS_"/></xsl:otherwise>
+							<xsl:when test="contains($docidentifier_JIS, ':')"><xsl:value-of select="substring-before($docidentifier_JIS, ':')"/></xsl:when>
+							<xsl:otherwise><xsl:value-of select="$docidentifier_JIS"/></xsl:otherwise>
 						</xsl:choose>
 					</xsl:variable>
 					<xsl:variable name="edition" select="/mn:metanorma/mn:bibdata/mn:edition[@language = 'ja' and @numberonly = 'true']"/>
 					
-					<xsl:variable name="doclang">
-						<xsl:call-template name="getLang"/>
-					</xsl:variable>
+					<xsl:variable name="doclang"><xsl:call-template name="getLang"/></xsl:variable>
 					
-					<xsl:if test="$isGenerateTableIF = 'false'">
-					<xsl:choose>
-						<xsl:when test="$vertical_layout = 'true'">
-							<xsl:call-template name="insertCoverPage2024">
-								<xsl:with-param name="num" select="$num"/>
-								<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS_"/>
-							</xsl:call-template>
-						</xsl:when>
-						<xsl:when test="$doctype = 'technical-specification'">
-							<xsl:call-template name="insertCoverPageJSA">
-								<xsl:with-param name="num" select="$num"/>
-								<xsl:with-param name="doclang" select="$doclang"/>
-								<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS_"/>
-							</xsl:call-template>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:call-template name="insertCoverPage">
-								<xsl:with-param name="num" select="$num"/>
-								<xsl:with-param name="copyrightText" select="$copyrightText"/>
-								<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS_"/>
-							</xsl:call-template>
-						</xsl:otherwise>
-					</xsl:choose>
-					
-					<xsl:if test="not($vertical_layout = 'true')">
-					<xsl:call-template name="insertInnerCoverPage">
+					<xsl:call-template name="cover-page">
+						<xsl:with-param name="num" select="$num"/>
 						<xsl:with-param name="docidentifier" select="$docidentifier"/>
-						<xsl:with-param name="copyrightText" select="$copyrightText"/>
 					</xsl:call-template>
-					</xsl:if>
-					</xsl:if>
-				
+					
 				
 					<!-- ========================== -->
 					<!-- Contents and preface pages -->
@@ -627,8 +587,8 @@
 												<xsl:with-param name="cover_header_footer_background" select="$cover_header_footer_background"/>
 												<xsl:with-param name="title_ja" select="$title_ja"/>
 												<xsl:with-param name="i18n_JIS" select="$i18n_JIS"/>
-												<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS)"/>
-												<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS_"/>
+												<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS_no_year)"/>
+												<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS"/>
 												<xsl:with-param name="edition" select="$edition"/>
 												<xsl:with-param name="copyrightText">
 													<xsl:copy-of select="$copyrightText"/>
@@ -705,8 +665,8 @@
 													<xsl:with-param name="cover_header_footer_background" select="$cover_header_footer_background"/>
 													<xsl:with-param name="title_ja" select="$title_ja"/>
 													<xsl:with-param name="i18n_JIS" select="$i18n_JIS"/>
-													<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS)"/>
-													<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS_"/>
+													<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS_no_year)"/>
+													<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS"/>
 													<xsl:with-param name="edition" select="$edition"/>
 													<xsl:with-param name="copyrightText">
 														<xsl:copy-of select="$copyrightText"/>
@@ -825,11 +785,11 @@
 						</xsl:for-each>
 					</xsl:variable>
 					
-					<!-- <xsl:if test="$debug = 'true'">
+					<xsl:if test="$debug = 'true'">
 						<redirect:write file="structured_xml_.xml">
 							<xsl:copy-of select="$structured_xml"/>
 						</redirect:write>
-					</xsl:if> -->
+					</xsl:if>
 					
 					<xsl:variable name="paged_xml">
 						<xsl:call-template name="makePagedXML">
@@ -906,8 +866,8 @@
 										<xsl:with-param name="cover_header_footer_background" select="$cover_header_footer_background"/>
 										<xsl:with-param name="title_ja" select="$title_ja"/>
 										<xsl:with-param name="i18n_JIS" select="$i18n_JIS"/>
-										<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS)"/>
-										<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS_"/>
+										<xsl:with-param name="docidentifier" select="concat('JIS ', $docidentifier_JIS_no_year)"/>
+										<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS"/>
 										<xsl:with-param name="edition" select="$edition"/>
 										<xsl:with-param name="copyrightText">
 											<xsl:copy-of select="$copyrightText"/>
@@ -1009,7 +969,7 @@
 							<xsl:with-param name="num" select="$num"/>
 							<xsl:with-param name="doclang" select="'en'"/>
 							<xsl:with-param name="first">false</xsl:with-param>
-							<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS_"/>
+							<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS"/>
 						</xsl:call-template>
 					</xsl:if>
 				
@@ -1039,6 +999,69 @@
 			
 		</fo:root>
 	</xsl:template>
+	
+	<xsl:template name="get_doctype">
+		<xsl:value-of select="/*/mn:bibdata/mn:ext/mn:doctype"/>
+	</xsl:template>
+	<xsl:template name="get_docidentifier_JIS">
+		<xsl:value-of select="/*/mn:bibdata/mn:docidentifier[@type = 'JIS']"/>
+	</xsl:template>
+	
+	<xsl:template name="get_copyrightText">
+		<xsl:variable name="copyrightText_">
+			<xsl:variable name="backpage_boilerplate_text" select="normalize-space(/*/mn:metanorma-extension/mn:presentation-metadata/mn:backpage-boilerplate-text)"/>
+			<xsl:value-of select="$backpage_boilerplate_text"/>
+			<xsl:if test="$backpage_boilerplate_text = ''">
+				<xsl:call-template name="getLocalizedString">
+					<xsl:with-param name="key">permission_footer</xsl:with-param>
+					<xsl:with-param name="formatted" select="$vertical_layout"/> <!-- $vertical_layout = 'true' -->
+					<xsl:with-param name="bibdata_updated" select="/*/mn:bibdata"/> <!-- $vertical_layout = 'true' -->
+				</xsl:call-template>
+			</xsl:if>
+		</xsl:variable>
+		<xsl:value-of select="normalize-space($copyrightText_)"/>
+	</xsl:template>
+	
+	<xsl:template name="cover-page">
+		<xsl:param name="num"/>
+		<xsl:param name="docidentifier"/>
+		<xsl:if test="$isGenerateTableIF = 'false'">
+			<xsl:variable name="doctype"><xsl:call-template name="get_doctype"/></xsl:variable>
+			<xsl:variable name="docidentifier_JIS"><xsl:call-template name="get_docidentifier_JIS"/></xsl:variable>
+			<xsl:variable name="doclang"><xsl:call-template name="getLang"/></xsl:variable>
+			<xsl:variable name="copyrightText"><xsl:call-template name="get_copyrightText"/></xsl:variable>
+			<xsl:choose>
+				<xsl:when test="$vertical_layout = 'true'">
+					<xsl:call-template name="insertCoverPage2024">
+						<xsl:with-param name="num" select="$num"/>
+						<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS"/>
+					</xsl:call-template>
+				</xsl:when>
+				<xsl:when test="$doctype = 'technical-specification'">
+					<xsl:call-template name="insertCoverPageJSA">
+						<xsl:with-param name="num" select="$num"/>
+						<xsl:with-param name="doclang" select="$doclang"/>
+						<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS"/>
+					</xsl:call-template>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="insertCoverPage">
+						<xsl:with-param name="num" select="$num"/>
+						<xsl:with-param name="copyrightText" select="$copyrightText"/>
+						<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS"/>
+					</xsl:call-template>
+				</xsl:otherwise>
+			</xsl:choose>
+			
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:call-template name="insertInnerCoverPage">
+					<xsl:with-param name="docidentifier" select="$docidentifier"/>
+					<xsl:with-param name="copyrightText" select="$copyrightText"/>
+				</xsl:call-template>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	
 	<xsl:template match="mn:references[not(@hidden = 'true')]" mode="linear_xml" priority="2">
 		<xsl:copy>
@@ -3476,9 +3499,9 @@
 				</fo:block>
 				<fo:block margin-top="6.5mm" font-size="10pt" font-weight="bold" margin-left="16.5mm">
 					<fo:inline padding-right="7mm"><xsl:value-of select="xalan:nodeset($bibdata)//mn:bibdata/mn:date[@type = 'published']"/></fo:inline>
-					<xsl:variable name="edition" select="xalan:nodeset($bibdata)//mn:edition[@language = 'ja'][1]"/>
+					<xsl:variable name="edition_ja" select="xalan:nodeset($bibdata)//mn:edition[@language = 'ja'][1]"/>
 					<!-- add spaced between characters -->
-					<fo:inline padding-right="6mm"><xsl:value-of select="java:replaceAll(java:java.lang.String.new($edition), '(.)', '$1　')"/></fo:inline>
+					<fo:inline padding-right="6mm"><xsl:value-of select="java:replaceAll(java:java.lang.String.new($edition_ja), '(.)', '$1　')"/></fo:inline>
 					発行
 				</fo:block>
 				
