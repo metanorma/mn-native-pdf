@@ -128,6 +128,169 @@
 	
 	<xsl:variable name="line-height">1.8</xsl:variable>
 	
+	<xsl:template name="layout-master-set">
+		<fo:layout-master-set>
+		
+			<!-- IEEE template for:
+				- draft documents
+				- non standard documents (whitepaper, ICAP whitepaper, industry connection report)
+				- standard documents
+			-->
+		
+			<!-- ======================== -->
+			<!-- IEEE pages -->
+			<!-- ======================== -->
+			<!-- IEEE cover page -->
+			
+			<!-- IEEE standard cover page -->
+			<fo:simple-page-master master-name="cover-and-back-page-standard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="62mm" margin-bottom="25mm" margin-left="21.2mm" margin-right="25mm"/>
+				<fo:region-before region-name="header" extent="62mm" precedence="true"/>
+				<fo:region-after region-name="footer" extent="25mm"/>
+				<fo:region-start region-name="left-region" extent="21.2mm"/>
+				<fo:region-end region-name="right-region" extent="25mm"/>
+			</fo:simple-page-master>
+			
+			<!-- IEEE industry connection report cover page -->
+			<fo:simple-page-master master-name="cover-and-back-page-industry-connection-report" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="116mm" margin-bottom="15mm" margin-left="62mm" margin-right="35mm"/>
+				<fo:region-before region-name="header" extent="116mm"/>
+				<fo:region-after region-name="footer" extent="15mm"/>
+				<fo:region-start region-name="left-region" extent="62mm" precedence="true" />
+				<fo:region-end region-name="right-region" extent="35mm"/>
+			</fo:simple-page-master>
+			
+			<!-- ================== -->
+			<!-- IEEE whitepaper, ICAP whitepaper, connection-report -->
+			<!-- ================== -->
+			<fo:simple-page-master master-name="cover-page-nonstandard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="115mm" margin-bottom="15mm" margin-left="64mm" margin-right="35mm"/>
+				<fo:region-before region-name="header" extent="115mm"/>
+				<fo:region-after region-name="footer" extent="15mm"/>
+				<fo:region-start region-name="left-region" extent="64mm" precedence="true" />
+				<fo:region-end region-name="right-region" extent="35mm"/>
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="document-nonstandard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="25.4mm" margin-bottom="25.4mm" margin-left="19mm" margin-right="19mm"/>
+				<fo:region-before region-name="header" extent="25.4mm"/>
+				<fo:region-after region-name="footer" extent="25.4mm"/>
+				<fo:region-start region-name="left-region" extent="19mm"/>
+				<fo:region-end region-name="right-region" extent="19mm"/>
+			</fo:simple-page-master>
+			
+			<!-- landscape -->
+			<fo:simple-page-master master-name="document-nonstandard-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="19mm" margin-bottom="19mm" margin-left="25.4mm" margin-right="25.4mm"/>
+				<fo:region-before region-name="header" extent="19mm" precedence="true"/>
+				<fo:region-after region-name="footer" extent="19mm" precedence="true"/>
+				<fo:region-start region-name="left-region-landscape" extent="25.4mm"/>
+				<fo:region-end region-name="right-region-landscape" extent="25.4mm"/>
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="back-page-nonstandard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="73mm" margin-bottom="15mm" margin-left="63.5mm" margin-right="35mm"/>
+				<fo:region-before region-name="header" extent="73mm"/>
+				<fo:region-after region-name="footer" extent="15mm"/>
+				<fo:region-start region-name="left-region" extent="63.5mm" precedence="true" />
+				<fo:region-end region-name="right-region" extent="35mm"/>
+			</fo:simple-page-master>
+			<!-- ================== -->
+			<!-- End: IEEE whitepaper -->
+			<!-- ================== -->
+			
+			
+			<!-- ToC for non-standards (whitepaper, icap-whitepaper, industry-connection-report) -->
+			<fo:simple-page-master master-name="page-toc-first" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="19mm" margin-right="19mm"/>
+				<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/>
+				<fo:region-after region-name="footer_empty" extent="{$marginBottom}mm"/> <!-- empty footer for 1st ToC page -->
+				<fo:region-start region-name="left-region" extent="19mm" />
+				<fo:region-end region-name="right-region" extent="19mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="page-toc-any" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="19mm" margin-right="19mm"/>
+				<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="19mm" />
+				<fo:region-end region-name="right-region" extent="19mm"/>
+			</fo:simple-page-master>
+			<fo:page-sequence-master master-name="page-toc">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference page-position="first" master-reference="page-toc-first"/>
+					<fo:conditional-page-master-reference page-position="any" master-reference="page-toc-any"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+
+			
+			<!-- =================== -->
+			<!-- Drafts pages -->
+			<!-- =================== -->
+			<fo:simple-page-master master-name="document-draft" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			
+			<!-- landscape -->
+			<fo:simple-page-master master-name="document-draft-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
+				<fo:region-before region-name="header" extent="{$marginLeftRight1}mm" precedence="true"/>
+				<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
+				<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
+				<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
+			</fo:simple-page-master>
+			<!-- =================== -->
+			<!-- =================== -->
+			
+			<!-- ======================= -->
+			<!-- Standard document pages -->
+			<!-- ======================= -->
+			<fo:simple-page-master master-name="document-standard-first" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header_empty" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:page-sequence-master master-name="document-standard">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference page-position="first" master-reference="document-standard-first"/>
+					<fo:conditional-page-master-reference page-position="any" master-reference="document-draft"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			
+			<!-- landscape -->
+			<fo:simple-page-master master-name="document-standard-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
+				<fo:region-before region-name="header" extent="{$marginLeftRight1}mm" precedence="true"/>
+				<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
+				<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
+				<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
+			</fo:simple-page-master>
+			<!-- ======================= -->
+			<!-- ======================= -->
+			
+			<!-- Index pages -->
+			<fo:simple-page-master master-name="page-index" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="2" column-gap="10mm"/>
+				<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			
+			
+			<!-- ======================== -->
+			<!-- END IEEE pages -->
+			<!-- ======================== -->
+		
+		</fo:layout-master-set>
+	</xsl:template> <!-- END: layout-master-set -->
+	
+	
 	<xsl:template match="/">
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
 			<xsl:variable name="root-style">
@@ -146,165 +309,7 @@
 				<xsl:processing-instruction name="add_line_numbers">true</xsl:processing-instruction>
 			</xsl:if>
 			
-			<fo:layout-master-set>
-			
-				<!-- IEEE template for:
-					- draft documents
-					- non standard documents (whitepaper, ICAP whitepaper, industry connection report)
-					- standard documents
-				-->
-			
-				<!-- ======================== -->
-				<!-- IEEE pages -->
-				<!-- ======================== -->
-				<!-- IEEE cover page -->
-				
-				<!-- IEEE standard cover page -->
-				<fo:simple-page-master master-name="cover-and-back-page-standard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="62mm" margin-bottom="25mm" margin-left="21.2mm" margin-right="25mm"/>
-					<fo:region-before region-name="header" extent="62mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="25mm"/>
-					<fo:region-start region-name="left-region" extent="21.2mm"/>
-					<fo:region-end region-name="right-region" extent="25mm"/>
-				</fo:simple-page-master>
-				
-				<!-- IEEE industry connection report cover page -->
-				<fo:simple-page-master master-name="cover-and-back-page-industry-connection-report" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="116mm" margin-bottom="15mm" margin-left="62mm" margin-right="35mm"/>
-					<fo:region-before region-name="header" extent="116mm"/>
-					<fo:region-after region-name="footer" extent="15mm"/>
-					<fo:region-start region-name="left-region" extent="62mm" precedence="true" />
-					<fo:region-end region-name="right-region" extent="35mm"/>
-				</fo:simple-page-master>
-				
-				<!-- ================== -->
-				<!-- IEEE whitepaper, ICAP whitepaper, connection-report -->
-				<!-- ================== -->
-				<fo:simple-page-master master-name="cover-page-nonstandard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="115mm" margin-bottom="15mm" margin-left="64mm" margin-right="35mm"/>
-					<fo:region-before region-name="header" extent="115mm"/>
-					<fo:region-after region-name="footer" extent="15mm"/>
-					<fo:region-start region-name="left-region" extent="64mm" precedence="true" />
-					<fo:region-end region-name="right-region" extent="35mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="document-nonstandard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="25.4mm" margin-bottom="25.4mm" margin-left="19mm" margin-right="19mm"/>
-					<fo:region-before region-name="header" extent="25.4mm"/>
-					<fo:region-after region-name="footer" extent="25.4mm"/>
-					<fo:region-start region-name="left-region" extent="19mm"/>
-					<fo:region-end region-name="right-region" extent="19mm"/>
-				</fo:simple-page-master>
-				
-				<!-- landscape -->
-				<fo:simple-page-master master-name="document-nonstandard-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="19mm" margin-bottom="19mm" margin-left="25.4mm" margin-right="25.4mm"/>
-					<fo:region-before region-name="header" extent="19mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="19mm" precedence="true"/>
-					<fo:region-start region-name="left-region-landscape" extent="25.4mm"/>
-					<fo:region-end region-name="right-region-landscape" extent="25.4mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="back-page-nonstandard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="73mm" margin-bottom="15mm" margin-left="63.5mm" margin-right="35mm"/>
-					<fo:region-before region-name="header" extent="73mm"/>
-					<fo:region-after region-name="footer" extent="15mm"/>
-					<fo:region-start region-name="left-region" extent="63.5mm" precedence="true" />
-					<fo:region-end region-name="right-region" extent="35mm"/>
-				</fo:simple-page-master>
-				<!-- ================== -->
-				<!-- End: IEEE whitepaper -->
-				<!-- ================== -->
-				
-				
-				<!-- ToC for non-standards (whitepaper, icap-whitepaper, industry-connection-report) -->
-				<fo:simple-page-master master-name="page-toc-first" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="19mm" margin-right="19mm"/>
-					<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/>
-					<fo:region-after region-name="footer_empty" extent="{$marginBottom}mm"/> <!-- empty footer for 1st ToC page -->
-					<fo:region-start region-name="left-region" extent="19mm" />
-					<fo:region-end region-name="right-region" extent="19mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="page-toc-any" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="19mm" margin-right="19mm"/>
-					<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="19mm" />
-					<fo:region-end region-name="right-region" extent="19mm"/>
-				</fo:simple-page-master>
-				<fo:page-sequence-master master-name="page-toc">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference page-position="first" master-reference="page-toc-first"/>
-						<fo:conditional-page-master-reference page-position="any" master-reference="page-toc-any"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-
-				
-				<!-- =================== -->
-				<!-- Drafts pages -->
-				<!-- =================== -->
-				<fo:simple-page-master master-name="document-draft" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				
-				<!-- landscape -->
-				<fo:simple-page-master master-name="document-draft-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
-					<fo:region-before region-name="header" extent="{$marginLeftRight1}mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
-					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
-					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
-				</fo:simple-page-master>
-				<!-- =================== -->
-				<!-- =================== -->
-				
-				<!-- ======================= -->
-				<!-- Standard document pages -->
-				<!-- ======================= -->
-				<fo:simple-page-master master-name="document-standard-first" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header_empty" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<fo:page-sequence-master master-name="document-standard">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference page-position="first" master-reference="document-standard-first"/>
-						<fo:conditional-page-master-reference page-position="any" master-reference="document-draft"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				<!-- landscape -->
-				<fo:simple-page-master master-name="document-standard-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
-					<fo:region-before region-name="header" extent="{$marginLeftRight1}mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
-					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
-					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
-				</fo:simple-page-master>
-				<!-- ======================= -->
-				<!-- ======================= -->
-				
-				<!-- Index pages -->
-				<fo:simple-page-master master-name="page-index" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="2" column-gap="10mm"/>
-					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				
-				
-				<!-- ======================== -->
-				<!-- END IEEE pages -->
-				<!-- ======================== -->
-			
-			</fo:layout-master-set>
+			<xsl:call-template name="layout-master-set"/>
 			
 			<fo:declarations>
 				<xsl:call-template name="addPDFUAmeta"/>

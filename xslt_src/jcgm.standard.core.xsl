@@ -163,6 +163,78 @@
 		</xsl:for-each>
 	</xsl:variable>
 
+	<xsl:template name="layout-master-set">
+		<fo:layout-master-set>
+			<!-- cover page -->
+			<fo:simple-page-master master-name="cover-page-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="85mm" margin-bottom="30mm" margin-left="100mm" margin-right="19mm"/>
+				<fo:region-before extent="85mm"/>
+				<fo:region-after  region-name="cover-page-jcgm-footer" extent="30mm"/>
+				<fo:region-start extent="100mm"/>
+				<fo:region-end extent="19mm"/>
+			</fo:simple-page-master>
+			<!-- internal cover page -->
+			<fo:simple-page-master master-name="internal-cover-page-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="11mm" margin-bottom="21mm" margin-left="25mm" margin-right="19mm"/>
+				<fo:region-before region-name="header" extent="11mm"/>
+				<fo:region-after region-name="internal-cover-page-jcgm-footer" extent="21mm"/>
+				<fo:region-start extent="25mm"/>
+				<fo:region-end extent="19mm"/>
+			</fo:simple-page-master>
+			
+			<!-- blank page -->
+			<fo:simple-page-master master-name="blankpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-blank" extent="{$marginTop}mm"/> 
+				<fo:region-after region-name="footer-blank" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="17mm"/>
+				<fo:region-end region-name="right-region" extent="26.5mm"/>
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="odd-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-odd-jcgm" extent="{$marginTop}mm"/> <!--   display-align="center" -->
+				<fo:region-after region-name="footer-odd-jcgm" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="odd-jcgm-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-odd-jcgm" extent="{$marginTop}mm"/> <!--   display-align="center" -->
+				<fo:region-after region-name="footer-odd-jcgm" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="even-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
+				<fo:region-before region-name="header-even-jcgm" extent="{$marginTop}mm"/> <!--   display-align="center" -->
+				<fo:region-after region-name="footer-even-jcgm" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="even-jcgm-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
+				<fo:region-before region-name="header-even-jcgm" extent="{$marginTop}mm"/> <!--   display-align="center" -->
+				<fo:region-after region-name="footer-even-jcgm" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
+			</fo:simple-page-master>
+			<fo:page-sequence-master master-name="document-jcgm">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-jcgm"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-jcgm"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			<fo:page-sequence-master master-name="document-jcgm-landscape">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-jcgm-landscape"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-jcgm-landscape"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+		</fo:layout-master-set>
+	</xsl:template> <!-- END: layout-master-set -->
 	
 	<xsl:template match="/">
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
@@ -172,76 +244,8 @@
 			<xsl:call-template name="insertRootStyle">
 				<xsl:with-param name="root-style" select="$root-style"/>
 			</xsl:call-template>
-			<fo:layout-master-set>
-				<!-- cover page -->
-				<fo:simple-page-master master-name="cover-page-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="85mm" margin-bottom="30mm" margin-left="100mm" margin-right="19mm"/>
-					<fo:region-before extent="85mm"/>
-					<fo:region-after  region-name="cover-page-jcgm-footer" extent="30mm"/>
-					<fo:region-start extent="100mm"/>
-					<fo:region-end extent="19mm"/>
-				</fo:simple-page-master>
-				<!-- internal cover page -->
-				<fo:simple-page-master master-name="internal-cover-page-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="11mm" margin-bottom="21mm" margin-left="25mm" margin-right="19mm"/>
-					<fo:region-before region-name="header" extent="11mm"/>
-					<fo:region-after region-name="internal-cover-page-jcgm-footer" extent="21mm"/>
-					<fo:region-start extent="25mm"/>
-					<fo:region-end extent="19mm"/>
-				</fo:simple-page-master>
-				
-				<!-- blank page -->
-				<fo:simple-page-master master-name="blankpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-blank" extent="{$marginTop}mm"/> 
-					<fo:region-after region-name="footer-blank" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="17mm"/>
-					<fo:region-end region-name="right-region" extent="26.5mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="odd-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-odd-jcgm" extent="{$marginTop}mm"/> <!--   display-align="center" -->
-					<fo:region-after region-name="footer-odd-jcgm" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="odd-jcgm-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-odd-jcgm" extent="{$marginTop}mm"/> <!--   display-align="center" -->
-					<fo:region-after region-name="footer-odd-jcgm" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="even-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
-					<fo:region-before region-name="header-even-jcgm" extent="{$marginTop}mm"/> <!--   display-align="center" -->
-					<fo:region-after region-name="footer-even-jcgm" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="even-jcgm-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
-					<fo:region-before region-name="header-even-jcgm" extent="{$marginTop}mm"/> <!--   display-align="center" -->
-					<fo:region-after region-name="footer-even-jcgm" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
-				</fo:simple-page-master>
-				<fo:page-sequence-master master-name="document-jcgm">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-jcgm"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-jcgm"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				<fo:page-sequence-master master-name="document-jcgm-landscape">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-jcgm-landscape"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-jcgm-landscape"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-			</fo:layout-master-set>
+			
+			<xsl:call-template name="layout-master-set"/>
 			
 			<fo:declarations>
 				<xsl:call-template name="addPDFUAmeta"/>

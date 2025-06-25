@@ -42,6 +42,127 @@
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
+	<xsl:template name="layout-master-set">
+		<fo:layout-master-set>
+			<!-- Cover page -->
+			<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="23.5mm" margin-bottom="10mm" margin-left="19mm" margin-right="19mm"/>
+				<fo:region-before region-name="cover-page-header" extent="23.5mm" />
+				<fo:region-after extent="10mm"/>
+				<fo:region-start extent="19mm"/>
+				<fo:region-end extent="19mm"/>
+			</fo:simple-page-master>
+			
+			<!-- Document pages -->
+			
+			<xsl:variable name="prefaceMarginTop">17</xsl:variable>
+			<xsl:variable name="prefaceMarginBottom">10</xsl:variable>
+			<!-- Preface odd pages -->
+			<fo:simple-page-master master-name="odd-preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-odd" extent="{$prefaceMarginTop}mm"/> 
+				<fo:region-after region-name="footer-odd" extent="{$prefaceMarginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="odd-preface-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-odd" extent="{$prefaceMarginTop}mm"/> 
+				<fo:region-after region-name="footer-odd" extent="{$prefaceMarginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<!-- Preface even pages -->
+			<fo:simple-page-master master-name="even-preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-even" extent="{$prefaceMarginTop}mm"/>
+				<fo:region-after region-name="footer-even" extent="{$prefaceMarginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="even-preface-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-even" extent="{$prefaceMarginTop}mm"/>
+				<fo:region-after region-name="footer-even" extent="{$prefaceMarginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="blankpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header" extent="{$prefaceMarginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$prefaceMarginBottom}mm"/>
+				<fo:region-start region-name="left" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="blankpage-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header" extent="{$prefaceMarginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$prefaceMarginBottom}mm"/>
+				<fo:region-start region-name="left" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:page-sequence-master master-name="preface">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank" />
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-preface"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-preface"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			<fo:page-sequence-master master-name="preface-landscape">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference master-reference="blankpage-landscape" blank-or-not-blank="blank" />
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-preface-landscape"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-preface-landscape"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			
+			<!-- Document odd pages -->
+			<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
+				<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
+				<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<!-- Preface even pages -->
+			<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:page-sequence-master master-name="document">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank" />
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			<fo:page-sequence-master master-name="document-landscape">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference master-reference="blankpage-landscape" blank-or-not-blank="blank" />
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			
+		</fo:layout-master-set>
+	</xsl:template> <!-- END: layout-master-set -->
 	
 	<xsl:template match="/">
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
@@ -51,125 +172,8 @@
 			<xsl:call-template name="insertRootStyle">
 				<xsl:with-param name="root-style" select="$root-style"/>
 			</xsl:call-template>
-			<fo:layout-master-set>
-				<!-- Cover page -->
-				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="23.5mm" margin-bottom="10mm" margin-left="19mm" margin-right="19mm"/>
-					<fo:region-before region-name="cover-page-header" extent="23.5mm" />
-					<fo:region-after extent="10mm"/>
-					<fo:region-start extent="19mm"/>
-					<fo:region-end extent="19mm"/>
-				</fo:simple-page-master>
-				
-				<!-- Document pages -->
-				
-				<xsl:variable name="prefaceMarginTop">17</xsl:variable>
-				<xsl:variable name="prefaceMarginBottom">10</xsl:variable>
-				<!-- Preface odd pages -->
-				<fo:simple-page-master master-name="odd-preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-odd" extent="{$prefaceMarginTop}mm"/> 
-					<fo:region-after region-name="footer-odd" extent="{$prefaceMarginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="odd-preface-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-odd" extent="{$prefaceMarginTop}mm"/> 
-					<fo:region-after region-name="footer-odd" extent="{$prefaceMarginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<!-- Preface even pages -->
-				<fo:simple-page-master master-name="even-preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-even" extent="{$prefaceMarginTop}mm"/>
-					<fo:region-after region-name="footer-even" extent="{$prefaceMarginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="even-preface-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-even" extent="{$prefaceMarginTop}mm"/>
-					<fo:region-after region-name="footer-even" extent="{$prefaceMarginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="blankpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header" extent="{$prefaceMarginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$prefaceMarginBottom}mm"/>
-					<fo:region-start region-name="left" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="blankpage-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$prefaceMarginTop}mm" margin-bottom="{$prefaceMarginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header" extent="{$prefaceMarginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$prefaceMarginBottom}mm"/>
-					<fo:region-start region-name="left" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<fo:page-sequence-master master-name="preface">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank" />
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-preface"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-preface"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				<fo:page-sequence-master master-name="preface-landscape">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference master-reference="blankpage-landscape" blank-or-not-blank="blank" />
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-preface-landscape"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-preface-landscape"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				<!-- Document odd pages -->
-				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
-					<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
-					<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<!-- Preface even pages -->
-				<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<fo:page-sequence-master master-name="document">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank" />
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				<fo:page-sequence-master master-name="document-landscape">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference master-reference="blankpage-landscape" blank-or-not-blank="blank" />
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-			</fo:layout-master-set>
+			
+			<xsl:call-template name="layout-master-set"/>
 			
 			<fo:declarations>
 				<xsl:call-template name="addPDFUAmeta"/>

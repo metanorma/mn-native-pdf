@@ -93,6 +93,326 @@
 	<xsl:variable name="pageWidthA5">148</xsl:variable>
 	<xsl:variable name="pageHeightA5">210</xsl:variable>
 
+	<xsl:template name="layout-master-set">
+		<fo:layout-master-set>
+			
+			<!-- Cover page -->
+			<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="28.5mm" margin-bottom="25mm" margin-left="22mm" margin-right="22mm"/>
+				<fo:region-before region-name="header" extent="28.5mm"/>
+				<fo:region-after region-name="footer" extent="25mm"/>
+				<fo:region-start region-name="left-region" extent="22mm"/>
+				<fo:region-end region-name="right-region" extent="22mm"/>
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="cover-page_2024" page-width="{$pageWidthA5}mm" page-height="{$pageHeightA5}mm">
+				<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
+				 fo:region-body/@margin-top = left margin
+				 fo:region-body/@margin-bottom = right margin
+				 fo:region-body/margin-left = bottom margin
+				 fo:region-body/margin-right = top margin
+				-->
+				<fo:region-body margin-top="6mm" margin-bottom="6mm" margin-left="12.8mm" margin-right="58mm" writing-mode="tb-rl"/>
+				<fo:region-before region-name="header" extent="58mm" precedence="true"/>
+				<fo:region-after region-name="footer" extent="12.8mm"/>
+				<fo:region-start region-name="left-region" extent="20mm"/> <!-- 6 20mm -->
+				<fo:region-end region-name="right-region" extent="6.8mm"/> <!-- 17mm -->
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="cover-page-JSA" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="165mm" margin-bottom="44.5mm" margin-left="37mm" margin-right="37mm"/>
+				<fo:region-before region-name="header" extent="165mm"/>
+				<fo:region-after region-name="footer" extent="44.5mm"/>
+				<fo:region-start region-name="left-region" extent="37mm"/>
+				<fo:region-end region-name="right-region" extent="37mm"/>
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="first_page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
+					<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+					<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+				</xsl:if>
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
+						<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+					</xsl:if>
+				</fo:region-body>
+				<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
+					<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+					<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+				</xsl:if>
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
+						<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+					</xsl:if>
+				</fo:region-body>
+				<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
+					<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+					<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+				</xsl:if>
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
+						<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+					</xsl:if>
+				</fo:region-body>
+				<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="first_page_toc" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+					<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+				</xsl:if>
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
+						<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+					</xsl:if>
+				</fo:region-body>
+				<fo:region-before region-name="header-odd-first" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			
+			<fo:page-sequence-master master-name="document_toc">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference page-position="first" master-reference="first_page_toc"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			
+			<xsl:if test="1 = 3">
+			<fo:simple-page-master master-name="document_toc_2024" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
+				 fo:region-body/@margin-top = left margin
+				 fo:region-body/@margin-bottom = right margin
+				 fo:region-body/margin-left = bottom margin
+				 fo:region-body/margin-right = top margin
+				-->
+				<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
+				<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="30mm" margin-right="30mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
+				<fo:region-before region-name="header" extent="30mm"/> <!--  background-color="yellow" -->
+				<fo:region-after region-name="footer" extent="210mm" writing-mode="tb-rl" background-color="green"/> <!-- 30  background-color="green" -->
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" writing-mode="tb-rl" background-color="blue"/> <!--  background-color="blue" -->
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
+			</fo:simple-page-master>
+			</xsl:if>
+			
+			<fo:simple-page-master master-name="document_toc_2024" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
+				 fo:region-body/@margin-top = left margin
+				 fo:region-body/@margin-bottom = right margin
+				 fo:region-body/margin-left = bottom margin
+				 fo:region-body/margin-right = top margin
+				-->
+				<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
+				<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="38mm" margin-left="30mm" margin-right="30mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
+				<fo:region-before region-name="header" extent="30mm"/> <!--  background-color="yellow" -->
+				<fo:region-after region-name="footer" extent="30mm"/> <!--  background-color="green" -->
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/> <!--  background-color="blue" -->
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
+			</fo:simple-page-master>
+			
+			<fo:page-sequence-master master-name="document_preface">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			
+			<fo:page-sequence-master master-name="document_first_section">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference page-position="first" master-reference="first_page"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			
+			<fo:page-sequence-master master-name="document">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+		
+		
+			<fo:simple-page-master master-name="document_2024" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<xsl:if test="$isGenerateTableIF = 'true'">
+					<xsl:attribute name="page-width"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+					<xsl:attribute name="page-height"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+				</xsl:if>
+				<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
+				 fo:region-body/@margin-top = left margin
+				 fo:region-body/@margin-bottom = right margin
+				 fo:region-body/margin-left = bottom margin
+				 fo:region-body/margin-right = top margin
+				-->
+				<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
+				<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm">	 <!--  background-color="rgb(240,240,240)" -->
+					<xsl:if test="$isGenerateTableIF = 'false'">
+						<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+					</xsl:if>
+				</fo:region-body>
+				<fo:region-before region-name="header" extent="{$marginTop}mm"/> <!--  background-color="yellow" -->
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!--  background-color="green" -->
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" /> <!--  background-color="blue" -->
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
+			</fo:simple-page-master>
+		
+			<fo:simple-page-master master-name="document_2024_page" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<xsl:if test="$isGenerateTableIF = 'true'">
+					<xsl:attribute name="page-width"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+					<xsl:attribute name="page-height"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+				</xsl:if>
+				<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
+				 fo:region-body/@margin-top = left margin
+				 fo:region-body/@margin-bottom = right margin
+				 fo:region-body/margin-left = bottom margin
+				 fo:region-body/margin-right = top margin
+				-->
+				<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
+				<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm">  <!--  background-color="rgb(240,240,240)" -->
+					<xsl:if test="$isGenerateTableIF = 'false'">
+						<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+					</xsl:if>
+				</fo:region-body>
+				<fo:region-before region-name="header" extent="{$marginTop}mm"/> <!--  background-color="yellow" -->
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!--  background-color="green" -->
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" /> <!--  background-color="blue" -->
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="document_2024_last" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<xsl:if test="$isGenerateTableIF = 'true'">
+					<xsl:attribute name="page-width"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+					<xsl:attribute name="page-height"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+				</xsl:if>
+				<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
+				 fo:region-body/@margin-top = left margin
+				 fo:region-body/@margin-bottom = right margin
+				 fo:region-body/margin-left = bottom margin
+				 fo:region-body/margin-right = top margin
+				-->
+				<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
+				<fo:region-body margin-top="194mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm">  <!--  background-color="rgb(240,240,240)" -->
+					<xsl:if test="$isGenerateTableIF = 'false'">
+						<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+					</xsl:if>
+				</fo:region-body>
+				<fo:region-before region-name="header-last" extent="{$marginTop}mm">  <!--  background-color="yellow" -->
+					<xsl:if test="$isGenerateTableIF = 'false'">
+						<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+					</xsl:if>
+				</fo:region-before>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!--  background-color="green" -->
+				<!-- for boilerplate:
+					reserve paper space in left-region, but text will render in the header 
+				-->
+				<fo:region-start region-name="left-region" extent="194mm" /> <!--  background-color="blue"  background-color="rgb(230,230,230)" -->
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
+			</fo:simple-page-master>
+		
+			<fo:page-sequence-master master-name="document_2024_with_last">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference page-position="last" master-reference="document_2024_last"/>
+					<fo:conditional-page-master-reference page-position="any" master-reference="document_2024_page"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+		
+			<fo:simple-page-master master-name="commentary_first_page_even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
+					<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+					<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+				</xsl:if>
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
+						<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+					</xsl:if>
+				</fo:region-body>
+				<fo:region-before region-name="header-commentary-even-first" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="commentary_first_page_odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
+					<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+					<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+				</xsl:if>
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
+					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
+						<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+					</xsl:if>
+				</fo:region-body>
+				<fo:region-before region-name="header-commentary-odd-first" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+		
+			<fo:page-sequence-master master-name="document_commentary_section">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference page-position="first" odd-or-even="even" master-reference="commentary_first_page_even"/>
+					<fo:conditional-page-master-reference page-position="first" odd-or-even="odd" master-reference="commentary_first_page_odd"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+		
+			<!-- landscape -->
+			<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
+				<fo:region-before region-name="header-odd" extent="{$marginLeftRight1}mm" precedence="true"/>
+				<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
+				<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
+				<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$marginLeftRight2}mm" margin-bottom="{$marginLeftRight1}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
+				<fo:region-before region-name="header-even" extent="{$marginLeftRight2}mm" precedence="true"/>
+				<fo:region-after region-name="footer" extent="{$marginLeftRight1}mm" precedence="true"/>
+				<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
+				<fo:region-end region-name="right-region-landspace" extent="{$marginTop}mm"/>
+			</fo:simple-page-master>
+			<fo:page-sequence-master master-name="document-landscape">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+		
+			<fo:simple-page-master master-name="back-page_2024" page-width="{$pageWidthA5}mm" page-height="{$pageHeightA5}mm">
+				<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
+				 fo:region-body/@margin-top = left margin
+				 fo:region-body/@margin-bottom = right margin
+				 fo:region-body/margin-left = bottom margin
+				 fo:region-body/margin-right = top margin
+				-->
+				<fo:region-body margin-top="5mm" margin-bottom="122mm" margin-left="6.5mm" margin-right="70mm" writing-mode="tb-rl"/>
+				<fo:region-before region-name="header" extent="70mm"/>
+				<fo:region-after region-name="footer" extent="6.5mm"/>
+				<fo:region-start region-name="left-region" extent="5mm"/>
+				<fo:region-end region-name="right-region" extent="122mm"/>
+			</fo:simple-page-master>
+		</fo:layout-master-set>
+	</xsl:template> <!-- END: layout-master-set -->
+
 	<xsl:template match="/">
 	
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
@@ -117,323 +437,7 @@
 				<xsl:with-param name="root-style" select="$root-style"/>
 			</xsl:call-template>
 			
-			<fo:layout-master-set>
-			
-				<!-- Cover page -->
-				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="28.5mm" margin-bottom="25mm" margin-left="22mm" margin-right="22mm"/>
-					<fo:region-before region-name="header" extent="28.5mm"/>
-					<fo:region-after region-name="footer" extent="25mm"/>
-					<fo:region-start region-name="left-region" extent="22mm"/>
-					<fo:region-end region-name="right-region" extent="22mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="cover-page_2024" page-width="{$pageWidthA5}mm" page-height="{$pageHeightA5}mm">
-					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
-					 fo:region-body/@margin-top = left margin
-					 fo:region-body/@margin-bottom = right margin
-					 fo:region-body/margin-left = bottom margin
-					 fo:region-body/margin-right = top margin
-					-->
-					<fo:region-body margin-top="6mm" margin-bottom="6mm" margin-left="12.8mm" margin-right="58mm" writing-mode="tb-rl"/>
-					<fo:region-before region-name="header" extent="58mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="12.8mm"/>
-					<fo:region-start region-name="left-region" extent="20mm"/> <!-- 6 20mm -->
-					<fo:region-end region-name="right-region" extent="6.8mm"/> <!-- 17mm -->
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="cover-page-JSA" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="165mm" margin-bottom="44.5mm" margin-left="37mm" margin-right="37mm"/>
-					<fo:region-before region-name="header" extent="165mm"/>
-					<fo:region-after region-name="footer" extent="44.5mm"/>
-					<fo:region-start region-name="left-region" extent="37mm"/>
-					<fo:region-end region-name="right-region" extent="37mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="first_page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
-						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
-						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
-					</xsl:if>
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
-							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
-						</xsl:if>
-					</fo:region-body>
-					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
-						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
-						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
-					</xsl:if>
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
-							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
-						</xsl:if>
-					</fo:region-body>
-					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
-						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
-						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
-					</xsl:if>
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
-							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
-						</xsl:if>
-					</fo:region-body>
-					<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="first_page_toc" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true'">
-						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
-						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
-					</xsl:if>
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
-							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
-						</xsl:if>
-					</fo:region-body>
-					<fo:region-before region-name="header-odd-first" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				
-				<fo:page-sequence-master master-name="document_toc">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference page-position="first" master-reference="first_page_toc"/>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				<xsl:if test="1 = 3">
-				<fo:simple-page-master master-name="document_toc_2024" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
-					 fo:region-body/@margin-top = left margin
-					 fo:region-body/@margin-bottom = right margin
-					 fo:region-body/margin-left = bottom margin
-					 fo:region-body/margin-right = top margin
-					-->
-					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="30mm" margin-right="30mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
-					<fo:region-before region-name="header" extent="30mm"/> <!--  background-color="yellow" -->
-					<fo:region-after region-name="footer" extent="210mm" writing-mode="tb-rl" background-color="green"/> <!-- 30  background-color="green" -->
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" writing-mode="tb-rl" background-color="blue"/> <!--  background-color="blue" -->
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
-				</fo:simple-page-master>
-				</xsl:if>
-				
-				<fo:simple-page-master master-name="document_toc_2024" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
-					 fo:region-body/@margin-top = left margin
-					 fo:region-body/@margin-bottom = right margin
-					 fo:region-body/margin-left = bottom margin
-					 fo:region-body/margin-right = top margin
-					-->
-					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="38mm" margin-left="30mm" margin-right="30mm" writing-mode="tb-rl"/> <!--  background-color="rgb(240,240,240)" -->
-					<fo:region-before region-name="header" extent="30mm"/> <!--  background-color="yellow" -->
-					<fo:region-after region-name="footer" extent="30mm"/> <!--  background-color="green" -->
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/> <!--  background-color="blue" -->
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
-				</fo:simple-page-master>
-				
-				<fo:page-sequence-master master-name="document_preface">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				<fo:page-sequence-master master-name="document_first_section">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference page-position="first" master-reference="first_page"/>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				<fo:page-sequence-master master-name="document">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-			
-			
-				<fo:simple-page-master master-name="document_2024" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<xsl:if test="$isGenerateTableIF = 'true'">
-						<xsl:attribute name="page-width"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
-						<xsl:attribute name="page-height"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
-					</xsl:if>
-					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
-					 fo:region-body/@margin-top = left margin
-					 fo:region-body/@margin-bottom = right margin
-					 fo:region-body/margin-left = bottom margin
-					 fo:region-body/margin-right = top margin
-					-->
-					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm">	 <!--  background-color="rgb(240,240,240)" -->
-						<xsl:if test="$isGenerateTableIF = 'false'">
-							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
-						</xsl:if>
-					</fo:region-body>
-					<fo:region-before region-name="header" extent="{$marginTop}mm"/> <!--  background-color="yellow" -->
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!--  background-color="green" -->
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" /> <!--  background-color="blue" -->
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
-				</fo:simple-page-master>
-			
-				<fo:simple-page-master master-name="document_2024_page" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<xsl:if test="$isGenerateTableIF = 'true'">
-						<xsl:attribute name="page-width"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
-						<xsl:attribute name="page-height"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
-					</xsl:if>
-					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
-					 fo:region-body/@margin-top = left margin
-					 fo:region-body/@margin-bottom = right margin
-					 fo:region-body/margin-left = bottom margin
-					 fo:region-body/margin-right = top margin
-					-->
-					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm">  <!--  background-color="rgb(240,240,240)" -->
-						<xsl:if test="$isGenerateTableIF = 'false'">
-							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
-						</xsl:if>
-					</fo:region-body>
-					<fo:region-before region-name="header" extent="{$marginTop}mm"/> <!--  background-color="yellow" -->
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!--  background-color="green" -->
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm" /> <!--  background-color="blue" -->
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="document_2024_last" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<xsl:if test="$isGenerateTableIF = 'true'">
-						<xsl:attribute name="page-width"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
-						<xsl:attribute name="page-height"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
-					</xsl:if>
-					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
-					 fo:region-body/@margin-top = left margin
-					 fo:region-body/@margin-bottom = right margin
-					 fo:region-body/margin-left = bottom margin
-					 fo:region-body/margin-right = top margin
-					-->
-					<!-- <fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2 + 40}mm" writing-mode="tb-rl" background-color="rgb(240,240,240)"/> -->
-					<fo:region-body margin-top="194mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm">  <!--  background-color="rgb(240,240,240)" -->
-						<xsl:if test="$isGenerateTableIF = 'false'">
-							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
-						</xsl:if>
-					</fo:region-body>
-					<fo:region-before region-name="header-last" extent="{$marginTop}mm">  <!--  background-color="yellow" -->
-						<xsl:if test="$isGenerateTableIF = 'false'">
-							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
-						</xsl:if>
-					</fo:region-before>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!--  background-color="green" -->
-					<!-- for boilerplate:
-						reserve paper space in left-region, but text will render in the header 
-					-->
-					<fo:region-start region-name="left-region" extent="194mm" /> <!--  background-color="blue"  background-color="rgb(230,230,230)" -->
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/> <!--  background-color="red" -->
-				</fo:simple-page-master>
-			
-				<fo:page-sequence-master master-name="document_2024_with_last">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference page-position="last" master-reference="document_2024_last"/>
-						<fo:conditional-page-master-reference page-position="any" master-reference="document_2024_page"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-			
-				<fo:simple-page-master master-name="commentary_first_page_even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
-						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
-						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
-					</xsl:if>
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
-							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
-						</xsl:if>
-					</fo:region-body>
-					<fo:region-before region-name="header-commentary-even-first" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="commentary_first_page_odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
-						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
-						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
-					</xsl:if>
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true' and $isGenerateTableIF = 'false'">
-							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
-						</xsl:if>
-					</fo:region-body>
-					<fo:region-before region-name="header-commentary-odd-first" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-			
-				<fo:page-sequence-master master-name="document_commentary_section">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference page-position="first" odd-or-even="even" master-reference="commentary_first_page_even"/>
-						<fo:conditional-page-master-reference page-position="first" odd-or-even="odd" master-reference="commentary_first_page_odd"/>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-			
-				<!-- landscape -->
-				<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
-					<fo:region-before region-name="header-odd" extent="{$marginLeftRight1}mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
-					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
-					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginLeftRight2}mm" margin-bottom="{$marginLeftRight1}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
-					<fo:region-before region-name="header-even" extent="{$marginLeftRight2}mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="{$marginLeftRight1}mm" precedence="true"/>
-					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
-					<fo:region-end region-name="right-region-landspace" extent="{$marginTop}mm"/>
-				</fo:simple-page-master>
-				<fo:page-sequence-master master-name="document-landscape">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-			
-				<fo:simple-page-master master-name="back-page_2024" page-width="{$pageWidthA5}mm" page-height="{$pageHeightA5}mm">
-					<!-- Note (for writing-mode="tb-rl", may be due the update for support 'tb-rl' mode):
-					 fo:region-body/@margin-top = left margin
-					 fo:region-body/@margin-bottom = right margin
-					 fo:region-body/margin-left = bottom margin
-					 fo:region-body/margin-right = top margin
-					-->
-					<fo:region-body margin-top="5mm" margin-bottom="122mm" margin-left="6.5mm" margin-right="70mm" writing-mode="tb-rl"/>
-					<fo:region-before region-name="header" extent="70mm"/>
-					<fo:region-after region-name="footer" extent="6.5mm"/>
-					<fo:region-start region-name="left-region" extent="5mm"/>
-					<fo:region-end region-name="right-region" extent="122mm"/>
-				</fo:simple-page-master>
-			</fo:layout-master-set>
+			<xsl:call-template name="layout-master-set"/>
 			
 			<fo:declarations>
 				<xsl:call-template name="addPDFUAmeta"/>
