@@ -1441,21 +1441,7 @@
 				<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime2 - $startTime2"/> msec.</xsl:message>
 				<xsl:message>END xalan:nodeset</xsl:message> -->
 				
-				<xsl:choose>
-					<xsl:when test="$isGenerateTableIF = 'true'"><!-- skip last page --></xsl:when>
-					<xsl:when test="$layoutVersion = '1951'"/>
-					<xsl:when test="$layoutVersion = '1972'"/>
-					<xsl:when test="$layoutVersion = '1979'"/>
-					<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))"><!-- UDC, Keywords and Price renders on the first page for technical-report --></xsl:when>
-					<xsl:when test="$layoutVersion = '2024'">
-						<xsl:call-template name="insertLastPage_2024"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:if test="$isPublished = 'true'">
-						<xsl:call-template name="insertLastPage"/>
-						</xsl:if>
-					</xsl:otherwise>
-				</xsl:choose>
+				<xsl:call-template name="back-page"/>
 				
 			</xsl:for-each>
 		</fo:root>
@@ -5442,6 +5428,24 @@
 				<fo:page-number-citation ref-id="lastBlock"/>
 			</xsl:if>										
 		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template name="back-page">
+		<xsl:choose>
+			<xsl:when test="$isGenerateTableIF = 'true'"><!-- skip last page --></xsl:when>
+			<xsl:when test="$layoutVersion = '1951'"/>
+			<xsl:when test="$layoutVersion = '1972'"/>
+			<xsl:when test="$layoutVersion = '1979'"/>
+			<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))"><!-- UDC, Keywords and Price renders on the first page for technical-report --></xsl:when>
+			<xsl:when test="$layoutVersion = '2024'">
+				<xsl:call-template name="insertLastPage_2024"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:if test="$isPublished = 'true'">
+				<xsl:call-template name="insertLastPage"/>
+				</xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template name="insertLastPage">
