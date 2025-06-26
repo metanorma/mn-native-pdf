@@ -1015,22 +1015,10 @@
 					<!-- End IEEE pages -->
 					<!-- ===================== -->
 						
-						
-					<!-- ======================= -->
-					<!-- Back page -->
-					<!-- ======================= -->
-					<xsl:choose>
-						<xsl:when test="$current_template = 'standard'">
-							<xsl:call-template name="insertBackPage_Standard"/>
-						</xsl:when>
-						
-						<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
-							<xsl:call-template name="insertBackPage_NonStandard"/>
-						</xsl:when>
-					</xsl:choose>
-					<!-- ======================= -->
-					<!-- END Back page -->
-					<!-- ======================= -->
+					
+					<xsl:call-template name="back-page"/>
+					
+					
 					<xsl:if test="not(xalan:nodeset($paged_xml)/mn:page[*])">
 						<fo:page-sequence master-reference="document-nonstandard" force-page-count="no-force">
 							<fo:flow flow-name="xsl-region-body">
@@ -3765,6 +3753,18 @@
 	<!-- =============================== -->
 	<!-- Back Pages -->
 	<!-- =============================== -->
+	<xsl:template name="back-page">
+		<xsl:choose>
+			<xsl:when test="$current_template = 'standard'">
+				<xsl:call-template name="insertBackPage_Standard"/>
+			</xsl:when>
+			
+			<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
+				<xsl:call-template name="insertBackPage_NonStandard"/>
+			</xsl:when>
+		</xsl:choose>
+	</xsl:template> <!-- END: back-page -->
+	
 	<xsl:template name="insertBackPage_Standard">
 		<fo:page-sequence master-reference="cover-and-back-page-standard" force-page-count="no-force">
 		
