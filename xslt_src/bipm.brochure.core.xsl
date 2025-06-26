@@ -1643,13 +1643,18 @@
 							</xsl:choose>
 						</xsl:variable>
 						
+						<!-- see https://github.com/metanorma/metanorma-bipm/issues/99 -->
+						<!-- Example: Appendix -->
+						<xsl:variable name="title_level2_ancillary"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level2_ancillary</xsl:with-param></xsl:call-template></xsl:variable>
+						<!-- Example: Annexe -->
+						<xsl:variable name="title_level2_ancillary_alt"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level2_ancillary_alt</xsl:with-param></xsl:call-template></xsl:variable>
+						
 						<!-- Appendix titles processing -->
 						<xsl:variable name="appendix_num" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:structuredidentifier/mn:appendix)"/>
 						<xsl:if test="$appendix_num != ''">
-							<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}">Annexe <xsl:value-of select="$appendix_num"/></fo:block>
-							<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}">Appendix  <xsl:value-of select="$appendix_num"/></fo:block>
+							<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}"><xsl:value-of select="concat($title_level2_ancillary_alt, ' ', $appendix_num)"/></fo:block>
+							<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}"><xsl:value-of select="concat($title_level2_ancillary, ' ', $appendix_num)"/></fo:block>
 						</xsl:if>
-
 
 						<xsl:if test="(//mn:metanorma)[1]/mn:bibdata/mn:title[@type = 'title-appendix']">
 							<fo:block font-size="{$font-size-factor * 30.4}pt">
@@ -1663,15 +1668,21 @@
 						</xsl:if>
 						<!-- End Appendix titles processing -->
 						
+						<!-- see https://github.com/metanorma/metanorma-bipm/issues/99 -->
+						<!-- Example: Annex -->
+						<xsl:variable name="title_level3_ancillary"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level3_ancillary</xsl:with-param></xsl:call-template></xsl:variable>
+						<!-- Example: Annexe -->
+						<xsl:variable name="title_level3_ancillary_alt"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level3_ancillary_alt</xsl:with-param></xsl:call-template></xsl:variable>
+						
 						<!-- Annex title processing -->
 						<xsl:if test="(//mn:metanorma)[1]/mn:bibdata/mn:title[@type = 'title-annex']">
 							<xsl:variable name="annex_num" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:structuredidentifier/mn:annexid)"/>					
 							<xsl:if test="$annex_num != ''">
 								<fo:block font-size="{$space-factor * 30.4}pt">&#xA0;</fo:block>
 								<!-- Annexe -->
-								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}">Annexe <xsl:value-of select="$annex_num"/></fo:block>
+								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}"><xsl:value-of select="concat($title_level3_ancillary_alt, ' ', $annex_num)"/></fo:block>
 								<!-- Annex -->
-								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}">Annex  <xsl:value-of select="$annex_num"/></fo:block>
+								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}"><xsl:value-of select="concat($title_level3_ancillary, ' ', $annex_num)"/></fo:block>
 							</xsl:if>
 						
 							<fo:block font-size="{$font-size-factor * 30.4}pt">
