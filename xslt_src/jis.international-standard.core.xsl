@@ -972,17 +972,15 @@
 							<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS"/>
 						</xsl:call-template>
 					</xsl:if>
-				
-					<xsl:if test="$vertical_layout = 'true'">
-						<xsl:call-template name="insertBackPage2024">
-							<xsl:with-param name="num" select="$num"/>
-							<xsl:with-param name="copyrightText">
-								<xsl:copy-of select="$copyrightText"/>
-							</xsl:with-param>
-						</xsl:call-template>
 					</xsl:if>
-					</xsl:if>
-				
+					
+					<xsl:call-template name="back-page">
+						<xsl:with-param name="num" select="$num"/>
+						<xsl:with-param name="copyrightText">
+							<xsl:copy-of select="$copyrightText"/>
+						</xsl:with-param>
+					</xsl:call-template>
+					
 				</xsl:for-each>
 			
 				
@@ -1547,61 +1545,65 @@
 		</fo:page-sequence>
 	</xsl:template> <!-- insertCoverPage2024 -->
 	
-	<xsl:template name="insertBackPage2024">
+	<xsl:template name="back-page">
 		<xsl:param name="num"/>
 		<xsl:param name="copyrightText"/>
-		
-		<fo:page-sequence master-reference="back-page_2024" force-page-count="no-force" font-family="Noto Serif JP" font-weight="500">
+		<xsl:if test="$isGenerateTableIF = 'false'">
+			<xsl:if test="$vertical_layout = 'true'">
+				
+				<fo:page-sequence master-reference="back-page_2024" force-page-count="no-force" font-family="Noto Serif JP" font-weight="500">
 
-			<fo:static-content flow-name="header">
-				<xsl:variable name="presentation_metadata_image_name">
-					<xsl:choose>
-						<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'backpage-image']/mn:value/mn:image">backpage-image</xsl:when>
-						<xsl:otherwise>coverpage-image</xsl:otherwise>
-					</xsl:choose>
-				</xsl:variable>
-				<xsl:call-template name="insertBackgroundPageImage">
-					<xsl:with-param name="name" select="$presentation_metadata_image_name"/>
-					<xsl:with-param name="suffix">back</xsl:with-param>
-				</xsl:call-template>
-			</fo:static-content>
-			
-			<fo:flow flow-name="xsl-region-body">
-				<!-- publication date -->
-				<fo:block font-size="8pt" margin-left="90mm" text-align-last="justify" letter-spacing="0.5mm">
-					<xsl:variable name="date_published"><xsl:apply-templates select="/*/mn:bibdata/mn:date[@type = 'published']/text()"/></xsl:variable>
-					<xsl:copy-of select="$date_published"/>
-					<xsl:choose>
-						<xsl:when test="normalize-space($date_published) != ''">
-							<fo:inline keep-together.within-line="always">
-								<fo:leader leader-pattern="space"/>
-								<xsl:text>発行</xsl:text>
-							</fo:inline>
-						</xsl:when>
-						<xsl:otherwise>&#xa0;</xsl:otherwise>
-					</xsl:choose>
-				</fo:block>
-				<!-- revision date -->
-				<fo:block font-size="8pt" margin-left="90mm" text-align-last="justify" letter-spacing="0.5mm">
-					<xsl:variable name="date_revised"><xsl:apply-templates select="/*/mn:bibdata/mn:date[@type = 'revised']/text()"/></xsl:variable>
-					<xsl:copy-of select="$date_revised"/>
-					<xsl:choose>
-						<xsl:when test="normalize-space($date_revised) != ''">
-							<fo:inline keep-together.within-line="always">
-								<fo:leader leader-pattern="space"/>
-								<xsl:text>改正</xsl:text>
-							</fo:inline>
-						</xsl:when>
-						<xsl:otherwise>&#xa0;</xsl:otherwise>
-					</xsl:choose>
-				</fo:block>
-				<fo:block font-size="12pt" margin-top="7mm" text-align="right">
-					<!-- <xsl:value-of select="$copyrightText"/> -->
-					<xsl:copy-of select="$copyrightText"/>
-				</fo:block>
-			</fo:flow>
-		</fo:page-sequence>
-	</xsl:template> <!-- insertBackPage2024 -->
+					<fo:static-content flow-name="header">
+						<xsl:variable name="presentation_metadata_image_name">
+							<xsl:choose>
+								<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'backpage-image']/mn:value/mn:image">backpage-image</xsl:when>
+								<xsl:otherwise>coverpage-image</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<xsl:call-template name="insertBackgroundPageImage">
+							<xsl:with-param name="name" select="$presentation_metadata_image_name"/>
+							<xsl:with-param name="suffix">back</xsl:with-param>
+						</xsl:call-template>
+					</fo:static-content>
+					
+					<fo:flow flow-name="xsl-region-body">
+						<!-- publication date -->
+						<fo:block font-size="8pt" margin-left="90mm" text-align-last="justify" letter-spacing="0.5mm">
+							<xsl:variable name="date_published"><xsl:apply-templates select="/*/mn:bibdata/mn:date[@type = 'published']/text()"/></xsl:variable>
+							<xsl:copy-of select="$date_published"/>
+							<xsl:choose>
+								<xsl:when test="normalize-space($date_published) != ''">
+									<fo:inline keep-together.within-line="always">
+										<fo:leader leader-pattern="space"/>
+										<xsl:text>発行</xsl:text>
+									</fo:inline>
+								</xsl:when>
+								<xsl:otherwise>&#xa0;</xsl:otherwise>
+							</xsl:choose>
+						</fo:block>
+						<!-- revision date -->
+						<fo:block font-size="8pt" margin-left="90mm" text-align-last="justify" letter-spacing="0.5mm">
+							<xsl:variable name="date_revised"><xsl:apply-templates select="/*/mn:bibdata/mn:date[@type = 'revised']/text()"/></xsl:variable>
+							<xsl:copy-of select="$date_revised"/>
+							<xsl:choose>
+								<xsl:when test="normalize-space($date_revised) != ''">
+									<fo:inline keep-together.within-line="always">
+										<fo:leader leader-pattern="space"/>
+										<xsl:text>改正</xsl:text>
+									</fo:inline>
+								</xsl:when>
+								<xsl:otherwise>&#xa0;</xsl:otherwise>
+							</xsl:choose>
+						</fo:block>
+						<fo:block font-size="12pt" margin-top="7mm" text-align="right">
+							<!-- <xsl:value-of select="$copyrightText"/> -->
+							<xsl:copy-of select="$copyrightText"/>
+						</fo:block>
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template> <!-- END: back-page -->
 	
 	<xsl:template name="insertBackgroundColor">
 		<xsl:param name="opacity">1</xsl:param>
