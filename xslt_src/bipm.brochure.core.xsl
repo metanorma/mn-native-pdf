@@ -247,6 +247,138 @@
 		</xsl:if>
 	</xsl:variable>
 	
+	<xsl:template name="layout-master-set">
+		<fo:layout-master-set>
+			<!-- blank page -->
+			<fo:simple-page-master master-name="blankpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-blank" extent="{$marginTop}mm"/> 
+				<fo:region-after region-name="footer-blank" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="17mm"/>
+				<fo:region-end region-name="right-region" extent="26.5mm"/>
+			</fo:simple-page-master>
+			
+			<!-- Cover page -->
+			<fo:simple-page-master master-name="simple-cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="36mm" margin-bottom="43mm" margin-left="49mm" margin-right="48mm"/>
+				<fo:region-before region-name="header" extent="36mm" />
+				<fo:region-after extent="43mm"/>
+				<fo:region-start extent="49mm"/>
+				<fo:region-end extent="48mm"/>
+			</fo:simple-page-master>
+			
+			<fo:page-sequence-master master-name="cover-page">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
+					<fo:conditional-page-master-reference master-reference="simple-cover-page" odd-or-even="odd"/>
+					<fo:conditional-page-master-reference master-reference="simple-cover-page" odd-or-even="even"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			
+			<!-- Cover page -->
+			<fo:simple-page-master master-name="simple-cover-page-appendix" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="90mm" margin-bottom="40mm" margin-left="12.5mm" margin-right="53mm"/>
+				<fo:region-before region-name="header" extent="60mm" />
+				<fo:region-after extent="40mm"/>
+				<fo:region-start extent="12.5mm"/>
+				<fo:region-end extent="53mm"/>
+			</fo:simple-page-master>
+			
+			<fo:page-sequence-master master-name="cover-page-appendix">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
+					<fo:conditional-page-master-reference master-reference="simple-cover-page-appendix" odd-or-even="odd"/>
+					<fo:conditional-page-master-reference master-reference="simple-cover-page-appendix" odd-or-even="even"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			
+			<!-- Title page  -->
+			<fo:simple-page-master master-name="simple-title-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="38mm" margin-bottom="25mm" margin-left="95mm" margin-right="12mm"/>
+				<fo:region-before region-name="header" extent="38mm" />
+				<fo:region-after extent="25mm"/>
+				<fo:region-start extent="95mm"/>
+				<fo:region-end extent="12mm"/>
+			</fo:simple-page-master>
+			
+			<fo:page-sequence-master master-name="title-page">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
+					<fo:conditional-page-master-reference master-reference="simple-title-page" odd-or-even="odd"/>
+					<fo:conditional-page-master-reference master-reference="simple-title-page" odd-or-even="even"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			
+			<!-- Document pages -->
+			<fo:simple-page-master master-name="document-odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!-- debug:  background-color="green" -->
+				<fo:region-start region-name="left-region" extent="17mm"/>
+				<fo:region-end region-name="right-region" extent="26.5mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="document-even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-even" extent="{$marginTop}mm"/> 
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!-- debug:  background-color="green" -->
+				<fo:region-start region-name="left-region" extent="17mm"/>
+				<fo:region-end region-name="right-region" extent="26.5mm"/>
+			</fo:simple-page-master>
+			<fo:page-sequence-master master-name="document">
+				<fo:repeatable-page-master-alternatives>						
+					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="document-even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="document-odd"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			
+			<!-- Document pages (landscape orientation) -->
+			<fo:simple-page-master master-name="document-landscape-odd" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!-- debug:  background-color="green" -->
+				<fo:region-start region-name="left-region" extent="17mm"/>
+				<fo:region-end region-name="right-region" extent="26.5mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="document-landscape-even" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header-even" extent="{$marginTop}mm"/> 
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!-- debug:  background-color="green" -->
+				<fo:region-start region-name="left-region" extent="17mm"/>
+				<fo:region-end region-name="right-region" extent="26.5mm"/>
+			</fo:simple-page-master>
+			<fo:page-sequence-master master-name="document-landscape">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="document-landscape-even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="document-landscape-odd"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			
+			<!-- Index pages -->
+			<fo:simple-page-master master-name="index-odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="41.7mm" column-count="2" column-gap="10mm"/>
+				<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="17mm"/>
+				<fo:region-end region-name="right-region" extent="26.5mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="index-even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="41.7mm" column-count="2" column-gap="10mm"/>
+				<fo:region-before region-name="header-even" extent="{$marginTop}mm"/> 
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="17mm"/>
+				<fo:region-end region-name="right-region" extent="26.5mm"/>
+			</fo:simple-page-master>
+			<fo:page-sequence-master master-name="index">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="index-even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="index-odd"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+		</fo:layout-master-set>
+	</xsl:template> <!-- END: layout-master-set -->
 	
 	<xsl:template match="/">
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
@@ -256,140 +388,8 @@
 			<xsl:call-template name="insertRootStyle">
 				<xsl:with-param name="root-style" select="$root-style"/>
 			</xsl:call-template>
-			<fo:layout-master-set>
 			
-				<!-- blank page -->
-				<fo:simple-page-master master-name="blankpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-blank" extent="{$marginTop}mm"/> 
-					<fo:region-after region-name="footer-blank" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="17mm"/>
-					<fo:region-end region-name="right-region" extent="26.5mm"/>
-				</fo:simple-page-master>
-				
-				<!-- Cover page -->
-				<fo:simple-page-master master-name="simple-cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="36mm" margin-bottom="43mm" margin-left="49mm" margin-right="48mm"/>
-					<fo:region-before region-name="header" extent="36mm" />
-					<fo:region-after extent="43mm"/>
-					<fo:region-start extent="49mm"/>
-					<fo:region-end extent="48mm"/>
-				</fo:simple-page-master>
-				
-				<fo:page-sequence-master master-name="cover-page">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
-						<fo:conditional-page-master-reference master-reference="simple-cover-page" odd-or-even="odd"/>
-						<fo:conditional-page-master-reference master-reference="simple-cover-page" odd-or-even="even"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				<!-- Cover page -->
-				<fo:simple-page-master master-name="simple-cover-page-appendix" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="90mm" margin-bottom="40mm" margin-left="12.5mm" margin-right="53mm"/>
-					<fo:region-before region-name="header" extent="60mm" />
-					<fo:region-after extent="40mm"/>
-					<fo:region-start extent="12.5mm"/>
-					<fo:region-end extent="53mm"/>
-				</fo:simple-page-master>
-				
-				<fo:page-sequence-master master-name="cover-page-appendix">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
-						<fo:conditional-page-master-reference master-reference="simple-cover-page-appendix" odd-or-even="odd"/>
-						<fo:conditional-page-master-reference master-reference="simple-cover-page-appendix" odd-or-even="even"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				
-				<!-- Title page  -->
-				<fo:simple-page-master master-name="simple-title-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="38mm" margin-bottom="25mm" margin-left="95mm" margin-right="12mm"/>
-					<fo:region-before region-name="header" extent="38mm" />
-					<fo:region-after extent="25mm"/>
-					<fo:region-start extent="95mm"/>
-					<fo:region-end extent="12mm"/>
-				</fo:simple-page-master>
-				
-				<fo:page-sequence-master master-name="title-page">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
-						<fo:conditional-page-master-reference master-reference="simple-title-page" odd-or-even="odd"/>
-						<fo:conditional-page-master-reference master-reference="simple-title-page" odd-or-even="even"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				<!-- Document pages -->
-				<fo:simple-page-master master-name="document-odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!-- debug:  background-color="green" -->
-					<fo:region-start region-name="left-region" extent="17mm"/>
-					<fo:region-end region-name="right-region" extent="26.5mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="document-even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-even" extent="{$marginTop}mm"/> 
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!-- debug:  background-color="green" -->
-					<fo:region-start region-name="left-region" extent="17mm"/>
-					<fo:region-end region-name="right-region" extent="26.5mm"/>
-				</fo:simple-page-master>
-				<fo:page-sequence-master master-name="document">
-					<fo:repeatable-page-master-alternatives>						
-						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="document-even"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="document-odd"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				<!-- Document pages (landscape orientation) -->
-				<fo:simple-page-master master-name="document-landscape-odd" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!-- debug:  background-color="green" -->
-					<fo:region-start region-name="left-region" extent="17mm"/>
-					<fo:region-end region-name="right-region" extent="26.5mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="document-landscape-even" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header-even" extent="{$marginTop}mm"/> 
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/> <!-- debug:  background-color="green" -->
-					<fo:region-start region-name="left-region" extent="17mm"/>
-					<fo:region-end region-name="right-region" extent="26.5mm"/>
-				</fo:simple-page-master>
-				<fo:page-sequence-master master-name="document-landscape">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="document-landscape-even"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="document-landscape-odd"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				<!-- Index pages -->
-				<fo:simple-page-master master-name="index-odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="41.7mm" column-count="2" column-gap="10mm"/>
-					<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="17mm"/>
-					<fo:region-end region-name="right-region" extent="26.5mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="index-even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="41.7mm" column-count="2" column-gap="10mm"/>
-					<fo:region-before region-name="header-even" extent="{$marginTop}mm"/> 
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="17mm"/>
-					<fo:region-end region-name="right-region" extent="26.5mm"/>
-				</fo:simple-page-master>
-				<fo:page-sequence-master master-name="index">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
-						<fo:conditional-page-master-reference odd-or-even="even" master-reference="index-even"/>
-						<fo:conditional-page-master-reference odd-or-even="odd" master-reference="index-odd"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				
-			</fo:layout-master-set>
+			<xsl:call-template name="layout-master-set"/>
 			
 			<fo:declarations>
 				<xsl:call-template name="addPDFUAmeta"/>
@@ -428,22 +428,7 @@
 				</redirect:write>
 			</xsl:if>
 			
-			<xsl:choose>
-			
-				<xsl:when test="$doctype = 'guide'">
-					<xsl:call-template name="insertCoverPageAppendix"/>				
-				</xsl:when>
-				
-				<xsl:when test="$independentAppendix = ''">
-					<xsl:call-template name="insertCoverPage"/>
-					<xsl:call-template name="insertInnerCoverPage"/>
-				</xsl:when>
-				
-				<xsl:when test="$independentAppendix != ''">
-					<xsl:call-template name="insertCoverPageAppendix"/>				
-				</xsl:when>
-			</xsl:choose>
-				
+			<xsl:call-template name="cover-page"/>
 			
 			<xsl:choose>
 				<xsl:when test="$root-element = 'metanorma-collection'">
@@ -1475,9 +1460,24 @@
 			</xsl:otherwise>
 		</xsl:choose>
 		
-		
 	</xsl:template>
 	
+	
+	<xsl:template name="cover-page">
+		<xsl:choose>
+			<xsl:when test="$doctype = 'guide'">
+				<xsl:call-template name="insertCoverPageAppendix"/>				
+			</xsl:when>
+			<xsl:when test="$independentAppendix = ''">
+				<xsl:call-template name="insertCoverPage"/>
+				<xsl:call-template name="insertInnerCoverPage"/>
+			</xsl:when>
+			<xsl:when test="$independentAppendix != ''">
+				<xsl:call-template name="insertCoverPageAppendix"/>				
+			</xsl:when>
+		</xsl:choose>
+	</xsl:template> <!-- END: cover-page -->
+			
 	
 	<!-- Cover Pages -->
 	<xsl:template name="insertCoverPage">	
@@ -1643,13 +1643,18 @@
 							</xsl:choose>
 						</xsl:variable>
 						
+						<!-- see https://github.com/metanorma/metanorma-bipm/issues/99 -->
+						<!-- Example: Appendix -->
+						<xsl:variable name="title_level2_ancillary"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level2_ancillary</xsl:with-param></xsl:call-template></xsl:variable>
+						<!-- Example: Annexe -->
+						<xsl:variable name="title_level2_ancillary_alt"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level2_ancillary_alt</xsl:with-param></xsl:call-template></xsl:variable>
+						
 						<!-- Appendix titles processing -->
 						<xsl:variable name="appendix_num" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:structuredidentifier/mn:appendix)"/>
 						<xsl:if test="$appendix_num != ''">
-							<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}">Annexe <xsl:value-of select="$appendix_num"/></fo:block>
-							<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}">Appendix  <xsl:value-of select="$appendix_num"/></fo:block>
+							<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}"><xsl:value-of select="concat($title_level2_ancillary_alt, ' ', $appendix_num)"/></fo:block>
+							<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}"><xsl:value-of select="concat($title_level2_ancillary, ' ', $appendix_num)"/></fo:block>
 						</xsl:if>
-
 
 						<xsl:if test="(//mn:metanorma)[1]/mn:bibdata/mn:title[@type = 'title-appendix']">
 							<fo:block font-size="{$font-size-factor * 30.4}pt">
@@ -1663,15 +1668,21 @@
 						</xsl:if>
 						<!-- End Appendix titles processing -->
 						
+						<!-- see https://github.com/metanorma/metanorma-bipm/issues/99 -->
+						<!-- Example: Annex -->
+						<xsl:variable name="title_level3_ancillary"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level3_ancillary</xsl:with-param></xsl:call-template></xsl:variable>
+						<!-- Example: Annexe -->
+						<xsl:variable name="title_level3_ancillary_alt"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level3_ancillary_alt</xsl:with-param></xsl:call-template></xsl:variable>
+						
 						<!-- Annex title processing -->
 						<xsl:if test="(//mn:metanorma)[1]/mn:bibdata/mn:title[@type = 'title-annex']">
 							<xsl:variable name="annex_num" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:structuredidentifier/mn:annexid)"/>					
 							<xsl:if test="$annex_num != ''">
 								<fo:block font-size="{$space-factor * 30.4}pt">&#xA0;</fo:block>
 								<!-- Annexe -->
-								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}">Annexe <xsl:value-of select="$annex_num"/></fo:block>
+								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}"><xsl:value-of select="concat($title_level3_ancillary_alt, ' ', $annex_num)"/></fo:block>
 								<!-- Annex -->
-								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}">Annex  <xsl:value-of select="$annex_num"/></fo:block>
+								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}"><xsl:value-of select="concat($title_level3_ancillary, ' ', $annex_num)"/></fo:block>
 							</xsl:if>
 						
 							<fo:block font-size="{$font-size-factor * 30.4}pt">
@@ -1691,18 +1702,33 @@
 						</xsl:if>
 						<!-- End Annex titles  processing -->
 						
+						<xsl:variable name="part_num_" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:structuredidentifier/mn:part)"/>
 						<!--  Part titles processing -->
 						<xsl:if test="(//mn:metanorma)[1]/mn:bibdata/mn:title[@type = 'title-part']">
-							<xsl:variable name="part_num" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:structuredidentifier/mn:part)"/>					
-							<xsl:if test="$part_num != ''">
+							<xsl:variable name="part_num">
+								<xsl:choose>
+									<xsl:when test="contains($part_num_, '.')"><xsl:value-of select="substring-before($part_num_, '.')"/></xsl:when>
+									<xsl:otherwise><xsl:value-of select="$part_num_"/></xsl:otherwise>
+								</xsl:choose>
+							</xsl:variable>
+							<xsl:if test="normalize-space($part_num) != ''">
 								<fo:block font-size="{$space-factor * 30.4}pt">&#xA0;</fo:block>
+								
+								<!-- see https://github.com/metanorma/metanorma-bipm/issues/99 -->
+								<!-- Example: Part -->
+								<xsl:variable name="title_level4_ancillary"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level4_ancillary</xsl:with-param></xsl:call-template></xsl:variable>
+								<!-- Example: Partie -->
+								<xsl:variable name="title_level4_ancillary_alt"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level4_ancillary_alt</xsl:with-param></xsl:call-template></xsl:variable>
+								
 								<!-- Part -->
 								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}">
-									<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang='fr']),'#',$part_num)"/>
+									<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang='fr']),'#',$part_num)"/> -->
+									<xsl:value-of select="concat($title_level4_ancillary_alt, ' ', $part_num)"/>
 								</fo:block>
 								<!-- Partie -->
 								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}">
-									<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang='en']),'#',$part_num)"/>
+									<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang='en']),'#',$part_num)"/> -->
+									<xsl:value-of select="concat($title_level4_ancillary, ' ', $part_num)"/>
 								</fo:block>
 							</xsl:if>
 						
@@ -1725,13 +1751,24 @@
 						
 						<!-- Sub-part titles  processing -->
 						<xsl:if test="(//mn:metanorma)[1]/mn:bibdata/mn:title[@type = 'title-subpart']">
-							<xsl:variable name="subpart_num" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:structuredidentifier/mn:subpart)"/>
+							<!-- <xsl:variable name="subpart_num" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:structuredidentifier/mn:subpart)"/> -->
+							<xsl:variable name="subpart_num" select="normalize-space(substring-after($part_num_, '.'))"/>
+							
 							<xsl:if test="$subpart_num != ''">
 								<fo:block font-size="{$space-factor * 30.4}pt">&#xA0;</fo:block>
-								<!-- Sub-part -->
-								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}"><xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-subpart[@lang='fr']),'#',$subpart_num)"/> <xsl:value-of select="$subpart_num"/></fo:block>
+								
+								<!-- see https://github.com/metanorma/metanorma-bipm/issues/99 -->
+								<!-- Example: Part -->
+								<xsl:variable name="title_level5_ancillary"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level5_ancillary</xsl:with-param></xsl:call-template></xsl:variable>
+								<!-- Example: Partie de sub -->
+								<xsl:variable name="title_level5_ancillary_alt"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level5_ancillary_alt</xsl:with-param></xsl:call-template></xsl:variable>
+								
 								<!-- Partie de sub -->
-								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}"><xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-subpart[@lang='en']),'#',$subpart_num)"/>  <xsl:value-of select="$subpart_num"/></fo:block>
+								<!-- <fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}"><xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-subpart[@lang='fr']),'#',$subpart_num)"/> <xsl:value-of select="$subpart_num"/></fo:block> -->
+								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}"><xsl:value-of select="concat($title_level5_ancillary_alt, ' ', $subpart_num)"/></fo:block>
+								<!-- Sub-part -->
+								<!-- <fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}"><xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-subpart[@lang='en']),'#',$subpart_num)"/>  <xsl:value-of select="$subpart_num"/></fo:block> -->
+								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}"><xsl:value-of select="concat($title_level5_ancillary, ' ', $subpart_num)"/></fo:block>
 							</xsl:if>
 						
 							<fo:block font-size="{$font-size-factor * 30.4}pt">
@@ -1779,7 +1816,7 @@
 	
 			</fo:flow>
 		</fo:page-sequence>	
-	</xsl:template>
+	</xsl:template> <!-- END: insertCoverPageAppendix -->
 	
 	<xsl:template name="insertCoverPageCommon">
 		<!-- background color -->

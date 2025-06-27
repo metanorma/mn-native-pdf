@@ -94,6 +94,29 @@
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 
+	<xsl:template name="layout-master-set">
+		<fo:layout-master-set>
+					
+			<!-- Document pages -->
+			<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/> 
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm" precedence="true"/>
+				<fo:region-start region-name="left" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/> 
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm" precedence="true"/>
+				<fo:region-start region-name="left" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			
+		</fo:layout-master-set>
+	</xsl:template> <!-- END: layout-master-set -->
+
 	<xsl:template match="/">
 		
 			<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
@@ -103,26 +126,8 @@
 				<xsl:call-template name="insertRootStyle">
 					<xsl:with-param name="root-style" select="$root-style"/>
 				</xsl:call-template>
-				<fo:layout-master-set>
-					
-					<!-- Document pages -->
-					<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-						<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/> 
-						<fo:region-after region-name="footer" extent="{$marginBottom}mm" precedence="true"/>
-						<fo:region-start region-name="left" extent="{$marginLeftRight1}mm"/>
-						<fo:region-end region-name="right" extent="{$marginLeftRight2}mm"/>
-					</fo:simple-page-master>
-					
-					<fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-						<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-						<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/> 
-						<fo:region-after region-name="footer" extent="{$marginBottom}mm" precedence="true"/>
-						<fo:region-start region-name="left" extent="{$marginLeftRight1}mm"/>
-						<fo:region-end region-name="right" extent="{$marginLeftRight2}mm"/>
-					</fo:simple-page-master>
-					
-				</fo:layout-master-set>
+				
+				<xsl:call-template name="layout-master-set"/>
 				
 				<fo:declarations>
 					<xsl:call-template name="addPDFUAmeta"/>
@@ -161,83 +166,7 @@
 					</xsl:with-param>
 				</xsl:call-template>
 				
-				<!-- Cover Page -->
-				<fo:page-sequence master-reference="document" force-page-count="no-force">				
-					<xsl:call-template name="insertHeaderFooter"/>					
-					<fo:flow flow-name="xsl-region-body">
-						
-						<fo:block-container margin-left="-12mm" margin-right="-9mm">
-							<fo:block-container margin-left="0mm" margin-right="0mm">
-								<fo:block font-size="36pt" background-color="{$color}" color="white" margin-left="2.5mm" padding-top="1mm" padding-left="1mm" role="H1">
-									<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title/node()"/>
-								</fo:block>
-							</fo:block-container>
-						</fo:block-container>
-						
-						<!-- <fo:block font-family="Lato" font-weight="300" font-size="14pt" font-style="italic" margin-top="6pt" color="rgb(21, 43, 77)">
-							<xsl:text>Additional context, inspirational quote, etc. fits into this subheading area</xsl:text>
-						</fo:block> -->
-						
-						<fo:block text-align="right" font-size="10pt" margin-top="12pt" margin-bottom="24pt">
-							<fo:block margin-top="6pt">Submission Date: <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'received']/mn:on"/></fo:block>
-							<fo:block margin-top="6pt">Approval Date: <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'issued']/mn:on"/></fo:block>
-							<fo:block margin-top="6pt">Publication Date: <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']/mn:on"/></fo:block>
-							<fo:block margin-top="6pt">External identifier of this OGC&#xAE; document: <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'ogc-external']"/></fo:block>
-							<fo:block margin-top="6pt">Internal reference number of this OGC&#xAE; document: <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docnumber"/></fo:block>
-							
-							<xsl:variable name="url" select="/mn:metanorma/mn:bibdata/mn:uri"/>
-							<xsl:if test="normalize-space($url) != ''">
-								<fo:block margin-top="6pt">URL for this OGC&#xAE; document: <xsl:value-of select="$url"/></fo:block>
-							</xsl:if>
-								
-							<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:edition[normalize-space(@language) = '']"/>
-								
-							<fo:block margin-top="6pt"><xsl:text>Category: </xsl:text>
-								<xsl:call-template name="capitalizeWords">
-									<xsl:with-param name="str" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/>
-								</xsl:call-template>
-							</fo:block>
-							
-							<xsl:variable name="editors">
-								<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='editor']/mn:person/mn:name/mn:completename">
-									<xsl:value-of select="."/>
-									<xsl:if test="position() != last()">, </xsl:if>
-								</xsl:for-each>
-							</xsl:variable>
-							<xsl:if test="normalize-space($editors) != ''">
-								<fo:block margin-top="6pt">
-									<!-- Editor: -->
-									<xsl:call-template name="getLocalizedString">
-										<xsl:with-param name="key">editor_full</xsl:with-param>
-									</xsl:call-template><xsl:text>: </xsl:text><xsl:value-of select="$editors"/>
-								</fo:block>
-							</xsl:if>
-						</fo:block>
-						
-						<!-- absolute-position="fixed" left="20mm" top="91mm" width="175mm" -->
-						<fo:block-container font-size="9pt" margin-left="-5mm" margin-right="-5mm">
-							<fo:block-container margin-left="0mm" margin-right="0mm">
-								<fo:block margin-top="8pt">
-									<xsl:variable name="copyright_statement">
-										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement" mode="update_xml_step1"/>
-									</xsl:variable>
-									<xsl:apply-templates select="xalan:nodeset($copyright_statement)/*"/>
-								</fo:block>
-								<fo:block margin-top="8pt">&#xA0;</fo:block>
-								<fo:block margin-top="8pt">
-									<xsl:variable name="legal_statement">
-										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement" mode="update_xml_step1"/>
-									</xsl:variable>
-									<xsl:apply-templates select="xalan:nodeset($legal_statement)/*"/>
-								</fo:block>
-							</fo:block-container>
-						</fo:block-container>
-						
-						<xsl:call-template name="insertLogo" />
-						
-					</fo:flow>
-				</fo:page-sequence>
-				<!-- End Cover Page -->
+				<xsl:call-template name="cover-page"/>
 				
 				<xsl:variable name="updated_xml">
 					<xsl:call-template name="updateXML"/>
@@ -327,6 +256,85 @@
 		
 	</xsl:template> 
 
+	<xsl:template name="cover-page">
+		<!-- Cover Page -->
+		<fo:page-sequence master-reference="document" force-page-count="no-force">				
+			<xsl:call-template name="insertHeaderFooter"/>					
+			<fo:flow flow-name="xsl-region-body">
+				
+				<fo:block-container margin-left="-12mm" margin-right="-9mm">
+					<fo:block-container margin-left="0mm" margin-right="0mm">
+						<fo:block font-size="36pt" background-color="{$color}" color="white" margin-left="2.5mm" padding-top="1mm" padding-left="1mm" role="H1">
+							<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title/node()"/>
+						</fo:block>
+					</fo:block-container>
+				</fo:block-container>
+				
+				<!-- <fo:block font-family="Lato" font-weight="300" font-size="14pt" font-style="italic" margin-top="6pt" color="rgb(21, 43, 77)">
+					<xsl:text>Additional context, inspirational quote, etc. fits into this subheading area</xsl:text>
+				</fo:block> -->
+				
+				<fo:block text-align="right" font-size="10pt" margin-top="12pt" margin-bottom="24pt">
+					<fo:block margin-top="6pt">Submission Date: <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'received']/mn:on"/></fo:block>
+					<fo:block margin-top="6pt">Approval Date: <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'issued']/mn:on"/></fo:block>
+					<fo:block margin-top="6pt">Publication Date: <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']/mn:on"/></fo:block>
+					<fo:block margin-top="6pt">External identifier of this OGC&#xAE; document: <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'ogc-external']"/></fo:block>
+					<fo:block margin-top="6pt">Internal reference number of this OGC&#xAE; document: <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docnumber"/></fo:block>
+					
+					<xsl:variable name="url" select="/mn:metanorma/mn:bibdata/mn:uri"/>
+					<xsl:if test="normalize-space($url) != ''">
+						<fo:block margin-top="6pt">URL for this OGC&#xAE; document: <xsl:value-of select="$url"/></fo:block>
+					</xsl:if>
+						
+					<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:edition[normalize-space(@language) = '']"/>
+						
+					<fo:block margin-top="6pt"><xsl:text>Category: </xsl:text>
+						<xsl:call-template name="capitalizeWords">
+							<xsl:with-param name="str" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/>
+						</xsl:call-template>
+					</fo:block>
+					
+					<xsl:variable name="editors">
+						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='editor']/mn:person/mn:name/mn:completename">
+							<xsl:value-of select="."/>
+							<xsl:if test="position() != last()">, </xsl:if>
+						</xsl:for-each>
+					</xsl:variable>
+					<xsl:if test="normalize-space($editors) != ''">
+						<fo:block margin-top="6pt">
+							<!-- Editor: -->
+							<xsl:call-template name="getLocalizedString">
+								<xsl:with-param name="key">editor_full</xsl:with-param>
+							</xsl:call-template><xsl:text>: </xsl:text><xsl:value-of select="$editors"/>
+						</fo:block>
+					</xsl:if>
+				</fo:block>
+				
+				<!-- absolute-position="fixed" left="20mm" top="91mm" width="175mm" -->
+				<fo:block-container font-size="9pt" margin-left="-5mm" margin-right="-5mm">
+					<fo:block-container margin-left="0mm" margin-right="0mm">
+						<fo:block margin-top="8pt">
+							<xsl:variable name="copyright_statement">
+								<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement" mode="update_xml_step1"/>
+							</xsl:variable>
+							<xsl:apply-templates select="xalan:nodeset($copyright_statement)/*"/>
+						</fo:block>
+						<fo:block margin-top="8pt">&#xA0;</fo:block>
+						<fo:block margin-top="8pt">
+							<xsl:variable name="legal_statement">
+								<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement" mode="update_xml_step1"/>
+							</xsl:variable>
+							<xsl:apply-templates select="xalan:nodeset($legal_statement)/*"/>
+						</fo:block>
+					</fo:block-container>
+				</fo:block-container>
+				
+				<xsl:call-template name="insertLogo" />
+				
+			</fo:flow>
+		</fo:page-sequence>
+		<!-- End Cover Page -->
+		</xsl:template> <!-- END: cover-page -->
 
 	<xsl:template name="processPrefaceAndMainSectionsOGC_items">
 		<xsl:variable name="updated_xml_step_move_pagebreak">

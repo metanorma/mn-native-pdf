@@ -80,6 +80,100 @@
 		</xsl:for-each>
 	</xsl:variable>
 
+	<xsl:template name="layout-master-set">
+		<fo:layout-master-set>
+			
+			<!-- Cover page -->
+			<xsl:variable name="cover_page_margin_bottom">
+				<xsl:choose>
+					<xsl:when test="$doctype = 'technical-report'">48</xsl:when>
+					<xsl:otherwise>45</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="15mm" margin-bottom="{$cover_page_margin_bottom}mm" margin-left="36mm" margin-right="8.5mm"/>
+				<fo:region-before region-name="header" extent="15mm"/>
+				<fo:region-after region-name="footer" extent="{$cover_page_margin_bottom}mm"/>
+				<fo:region-start region-name="left-region" extent="36mm"/>
+				<fo:region-end region-name="right-region" extent="8.5mm"/>
+			</fo:simple-page-master>
+		
+			<fo:simple-page-master master-name="document_preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+					<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+				</xsl:if>
+				<fo:region-body margin-top="50mm" margin-bottom="35mm" margin-left="26mm" margin-right="34mm">
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+					</xsl:if>
+				</fo:region-body>
+				<fo:region-before region-name="header" extent="50mm"/>
+				<fo:region-after region-name="footer" extent="35mm"/>
+				<fo:region-start region-name="left-region" extent="26mm"/>
+				<fo:region-end region-name="right-region" extent="34mm"/>
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="document_toc" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+					<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+				</xsl:if>
+				<fo:region-body margin-top="16.5mm" margin-bottom="22mm" margin-left="14.5mm" margin-right="22.3mm">
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+					</xsl:if>
+				</fo:region-body>
+				<fo:region-before region-name="header" extent="16.5mm"/>
+				<fo:region-after region-name="footer" extent="22mm"/>
+				<fo:region-start region-name="left-region" extent="14.5mm"/>
+				<fo:region-end region-name="right-region" extent="22.3mm"/>
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+					<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+				</xsl:if>
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+					</xsl:if>
+				</fo:region-body>
+				<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			
+			<!-- landscape -->
+			<fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm" precedence="true"/>
+				<fo:region-start region-name="left-region-landscape" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region-landscape" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="last-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="179.5mm" margin-bottom="30mm" margin-left="15mm" margin-right="22.7mm"/>
+				<fo:region-before region-name="header" extent="179.5mm"/>
+				<fo:region-after region-name="footer" extent="30mm"/>
+				<fo:region-start region-name="left-region" extent="15mm"/>
+				<fo:region-end region-name="right-region" extent="22.7mm"/>
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="last-page_technical-report" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="191mm" margin-bottom="41mm" margin-left="26mm" margin-right="26mm"/>
+				<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+		</fo:layout-master-set>
+	</xsl:template> <!-- END: layout-master-set -->
+	
+	
 	<xsl:template match="/">
 	
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
@@ -94,96 +188,7 @@
 				<xsl:attribute name="font-size">10pt</xsl:attribute>
 			</xsl:if>
 			
-			<fo:layout-master-set>
-			
-				<!-- Cover page -->
-				<xsl:variable name="cover_page_margin_bottom">
-					<xsl:choose>
-						<xsl:when test="$doctype = 'technical-report'">48</xsl:when>
-						<xsl:otherwise>45</xsl:otherwise>
-					</xsl:choose>
-				</xsl:variable>
-				<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="15mm" margin-bottom="{$cover_page_margin_bottom}mm" margin-left="36mm" margin-right="8.5mm"/>
-					<fo:region-before region-name="header" extent="15mm"/>
-					<fo:region-after region-name="footer" extent="{$cover_page_margin_bottom}mm"/>
-					<fo:region-start region-name="left-region" extent="36mm"/>
-					<fo:region-end region-name="right-region" extent="8.5mm"/>
-				</fo:simple-page-master>
-			
-				<fo:simple-page-master master-name="document_preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true'">
-						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
-						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
-					</xsl:if>
-					<fo:region-body margin-top="50mm" margin-bottom="35mm" margin-left="26mm" margin-right="34mm">
-						<xsl:if test="$vertical_layout = 'true'">
-							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
-						</xsl:if>
-					</fo:region-body>
-					<fo:region-before region-name="header" extent="50mm"/>
-					<fo:region-after region-name="footer" extent="35mm"/>
-					<fo:region-start region-name="left-region" extent="26mm"/>
-					<fo:region-end region-name="right-region" extent="34mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="document_toc" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true'">
-						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
-						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
-					</xsl:if>
-					<fo:region-body margin-top="16.5mm" margin-bottom="22mm" margin-left="14.5mm" margin-right="22.3mm">
-						<xsl:if test="$vertical_layout = 'true'">
-							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
-						</xsl:if>
-					</fo:region-body>
-					<fo:region-before region-name="header" extent="16.5mm"/>
-					<fo:region-after region-name="footer" extent="22mm"/>
-					<fo:region-start region-name="left-region" extent="14.5mm"/>
-					<fo:region-end region-name="right-region" extent="22.3mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="document" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<xsl:if test="$vertical_layout = 'true'">
-						<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
-						<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
-					</xsl:if>
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
-						<xsl:if test="$vertical_layout = 'true'">
-							<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
-						</xsl:if>
-					</fo:region-body>
-					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				
-				<!-- landscape -->
-				<fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm" precedence="true"/>
-					<fo:region-start region-name="left-region-landscape" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region-landscape" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="last-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="179.5mm" margin-bottom="30mm" margin-left="15mm" margin-right="22.7mm"/>
-					<fo:region-before region-name="header" extent="179.5mm"/>
-					<fo:region-after region-name="footer" extent="30mm"/>
-					<fo:region-start region-name="left-region" extent="15mm"/>
-					<fo:region-end region-name="right-region" extent="22.7mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="last-page_technical-report" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="191mm" margin-bottom="41mm" margin-left="26mm" margin-right="26mm"/>
-					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-			</fo:layout-master-set>
+			<xsl:call-template name="layout-master-set"/>
 			
 			<fo:declarations>
 				<xsl:call-template name="addPDFUAmeta"/>
@@ -255,7 +260,7 @@
 				<!-- <xsl:for-each select="xalan:nodeset($current_document)"> -->
 				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)">
 				
-					<xsl:call-template name="insertCoverPage">
+					<xsl:call-template name="cover-page">
 						<xsl:with-param name="num" select="$num"/>
 					</xsl:call-template>
 										
@@ -358,52 +363,7 @@
 						</fo:page-sequence>
 					</xsl:for-each>
 					
-					
-					
-					<xsl:choose>
-						<xsl:when test="$doctype = 'technical-report'">
-							<fo:page-sequence master-reference="last-page_technical-report" force-page-count="no-force">
-								<xsl:call-template name="insertHeaderFooter"/>
-								<fo:flow flow-name="xsl-region-body">
-									<fo:block-container width="100%" height="64mm" border="0.75pt solid black" font-size="14pt" text-align="center" display-align="center" line-height="1.7">
-										<fo:block>
-											<xsl:value-of select="/*/mn:bibdata/mn:title[@language = 'ja' and @type = 'title-main']"/>
-										</fo:block>
-										<fo:block>
-											<xsl:value-of select="$i18n_doctype_dict_technical_report"/>
-										</fo:block>
-										<fo:block font-size="12pt" margin-top="18pt">
-											<fo:block><xsl:value-of select="/*/mn:bibdata/mn:date[@type = 'published']"/><xsl:text> 発行</xsl:text></fo:block>
-											<!-- 委託者 (Contractor) -->
-											<fo:block>委託者：<xsl:value-of select="/*/mn:bibdata/mn:contributor[mn:role/@type = 'author']/mn:organization/mn:name"/></fo:block>
-											<!-- 受託者 (Trustees) -->
-											<fo:block>受託者：<xsl:value-of select="/*/mn:bibdata/mn:contributor[mn:role/@type = 'enabler']/mn:organization/mn:name"/></fo:block>
-										</fo:block>
-									</fo:block-container>
-								</fo:flow>
-							</fo:page-sequence>
-						</xsl:when>
-						<xsl:otherwise> <!-- handbook -->
-							<fo:page-sequence master-reference="last-page" force-page-count="no-force">
-								<fo:flow flow-name="xsl-region-body">
-									<fo:block-container width="100%" border="0.75pt solid black" font-size="10pt" line-height="1.7">
-										<fo:block margin-left="4.5mm" margin-top="1mm">
-											<xsl:value-of select="/*/mn:bibdata/mn:title[@language = 'ja' and @type = 'title-main']"/>
-											<fo:inline padding-left="4mm"><xsl:value-of select="/*/mn:bibdata/mn:edition[@language = 'ja']"/></fo:inline>
-										</fo:block>
-										<fo:block margin-left="7.7mm"><xsl:value-of select="/*/mn:bibdata/mn:date[@type = 'published']"/><xsl:text> 発行</xsl:text></fo:block>
-										<!-- MLIT Department -->
-										<fo:block margin-left="7.7mm"><xsl:value-of select="/*/mn:bibdata/mn:contributor[mn:role/@type = 'author']/mn:organization/mn:name"/></fo:block>
-										<fo:block margin-left="9mm"><xsl:value-of select="/*/mn:bibdata/mn:contributor[mn:role/@type = 'enabler']/mn:organization/mn:name"/></fo:block>
-									</fo:block-container>
-								</fo:flow>
-							</fo:page-sequence>
-						</xsl:otherwise>
-					</xsl:choose>
-					
-					
-
-
+					<xsl:call-template name="back-page"/>
 					
 				</xsl:for-each>
 			
@@ -648,7 +608,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template name="insertCoverPage">
+	<xsl:template name="cover-page">
 		<xsl:param name="num"/>
 		<fo:page-sequence master-reference="cover-page" force-page-count="no-force" font-family="Noto Sans Condensed">
 			
@@ -787,7 +747,7 @@
 				<fo:block id="firstpage_id_{$num}">&#xa0;</fo:block>
 			</fo:flow>
 		</fo:page-sequence>
-	</xsl:template> <!-- insertCoverPage -->
+	</xsl:template> <!-- cover-page -->
 	
 	
 	<xsl:template match="mn:p[@class = 'JapaneseIndustrialStandard']" priority="4"/>
@@ -1981,6 +1941,48 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template name="back-page">
+		<xsl:choose>
+			<xsl:when test="$doctype = 'technical-report'">
+				<fo:page-sequence master-reference="last-page_technical-report" force-page-count="no-force">
+					<xsl:call-template name="insertHeaderFooter"/>
+					<fo:flow flow-name="xsl-region-body">
+						<fo:block-container width="100%" height="64mm" border="0.75pt solid black" font-size="14pt" text-align="center" display-align="center" line-height="1.7">
+							<fo:block>
+								<xsl:value-of select="/*/mn:bibdata/mn:title[@language = 'ja' and @type = 'title-main']"/>
+							</fo:block>
+							<fo:block>
+								<xsl:value-of select="$i18n_doctype_dict_technical_report"/>
+							</fo:block>
+							<fo:block font-size="12pt" margin-top="18pt">
+								<fo:block><xsl:value-of select="/*/mn:bibdata/mn:date[@type = 'published']"/><xsl:text> 発行</xsl:text></fo:block>
+								<!-- 委託者 (Contractor) -->
+								<fo:block>委託者：<xsl:value-of select="/*/mn:bibdata/mn:contributor[mn:role/@type = 'author']/mn:organization/mn:name"/></fo:block>
+								<!-- 受託者 (Trustees) -->
+								<fo:block>受託者：<xsl:value-of select="/*/mn:bibdata/mn:contributor[mn:role/@type = 'enabler']/mn:organization/mn:name"/></fo:block>
+							</fo:block>
+						</fo:block-container>
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:when>
+			<xsl:otherwise> <!-- handbook -->
+				<fo:page-sequence master-reference="last-page" force-page-count="no-force">
+					<fo:flow flow-name="xsl-region-body">
+						<fo:block-container width="100%" border="0.75pt solid black" font-size="10pt" line-height="1.7">
+							<fo:block margin-left="4.5mm" margin-top="1mm">
+								<xsl:value-of select="/*/mn:bibdata/mn:title[@language = 'ja' and @type = 'title-main']"/>
+								<fo:inline padding-left="4mm"><xsl:value-of select="/*/mn:bibdata/mn:edition[@language = 'ja']"/></fo:inline>
+							</fo:block>
+							<fo:block margin-left="7.7mm"><xsl:value-of select="/*/mn:bibdata/mn:date[@type = 'published']"/><xsl:text> 発行</xsl:text></fo:block>
+							<!-- MLIT Department -->
+							<fo:block margin-left="7.7mm"><xsl:value-of select="/*/mn:bibdata/mn:contributor[mn:role/@type = 'author']/mn:organization/mn:name"/></fo:block>
+							<fo:block margin-left="9mm"><xsl:value-of select="/*/mn:bibdata/mn:contributor[mn:role/@type = 'enabler']/mn:organization/mn:name"/></fo:block>
+						</fo:block-container>
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template> <!-- END: back-page -->
 	
 	<xsl:variable name="PLATEAU-Logo">
 		<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 141.72 172.64">

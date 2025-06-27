@@ -128,6 +128,168 @@
 	
 	<xsl:variable name="line-height">1.8</xsl:variable>
 	
+	<xsl:template name="layout-master-set">
+		<fo:layout-master-set>
+		
+			<!-- IEEE template for:
+				- draft documents
+				- non standard documents (whitepaper, ICAP whitepaper, industry connection report)
+				- standard documents
+			-->
+		
+			<!-- ======================== -->
+			<!-- IEEE pages -->
+			<!-- ======================== -->
+			<!-- IEEE cover page -->
+			
+			<!-- IEEE standard cover page -->
+			<fo:simple-page-master master-name="cover-and-back-page-standard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="62mm" margin-bottom="25mm" margin-left="21.2mm" margin-right="25mm"/>
+				<fo:region-before region-name="header" extent="62mm" precedence="true"/>
+				<fo:region-after region-name="footer" extent="25mm"/>
+				<fo:region-start region-name="left-region" extent="21.2mm"/>
+				<fo:region-end region-name="right-region" extent="25mm"/>
+			</fo:simple-page-master>
+			
+			<!-- IEEE industry connection report cover page -->
+			<fo:simple-page-master master-name="cover-and-back-page-industry-connection-report" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="116mm" margin-bottom="15mm" margin-left="62mm" margin-right="35mm"/>
+				<fo:region-before region-name="header" extent="116mm"/>
+				<fo:region-after region-name="footer" extent="15mm"/>
+				<fo:region-start region-name="left-region" extent="62mm" precedence="true" />
+				<fo:region-end region-name="right-region" extent="35mm"/>
+			</fo:simple-page-master>
+			
+			<!-- ================== -->
+			<!-- IEEE whitepaper, ICAP whitepaper, connection-report -->
+			<!-- ================== -->
+			<fo:simple-page-master master-name="cover-page-nonstandard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="115mm" margin-bottom="15mm" margin-left="64mm" margin-right="35mm"/>
+				<fo:region-before region-name="header" extent="115mm"/>
+				<fo:region-after region-name="footer" extent="15mm"/>
+				<fo:region-start region-name="left-region" extent="64mm" precedence="true" />
+				<fo:region-end region-name="right-region" extent="35mm"/>
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="document-nonstandard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="25.4mm" margin-bottom="25.4mm" margin-left="19mm" margin-right="19mm"/>
+				<fo:region-before region-name="header" extent="25.4mm"/>
+				<fo:region-after region-name="footer" extent="25.4mm"/>
+				<fo:region-start region-name="left-region" extent="19mm"/>
+				<fo:region-end region-name="right-region" extent="19mm"/>
+			</fo:simple-page-master>
+			
+			<!-- landscape -->
+			<fo:simple-page-master master-name="document-nonstandard-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="19mm" margin-bottom="19mm" margin-left="25.4mm" margin-right="25.4mm"/>
+				<fo:region-before region-name="header" extent="19mm" precedence="true"/>
+				<fo:region-after region-name="footer" extent="19mm" precedence="true"/>
+				<fo:region-start region-name="left-region-landscape" extent="25.4mm"/>
+				<fo:region-end region-name="right-region-landscape" extent="25.4mm"/>
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="back-page-nonstandard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="73mm" margin-bottom="15mm" margin-left="63.5mm" margin-right="35mm"/>
+				<fo:region-before region-name="header" extent="73mm"/>
+				<fo:region-after region-name="footer" extent="15mm"/>
+				<fo:region-start region-name="left-region" extent="63.5mm" precedence="true" />
+				<fo:region-end region-name="right-region" extent="35mm"/>
+			</fo:simple-page-master>
+			<!-- ================== -->
+			<!-- End: IEEE whitepaper -->
+			<!-- ================== -->
+			
+			
+			<!-- ToC for non-standards (whitepaper, icap-whitepaper, industry-connection-report) -->
+			<fo:simple-page-master master-name="page-toc-first" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="19mm" margin-right="19mm"/>
+				<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/>
+				<fo:region-after region-name="footer_empty" extent="{$marginBottom}mm"/> <!-- empty footer for 1st ToC page -->
+				<fo:region-start region-name="left-region" extent="19mm" />
+				<fo:region-end region-name="right-region" extent="19mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="page-toc-any" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="19mm" margin-right="19mm"/>
+				<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="19mm" />
+				<fo:region-end region-name="right-region" extent="19mm"/>
+			</fo:simple-page-master>
+			<fo:page-sequence-master master-name="page-toc">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference page-position="first" master-reference="page-toc-first"/>
+					<fo:conditional-page-master-reference page-position="any" master-reference="page-toc-any"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+
+			
+			<!-- =================== -->
+			<!-- Drafts pages -->
+			<!-- =================== -->
+			<fo:simple-page-master master-name="document-draft" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			
+			<!-- landscape -->
+			<fo:simple-page-master master-name="document-draft-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
+				<fo:region-before region-name="header" extent="{$marginLeftRight1}mm" precedence="true"/>
+				<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
+				<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
+				<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
+			</fo:simple-page-master>
+			<!-- =================== -->
+			<!-- =================== -->
+			
+			<!-- ======================= -->
+			<!-- Standard document pages -->
+			<!-- ======================= -->
+			<fo:simple-page-master master-name="document-standard-first" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header_empty" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:page-sequence-master master-name="document-standard">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference page-position="first" master-reference="document-standard-first"/>
+					<fo:conditional-page-master-reference page-position="any" master-reference="document-draft"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			
+			<!-- landscape -->
+			<fo:simple-page-master master-name="document-standard-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
+				<fo:region-before region-name="header" extent="{$marginLeftRight1}mm" precedence="true"/>
+				<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
+				<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
+				<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
+			</fo:simple-page-master>
+			<!-- ======================= -->
+			<!-- ======================= -->
+			
+			<!-- Index pages -->
+			<fo:simple-page-master master-name="page-index" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="2" column-gap="10mm"/>
+				<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			
+			<!-- ======================== -->
+			<!-- END IEEE pages -->
+			<!-- ======================== -->
+		
+		</fo:layout-master-set>
+	</xsl:template> <!-- END: layout-master-set -->
+	
+	
 	<xsl:template match="/">
 		<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xml:lang="{$lang}">
 			<xsl:variable name="root-style">
@@ -146,165 +308,7 @@
 				<xsl:processing-instruction name="add_line_numbers">true</xsl:processing-instruction>
 			</xsl:if>
 			
-			<fo:layout-master-set>
-			
-				<!-- IEEE template for:
-					- draft documents
-					- non standard documents (whitepaper, ICAP whitepaper, industry connection report)
-					- standard documents
-				-->
-			
-				<!-- ======================== -->
-				<!-- IEEE pages -->
-				<!-- ======================== -->
-				<!-- IEEE cover page -->
-				
-				<!-- IEEE standard cover page -->
-				<fo:simple-page-master master-name="cover-and-back-page-standard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="62mm" margin-bottom="25mm" margin-left="21.2mm" margin-right="25mm"/>
-					<fo:region-before region-name="header" extent="62mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="25mm"/>
-					<fo:region-start region-name="left-region" extent="21.2mm"/>
-					<fo:region-end region-name="right-region" extent="25mm"/>
-				</fo:simple-page-master>
-				
-				<!-- IEEE industry connection report cover page -->
-				<fo:simple-page-master master-name="cover-and-back-page-industry-connection-report" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="116mm" margin-bottom="15mm" margin-left="62mm" margin-right="35mm"/>
-					<fo:region-before region-name="header" extent="116mm"/>
-					<fo:region-after region-name="footer" extent="15mm"/>
-					<fo:region-start region-name="left-region" extent="62mm" precedence="true" />
-					<fo:region-end region-name="right-region" extent="35mm"/>
-				</fo:simple-page-master>
-				
-				<!-- ================== -->
-				<!-- IEEE whitepaper, ICAP whitepaper, connection-report -->
-				<!-- ================== -->
-				<fo:simple-page-master master-name="cover-page-nonstandard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="115mm" margin-bottom="15mm" margin-left="64mm" margin-right="35mm"/>
-					<fo:region-before region-name="header" extent="115mm"/>
-					<fo:region-after region-name="footer" extent="15mm"/>
-					<fo:region-start region-name="left-region" extent="64mm" precedence="true" />
-					<fo:region-end region-name="right-region" extent="35mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="document-nonstandard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="25.4mm" margin-bottom="25.4mm" margin-left="19mm" margin-right="19mm"/>
-					<fo:region-before region-name="header" extent="25.4mm"/>
-					<fo:region-after region-name="footer" extent="25.4mm"/>
-					<fo:region-start region-name="left-region" extent="19mm"/>
-					<fo:region-end region-name="right-region" extent="19mm"/>
-				</fo:simple-page-master>
-				
-				<!-- landscape -->
-				<fo:simple-page-master master-name="document-nonstandard-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="19mm" margin-bottom="19mm" margin-left="25.4mm" margin-right="25.4mm"/>
-					<fo:region-before region-name="header" extent="19mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="19mm" precedence="true"/>
-					<fo:region-start region-name="left-region-landscape" extent="25.4mm"/>
-					<fo:region-end region-name="right-region-landscape" extent="25.4mm"/>
-				</fo:simple-page-master>
-				
-				<fo:simple-page-master master-name="back-page-nonstandard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="73mm" margin-bottom="15mm" margin-left="63.5mm" margin-right="35mm"/>
-					<fo:region-before region-name="header" extent="73mm"/>
-					<fo:region-after region-name="footer" extent="15mm"/>
-					<fo:region-start region-name="left-region" extent="63.5mm" precedence="true" />
-					<fo:region-end region-name="right-region" extent="35mm"/>
-				</fo:simple-page-master>
-				<!-- ================== -->
-				<!-- End: IEEE whitepaper -->
-				<!-- ================== -->
-				
-				
-				<!-- ToC for non-standards (whitepaper, icap-whitepaper, industry-connection-report) -->
-				<fo:simple-page-master master-name="page-toc-first" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="19mm" margin-right="19mm"/>
-					<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/>
-					<fo:region-after region-name="footer_empty" extent="{$marginBottom}mm"/> <!-- empty footer for 1st ToC page -->
-					<fo:region-start region-name="left-region" extent="19mm" />
-					<fo:region-end region-name="right-region" extent="19mm"/>
-				</fo:simple-page-master>
-				<fo:simple-page-master master-name="page-toc-any" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="19mm" margin-right="19mm"/>
-					<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="19mm" />
-					<fo:region-end region-name="right-region" extent="19mm"/>
-				</fo:simple-page-master>
-				<fo:page-sequence-master master-name="page-toc">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference page-position="first" master-reference="page-toc-first"/>
-						<fo:conditional-page-master-reference page-position="any" master-reference="page-toc-any"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-
-				
-				<!-- =================== -->
-				<!-- Drafts pages -->
-				<!-- =================== -->
-				<fo:simple-page-master master-name="document-draft" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				
-				<!-- landscape -->
-				<fo:simple-page-master master-name="document-draft-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
-					<fo:region-before region-name="header" extent="{$marginLeftRight1}mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
-					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
-					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
-				</fo:simple-page-master>
-				<!-- =================== -->
-				<!-- =================== -->
-				
-				<!-- ======================= -->
-				<!-- Standard document pages -->
-				<!-- ======================= -->
-				<fo:simple-page-master master-name="document-standard-first" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
-					<fo:region-before region-name="header_empty" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				<fo:page-sequence-master master-name="document-standard">
-					<fo:repeatable-page-master-alternatives>
-						<fo:conditional-page-master-reference page-position="first" master-reference="document-standard-first"/>
-						<fo:conditional-page-master-reference page-position="any" master-reference="document-draft"/>
-					</fo:repeatable-page-master-alternatives>
-				</fo:page-sequence-master>
-				
-				<!-- landscape -->
-				<fo:simple-page-master master-name="document-standard-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-					<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
-					<fo:region-before region-name="header" extent="{$marginLeftRight1}mm" precedence="true"/>
-					<fo:region-after region-name="footer" extent="{$marginLeftRight2}mm" precedence="true"/>
-					<fo:region-start region-name="left-region-landscape" extent="{$marginBottom}mm"/>
-					<fo:region-end region-name="right-region-landscape" extent="{$marginTop}mm"/>
-				</fo:simple-page-master>
-				<!-- ======================= -->
-				<!-- ======================= -->
-				
-				<!-- Index pages -->
-				<fo:simple-page-master master-name="page-index" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-					<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="2" column-gap="10mm"/>
-					<fo:region-before region-name="header" extent="{$marginTop}mm"/>
-					<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
-					<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
-					<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
-				</fo:simple-page-master>
-				
-				
-				<!-- ======================== -->
-				<!-- END IEEE pages -->
-				<!-- ======================== -->
-			
-			</fo:layout-master-set>
+			<xsl:call-template name="layout-master-set"/>
 			
 			<fo:declarations>
 				<xsl:call-template name="addPDFUAmeta"/>
@@ -422,8 +426,6 @@
 						</xsl:choose>
 					</xsl:variable>
 					
-					
-					
 					<xsl:variable name="society" select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:society"/> 
 					
 					<xsl:variable name="committee" select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"/>
@@ -432,20 +434,6 @@
 					<xsl:variable name="approved_date">
 						<xsl:call-template name="convertDate">
 							<xsl:with-param name="date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'issued'])"/>
-							<xsl:with-param name="format" select="'ddMMyyyy'"/>
-						</xsl:call-template>
-					</xsl:variable>
-					
-					<xsl:variable name="cutoff_date">
-						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'feedback-ended'])"/>
-							<xsl:with-param name="format" select="'ddMMyyyy'"/>
-						</xsl:call-template>
-					</xsl:variable>
-					
-					<xsl:variable name="expiration_date">
-						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'obsoleted'])"/>
 							<xsl:with-param name="format" select="'ddMMyyyy'"/>
 						</xsl:call-template>
 					</xsl:variable>
@@ -493,153 +481,23 @@
 						</fo:flow>
 					</fo:page-sequence> -->
 					
-					
-					<!-- ======================= -->
-					<!-- Cover page -->
-					<!-- ======================= -->
-					<xsl:choose>
-					
-						<xsl:when test="$current_template = 'draft'">
-							<!-- 'Draft' first page -->
-							<fo:page-sequence master-reference="document-draft" force-page-count="no-force">
-								
-								<xsl:call-template name="insertFootnoteSeparator"/>
-								
-								<xsl:call-template name="insertHeaderFooter">
-									<xsl:with-param name="document_id" select="$document_id"/>
-									<xsl:with-param name="title_prefix" select="$title_prefix"/>
-									<xsl:with-param name="title" select="$title"/>
-									<xsl:with-param name="doctype" select="$doctype"/>
-									
-									<xsl:with-param name="copyright_year" select="$copyright_year"/>
-									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
-									<xsl:with-param name="hideFooter">true</xsl:with-param>
-								</xsl:call-template>
-								
-								<fo:flow flow-name="xsl-region-body">
-									<fo:block-container margin-top="18mm" id="firstpage_id_{$num}">
-										<fo:block font-family="Arial">
-											<fo:block font-size="23pt" font-weight="bold" margin-top="50pt" margin-bottom="36pt">
-												<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
-													<xsl:attribute name="font-size">24pt</xsl:attribute>
-												</xsl:if>
-												<xsl:text>P</xsl:text>
-												<xsl:value-of select="$designation"/>
-												<xsl:text>™/D</xsl:text>
-												<xsl:value-of select="$draft_number"/>
-												<xsl:value-of select="$linebreak"/>
-												<xsl:copy-of select="$title_prefix"/>
-												<xsl:copy-of select="$title"/>
-												
-												<!-- <xsl:copy-of select="$draft_title_part"/> -->
-											</fo:block>
-											<fo:block>Developed by the</fo:block>
-											<fo:block>&#xa0;</fo:block>
-											<fo:block font-size="11pt" font-weight="bold">
-												<!-- <Committee Name> -->
-												<xsl:value-of select="$committee"/> 
-											</fo:block>
-											<fo:block>of the</fo:block>
-											<fo:block font-size="11pt" font-weight="bold">
-												 <!-- IEEE <Society Name> -->
-												<xsl:text>IEEE </xsl:text><xsl:value-of select="$society"/>
-											</fo:block>
-											<fo:block>&#xa0;</fo:block>
-											<fo:block>&#xa0;</fo:block>
-											<fo:block>
-												<!-- Approved <Date Approved> -->
-												<xsl:text>Approved </xsl:text>
-												<xsl:value-of select="$approved_date"/>
-											</fo:block>
-											<fo:block>&#xa0;</fo:block>
-											<!-- Example: IEEE SA Standards Board -->
-											<fo:block font-size="11pt" font-weight="bold"><xsl:value-of select="$approved_by"/></fo:block>
-											
-											<xsl:if test="normalize-space($cutoff_date) != ''">
-												<fo:block>&#xa0;</fo:block>
-												<fo:block>
-													<xsl:text>Cutoff date </xsl:text>
-													<xsl:value-of select="$cutoff_date"/>
-												</fo:block>
-											</xsl:if>
-											<xsl:if test="normalize-space($cutoff_date) != ''">
-												<fo:block>&#xa0;</fo:block>
-												<fo:block>
-													<xsl:text>Expiration date </xsl:text>
-													<xsl:value-of select="$expiration_date"/>
-												</fo:block>
-											</xsl:if>
-										</fo:block>
-										
-										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
-										
-										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:license-statement"/>
-									
-									
-										<fo:block break-after="page"/>
-										
-										<!-- Second page -->
-										
-										<fo:block font-family="Arial" text-align="justify">
-											<fo:block>
-												<fo:inline font-weight="bold">
-													<xsl:call-template name="getLocalizedString">
-														<xsl:with-param name="key">abstract</xsl:with-param>
-													</xsl:call-template>
-													<xsl:text>: </xsl:text>
-												</fo:inline>
-												<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:abstract/node()[not(self::mn:title)] | /mn:metanorma/mn:preface/mn:clause[@id = '_abstract' or mn:title = 'Abstract']/node()[not(self::mn:title)]"/>
-											</fo:block>
-											<fo:block>&#xa0;</fo:block>
-											<fo:block>
-												<fo:inline font-weight="bold">Keywords: </fo:inline>
-												<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:keyword">
-													<xsl:value-of select="."/>
-													<xsl:if test="position() != last()">, </xsl:if>
-												</xsl:for-each>
-											</fo:block>
-											<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:acknowledgements"/>
-										</fo:block>
-										
-										<!-- Example:
-										The Institute of Electrical and Electronics Engineers, Inc.
-										3 Park Avenue, New York, NY 10016-5997, USA
-										...
-										PDF: ISBN 978-0-XXXX-XXXX-X STDXXXXX
-										Print: ISBN 978-0-XXXX-XXXX-X STDPDXXXXX
-										-->
-										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/>
-										
-									</fo:block-container>
-								</fo:flow>
-							</fo:page-sequence> <!-- End: 'Draft' first page -->
-						</xsl:when>
-					
-						<xsl:when test="$current_template = 'standard'">
-							<xsl:call-template name="insertCoverPage_Standard">
-								<xsl:with-param name="title_intro" select="$title_intro"/>
-								<xsl:with-param name="title_main" select="$title_main"/>
-								<xsl:with-param name="society" select="$society"/>
-								<xsl:with-param name="committee" select="$committee"/>
-								<xsl:with-param name="standard_number" select="$standard_number"/>
-								<xsl:with-param name="history" select="$history_text"/>
-								<xsl:with-param name="standard_title_prefix" select="$title_prefix"/>
-								<xsl:with-param name="cutoff_date" select="$cutoff_date"/>
-								<xsl:with-param name="expiration_date" select="$expiration_date"/>
-							</xsl:call-template>
-						</xsl:when>
-						
-						
-						<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
-							<xsl:call-template name="insertCoverPage_NonStandard">
-								<xsl:with-param name="title" select="$title"/>
-							</xsl:call-template>
-						</xsl:when>
-						
-					</xsl:choose>
-					<!-- ======================= -->
-					<!-- END Cover page -->
-					<!-- ======================= -->
+					<xsl:call-template name="cover-page">
+						<xsl:with-param name="num" select="$num"/>
+						<xsl:with-param name="document_id" select="$document_id"/>
+						<xsl:with-param name="title" select="$title"/>
+						<xsl:with-param name="society" select="$society"/>
+						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+						<xsl:with-param name="copyright_year" select="$copyright_year"/>
+						<xsl:with-param name="designation" select="$designation"/>
+						<xsl:with-param name="draft_number" select="$draft_number"/>
+						<xsl:with-param name="committee" select="$committee"/>
+						<xsl:with-param name="approved_date" select="$approved_date"/>
+						<xsl:with-param name="approved_by" select="$approved_by"/>
+						<xsl:with-param name="title_intro" select="$title_intro"/>
+						<xsl:with-param name="title_main" select="$title_main"/>
+						<xsl:with-param name="standard_number" select="$standard_number"/>
+						<xsl:with-param name="history_text" select="$history_text"/>
+					</xsl:call-template>
 					
 					<xsl:variable name="title_standard_coverpage_">
 						<xsl:choose>
@@ -1157,22 +1015,10 @@
 					<!-- End IEEE pages -->
 					<!-- ===================== -->
 						
-						
-					<!-- ======================= -->
-					<!-- Back page -->
-					<!-- ======================= -->
-					<xsl:choose>
-						<xsl:when test="$current_template = 'standard'">
-							<xsl:call-template name="insertBackPage_Standard"/>
-						</xsl:when>
-						
-						<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
-							<xsl:call-template name="insertBackPage_NonStandard"/>
-						</xsl:when>
-					</xsl:choose>
-					<!-- ======================= -->
-					<!-- END Back page -->
-					<!-- ======================= -->
+					
+					<xsl:call-template name="back-page"/>
+					
+					
 					<xsl:if test="not(xalan:nodeset($paged_xml)/mn:page[*])">
 						<fo:page-sequence master-reference="document-nonstandard" force-page-count="no-force">
 							<fo:flow flow-name="xsl-region-body">
@@ -1195,6 +1041,188 @@
 			
 		</fo:root>
 	</xsl:template>
+	
+	<xsl:template name="cover-page">
+		<xsl:param name="num"/>
+		<xsl:param name="document_id"/>
+		<xsl:param name="title"/>
+		<xsl:param name="society"/>
+		<xsl:param name="copyright_holder"/>
+		<xsl:param name="copyright_year"/>
+		<xsl:param name="designation"/>
+		<xsl:param name="draft_number"/>
+		<xsl:param name="committee"/>
+		<xsl:param name="approved_date"/>
+		<xsl:param name="approved_by"/>
+		<xsl:param name="title_intro"/>
+		<xsl:param name="title_main"/>
+		<xsl:param name="standard_number"/>
+		<xsl:param name="history_text"/>
+		
+		<!-- ======================= -->
+		<!-- Cover page -->
+		<!-- ======================= -->
+		
+		<xsl:variable name="cutoff_date">
+			<xsl:call-template name="convertDate">
+				<xsl:with-param name="date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'feedback-ended'])"/>
+				<xsl:with-param name="format" select="'ddMMyyyy'"/>
+			</xsl:call-template>
+		</xsl:variable>
+		
+		<xsl:variable name="expiration_date">
+			<xsl:call-template name="convertDate">
+				<xsl:with-param name="date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'obsoleted'])"/>
+				<xsl:with-param name="format" select="'ddMMyyyy'"/>
+			</xsl:call-template>
+		</xsl:variable>
+		
+		
+		<xsl:choose>
+		
+			<xsl:when test="$current_template = 'draft'">
+			
+				<!-- 'Draft' first page -->
+				<fo:page-sequence master-reference="document-draft" force-page-count="no-force">
+					
+					<xsl:call-template name="insertFootnoteSeparator"/>
+					
+					<xsl:call-template name="insertHeaderFooter">
+						<xsl:with-param name="document_id" select="$document_id"/>
+						<xsl:with-param name="title_prefix" select="$title_prefix"/>
+						<xsl:with-param name="title" select="$title"/>
+						<xsl:with-param name="doctype" select="$doctype"/>
+						
+						<xsl:with-param name="copyright_year" select="$copyright_year"/>
+						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+						<xsl:with-param name="hideFooter">true</xsl:with-param>
+					</xsl:call-template>
+					
+					<fo:flow flow-name="xsl-region-body">
+						<fo:block-container margin-top="18mm" id="firstpage_id_{$num}">
+							<fo:block font-family="Arial">
+								<fo:block font-size="23pt" font-weight="bold" margin-top="50pt" margin-bottom="36pt">
+									<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
+										<xsl:attribute name="font-size">24pt</xsl:attribute>
+									</xsl:if>
+									<xsl:text>P</xsl:text>
+									<xsl:value-of select="$designation"/>
+									<xsl:text>™/D</xsl:text>
+									<xsl:value-of select="$draft_number"/>
+									<xsl:value-of select="$linebreak"/>
+									<xsl:copy-of select="$title_prefix"/>
+									<xsl:copy-of select="$title"/>
+									
+									<!-- <xsl:copy-of select="$draft_title_part"/> -->
+								</fo:block>
+								<fo:block>Developed by the</fo:block>
+								<fo:block>&#xa0;</fo:block>
+								<fo:block font-size="11pt" font-weight="bold">
+									<!-- <Committee Name> -->
+									<xsl:value-of select="$committee"/> 
+								</fo:block>
+								<fo:block>of the</fo:block>
+								<fo:block font-size="11pt" font-weight="bold">
+									 <!-- IEEE <Society Name> -->
+									<xsl:text>IEEE </xsl:text><xsl:value-of select="$society"/>
+								</fo:block>
+								<fo:block>&#xa0;</fo:block>
+								<fo:block>&#xa0;</fo:block>
+								<fo:block>
+									<!-- Approved <Date Approved> -->
+									<xsl:text>Approved </xsl:text>
+									<xsl:value-of select="$approved_date"/>
+								</fo:block>
+								<fo:block>&#xa0;</fo:block>
+								<!-- Example: IEEE SA Standards Board -->
+								<fo:block font-size="11pt" font-weight="bold"><xsl:value-of select="$approved_by"/></fo:block>
+								
+								<xsl:if test="normalize-space($cutoff_date) != ''">
+									<fo:block>&#xa0;</fo:block>
+									<fo:block>
+										<xsl:text>Cutoff date </xsl:text>
+										<xsl:value-of select="$cutoff_date"/>
+									</fo:block>
+								</xsl:if>
+								<xsl:if test="normalize-space($cutoff_date) != ''">
+									<fo:block>&#xa0;</fo:block>
+									<fo:block>
+										<xsl:text>Expiration date </xsl:text>
+										<xsl:value-of select="$expiration_date"/>
+									</fo:block>
+								</xsl:if>
+							</fo:block>
+							
+							<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
+							
+							<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:license-statement"/>
+						
+						
+							<fo:block break-after="page"/>
+							
+							<!-- Second page -->
+							
+							<fo:block font-family="Arial" text-align="justify">
+								<fo:block>
+									<fo:inline font-weight="bold">
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">abstract</xsl:with-param>
+										</xsl:call-template>
+										<xsl:text>: </xsl:text>
+									</fo:inline>
+									<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:abstract/node()[not(self::mn:title)] | /mn:metanorma/mn:preface/mn:clause[@id = '_abstract' or mn:title = 'Abstract']/node()[not(self::mn:title)]"/>
+								</fo:block>
+								<fo:block>&#xa0;</fo:block>
+								<fo:block>
+									<fo:inline font-weight="bold">Keywords: </fo:inline>
+									<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:keyword">
+										<xsl:value-of select="."/>
+										<xsl:if test="position() != last()">, </xsl:if>
+									</xsl:for-each>
+								</fo:block>
+								<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:acknowledgements"/>
+							</fo:block>
+							
+							<!-- Example:
+							The Institute of Electrical and Electronics Engineers, Inc.
+							3 Park Avenue, New York, NY 10016-5997, USA
+							...
+							PDF: ISBN 978-0-XXXX-XXXX-X STDXXXXX
+							Print: ISBN 978-0-XXXX-XXXX-X STDPDXXXXX
+							-->
+							<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/>
+							
+						</fo:block-container>
+					</fo:flow>
+				</fo:page-sequence> <!-- End: 'Draft' first page -->
+			</xsl:when>
+		
+			<xsl:when test="$current_template = 'standard'">
+				<xsl:call-template name="insertCoverPage_Standard">
+					<xsl:with-param name="title_intro" select="$title_intro"/>
+					<xsl:with-param name="title_main" select="$title_main"/>
+					<xsl:with-param name="society" select="$society"/>
+					<xsl:with-param name="committee" select="$committee"/>
+					<xsl:with-param name="standard_number" select="$standard_number"/>
+					<xsl:with-param name="history" select="$history_text"/>
+					<xsl:with-param name="standard_title_prefix" select="$title_prefix"/>
+					<xsl:with-param name="cutoff_date" select="$cutoff_date"/>
+					<xsl:with-param name="expiration_date" select="$expiration_date"/>
+				</xsl:call-template>
+			</xsl:when>
+			
+			
+			<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
+				<xsl:call-template name="insertCoverPage_NonStandard">
+					<xsl:with-param name="title" select="$title"/>
+				</xsl:call-template>
+			</xsl:when>
+			
+		</xsl:choose>
+		<!-- ======================= -->
+		<!-- END Cover page -->
+		<!-- ======================= -->
+	</xsl:template> <!-- END: cover-page -->
 	
 	
 	<xsl:template match="mn:preface/mn:clause[@type = 'toc']" priority="3">
@@ -3725,6 +3753,18 @@
 	<!-- =============================== -->
 	<!-- Back Pages -->
 	<!-- =============================== -->
+	<xsl:template name="back-page">
+		<xsl:choose>
+			<xsl:when test="$current_template = 'standard'">
+				<xsl:call-template name="insertBackPage_Standard"/>
+			</xsl:when>
+			
+			<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
+				<xsl:call-template name="insertBackPage_NonStandard"/>
+			</xsl:when>
+		</xsl:choose>
+	</xsl:template> <!-- END: back-page -->
+	
 	<xsl:template name="insertBackPage_Standard">
 		<fo:page-sequence master-reference="cover-and-back-page-standard" force-page-count="no-force">
 		
