@@ -1708,7 +1708,7 @@
 							<xsl:variable name="part_num">
 								<xsl:choose>
 									<xsl:when test="contains($part_num_, '.')"><xsl:value-of select="substring-before($part_num_, '.')"/></xsl:when>
-									<xsl:otherwise><xsl:value-of select="$part_num"/></xsl:otherwise>
+									<xsl:otherwise><xsl:value-of select="$part_num_"/></xsl:otherwise>
 								</xsl:choose>
 							</xsl:variable>
 							<xsl:if test="normalize-space($part_num) != ''">
