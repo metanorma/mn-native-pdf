@@ -162,9 +162,6 @@
 			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
 				<xsl:text>Part #: </xsl:text>
 			</xsl:if>
-			<xsl:if test="$namespace = 'bipm'">
-				<xsl:text>Part #</xsl:text>
-			</xsl:if>
 		</title-part>
 		<title-part lang="fr">
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
@@ -172,9 +169,6 @@
 			</xsl:if>
 			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
 				<xsl:text>Partie #:  </xsl:text>
-			</xsl:if>
-			<xsl:if test="$namespace = 'bipm'">
-				<xsl:text>Partie #</xsl:text>
 			</xsl:if>
 		</title-part>
 		<title-part lang="ru">
@@ -186,10 +180,6 @@
 			</xsl:if>
 		</title-part>
 		<title-part lang="zh">第 # 部分:</title-part>
-		
-		<title-subpart lang="en">Sub-part #</title-subpart>
-		<title-subpart lang="fr">Partie de sub #</title-subpart>
-		
 	</xsl:variable>
 	<xsl:variable name="titles" select="xalan:nodeset($titles_)"/>
 	

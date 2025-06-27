@@ -1702,18 +1702,33 @@
 						</xsl:if>
 						<!-- End Annex titles  processing -->
 						
+						<xsl:variable name="part_num_" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:structuredidentifier/mn:part)"/>
 						<!--  Part titles processing -->
 						<xsl:if test="(//mn:metanorma)[1]/mn:bibdata/mn:title[@type = 'title-part']">
-							<xsl:variable name="part_num" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:structuredidentifier/mn:part)"/>					
-							<xsl:if test="$part_num != ''">
+							<xsl:variable name="part_num">
+								<xsl:choose>
+									<xsl:when test="contains($part_num_, '.')"><xsl:value-of select="substring-before($part_num_, '.')"/></xsl:when>
+									<xsl:otherwise><xsl:value-of select="$part_num"/></xsl:otherwise>
+								</xsl:choose>
+							</xsl:variable>
+							<xsl:if test="normalize-space($part_num) != ''">
 								<fo:block font-size="{$space-factor * 30.4}pt">&#xA0;</fo:block>
+								
+								<!-- see https://github.com/metanorma/metanorma-bipm/issues/99 -->
+								<!-- Example: Part -->
+								<xsl:variable name="title_level4_ancillary"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level4_ancillary</xsl:with-param></xsl:call-template></xsl:variable>
+								<!-- Example: Partie -->
+								<xsl:variable name="title_level4_ancillary_alt"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level4_ancillary_alt</xsl:with-param></xsl:call-template></xsl:variable>
+								
 								<!-- Part -->
 								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}">
-									<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang='fr']),'#',$part_num)"/>
+									<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang='fr']),'#',$part_num)"/> -->
+									<xsl:value-of select="concat($title_level4_ancillary_alt, ' ', $part_num)"/>
 								</fo:block>
 								<!-- Partie -->
 								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}">
-									<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang='en']),'#',$part_num)"/>
+									<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang='en']),'#',$part_num)"/> -->
+									<xsl:value-of select="concat($title_level4_ancillary, ' ', $part_num)"/>
 								</fo:block>
 							</xsl:if>
 						
@@ -1736,13 +1751,24 @@
 						
 						<!-- Sub-part titles  processing -->
 						<xsl:if test="(//mn:metanorma)[1]/mn:bibdata/mn:title[@type = 'title-subpart']">
-							<xsl:variable name="subpart_num" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:structuredidentifier/mn:subpart)"/>
+							<!-- <xsl:variable name="subpart_num" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:structuredidentifier/mn:subpart)"/> -->
+							<xsl:variable name="subpart_num" select="normalize-space(substring-after($part_num_, '.'))"/>
+							
 							<xsl:if test="$subpart_num != ''">
 								<fo:block font-size="{$space-factor * 30.4}pt">&#xA0;</fo:block>
-								<!-- Sub-part -->
-								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}"><xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-subpart[@lang='fr']),'#',$subpart_num)"/> <xsl:value-of select="$subpart_num"/></fo:block>
+								
+								<!-- see https://github.com/metanorma/metanorma-bipm/issues/99 -->
+								<!-- Example: Part -->
+								<xsl:variable name="title_level5_ancillary"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level5_ancillary</xsl:with-param></xsl:call-template></xsl:variable>
+								<!-- Example: Partie de sub -->
+								<xsl:variable name="title_level5_ancillary_alt"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">level5_ancillary_alt</xsl:with-param></xsl:call-template></xsl:variable>
+								
 								<!-- Partie de sub -->
-								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}"><xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-subpart[@lang='en']),'#',$subpart_num)"/>  <xsl:value-of select="$subpart_num"/></fo:block>
+								<!-- <fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}"><xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-subpart[@lang='fr']),'#',$subpart_num)"/> <xsl:value-of select="$subpart_num"/></fo:block> -->
+								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-normal}"><xsl:value-of select="concat($title_level5_ancillary_alt, ' ', $subpart_num)"/></fo:block>
+								<!-- Sub-part -->
+								<!-- <fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}"><xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-subpart[@lang='en']),'#',$subpart_num)"/>  <xsl:value-of select="$subpart_num"/></fo:block> -->
+								<fo:block font-size="{$font-size-number-factor * 17}pt" font-weight="{$weight-bold}"><xsl:value-of select="concat($title_level5_ancillary, ' ', $subpart_num)"/></fo:block>
 							</xsl:if>
 						
 							<fo:block font-size="{$font-size-factor * 30.4}pt">
@@ -1790,7 +1816,7 @@
 	
 			</fo:flow>
 		</fo:page-sequence>	
-	</xsl:template>
+	</xsl:template> <!-- END: insertCoverPageAppendix -->
 	
 	<xsl:template name="insertCoverPageCommon">
 		<!-- background color -->
