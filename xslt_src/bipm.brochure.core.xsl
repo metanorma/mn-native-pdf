@@ -21,7 +21,7 @@
 	<xsl:param name="add_math_as_attachment">true</xsl:param>
 	<xsl:param name="final_transform">true</xsl:param>
 	
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
 	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
 	
@@ -2902,7 +2902,7 @@
 				<xsl:variable name="num">
 					<xsl:number count="//mn:table[@id = $table_id]//mn:note_side" level="any"/>
 				</xsl:variable>
-				<xsl:if test="$num = 1 and ancestor::mn:table[1]/mn:name/mn:tab" >
+				<xsl:if test="$num = 1 and ancestor::mn:table[1]/mn:fmt-name/mn:tab" >
 					<xsl:attribute name="margin-top">48pt</xsl:attribute>				
 				</xsl:if>
 				
@@ -2917,7 +2917,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:note_side/mn:name" mode="note_side" priority="2"/>	
+	<xsl:template match="mn:note_side/mn:fmt-name" mode="note_side" priority="2"/>	
 	<xsl:template match="mn:note_side/*" mode="note_side">
 		<xsl:apply-templates select="."/>
 	</xsl:template>
@@ -3124,12 +3124,12 @@
 					<fo:table-row>
 						<fo:table-cell>
 							<fo:block>
-								<xsl:apply-templates select="mn:name"/>
+								<xsl:apply-templates select="mn:fmt-name"/>
 							</fo:block>
 						</fo:table-cell>
 						<fo:table-cell>
 							<fo:block>
-								<xsl:apply-templates select="node()[not(self::mn:name)]"/>
+								<xsl:apply-templates select="node()[not(self::mn:fmt-name)]"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -3141,12 +3141,12 @@
 	<xsl:template match="mn:preferred" priority="2">		
 		<fo:block font-weight="bold" keep-with-next="always" space-before="8pt" margin-bottom="6pt">
 			<xsl:call-template name="setStyle_preferred"/>
-			<xsl:if test="ancestor::mn:term[1]/mn:name">
+			<xsl:if test="ancestor::mn:term[1]/mn:fmt-name">
 				<xsl:variable name="level">
 					<xsl:call-template name="getLevelTermName"/>
 				</xsl:variable>
 				<fo:inline role="H{$level}" font-weight="bold" padding-right="2mm">
-					<xsl:apply-templates select="ancestor::mn:term[1]/mn:name" />
+					<xsl:apply-templates select="ancestor::mn:term[1]/mn:fmt-name" />
 				</fo:inline>
 			</xsl:if>
 			<xsl:apply-templates />
@@ -3229,7 +3229,7 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="mn:note[not(ancestor::mn:preface)]/mn:name" priority="2">
+	<xsl:template match="mn:note[not(ancestor::mn:preface)]/mn:fmt-name" priority="2">
 		<xsl:choose>
 			<xsl:when test="not(../preceding-sibling::mn:note) and not((../following-sibling::mn:note))">
 				<!-- <xsl:variable name="curr_lang" select="ancestor::mn:metanorma/mn:bibdata/mn:language[@current = 'true']"/>
@@ -3275,7 +3275,7 @@
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="mn:name/text()" priority="2">
+	<xsl:template match="mn:fmt-name/text()" priority="2">
 		<xsl:value-of select="."/>
 	</xsl:template>
 

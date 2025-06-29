@@ -18,7 +18,7 @@
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
 	<xsl:variable name="namespace">plateau</xsl:variable>
 	
@@ -1280,10 +1280,10 @@
 						<fo:table-row>
 							<fo:table-cell padding="2mm">
 								<fo:block keep-with-next="always" margin-bottom="10pt" role="SKIP">
-									<xsl:apply-templates select="mn:name" />
+									<xsl:apply-templates select="mn:fmt-name" />
 								</fo:block>
 								<fo:block>
-									<xsl:apply-templates select="node()[not(self::mn:name)]" />
+									<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 								</fo:block>
 							</fo:table-cell>
 						</fo:table-row>
@@ -1306,12 +1306,12 @@
 				<fo:list-item>
 					<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
 						<fo:block xsl:use-attribute-sets="note-name-style">
-							<xsl:apply-templates select="mn:name" />
+							<xsl:apply-templates select="mn:fmt-name" />
 						</fo:block>
 					</fo:list-item-label>
 					<fo:list-item-body start-indent="body-start()">
 						<fo:block>
-							<xsl:apply-templates select="node()[not(self::mn:name)]" />
+							<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 						</fo:block>
 					</fo:list-item-body>
 				</fo:list-item>
@@ -1696,12 +1696,14 @@
 		</xsl:copy>
 	</xsl:template>
 	<xsl:template match="mn:example/mn:fmt-name[contains(mn:span/text(), ' — ')]" mode="update_xml_step1" priority="2">
-		<xsl:element name="name" namespace="{$namespace_full}">
+		<!-- <xsl:element name="name" namespace="{$namespace_full}"> -->
+		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates select="*[1]" mode="update_xml_step1"/>
-		</xsl:element>
+		</xsl:copy>
+		<!-- </xsl:element> -->
 	</xsl:template>
-	<xsl:template match="mn:example/mn:name/text()" mode="update_xml_step1">
+	<xsl:template match="mn:example/mn:fmt-name/text()" mode="update_xml_step1">
 		<xsl:variable name="example_name" select="."/>
 		<!-- 
 			<xsl:choose>
@@ -1788,7 +1790,7 @@
 			<!-- <xsl:if test="ancestor::mn:preferred">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if> -->
-			<xsl:if test="(ancestor::mn:figure or ancestor::mn:table) and parent::mn:name">
+			<xsl:if test="(ancestor::mn:figure or ancestor::mn:table) and parent::mn:fmt-name">
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 				<xsl:if test="$doctype = 'technical-report'">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>

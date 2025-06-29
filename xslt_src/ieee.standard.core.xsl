@@ -18,7 +18,7 @@
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
 	<!-- mandatory 'key' -->
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
 	<!-- mandatory variable -->
 	<xsl:variable name="namespace">ieee</xsl:variable>
@@ -1964,7 +1964,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="mn:figure[mn:name] | mn:table[mn:name and not(@unnumbered = 'true' and java:endsWith(java:java.lang.String.new(mn:name),'Key'))]" priority="2" mode="contents">		
+	<xsl:template match="mn:figure[mn:fmt-name] | mn:table[mn:fmt-name and not(@unnumbered = 'true' and java:endsWith(java:java.lang.String.new(mn:fmt-name),'Key'))]" priority="2" mode="contents">		
 		<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 			<xsl:variable name="level">
 				<xsl:for-each select="ancestor::mn:clause[1] | ancestor::mn:annex[1]">
@@ -1975,7 +1975,7 @@
 			</xsl:variable>
 			<mnx:item id="{@id}" level="{$level}" section="" type="{local-name()}" root="" display="true">
 				<xsl:variable name="name">
-					<xsl:apply-templates select="mn:name" mode="contents_item">
+					<xsl:apply-templates select="mn:fmt-name" mode="contents_item">
 						<xsl:with-param name="mode">contents</xsl:with-param>
 					</xsl:apply-templates>
 				</xsl:variable>
@@ -1989,7 +1989,7 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="mn:add[parent::mn:name and ancestor::mn:figure and normalize-space(following-sibling::node()) = '']" mode="contents_item" priority="2"/>
+	<xsl:template match="mn:add[parent::mn:fmt-name and ancestor::mn:figure and normalize-space(following-sibling::node()) = '']" mode="contents_item" priority="2"/>
 
 	<xsl:template match="text()" mode="contents_item">
 		<xsl:choose>
@@ -2070,8 +2070,8 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="mn:figures/mn:figure/mn:name/text()[1] |
-								mn:tables/mn:table/mn:name/text()[1]" mode="contents" priority="3">
+	<xsl:template match="mnx:figures/mnx:figure/mn:fmt-name/text()[1] |
+								mnx:tables/mnx:table/mn:fmt-name/text()[1]" mode="contents" priority="3">
 		<xsl:choose>
 			<xsl:when test="$current_template = 'standard' and contains(.,'—')"><xsl:value-of select="substring-after(.,'—')"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
@@ -2277,7 +2277,7 @@
 		</fn>
 	-->
 	
-	<xsl:template match="mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:name))]" mode="flatxml">
+	<xsl:template match="mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:fmt-name))]" mode="flatxml">
 		<xsl:variable name="p_fn_">
 			<xsl:call-template name="get_fn_list"/>
 		</xsl:variable>
@@ -2699,7 +2699,7 @@
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					<!-- term/name -->
-					<xsl:apply-templates select="mn:name" />
+					<xsl:apply-templates select="mn:fmt-name" />
 					<xsl:text> </xsl:text>
 					<xsl:apply-templates select="mn:preferred" />
 					<xsl:for-each select="mn:admitted">
@@ -2709,7 +2709,7 @@
 						<xsl:if test="position() = last()"><xsl:text>)</xsl:text></xsl:if>
 					</xsl:for-each>
 				</fo:block>
-				<xsl:apply-templates select="*[not(self::mn:preferred) and not(self::mn:admitted) and not(self::mn:name)]"/> <!-- further processing child elements -->
+				<xsl:apply-templates select="*[not(self::mn:preferred) and not(self::mn:admitted) and not(self::mn:fmt-name)]"/> <!-- further processing child elements -->
 		</fo:block>
 		
 	</xsl:template>
@@ -2843,7 +2843,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:name))]" priority="3">
+	<xsl:template match="mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:fmt-name))]" priority="3">
 		<xsl:call-template name="fn" />
 	</xsl:template>
 	
@@ -2913,7 +2913,7 @@
 	</xsl:template> -->
 
 
-	<xsl:template match="*[self::mn:table or self::mn:figure or self::mn:image]/mn:name/node()[1][self::text()]" priority="2">
+	<xsl:template match="*[self::mn:table or self::mn:figure or self::mn:image]/mn:fmt-name/node()[1][self::text()]" priority="2">
 		<xsl:choose>
 			<xsl:when test="contains(., '—')">
 				<xsl:variable name="substring_after" select="substring-after(., '—')"/>
@@ -2992,7 +2992,7 @@
 	</xsl:template> -->
 
 	<!-- remove space after 'NOTE' without number -->
-	<xsl:template match="*[self::mn:note or self::mn:termnote]/mn:name/text()" priority="2">
+	<xsl:template match="*[self::mn:note or self::mn:termnote]/mn:fmt-name/text()" priority="2">
 		<xsl:value-of select="normalize-space()"/>
 	</xsl:template>
 

@@ -14,7 +14,7 @@
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
 	<xsl:variable name="namespace">itu</xsl:variable>
 	
@@ -2435,7 +2435,7 @@
 						<xsl:otherwise>5mm</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-				<xsl:apply-templates select="ancestor::mn:term[1]/mn:name" />
+				<xsl:apply-templates select="ancestor::mn:term[1]/mn:fmt-name" />
 			</fo:inline>
 			<fo:inline font-weight="bold">
 				<xsl:call-template name="setStyle_preferred"/>
@@ -2606,8 +2606,8 @@
 	
 	<xsl:template match="mn:ul//mn:note  | mn:ol//mn:note" priority="2">
 		<fo:block id="{@id}">
-			<xsl:apply-templates select="mn:name" />
-			<xsl:apply-templates select="node()[not(self::mn:name)]" />
+			<xsl:apply-templates select="mn:fmt-name" />
+			<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 		</fo:block>
 	</xsl:template>
 	

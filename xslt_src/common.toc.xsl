@@ -138,11 +138,11 @@
 	
 	<xsl:template match="mn:title[following-sibling::*[1][self::mn:fmt-title]]" mode="contents"/>
 	
-	<xsl:template match="mn:figure/mn:fmt-name | 
-														mn:table/mn:fmt-name |
-														mn:permission/mn:fmt-name |
-														mn:recommendation/mn:fmt-name |
-														mn:requirement/mn:fmt-name" mode="contents">		
+	<xsl:template match="mn:figure/mn:fmt-name | mnx:figure/mn:fmt-name |
+														mn:table/mn:fmt-name | mnx:table/mn:fmt-name |
+														mn:permission/mn:fmt-name | mnx:permission/mn:fmt-name |
+														mn:recommendation/mn:fmt-name | mnx:recommendation/mn:fmt-name |
+														mn:requirement/mn:fmt-name | mnx:requirement/mn:fmt-name" mode="contents">		
 		<xsl:apply-templates mode="contents"/>
 		<xsl:text> </xsl:text>
 	</xsl:template>
@@ -159,12 +159,12 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="mn:figure/mn:fmt-name | 
-														mn:table/mn:fmt-name |
-														mn:permission/mn:fmt-name |
-														mn:recommendation/mn:fmt-name |
-														mn:requirement/mn:fmt-name |
-														mn:sourcecode/mn:fmt-name" mode="bookmarks">		
+	<xsl:template match="mn:figure/mn:fmt-name | mnx:figure/mn:fmt-name | 
+														mn:table/mn:fmt-name | mnx:table/mn:fmt-name | 
+														mn:permission/mn:fmt-name | mnx:permission/mn:fmt-name | 
+														mn:recommendation/mn:fmt-name | mnx:recommendation/mn:fmt-name | 
+														mn:requirement/mn:fmt-name | mnx:requirement/mn:fmt-name | 
+														mn:sourcecode/mn:fmt-name | mnx:sourcecode/mn:fmt-name" mode="bookmarks">		
 		<xsl:apply-templates mode="bookmarks"/>
 		<xsl:text> </xsl:text>
 	</xsl:template>
@@ -176,7 +176,8 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[self::mn:figure or self::mn:table or self::mn:permission or self::mn:recommendation or self::mn:requirement]/mn:fmt-name/text()" mode="contents" priority="2">
+	<xsl:template match="*[self::mn:figure or self::mn:table or self::mn:permission or self::mn:recommendation or self::mn:requirement]/mn:fmt-name/text() |
+		*[self::mnx:figure or self::mnx:table or self::mnx:permission or self::mnx:recommendation or self::mnx:requirement]/mn:fmt-name/text()" mode="contents" priority="2">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
@@ -187,7 +188,8 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*[self::mn:figure or self::mn:table or self::mn:permission or self::mn:recommendation or self::mn:requirement or self::mn:sourcecode]/mn:fmt-name//text()" mode="bookmarks" priority="2">
+	<xsl:template match="*[self::mn:figure or self::mn:table or self::mn:permission or self::mn:recommendation or self::mn:requirement or self::mn:sourcecode]/mn:fmt-name//text() |
+			*[self::mnx:figure or self::mnx:table or self::mnx:permission or self::mnx:recommendation or self::mnx:requirement or self::mnx:sourcecode]/mn:fmt-name//text()" mode="bookmarks" priority="2">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	

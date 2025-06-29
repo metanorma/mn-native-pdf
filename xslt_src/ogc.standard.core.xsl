@@ -15,7 +15,7 @@
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 		
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
 	<xsl:variable name="namespace">ogc</xsl:variable>
 
@@ -328,7 +328,7 @@
 							<xsl:for-each select="$contents//mnx:tables/mnx:table">
 								<fo:bookmark internal-destination="{@id}">
 									<xsl:variable name="title">
-										<xsl:apply-templates select="mn:name" mode="bookmarks"/>
+										<xsl:apply-templates select="mn:name | mn:fmt-name" mode="bookmarks"/>
 									</xsl:variable>
 									<fo:bookmark-title><xsl:value-of select="$title"/></fo:bookmark-title>
 								</fo:bookmark>
@@ -344,7 +344,7 @@
 							<xsl:for-each select="$contents//mnx:figures/mnx:figure">
 								<fo:bookmark internal-destination="{@id}">
 									<xsl:variable name="title">
-										<xsl:apply-templates select="mn:name" mode="bookmarks"/>
+										<xsl:apply-templates select="mn:name | mn:fmt-name" mode="bookmarks"/>
 									</xsl:variable>
 									<fo:bookmark-title><xsl:value-of select="$title"/></fo:bookmark-title>
 								</fo:bookmark>
@@ -1569,14 +1569,14 @@
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
 				<fo:block>
-					<xsl:apply-templates select="mn:name" />
-					<xsl:apply-templates select="node()[not(self::mn:name)]" />
+					<xsl:apply-templates select="mn:fmt-name" />
+					<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>
 	
-	<xsl:template match="mn:term/mn:name" priority="2">
+	<xsl:template match="mn:term/mn:fmt-name" priority="2">
 		<xsl:variable name="levelTerm">
 			<xsl:call-template name="getLevelTermName"/>
 		</xsl:variable>
@@ -1676,7 +1676,7 @@
 		<fo:block-container id="{@id}" margin-top="12pt" margin-bottom="12pt">			
 			<fo:block>
 				<xsl:apply-templates select="mn:note[@type = 'units']"/>
-				<xsl:apply-templates select="node()[not(self::mn:name) and not(self::mn:note and @type = 'units')]">
+				<xsl:apply-templates select="node()[not(self::mn:fmt-name) and not(self::mn:note and @type = 'units')]">
 					<xsl:with-param name="indent" select="$indent"/>
 				</xsl:apply-templates>
 			</fo:block>
@@ -1684,7 +1684,7 @@
 			<xsl:for-each select="mn:note[not(@type = 'units')]">
 				<xsl:call-template name="note"/>
 			</xsl:for-each>
-			<xsl:apply-templates select="mn:name" />
+			<xsl:apply-templates select="mn:fmt-name" />
 		</fo:block-container>
 	</xsl:template>
 
@@ -1980,7 +1980,7 @@
 		<xsl:value-of select="$linebreak"/>
 	</xsl:template>
 
-	<xsl:template match="mn:name/text()[1]" priority="2">
+	<xsl:template match="mn:fmt-name/text()[1]" priority="2">
 		<!-- 0xA0 to space replacement -->
 		<xsl:variable name="text" select="java:replaceAll(java:java.lang.String.new(.),' ',' ')"/>
 		<xsl:variable name="separator" select="' &#8212; '"/>

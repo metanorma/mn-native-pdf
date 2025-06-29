@@ -14,7 +14,7 @@
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="yes"/>
 
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
 	<xsl:variable name="namespace">csa</xsl:variable>
 
@@ -610,8 +610,8 @@
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
 				<fo:block>
-					<xsl:apply-templates select="mn:name" />
-					<xsl:apply-templates select="node()[not(self::mn:name)]" />
+					<xsl:apply-templates select="mn:fmt-name" />
+					<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>

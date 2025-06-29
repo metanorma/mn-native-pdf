@@ -14,7 +14,7 @@
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 	
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 
 	<xsl:variable name="namespace">rsd</xsl:variable>
 	
@@ -1011,8 +1011,8 @@
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
 				<fo:block>
-					<xsl:apply-templates select="mn:name" />
-					<xsl:apply-templates select="node()[not(parent::mn:name)]" />
+					<xsl:apply-templates select="mn:fmt-name" />
+					<xsl:apply-templates select="node()[not(parent::mn:fmt-name)]" />
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
@@ -1034,10 +1034,10 @@
 			<xsl:call-template name="getLevelTermName"/>
 		</xsl:variable>
 		<fo:block font-weight="bold" color="black" font-size="{$font-size}" keep-with-next="always" role="H{$levelTerm}"> <!-- 600 - semibold -->
-			<xsl:if test="preceding-sibling::*[1][self::mn:name]">
+			<xsl:if test="preceding-sibling::*[1][self::mn:fmt-name]">
 				<xsl:attribute name="space-before">11mm</xsl:attribute>
 				<fo:inline padding-right="1mm">
-					<xsl:apply-templates select="ancestor::mn:term[1]/mn:name" />
+					<xsl:apply-templates select="ancestor::mn:term[1]/mn:fmt-name" />
 				</fo:inline>
 			</xsl:if>
 			
@@ -1108,7 +1108,7 @@
 	
 	
 	
-	<xsl:template match="*[self::mn:table or self::mn:figure or self::mn:sourcecode]/mn:name/node()[1][self::text()]" priority="2">
+	<xsl:template match="*[self::mn:table or self::mn:figure or self::mn:sourcecode]/mn:fmt-name/node()[1][self::text()]" priority="2">
 		<xsl:choose>
 			<xsl:when test="contains(., '—')">
 				<xsl:variable name="name_number" select="normalize-space(translate(substring-before(., '—'), '&#xa0;', ' '))"/>

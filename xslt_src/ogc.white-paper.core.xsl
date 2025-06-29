@@ -14,7 +14,7 @@
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 	
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 
 	<xsl:variable name="namespace">ogc-white-paper</xsl:variable>
 
@@ -137,7 +137,7 @@
 					<xsl:with-param name="contents" select="$contents"/>
 					<xsl:with-param name="contents_addon">
 						<xsl:variable name="list_of_tables_figures_">
-							<xsl:for-each select="//mn:table[@id and mn:name] | //mn:figure[@id and mn:name]">
+							<xsl:for-each select="//mn:table[@id and mn:fmt-name] | //mn:figure[@id and mn:fmt-name]">
 								<table_figure id="{@id}"><xsl:apply-templates select="mn:fmt-name" mode="bookmarks"/></table_figure>
 							</xsl:for-each>
 						</xsl:variable>
@@ -419,7 +419,7 @@
 						</fo:block>
 					</xsl:for-each>
 					
-					<xsl:if test="//mn:figure[@id and mn:name] or //mn:table[@id and mn:name]">
+					<xsl:if test="//mn:figure[@id and mn:fmt-name] or //mn:table[@id and mn:fmt-name]">
 						<fo:block font-size="11pt" margin-top="8pt">&#xA0;</fo:block>
 						<fo:block font-size="11pt" margin-top="8pt">&#xA0;</fo:block>							
 						<fo:block xsl:use-attribute-sets="title-toc-style">
@@ -428,10 +428,10 @@
 								<xsl:with-param name="key">table_of_figures</xsl:with-param>
 							</xsl:call-template>
 						</fo:block>
-						<xsl:for-each select="//mn:figure[@id and mn:name] | //mn:table[@id and mn:name]">
+						<xsl:for-each select="//mn:figure[@id and mn:fmt-name] | //mn:table[@id and mn:fmt-name]">
 							<fo:block margin-top="8pt" margin-bottom="5pt" text-align-last="justify" role="TOCI">
-								<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:name}">
-									<xsl:apply-templates select="mn:name" mode="contents"/>										
+								<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:fmt-name}">
+									<xsl:apply-templates select="mn:fmt-name" mode="contents"/>										
 									<fo:inline keep-together.within-line="always">
 										<fo:leader leader-pattern="dots"/>
 										<fo:page-number-citation ref-id="{@id}"/>

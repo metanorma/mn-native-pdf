@@ -16,7 +16,7 @@
 	
 	<xsl:param name="additionalXMLs" select="''"/> <!-- iec-rice.fr.xml  -->
 	
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 		
 	<xsl:variable name="additionalXMLsArray">
 		<xsl:call-template name="split">
@@ -1313,7 +1313,7 @@
 	
 	<xsl:template name="insertListOf_Item">
 		<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm" role="TOCI">
-			<xsl:variable name="alt_text" select="normalize-space(translate(normalize-space(mn:name), '&#xa0;—', ' -'))"/>
+			<xsl:variable name="alt_text" select="normalize-space(translate(normalize-space(mn:fmt-name), '&#xa0;—', ' -'))"/>
 			<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}"> <!-- {local-name()} {@id} -->
 				<xsl:apply-templates select="." mode="contents"/>
 				<fo:inline keep-together.within-line="always" role="SKIP">

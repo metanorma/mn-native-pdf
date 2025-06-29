@@ -140,10 +140,10 @@
 	<xsl:template match="mn:indexsect//mn:li" mode="index_update">
 		<xsl:copy>
 			<xsl:apply-templates select="@*"  mode="index_update"/>
-		<xsl:apply-templates select="node()[1]" mode="process_li_element"/>
+		<xsl:apply-templates select="node()[not(self::mn:fmt-name)][1]" mode="process_li_element"/>
 		</xsl:copy>
 	</xsl:template>
-
+	
 	<xsl:template match="mn:indexsect//mn:li/node()" mode="process_li_element" priority="2">
 		<xsl:param name="element" />
 		<xsl:param name="remove" select="'false'"/>

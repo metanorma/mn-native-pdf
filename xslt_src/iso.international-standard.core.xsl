@@ -17,7 +17,7 @@
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
 	<xsl:key name="kid" match="*" use="@id"/>
 	
@@ -4587,7 +4587,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:note/mn:name/text()" priority="5">
+	<xsl:template match="mn:note/mn:fmt-name/text()" priority="5">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951' and not(translate(.,'0123456789','') = .)"> <!-- NOTE with number -->
 				<fo:inline padding-right="2mm" role="SKIP">
@@ -4606,7 +4606,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:example/mn:name/text()" priority="5">
+	<xsl:template match="mn:example/mn:fmt-name/text()" priority="5">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'"> <!--  and $revision_date_num &lt; 19610101 -->
 				<xsl:call-template name="smallcaps"/>
@@ -4616,7 +4616,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:figure/mn:name/text()" priority="5">
+	<xsl:template match="mn:figure/mn:fmt-name/text()" priority="5">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951' and not(ancestor::mn:figure[1]/@unnumbered = 'true') and not(preceding-sibling::node())">
 				<xsl:choose>
@@ -4634,7 +4634,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:table/mn:name/text()" priority="5">
+	<xsl:template match="mn:table/mn:fmt-name/text()" priority="5">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951' and not(ancestor::mn:table[1]/@unnumbered = 'true') and not(preceding-sibling::node())">
 				<xsl:choose>

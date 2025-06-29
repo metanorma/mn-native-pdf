@@ -18,7 +18,7 @@
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
 	<xsl:variable name="namespace">jis</xsl:variable>
 	
@@ -2193,7 +2193,7 @@
 			</xsl:if>
 		</fo:block>
 		<fo:block>
-			<xsl:apply-templates select="node()[not(self::mn:name)]" />
+			<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 		</fo:block>
 	</xsl:template>
 
@@ -2291,12 +2291,12 @@
 				<fo:list-item>
 					<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
 						<fo:block xsl:use-attribute-sets="note-name-style">
-							<xsl:apply-templates select="mn:name" />
+							<xsl:apply-templates select="mn:fmt-name" />
 						</fo:block>
 					</fo:list-item-label>
 					<fo:list-item-body start-indent="body-start()">
 						<fo:block>
-							<xsl:apply-templates select="node()[not(self::mn:name)]" />
+							<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 						</fo:block>
 					</fo:list-item-body>
 				</fo:list-item>
@@ -3031,7 +3031,8 @@
 	</xsl:template>
 	<!-- <xsl:template match="mn:example/mn:fmt-name[contains(normalize-space(), ' — ')]" mode="update_xml_step1"> -->
 	<xsl:template match="mn:example/mn:fmt-name[contains(mn:span/text(), ' — ')]" mode="update_xml_step1" priority="2">
-		<xsl:element name="name" namespace="{$namespace_full}">
+		<!-- <xsl:element name="name" namespace="{$namespace_full}"> -->
+		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<!-- <xsl:variable name="example_name">
 				<xsl:apply-templates select="." mode="update_xml_step1"/>
@@ -3039,7 +3040,8 @@
 			<xsl:apply-templates select="xalan:nodeset($example_name)//text()[1]" mode="update_xml_step1"/>
 			-->
 			<xsl:apply-templates select="*[1]" mode="update_xml_step1"/>
-		</xsl:element>
+		</xsl:copy>
+		<!-- </xsl:element> -->
 	</xsl:template>
 	<xsl:template match="mn:example/mn:fmt-name//text()" mode="update_xml_step1">
 		<xsl:variable name="example_name" select="."/>
@@ -3220,7 +3222,7 @@
 						<!-- convert to vertical layout -->
 						<xsl:variable name="text">
 							<xsl:choose>
-								<xsl:when test="(ancestor::*[local-name(../..) = 'note'] or ancestor::*[local-name(../..) = 'example'] ) and ancestor::*[local-name(..) = 'name']">
+								<xsl:when test="(ancestor::*[local-name(../..) = 'note'] or ancestor::*[local-name(../..) = 'example'] ) and ancestor::*[parent::mn:fmt-name]">
 									<xsl:value-of select="concat('&#x2002;', normalize-space(.))"/>
 								</xsl:when>
 								<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
@@ -3270,7 +3272,7 @@
 	</xsl:template>
 	
 	<!-- patch for correct list-item-label rendering: enclose each char in inline-container -->
-	<xsl:template match="*[self::mn:note or self::mn:example]/mn:name/text()" priority="3">
+	<xsl:template match="*[self::mn:note or self::mn:example]/mn:fmt-name/text()" priority="3">
 		<xsl:choose>
 			<xsl:when test="not($vertical_layout = 'true')">
 				<xsl:value-of select="."/>
@@ -3286,8 +3288,8 @@
 	</xsl:template>
 	
 
-	<xsl:template match="mn:figure/mn:name |
-								mn:image/mn:name" priority="3">
+	<xsl:template match="mn:figure/mn:fmt-name |
+								mn:image/mn:fmt-name" priority="3">
 		<xsl:param name="process">false</xsl:param>
 		
 		<xsl:if test="normalize-space() != '' and (not($vertical_layout = 'true') or $process = 'true')">			
@@ -5866,7 +5868,7 @@
 		</fn>
 	-->
 	<!-- fn in text -->
-	<xsl:template match="mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:name))]" mode="linear_xml" name="linear_xml_fn">
+	<xsl:template match="mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:fmt-name))]" mode="linear_xml" name="linear_xml_fn">
 		<xsl:variable name="p_fn_">
 			<xsl:call-template name="get_fn_list"/>
 			<!-- <xsl:choose>
