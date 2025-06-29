@@ -415,12 +415,12 @@
 			<xsl:call-template name="refine_termexample-style"/>
 			<xsl:call-template name="setBlockSpanAll"/>
 			
-			<xsl:apply-templates select="mn:name" />
-			<xsl:apply-templates select="node()[not(self::mn:name)]" />
+			<xsl:apply-templates select="mn:fmt-name" />
+			<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:termexample/mn:name">
+	<xsl:template match="mn:termexample/mn:fmt-name">
 		<xsl:if test="normalize-space() != ''">
 			<fo:inline xsl:use-attribute-sets="termexample-name-style">
 				<xsl:call-template name="refine_termexample-name-style"/>
@@ -507,14 +507,14 @@
 									<xsl:attribute name="start-indent">0mm</xsl:attribute>
 								</xsl:if>
 								<fo:block>
-									<xsl:apply-templates select="mn:name">
+									<xsl:apply-templates select="mn:fmt-name">
 										<xsl:with-param name="fo_element">block</xsl:with-param>
 									</xsl:apply-templates>
 								</fo:block>
 							</fo:list-item-label>
 							<fo:list-item-body start-indent="body-start()">
 								<fo:block>
-									<xsl:apply-templates select="node()[not(self::mn:name)]">
+									<xsl:apply-templates select="node()[not(self::mn:fmt-name)]">
 										<xsl:with-param name="fo_element" select="'list'"/>
 									</xsl:apply-templates>
 								</fo:block>
@@ -533,7 +533,7 @@
 					<xsl:call-template name="refine_example-style"/>
 				
 					<xsl:variable name="fo_element">
-						<xsl:if test=".//mn:table or .//mn:dl or *[not(self::mn:name)][1][self::mn:sourcecode]">block</xsl:if> 
+						<xsl:if test=".//mn:table or .//mn:dl or *[not(self::mn:fmt-name)][1][self::mn:sourcecode]">block</xsl:if> 
 						<xsl:choose>			
 							<xsl:when test="$namespace = 'bsi' or 
 																$namespace = 'iho' or 
@@ -550,7 +550,7 @@
 							<xsl:when test="$namespace = 'iec'">
 								<xsl:choose>
 									<!-- if example contains only one (except 'name') element (paragraph for example), then display it on the same line as EXAMPLE title -->
-									<xsl:when test="count(*[not(self::mn:name)]) = 1">inline</xsl:when>
+									<xsl:when test="count(*[not(self::mn:fmt-name)]) = 1">inline</xsl:when>
 									<xsl:otherwise>block</xsl:otherwise>
 								</xsl:choose>
 							</xsl:when>
@@ -566,7 +566,7 @@
 							
 								<!-- display name 'EXAMPLE' in a separate block  -->
 								<fo:block>
-									<xsl:apply-templates select="mn:name">
+									<xsl:apply-templates select="mn:fmt-name">
 										<xsl:with-param name="fo_element" select="$fo_element"/>
 									</xsl:apply-templates>
 								</fo:block>
@@ -574,7 +574,7 @@
 								<fo:block-container xsl:use-attribute-sets="example-body-style" role="SKIP">
 									<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
 										<xsl:variable name="example_body">
-											<xsl:apply-templates select="node()[not(self::mn:name)]">
+											<xsl:apply-templates select="node()[not(self::mn:fmt-name)]">
 												<xsl:with-param name="fo_element" select="$fo_element"/>
 											</xsl:apply-templates>
 										</xsl:variable>
@@ -609,14 +609,14 @@
 									<fo:list-item>
 										<fo:list-item-label start-indent="{$indent}mm" end-indent="label-end()">
 											<fo:block>
-												<xsl:apply-templates select="mn:name">
+												<xsl:apply-templates select="mn:fmt-name">
 													<xsl:with-param name="fo_element">block</xsl:with-param>
 												</xsl:apply-templates>
 											</fo:block>
 										</fo:list-item-label>
 										<fo:list-item-body start-indent="body-start()">
 											<fo:block>
-												<xsl:apply-templates select="node()[not(self::mn:name)]">
+												<xsl:apply-templates select="node()[not(self::mn:fmt-name)]">
 													<xsl:with-param name="fo_element" select="$fo_element"/>
 												</xsl:apply-templates>
 											</fo:block>
@@ -629,21 +629,21 @@
 							
 								<!-- display 'EXAMPLE' and first element in the same line -->
 								<fo:block>
-									<xsl:apply-templates select="mn:name">
+									<xsl:apply-templates select="mn:fmt-name">
 										<xsl:with-param name="fo_element" select="$fo_element"/>
 									</xsl:apply-templates>
 									<fo:inline>
-										<xsl:apply-templates select="*[not(self::mn:name)][1]">
+										<xsl:apply-templates select="*[not(self::mn:fmt-name)][1]">
 											<xsl:with-param name="fo_element" select="$fo_element"/>
 										</xsl:apply-templates>
 									</fo:inline>
 								</fo:block> 
 								
-								<xsl:if test="*[not(self::mn:name)][position() &gt; 1]">
+								<xsl:if test="*[not(self::mn:fmt-name)][position() &gt; 1]">
 									<!-- display further elements in blocks -->
 									<fo:block-container xsl:use-attribute-sets="example-body-style" role="SKIP">
 										<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
-											<xsl:apply-templates select="*[not(self::mn:name)][position() &gt; 1]">
+											<xsl:apply-templates select="*[not(self::mn:fmt-name)][position() &gt; 1]">
 												<xsl:with-param name="fo_element" select="'block'"/>
 											</xsl:apply-templates>
 										</fo:block-container>
@@ -660,7 +660,7 @@
 	
 	
 	<!-- example/name -->
-	<xsl:template match="mn:example/mn:name">
+	<xsl:template match="mn:example/mn:fmt-name">
 		<xsl:param name="fo_element">block</xsl:param>
 	
 		<xsl:choose>
@@ -688,8 +688,8 @@
 	</xsl:template>
 	
 	<!-- table/example/name, table/tfoot//example/name -->
-	<xsl:template match="mn:table/mn:example/mn:name |
-	mn:table/mn:tfoot//mn:example/mn:name">
+	<xsl:template match="mn:table/mn:example/mn:fmt-name |
+	mn:table/mn:tfoot//mn:example/mn:fmt-name">
 		<fo:inline xsl:use-attribute-sets="example-name-style">
 			<xsl:if test="$namespace = 'jis'">
 				<xsl:if test="not($vertical_layout = 'true')">

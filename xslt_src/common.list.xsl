@@ -754,7 +754,7 @@
 	
 	<xsl:template match="mn:ul | mn:ol" mode="list" name="list">
 	
-		<xsl:apply-templates select="mn:name">
+		<xsl:apply-templates select="mn:fmt-name">
 			<xsl:with-param name="process">true</xsl:with-param>
 		</xsl:apply-templates>
 	
@@ -800,7 +800,7 @@
 		
 			<xsl:call-template name="refine_list-style"/>
 			
-			<xsl:if test="mn:name">
+			<xsl:if test="mn:fmt-name">
 				<xsl:attribute name="margin-top">0pt</xsl:attribute>
 			</xsl:if>
 			
@@ -844,7 +844,7 @@
 	</xsl:template> <!-- refine_list-style_provisional-distance-between-starts -->
 	
 	
-	<xsl:template match="*[self::mn:ol or self::mn:ul]/mn:name">
+	<xsl:template match="*[self::mn:ol or self::mn:ul]/mn:fmt-name">
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
 			<fo:block xsl:use-attribute-sets="list-name-style">

@@ -147,7 +147,7 @@
 			<xsl:if test="starts-with(@id, 'boxed-text')">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$document_type != 'PAS' and mn:name">
+			<xsl:if test="$document_type != 'PAS' and mn:fmt-name">
 				<xsl:attribute name="margin-top">-14pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="not(mn:tbody) and mn:thead">
@@ -161,7 +161,7 @@
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 				<!-- two-columns table without name renders in column (not spanned) -->
 				<xsl:choose>
-					<xsl:when test="count(mn:colgroup/mn:col) = 2 and not(mn:name) and not(mn:thead)">
+					<xsl:when test="count(mn:colgroup/mn:col) = 2 and not(mn:fmt-name) and not(mn:thead)">
 						<xsl:attribute name="font-size">inherit</xsl:attribute>
 					</xsl:when>
 					<xsl:when test="@width = 'text-width'"><!-- renders in column, not spanned --></xsl:when>
@@ -172,7 +172,7 @@
 				<xsl:attribute name="margin-top">12pt</xsl:attribute>
 				<xsl:attribute name="space-before">12pt</xsl:attribute>
 				<xsl:attribute name="space-after">12pt</xsl:attribute>
-				<xsl:if test="not(mn:name) and (ancestor::mn:clause[@type = 'corrigenda'] or contains(ancestor::mn:clause[1]/mn:fmt-title, 'Amendments/corrigenda'))">
+				<xsl:if test="not(mn:fmt-name) and (ancestor::mn:clause[@type = 'corrigenda'] or contains(ancestor::mn:clause[1]/mn:fmt-title, 'Amendments/corrigenda'))">
 					<xsl:attribute name="margin-top">2pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -199,7 +199,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:if test="not(mn:name)">
+			<xsl:if test="not(mn:fmt-name)">
 				<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="starts-with(@id, 'array_')">
@@ -338,8 +338,8 @@
 				<xsl:attribute name="border-bottom">2.5pt solid black</xsl:attribute>
 			</xsl:if>
 			<xsl:if test=".//*[local-name() = 'tr'][1]/*[local-name() = 'td'][normalize-space() = 'Key'] or
-			normalize-space(substring-after(mn:name, '—')) = 'Key' or 
-			normalize-space(mn:name) = 'Key'
+			normalize-space(substring-after(mn:fmt-name, '—')) = 'Key' or 
+			normalize-space(mn:fmt-name) = 'Key'
 			">
 				<xsl:attribute name="border-bottom">none</xsl:attribute>
 			</xsl:if>
@@ -363,7 +363,7 @@
 					<xsl:attribute name="border-bottom">none</xsl:attribute>
 				</xsl:if>
 				<!-- two-columns table without name renders without borders -->
-				<xsl:if test="count(mn:colgroup/mn:col) = 2 and not(mn:name) and not(*[local-name() = 'thead'])">
+				<xsl:if test="count(mn:colgroup/mn:col) = 2 and not(mn:fmt-name) and not(*[local-name() = 'thead'])">
 					<xsl:attribute name="border-bottom">none</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -850,7 +850,7 @@
 		</xsl:if>
 	
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:if test="position() = 1 and not(ancestor::mn:table/*[local-name() = 'thead']) and ancestor::mn:table/mn:name">
+			<xsl:if test="position() = 1 and not(ancestor::mn:table/*[local-name() = 'thead']) and ancestor::mn:table/mn:fmt-name">
 				<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -1262,8 +1262,8 @@
 			<!-- Key table for figure -->
 			<xsl:if test="ancestor::mn:table[1]/preceding-sibling::*[1][self::mn:figure] and 
 			(ancestor::mn:table[1]//*[local-name() = 'tr'][1]/*[local-name() = 'td'][normalize-space() = 'Key'] or
-			normalize-space(substring-after(ancestor::mn:table[1]/mn:name, '—')) = 'Key' or 
-			normalize-space(ancestor::mn:table[1]/mn:name) = 'Key')">
+			normalize-space(substring-after(ancestor::mn:table[1]/mn:fmt-name, '—')) = 'Key' or 
+			normalize-space(ancestor::mn:table[1]/mn:fmt-name) = 'Key')">
 				<xsl:attribute name="border">none</xsl:attribute>
 				
 				<xsl:if test="count(*) = 1 and local-name(*[1]) = 'figure'">
@@ -1316,7 +1316,7 @@
 			<xsl:if test="$document_type = 'PAS'">
 				<xsl:attribute name="border">0.75pt solid <xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 				<!-- two-columns table without name renders without borders -->
-				<xsl:if test="ancestor::mn:table[count(mn:colgroup/mn:col) = 2 and not(mn:name) and not(*[local-name() = 'thead'])]">
+				<xsl:if test="ancestor::mn:table[count(mn:colgroup/mn:col) = 2 and not(mn:fmt-name) and not(*[local-name() = 'thead'])]">
 					<xsl:attribute name="border">none</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -1836,13 +1836,13 @@
 			<xsl:choose>
 				<xsl:when test="$namespace = 'bsi'">
 					<xsl:if test="$document_type != 'PAS'">
-						<xsl:apply-templates select="mn:name" />
+						<xsl:apply-templates select="mn:fmt-name" />
 					</xsl:if>
 				</xsl:when>
 				<xsl:when test="$namespace = 'ieee' or $namespace = 'jcgm'"></xsl:when> <!-- table name will be rendered in table-header --> <!--  or $namespace = 'iso'  -->
 				<xsl:when test="$namespace = 'ogc-white-paper'"></xsl:when> <!-- table's title will be rendered after table -->
 				<xsl:otherwise>
-					<xsl:apply-templates select="mn:name" /> <!-- table's title rendered before table -->
+					<xsl:apply-templates select="mn:fmt-name" /> <!-- table's title rendered before table -->
 				</xsl:otherwise>
 			</xsl:choose>
 			
@@ -1895,7 +1895,7 @@
 			
 			<fo:block-container xsl:use-attribute-sets="table-container-style" role="SKIP">
 			
-				<xsl:for-each select="mn:name">
+				<xsl:for-each select="mn:fmt-name">
 					<xsl:call-template name="setIDforNamedDestination"/>
 				</xsl:for-each>
 			
@@ -1906,7 +1906,7 @@
 				<!-- display table's name before table for PAS inside block-container (2-columnn layout) -->
 				<xsl:if test="$namespace = 'bsi'">
 					<xsl:if test="$document_type = 'PAS'">
-						<xsl:apply-templates select="mn:name" />
+						<xsl:apply-templates select="mn:fmt-name" />
 					</xsl:if>
 				</xsl:if>
 				
@@ -1969,7 +1969,7 @@
 						</xsl:attribute>
 					</xsl:for-each>
 					
-					<xsl:variable name="isNoteOrFnExist" select="./mn:note[not(@type = 'units')] or ./mn:example or .//mn:fn[local-name(..) != 'name'] or ./mn:source"/>				
+					<xsl:variable name="isNoteOrFnExist" select="./mn:note[not(@type = 'units')] or ./mn:example or .//mn:fn[not(parent::mn:fmt-name)] or ./mn:source"/>				
 					<xsl:if test="$isNoteOrFnExist = 'true'">
 						<!-- <xsl:choose>
 							<xsl:when test="$namespace = 'plateau'"></xsl:when>
@@ -2026,7 +2026,7 @@
 									<xsl:apply-templates select="*[local-name()='thead']" mode="process_tbody"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:apply-templates select="node()[not(self::mn:name) and not(self::mn:note) and not(self::mn:example) and not(self::mn:dl) and not(self::mn:source) and not(self::mn:p)
+									<xsl:apply-templates select="node()[not(self::mn:fmt-name) and not(self::mn:note) and not(self::mn:example) and not(self::mn:dl) and not(self::mn:source) and not(self::mn:p)
 									and not(self::mn:thead) and not(self::mn:tfoot) and not(self::mn:fmt-footnote-container)]" /> <!-- process all table' elements, except name, header, footer, note, source and dl which render separaterely -->
 								</xsl:otherwise>
 							</xsl:choose>
@@ -2059,7 +2059,7 @@
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'ogc-white-paper'">
-					<xsl:apply-templates select="mn:name" />
+					<xsl:apply-templates select="mn:fmt-name" />
 				</xsl:if>
 				
 				<!-- https://github.com/metanorma/metanorma-plateau/issues/171
@@ -2191,7 +2191,7 @@
 	</xsl:template>
 	
 	<!-- table/name-->
-	<xsl:template match="*[local-name()='table']/mn:name">
+	<xsl:template match="*[local-name()='table']/mn:fmt-name">
 		<xsl:param name="continued"/>
 		<xsl:param name="cols-count"/>
 		<xsl:if test="normalize-space() != ''">
@@ -2716,7 +2716,7 @@
 				</xsl:call-template>				
 			</xsl:if>
 			<xsl:if test="$namespace = 'bsi'">
-				<xsl:if test="ancestor::mn:table/mn:name">
+				<xsl:if test="ancestor::mn:table/mn:fmt-name">
 					<xsl:call-template name="table-header-title">
 						<xsl:with-param name="cols-count" select="$cols-count"/>
 					</xsl:call-template>
@@ -2750,7 +2750,7 @@
 								</xsl:if>
 							</xsl:if>
 							
-							<xsl:apply-templates select="ancestor::mn:table/mn:name">
+							<xsl:apply-templates select="ancestor::mn:table/mn:fmt-name">
 								<xsl:with-param name="continued">true</xsl:with-param>
 							</xsl:apply-templates>
 							
@@ -2762,12 +2762,12 @@
 					</xsl:when>
 					<xsl:otherwise>
 				
-						<xsl:apply-templates select="ancestor::mn:table/mn:name">
+						<xsl:apply-templates select="ancestor::mn:table/mn:fmt-name">
 							<xsl:with-param name="continued">true</xsl:with-param>
 							<xsl:with-param name="cols-count" select="$cols-count"/>
 						</xsl:apply-templates>
 						
-						<xsl:if test="not(ancestor::mn:table/mn:name)"> <!-- to prevent empty fo:table-cell in case of missing table's name -->
+						<xsl:if test="not(ancestor::mn:table/mn:fmt-name)"> <!-- to prevent empty fo:table-cell in case of missing table's name -->
 							<fo:block role="SKIP"></fo:block>
 						</xsl:if>
 						
@@ -2845,7 +2845,7 @@
 		<xsl:param name="colwidths"/>
 		<xsl:param name="colgroup"/>
 		
-		<xsl:variable name="isNoteOrFnExist" select="../mn:note[not(@type = 'units')] or ../mn:example or ../mn:dl or ..//mn:fn[local-name(..) != 'name'] or ../mn:source or ../mn:p"/>
+		<xsl:variable name="isNoteOrFnExist" select="../mn:note[not(@type = 'units')] or ../mn:example or ../mn:dl or ..//mn:fn[not(parent::mn:fmt-name)] or ../mn:source or ../mn:p"/>
 		
 		<xsl:variable name="isNoteOrFnExistShowAfterTable">
 			<xsl:if test="$namespace = 'bsi'">
@@ -3059,7 +3059,7 @@
 		
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<!-- if there isn't 'thead' and there is a table's title -->
-			<xsl:if test="not(ancestor::mn:table/mn:thead) and ancestor::mn:table/mn:name">
+			<xsl:if test="not(ancestor::mn:table/mn:thead) and ancestor::mn:table/mn:fmt-name">
 				<fo:table-header>
 					<xsl:if test="$namespace = 'jcgm'">
 						<xsl:attribute name="role">Caption</xsl:attribute>
@@ -3098,7 +3098,7 @@
 					</xsl:if>
 				</xsl:variable>
 				
-				<xsl:variable name="title_start" select="ancestor::mn:table[1]/mn:name/node()[1][self::text()]"/>
+				<xsl:variable name="title_start" select="ancestor::mn:table[1]/mn:fmt-name/node()[1][self::text()]"/>
 				<xsl:variable name="table_number" select="substring-before($title_start, '—')"/>
 				
 				<fo:table-row height="0" keep-with-next.within-page="always" role="SKIP">
@@ -3489,12 +3489,12 @@
 					<fo:list-item>
 						<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
 							<fo:block>
-								<xsl:apply-templates select="mn:name" />
+								<xsl:apply-templates select="mn:fmt-name" />
 							</fo:block>
 						</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()" xsl:use-attribute-sets="table-fn-body-style">
 							<fo:block>
-								<xsl:apply-templates select="node()[not(self::mn:name)]" />
+								<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 							</fo:block>
 						</fo:list-item-body>
 					</fo:list-item>
@@ -3513,7 +3513,7 @@
 						
 						<xsl:call-template name="refine_table-note-name-style"/>
 						
-						<xsl:apply-templates select="mn:name" />
+						<xsl:apply-templates select="mn:fmt-name" />
 						
 					</fo:inline>
 					
@@ -3523,7 +3523,7 @@
 						</xsl:if>
 					</xsl:if>
 					
-					<xsl:apply-templates select="node()[not(self::mn:name)]" />
+					<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 				</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -3773,7 +3773,7 @@
 	
 	<!-- footnotes for table's name rendering -->
 	<xsl:template name="table_name_fn_display">
-		<xsl:for-each select="mn:name//mn:fn">
+		<xsl:for-each select="mn:fmt-name//mn:fn">
 			<xsl:variable name="reference" select="@reference"/>
 			<fo:block id="{@reference}_{ancestor::*[@id][1]/@id}"><xsl:value-of select="@reference"/></fo:block>
 			<fo:block margin-bottom="12pt">

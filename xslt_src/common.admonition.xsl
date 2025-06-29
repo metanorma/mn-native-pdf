@@ -348,7 +348,7 @@
 								<xsl:call-template name="displayAdmonitionName"/>
 							</fo:block>
 							
-							<xsl:apply-templates select="node()[not(self::mn:name)]" />
+							<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 						</fo:block>
 					</xsl:when>
 					<xsl:otherwise>	<!-- BSI -->
@@ -363,12 +363,12 @@
 							<xsl:attribute name="margin-right">5mm</xsl:attribute>
 							<fo:block-container xsl:use-attribute-sets="admonition-container-style" role="SKIP">
 								<fo:block></fo:block>
-								<xsl:if test="mn:name">
+								<xsl:if test="mn:fmt-name">
 									<fo:block xsl:use-attribute-sets="admonition-name-style">
 										<xsl:call-template name="displayAdmonitionName"/>
 									</fo:block>
 								</xsl:if>
-								<xsl:apply-templates select="node()[not(self::mn:name)]" />
+								<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 							</fo:block-container>
 						</fo:block-container>
 					</xsl:otherwise>
@@ -405,7 +405,7 @@
 						</xsl:call-template>
 					</xsl:if>
 					
-					<xsl:apply-templates select="node()[not(self::mn:name)]" />
+					<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 				</fo:block>
 			</xsl:when>
 			
@@ -461,7 +461,7 @@
 								<fo:block xsl:use-attribute-sets="admonition-name-style">
 									<xsl:call-template name="displayAdmonitionName"/>
 								</fo:block>
-								<xsl:apply-templates select="node()[not(self::mn:name)]" />
+								<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 							</fo:block>
 						</xsl:when>
 						
@@ -485,7 +485,7 @@
 											<xsl:call-template name="displayAdmonitionName"/>
 										</fo:block>
 										<fo:block xsl:use-attribute-sets="admonition-p-style">
-											<xsl:apply-templates select="node()[not(self::mn:name)]" />
+											<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 										</fo:block>
 									</xsl:when>
 									
@@ -496,7 +496,7 @@
 													<!-- <xsl:with-param name="sep"> – </xsl:with-param>
 												</xsl:call-template> -->
 											</fo:inline>
-											<xsl:apply-templates select="node()[not(self::mn:name)]" />
+											<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 										</fo:block>
 									</xsl:when>
 									
@@ -508,7 +508,7 @@
 														<xsl:with-param name="sep">: </xsl:with-param>
 													</xsl:call-template>
 												</fo:inline>
-												<xsl:apply-templates select="node()[not(self::mn:name)]" />
+												<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 											</fo:block>
 										</fo:block-container>
 									</xsl:when>
@@ -516,7 +516,7 @@
 									<xsl:otherwise>
 										<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
 											<fo:block>
-												<xsl:apply-templates select="node()[not(self::mn:name)]" />
+												<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 											</fo:block>
 										</fo:block-container>
 									</xsl:otherwise>
@@ -549,7 +549,7 @@
 			</xsl:otherwise>
 		</xsl:choose> -->
 		<xsl:variable name="name">
-			<xsl:apply-templates select="mn:name"/>
+			<xsl:apply-templates select="mn:fmt-name"/>
 		</xsl:variable>
 		<xsl:copy-of select="$name"/>
 		<xsl:if test="normalize-space($name) != ''">
@@ -557,7 +557,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="mn:admonition/mn:name">
+	<xsl:template match="mn:admonition/mn:fmt-name">
 		<xsl:apply-templates />
 	</xsl:template>
 	

@@ -467,7 +467,7 @@
 	-->
 	<!-- footnotes in text (title, bibliography, main body), not for tables, figures and names --> <!-- table's, figure's names -->
 	<!-- fn in text -->
-	<xsl:template match="mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:name))]" priority="2" name="fn">
+	<xsl:template match="mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:fmt-name))]" priority="2" name="fn">
 		<xsl:param name="footnote_body_from_table">false</xsl:param>
 		
 		<!-- list of unique footnotes -->
@@ -733,7 +733,7 @@
 					<!-- commented:
 					 .//mn:bibitem[ancestor::mn:references]/mn:note |
 					 because 'fn' there is in biblio-tag -->
-					<xsl:for-each select=".//mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:name))][generate-id(.)=generate-id(key('kfn',@reference)[1])]">
+					<xsl:for-each select=".//mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:fmt-name))][generate-id(.)=generate-id(key('kfn',@reference)[1])]">
 						<!-- copy unique fn -->
 						<fn gen_id="{generate-id(.)}">
 							<xsl:copy-of select="@*"/>

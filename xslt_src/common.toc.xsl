@@ -80,7 +80,7 @@
 
 	<xsl:template name="processTables_Contents">
 		<mnx:tables>
-			<xsl:for-each select="//mn:table[not(ancestor::mn:metanorma-extension)][@id and mn:name and normalize-space(@id) != '']">
+			<xsl:for-each select="//mn:table[not(ancestor::mn:metanorma-extension)][@id and mn:fmt-name and normalize-space(@id) != '']">
 				<xsl:choose>
 					<xsl:when test="mn:fmt-name">
 						<xsl:variable name="fmt_name">
@@ -102,7 +102,7 @@
 	
 	<xsl:template name="processFigures_Contents">
 		<mnx:figures>
-			<xsl:for-each select="//mn:figure[@id and mn:name and not(@unnumbered = 'true') and normalize-space(@id) != ''] | //*[@id and starts-with(mn:name, 'Figure ') and normalize-space(@id) != '']">
+			<xsl:for-each select="//mn:figure[@id and mn:fmt-name and not(@unnumbered = 'true') and normalize-space(@id) != ''] | //*[@id and starts-with(mn:name, 'Figure ') and normalize-space(@id) != '']">
 				<xsl:choose>
 					<xsl:when test="mn:fmt-name">
 						<xsl:variable name="fmt_name">

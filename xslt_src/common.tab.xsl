@@ -114,14 +114,14 @@
 			</xsl:if>
 			<xsl:if test="$namespace = 'ogc'">
 				<xsl:choose>
-					<xsl:when test="ancestor::mn:note and ancestor::mn:name">1</xsl:when>
+					<xsl:when test="ancestor::mn:note and ancestor::mn:fmt-name">1</xsl:when>
 					<xsl:when test="$depth = 2">2</xsl:when>
 					<xsl:otherwise>1</xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>
 			<xsl:if test="$namespace = 'ogc-white-paper'">
 				<xsl:choose>
-					<xsl:when test="ancestor::mn:note and ancestor::mn:name">4</xsl:when>
+					<xsl:when test="ancestor::mn:note and ancestor::mn:fmt-name">4</xsl:when>
 					<xsl:when test="$depth &gt;= 5"/>
 					<xsl:when test="$depth &gt;= 4">5</xsl:when>
 					<xsl:when test="$depth &gt;= 3 and ancestor::mn:terms">3</xsl:when>
@@ -183,10 +183,10 @@
 		
 	</xsl:template> <!-- tab -->
 	
-	<xsl:template match="mn:note/mn:name/mn:tab" priority="2"/>
-	<xsl:template match="mn:termnote/mn:name/mn:tab" priority="2"/>
+	<xsl:template match="mn:note/mn:fmt-name/mn:tab" priority="2"/>
+	<xsl:template match="mn:termnote/mn:fmt-name/mn:tab" priority="2"/>
 	
-	<xsl:template match="mn:note/mn:name/mn:tab" mode="tab">
+	<xsl:template match="mn:note/mn:fmt-name/mn:tab" mode="tab">
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
 		</xsl:if>

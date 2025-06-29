@@ -912,7 +912,7 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="mn:name/text()">
+	<xsl:template match="mn:name/text() | mn:fmt-name/text()">
 		<!-- 0xA0 to space replacement -->
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),' ',' ')"/>
 	</xsl:template>
@@ -979,7 +979,7 @@
 	<!-- <xsl:template match="mn:fmt-title" /> -->
 
 	<!-- fmt-name renamed to name in update_xml_step1 -->
-	<xsl:template match="mn:fmt-name" />
+	<!-- <xsl:template match="mn:fmt-name" /> -->
 		
 	<!-- fmt-preferred renamed to preferred in update_xml_step1 -->
 	<xsl:template match="mn:fmt-preferred" />
@@ -1555,7 +1555,7 @@
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:when>
-						<xsl:when test="ancestor::mn:sections and self::mn:name and parent::mn:term">
+						<xsl:when test="ancestor::mn:sections and self::mn:fmt-name and parent::mn:term">
 							<xsl:variable name="upper_terms_depth" select="normalize-space(ancestor::mn:terms[1]/mn:fmt-title/@depth)"/>
 							<xsl:choose>
 								<xsl:when test="string(number($upper_terms_depth)) != 'NaN'">
@@ -1702,7 +1702,7 @@
 					normalize-space(java:matches(java:java.lang.String.new(@id), '_[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}')) = 'false'">
 				<fox:destination internal-destination="{@id}"/>
 			</xsl:if>
-			<xsl:for-each select=". | mn:fmt-title | mn:name">
+			<xsl:for-each select=". | mn:fmt-title | mn:fmt-name">
 				<xsl:if test="@named_dest">
 					<fox:destination internal-destination="{@named_dest}"/>
 				</xsl:if>

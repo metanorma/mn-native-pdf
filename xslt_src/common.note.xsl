@@ -249,7 +249,7 @@
 	
 	<xsl:template name="refine_note-name-style">
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:variable name="name" select="normalize-space(mn:name)" />
+			<xsl:variable name="name" select="normalize-space(mn:fmt-name)" />
 			<!-- if NOTE without number -->
 			<xsl:if test="translate(substring($name, string-length($name)), '0123456789', '') != ''">
 				<xsl:attribute name="padding-right">3.5mm</xsl:attribute>
@@ -263,7 +263,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:variable name="note_name" select="mn:name"/>
+			<xsl:variable name="note_name" select="mn:fmt-name"/>
 			<xsl:if test="$layoutVersion = '1951'">
 				<xsl:if test="$revision_date_num"> <!--  &lt; 19610101 -->
 					<xsl:attribute name="padding-right">0mm</xsl:attribute>
@@ -460,7 +460,7 @@
 				<xsl:if test="not(following-sibling::*)">
 					<xsl:attribute name="space-after">24pt</xsl:attribute>
 					<xsl:variable name="level">
-						<xsl:for-each select="ancestor::mn:term/mn:name">
+						<xsl:for-each select="ancestor::mn:term/mn:fmt-name">
 							<xsl:call-template name="getLevelTermName"/>
 						</xsl:for-each>
 					</xsl:variable>
@@ -504,7 +504,7 @@
 	<xsl:template name="refine_termnote-name-style">
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
-			<xsl:variable name="name" select="normalize-space(mn:name)" />
+			<xsl:variable name="name" select="normalize-space(mn:fmt-name)" />
 			<!-- if NOTE without number -->
 			<xsl:if test="translate(substring($name, string-length($name)), '0123456789', '') != ''">
 				<xsl:attribute name="padding-right">3.5mm</xsl:attribute>
@@ -550,7 +550,7 @@
 						<xsl:attribute name="provisional-distance-between-starts">
 							<xsl:choose>
 								<!-- if last char is digit -->
-								<xsl:when test="translate(substring(mn:name, string-length(mn:name)),'0123456789','') = ''"><xsl:value-of select="16 + $text_indent"/>mm</xsl:when>
+								<xsl:when test="translate(substring(mn:fmt-name, string-length(mn:fmt-name)),'0123456789','') = ''"><xsl:value-of select="16 + $text_indent"/>mm</xsl:when>
 								<xsl:otherwise><xsl:value-of select="10 + $text_indent"/>mm</xsl:otherwise>
 							</xsl:choose>
 						</xsl:attribute>
@@ -561,12 +561,12 @@
 								</xsl:if>
 								<fo:block xsl:use-attribute-sets="note-name-style">
 									<xsl:call-template name="refine_note-name-style"/>
-									<xsl:apply-templates select="mn:name" />
+									<xsl:apply-templates select="mn:fmt-name" />
 								</fo:block>
 							</fo:list-item-label>
 							<fo:list-item-body start-indent="body-start()">
 								<fo:block>
-									<xsl:apply-templates select="node()[not(self::mn:name)]" />
+									<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 								</fo:block>
 							</fo:list-item-body>
 						</fo:list-item>
@@ -605,7 +605,7 @@
 											</fo:table-cell>
 											<fo:table-cell>
 												<fo:block text-align="justify" role="SKIP">
-													<xsl:apply-templates select="node()[not(self::mn:name)]" />
+													<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 												</fo:block>
 											</fo:table-cell>
 										</fo:table-row>
@@ -621,28 +621,28 @@
 									
 									<fo:inline xsl:use-attribute-sets="note-name-style" role="SKIP">
 										
-										<xsl:apply-templates select="mn:name/mn:tab" mode="tab"/>
+										<xsl:apply-templates select="mn:fmt-name/mn:tab" mode="tab"/>
 									
 										<xsl:call-template name="refine_note-name-style"/>
 									
 										<!-- if 'p' contains all text in 'add' first and last elements in first p are 'add' -->
 										<!-- <xsl:if test="*[not(local-name()='name')][1][node()[normalize-space() != ''][1][local-name() = 'add'] and node()[normalize-space() != ''][last()][local-name() = 'add']]"> -->
-										<xsl:if test="*[not(local-name()='name')][1][count(node()[normalize-space() != '']) = 1 and mn:add]">
+										<xsl:if test="*[not(self::mn:fmt-name)][1][count(node()[normalize-space() != '']) = 1 and mn:add]">
 											<xsl:call-template name="append_add-style"/>
 										</xsl:if>
 										
 										<!-- if note contains only one element and first and last childs are `add` ace-tag, then move start ace-tag before NOTE's name-->
-										<xsl:if test="count(*[not(self::mn:name)]) = 1 and *[not(self::mn:name)]/node()[last()][self::mn:add][starts-with(text(), $ace_tag)]">
-											<xsl:apply-templates select="*[not(self::mn:name)]/node()[1][self::mn:add][starts-with(text(), $ace_tag)]">
+										<xsl:if test="count(*[not(self::mn:fmt-name)]) = 1 and *[not(self::mn:fmt-name)]/node()[last()][self::mn:add][starts-with(text(), $ace_tag)]">
+											<xsl:apply-templates select="*[not(self::mn:fmt-name)]/node()[1][self::mn:add][starts-with(text(), $ace_tag)]">
 												<xsl:with-param name="skip">false</xsl:with-param>
 											</xsl:apply-templates> 
 										</xsl:if>
 										
-										<xsl:apply-templates select="mn:name" />
+										<xsl:apply-templates select="mn:fmt-name" />
 										
 									</fo:inline>
 									
-									<xsl:apply-templates select="node()[not(self::mn:name)]" />
+									<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 								</fo:block>
 							</xsl:otherwise>
 						</xsl:choose>
@@ -739,7 +739,7 @@
 				<xsl:choose>
 					<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd'"></xsl:when>
 					<xsl:otherwise>
-						<xsl:if test="not(mn:name/following-sibling::node()[1][self::text()][normalize-space()=''])">
+						<xsl:if test="not(mn:fmt-name/following-sibling::node()[1][self::text()][normalize-space()=''])">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>
 						</xsl:if>
 					</xsl:otherwise>
@@ -749,20 +749,20 @@
 			
 				<!-- if 'p' contains all text in 'add' first and last elements in first p are 'add' -->
 				<!-- <xsl:if test="*[not(local-name()='name')][1][node()[normalize-space() != ''][1][local-name() = 'add'] and node()[normalize-space() != ''][last()][local-name() = 'add']]"> -->
-				<xsl:if test="*[not(local-name()='name')][1][count(node()[normalize-space() != '']) = 1 and mn:add]">
+				<xsl:if test="*[not(self::mn:fmt-name)][1][count(node()[normalize-space() != '']) = 1 and mn:add]">
 					<xsl:call-template name="append_add-style"/>
 				</xsl:if>
 				
-				<xsl:apply-templates select="mn:name" />
+				<xsl:apply-templates select="mn:fmt-name" />
 				
 			</fo:inline>
 			
-			<xsl:apply-templates select="node()[not(self::mn:name)]" />
+			<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 		</fo:block>
 	</xsl:template>
 
 
-	<xsl:template match="mn:note/mn:name">
+	<xsl:template match="mn:note/mn:fmt-name">
 		<xsl:param name="sfx"/>
 		<xsl:variable name="suffix">
 			<xsl:choose>
@@ -802,7 +802,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="mn:termnote/mn:name">
+	<xsl:template match="mn:termnote/mn:fmt-name">
 		<xsl:param name="sfx"/>
 		<xsl:variable name="suffix">
 			<xsl:choose>

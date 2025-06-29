@@ -75,9 +75,9 @@
 	<xsl:template match="mn:appendix//mn:example" priority="2">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-example-style">			
-			<xsl:apply-templates select="mn:name" />
+			<xsl:apply-templates select="mn:fmt-name" />
 		</fo:block>
-		<xsl:apply-templates select="node()[not(local-name()='name')]"/>
+		<xsl:apply-templates select="node()[not(self::mn:fmt-name)]"/>
 	</xsl:template>
 	
 </xsl:stylesheet>

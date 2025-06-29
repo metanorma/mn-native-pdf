@@ -474,12 +474,14 @@
 				<xsl:apply-templates mode="update_xml_step1"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:element name="name" namespace="{$namespace_full}">
+				<!-- <xsl:element name="name" namespace="{$namespace_full}"> -->
+				<xsl:copy>
 					<xsl:copy-of select="@*"/>
 					<xsl:call-template name="addNamedDestinationAttribute"/>
 					
 					<xsl:apply-templates mode="update_xml_step1"/>
-				</xsl:element>
+				</xsl:copy>
+				<!-- </xsl:element> -->
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -940,7 +942,7 @@
 				ancestor::mn:sourcecode or 
 				ancestor::*[local-name() = 'math'] or
 				ancestor::*[local-name() = 'svg'] or
-				ancestor::mn:name or
+				ancestor::mn:name or ancestor::mn:fmt-name or
 				starts-with(., 'http://') or starts-with(., 'https://') or starts-with(., 'www.') or normalize-space() = '' )]" name="keep_together_standard_number" mode="update_xml_enclose_keep-together_within-line">
 	
 		<xsl:variable name="parent" select="local-name(..)"/>
