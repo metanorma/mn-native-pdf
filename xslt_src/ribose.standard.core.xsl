@@ -626,7 +626,7 @@
 		<fo:block role="TOC">
 			<xsl:apply-templates />	
 			
-			<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
+			<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 			
 				<xsl:if test="$contents//mnx:item[@display = 'true']">
 				
@@ -693,7 +693,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="mn:preface/mn:clause[@type = 'toc']/mn:title" priority="3">
+	<xsl:template match="mn:preface/mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<fo:block font-size="27pt" font-weight="bold" color="black" margin-left="-15mm" margin-bottom="13mm" role="H1">
 			<!-- <xsl:call-template name="getLocalizedString">
 				<xsl:with-param name="key">table_of_contents</xsl:with-param>
@@ -809,7 +809,7 @@
 		</fo:block>
 	</xsl:template> -->
 	
-	<xsl:template match="mn:title" name="title">
+	<xsl:template match="mn:fmt-title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -937,7 +937,7 @@
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
-				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
+				<xsl:when test="../@inline-header = 'true' and $previous-element = 'fmt-title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
 				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
@@ -1087,7 +1087,7 @@
 								<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
 								<xsl:attribute name="color">black</xsl:attribute>
 								<xsl:attribute name="line-height">125%</xsl:attribute>
-								<xsl:apply-templates select="mn:title/node()"/>
+								<xsl:apply-templates select="mn:fmt-title/node()"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -1096,7 +1096,7 @@
 					<fo:table-row>
 						<fo:table-cell text-align="left">
 							<fo:block>
-								<xsl:apply-templates select="node()[not(self::mn:title)]" />
+								<xsl:apply-templates select="node()[not(self::mn:fmt-title)]" />
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>

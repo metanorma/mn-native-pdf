@@ -418,12 +418,14 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:fmt-title" mode="update_xml_step1">
-		<xsl:element name="title" namespace="{$namespace_full}">
+		<!-- <xsl:element name="title" namespace="{$namespace_full}"> -->
+		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:call-template name="addNamedDestinationAttribute"/>
 			
 			<xsl:apply-templates mode="update_xml_step1"/>
-		</xsl:element>
+		</xsl:copy>
+		<!-- </xsl:element> -->
 	</xsl:template>
 	
 	<xsl:template name="addNamedDestinationAttribute">

@@ -395,13 +395,13 @@
 		<fo:block break-after="page"/>
 		<fo:block-container line-height="1.08" font-family="Lato">
 		
-			<xsl:apply-templates select="mn:title"/>
+			<xsl:apply-templates select="mn:fmt-title"/>
 		
 			<fo:block role="TOC">
 				
-				<xsl:apply-templates select="*[not(self::mn:title)]"/>
+				<xsl:apply-templates select="*[not(self::mn:fmt-title)]"/>
 			
-				<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
+				<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 				
 					<xsl:variable name="margin-left">3.9</xsl:variable>
 					<xsl:for-each select="$contents//mnx:item[@display = 'true']">
@@ -445,7 +445,7 @@
 		</fo:block-container>
 	</xsl:template>
 
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:title" priority="3">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<fo:block xsl:use-attribute-sets="title-toc-style" role="H1">
 			<!-- <xsl:call-template name="getTitle">
 				<xsl:with-param name="name" select="'title-toc'"/>
@@ -586,14 +586,14 @@
 	<!-- title      -->
 	<!-- ====== -->
 	
-	<xsl:template match="mn:annex/mn:title">
+	<xsl:template match="mn:annex/mn:fmt-title">
 		<fo:block xsl:use-attribute-sets="title-depth1-style" role="H1">			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:title" name="title">
+	<xsl:template match="mn:fmt-title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -667,7 +667,7 @@
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
-				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
+				<xsl:when test="../@inline-header = 'true' and $previous-element = 'fmt-title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
 				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>

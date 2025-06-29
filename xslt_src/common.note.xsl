@@ -128,7 +128,7 @@
 				<xsl:attribute name="margin-right">0mm</xsl:attribute>
 				<xsl:if test="following-sibling::*[1][self::mn:clause or self::mn:term]">
 					<xsl:attribute name="space-after">12pt</xsl:attribute>
-					<xsl:if test="following-sibling::*[2][self::mn:title]/@depth = 2">
+					<xsl:if test="following-sibling::*[2][self::mn:fmt-title]/@depth = 2">
 						<xsl:attribute name="space-after">24pt</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
@@ -136,7 +136,7 @@
 				<xsl:if test="parent::*[self::mn:p or self::mn:ul or self::mn:ol] and not(following-sibling::*)">
 					<xsl:if test="../following-sibling::*[1][self::mn:clause or self::mn:term]">
 						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-						<xsl:if test="../following-sibling::*[2][self::mn:title]/@depth = 2">
+						<xsl:if test="../following-sibling::*[2][self::mn:fmt-title]/@depth = 2">
 							<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
 						</xsl:if>
 					</xsl:if>

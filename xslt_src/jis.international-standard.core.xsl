@@ -1075,7 +1075,7 @@
 	<xsl:template match="mn:preface/mn:clause[@type = 'toc']" priority="4">
 		<xsl:param name="num"/>
 		<xsl:apply-templates />
-		<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
+		<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 			<!-- fill ToC -->
 			<fo:block role="TOC">
 				<xsl:if test="not($vertical_layout = 'true') and not($lang = 'en')">
@@ -1151,7 +1151,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="mn:clause[@type = 'toc']/mn:title" priority="3">
+	<xsl:template match="mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<fo:block text-align="center" font-size="14pt" margin-top="8.5mm">
 			<xsl:if test="not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
@@ -1920,7 +1920,7 @@
 		<xsl:choose>
 			<xsl:when test="self::mn:p and count(node()) = count(processing-instruction())"><!-- skip --></xsl:when> <!-- empty paragraph with processing-instruction -->
 			<xsl:when test="@hidden = 'true'"><!-- skip --></xsl:when>
-			<xsl:when test="self::mn:title or self::mn:term">
+			<xsl:when test="self::mn:fmt-title or self::mn:term">
 				<xsl:apply-templates select="."/>
 			</xsl:when>
 			<xsl:when test="@mainsection = 'true'">
@@ -1948,7 +1948,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:title" priority="2" name="title">
+	<xsl:template match="mn:fmt-title" priority="2" name="title">
 	
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -2218,7 +2218,7 @@
 		
 		<xsl:choose>
 		
-			<xsl:when test="preceding-sibling::*[1][self::mn:title]/@inline-header = 'true' and $inline-header = 'false'"/> <!-- paragraph displayed in title template -->
+			<xsl:when test="preceding-sibling::*[1][self::mn:fmt-title]/@inline-header = 'true' and $inline-header = 'false'"/> <!-- paragraph displayed in title template -->
 			
 			<xsl:otherwise>
 			
@@ -5761,14 +5761,14 @@
 		<xsl:apply-templates select="mn:term" mode="linear_xml"/>
 	</xsl:template>
 	
-	<xsl:template match="mn:introduction//mn:title | 
-			mn:foreword//mn:title | 
-			mn:preface//mn:title | 
-			mn:sections//mn:title | 
-			mn:annex//mn:title | 
-			mn:bibliography/mn:clause/mn:title | 
-			mn:references/mn:title | 
-			mn:colophon//mn:title" mode="linear_xml" priority="2">
+	<xsl:template match="mn:introduction//mn:fmt-title | 
+			mn:foreword//mn:fmt-title | 
+			mn:preface//mn:fmt-title | 
+			mn:sections//mn:fmt-title | 
+			mn:annex//mn:fmt-title | 
+			mn:bibliography/mn:clause/mn:fmt-title | 
+			mn:references/mn:fmt-title | 
+			mn:colophon//mn:fmt-title" mode="linear_xml" priority="2">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="linear_xml"/>
 			
@@ -5840,7 +5840,7 @@
 				<xsl:value-of select="local-name(//*[@id = current()/@target][1])"/>
 			</xsl:attribute>
 			<xsl:attribute name="depth">
-				<xsl:value-of select="//*[@id = current()/@target][1]/mn:title/@depth"/>
+				<xsl:value-of select="//*[@id = current()/@target][1]/mn:fmt-title/@depth"/>
 			</xsl:attribute>
 			<xsl:apply-templates select="node()" mode="linear_xml"/>
 		</xsl:copy>

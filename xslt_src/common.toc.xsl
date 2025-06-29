@@ -952,8 +952,8 @@
 		<xsl:apply-templates mode="toc_table_width" />
 	</xsl:template>
 
-	<xsl:template match="mn:clause[@type = 'toc']/mn:title" mode="toc_table_width"/>
-	<xsl:template match="mn:clause[not(@type = 'toc')]/mn:title" mode="toc_table_width" />
+	<xsl:template match="mn:clause[@type = 'toc']/mn:fmt-title" mode="toc_table_width"/>
+	<xsl:template match="mn:clause[not(@type = 'toc')]/mn:fmt-title" mode="toc_table_width" />
 	
 	<xsl:template match="mn:li" mode="toc_table_width">
 		<mn:tr>

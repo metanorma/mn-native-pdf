@@ -394,12 +394,12 @@
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="3">
 		<fo:block-container font-weight="bold" line-height="115%" role="SKIP">
 			<!-- render 'Contents' outside if role="TOC" -->
-			<xsl:apply-templates select="mn:title"/>
+			<xsl:apply-templates select="mn:fmt-title"/>
 			<fo:block role="TOC">
 				
-				<xsl:apply-templates select="node()[not(self::mn:title)]"/>
+				<xsl:apply-templates select="node()[not(self::mn:fmt-title)]"/>
 				
-				<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
+				<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 				
 					<xsl:for-each select="$contents//mnx:item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
 						
@@ -464,7 +464,7 @@
 		</fo:block-container>
 	</xsl:template>
 
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:title" priority="3">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<!-- <xsl:variable name="title-toc">
 			<xsl:call-template name="getTitle">
 				<xsl:with-param name="name" select="'title-toc'"/>
@@ -538,7 +538,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:title" name="title">
+	<xsl:template match="mn:fmt-title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -586,7 +586,7 @@
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
-				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
+				<xsl:when test="../@inline-header = 'true' and $previous-element = 'fmt-title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
 				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
 				<xsl:when test="@id = 'boilerplate-name'">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>

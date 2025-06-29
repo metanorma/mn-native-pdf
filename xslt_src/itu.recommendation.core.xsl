@@ -1895,7 +1895,7 @@
 					</fo:block>
 					
 					<fo:block role="TOC">
-						<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
+						<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 
 							<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']">									
 								<fo:block role="TOCI">
@@ -1989,7 +1989,7 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:title" priority="4">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="4">
 		<fo:block margin-top="6pt" text-align="center" font-weight="bold" role="H1">
 			<!-- <xsl:call-template name="getLocalizedString">
 				<xsl:with-param name="key">table_of_contents</xsl:with-param>
@@ -2150,7 +2150,7 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="mn:preface//mn:title" priority="3">
+	<xsl:template match="mn:preface//mn:fmt-title" priority="3">
 		<!-- <xsl:if test="$doctype = 'service-publication'">
 			<fo:block>&#xa0;</fo:block>
 			<fo:block>&#xa0;</fo:block>
@@ -2185,7 +2185,7 @@
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
 			<xsl:choose>
-				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
+				<xsl:when test="../@inline-header = 'true' and $previous-element = 'fmt-title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -2249,7 +2249,7 @@
 	
 	
 
-	<xsl:template match="mn:clause[starts-with(@id, 'draft-warning')]/mn:title" mode="caution">
+	<xsl:template match="mn:clause[starts-with(@id, 'draft-warning')]/mn:fmt-title" mode="caution">
 		<fo:block font-size="16pt" font-style="italic" font-weight="bold" text-align="center" space-after="6pt" role="H1">
 			<xsl:if test="$lang = 'ar'"> <!-- to prevent rendering `###` due the missing Arabic glyphs in the italic font (Times New Roman) -->
 				<xsl:attribute name="font-style">normal</xsl:attribute>
@@ -2269,7 +2269,7 @@
 	<!-- ====== -->
 	<!-- title      -->
 	<!-- ====== -->	
-	<xsl:template match="mn:annex/mn:title">
+	<xsl:template match="mn:annex/mn:fmt-title">
 		<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
 		<fo:block  font-size="14pt" font-weight="bold" text-align="center" margin-bottom="18pt" role="H1">			
 			<fo:block>
@@ -2295,10 +2295,10 @@
 	
 	<!-- Added for https://github.com/metanorma/isodoc/issues/614 -->
 	<!-- renders in the annex/title template -->
-	<xsl:template match="mn:annex/mn:p[preceding-sibling::*[1][self::mn:title or self::mn:variant-title]][starts-with(normalize-space(), '(')]" priority="3"/>
+	<xsl:template match="mn:annex/mn:p[preceding-sibling::*[1][self::mn:fmt-title or self::mn:variant-title]][starts-with(normalize-space(), '(')]" priority="3"/>
 	
 	<!-- Bibliography -->
-	<xsl:template match="mn:references[not(@normative='true')]/mn:title">
+	<xsl:template match="mn:references[not(@normative='true')]/mn:fmt-title">
 		<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
 		<fo:block font-size="14pt" font-weight="bold" text-align="center" margin-bottom="18pt" role="H1">
 			<xsl:if test="$doctype = 'implementers-guide'">
@@ -2310,7 +2310,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:title" name="title">
+	<xsl:template match="mn:fmt-title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -2561,7 +2561,7 @@
 			<xsl:choose>
 				<xsl:when test="$isGenerateTableIF = 'true'">fo:inline</xsl:when>
 				<xsl:when test="ancestor::mn:dd">fo:inline</xsl:when>
-				<xsl:when test="ancestor::mn:title">fo:inline</xsl:when>
+				<xsl:when test="ancestor::mn:fmt-title">fo:inline</xsl:when>
 				<xsl:when test="normalize-space(ancestor::mn:p[1]//text()[not(parent::mn:tt)]) != ''">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
@@ -2569,10 +2569,10 @@
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
-			<xsl:if test="not(parent::mn:dt) and not(ancestor::mn:dd) and not(ancestor::mn:title) and $isGenerateTableIF = 'false'">
+			<xsl:if test="not(parent::mn:dt) and not(ancestor::mn:dd) and not(ancestor::mn:fmt-title) and $isGenerateTableIF = 'false'">
 				<xsl:attribute name="text-align">center</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::mn:title">
+			<xsl:if test="ancestor::mn:fmt-title">
 				<xsl:attribute name="font-size">11pt</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates />
@@ -2582,7 +2582,7 @@
 	
 	<xsl:template match="mn:ul | mn:ol | mn:sections/mn:ul | mn:sections/mn:ol" mode="list" priority="2">
 		<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
-		<xsl:if test="preceding-sibling::*[1][self::mn:title] and $doctype != 'service-publication'">
+		<xsl:if test="preceding-sibling::*[1][self::mn:fmt-title] and $doctype != 'service-publication'">
 			<fo:block padding-top="-8pt" font-size="1pt">&#xA0;</fo:block>
 		</xsl:if>
 		<xsl:choose>
@@ -2648,7 +2648,7 @@
 									<xsl:otherwise>margin-left</xsl:otherwise>
 								</xsl:choose>
 							</xsl:variable>
-							<xsl:if test="../preceding-sibling::*[1][self::mn:title]">
+							<xsl:if test="../preceding-sibling::*[1][self::mn:fmt-title]">
 								<xsl:attribute name="{$attribute-margin}">18mm</xsl:attribute>
 							</xsl:if>
 							<xsl:if test="parent::mn:ul">

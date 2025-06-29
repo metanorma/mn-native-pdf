@@ -57,12 +57,12 @@
 	<xsl:template match="mn:appendix">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-style">
-			<xsl:apply-templates select="mn:title" />
+			<xsl:apply-templates select="mn:fmt-title" />
 		</fo:block>
-		<xsl:apply-templates select="node()[not(local-name()='title')]"/>
+		<xsl:apply-templates select="node()[not(self::mn:fmt-title)]"/>
 	</xsl:template>
 
-	<xsl:template match="mn:appendix/mn:title" priority="2">
+	<xsl:template match="mn:appendix/mn:fmt-title" priority="2">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>

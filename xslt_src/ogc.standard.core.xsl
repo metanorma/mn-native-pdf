@@ -891,7 +891,7 @@
 						
 			<xsl:apply-templates />			
 			
-			<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
+			<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 			
 				<fo:block-container line-height="130%">
 					<fo:block role="TOC">
@@ -1027,7 +1027,7 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:title" priority="3">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<xsl:variable name="title-toc">
 			<xsl:apply-templates />
 			<!-- <xsl:call-template name="getTitle">
@@ -1182,9 +1182,7 @@
 							</fo:block-container>
 						</xsl:otherwise>
 					</xsl:choose>
-
 					
-									
 				</fo:flow>
 			</fo:page-sequence>
 		</xsl:if>
@@ -1305,7 +1303,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:legal-statement//mn:title" priority="2">
+	<xsl:template match="mn:legal-statement//mn:fmt-title" priority="2">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -1315,7 +1313,7 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="mn:legal-statement//mn:title/text() | mn:license-statement//mn:title/text() | mn:copyright-statement//mn:title/text()">
+	<xsl:template match="mn:legal-statement//mn:fmt-title/text() | mn:license-statement//mn:fmt-title/text() | mn:copyright-statement//mn:fmt-title/text()">
 		<xsl:call-template name="addLetterSpacing">
 			<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(.))"/>
 		</xsl:call-template>		
@@ -1354,7 +1352,7 @@
 	<!-- ====== -->
 	<!-- title  -->
 	<!-- ====== -->
-	<xsl:template match="mn:title" name="title">
+	<xsl:template match="mn:fmt-title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -1477,7 +1475,7 @@
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
-				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
+				<xsl:when test="../@inline-header = 'true' and $previous-element = 'fmt-title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
 				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
