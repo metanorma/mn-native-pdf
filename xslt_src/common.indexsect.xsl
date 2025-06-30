@@ -97,7 +97,8 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="mn:xref" mode="index_add_id">
+	<xsl:template match="mn:xref" mode="index_add_id"/>
+	<xsl:template match="mn:fmt-xref" mode="index_add_id">
 		<xsl:param name="docid"/>
 		<xsl:variable name="id">
 			<xsl:call-template name="generateIndexXrefId">
@@ -161,11 +162,11 @@
 				<xsl:value-of select="."/>
 				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
 			</xsl:when>
-			<xsl:when test="self::* and local-name(.) = 'xref'">
+			<xsl:when test="self::* and local-name(.) = 'fmt-xref'">
 				<xsl:variable name="id" select="@id"/>
 				
-				<xsl:variable name="id_next" select="following-sibling::mn:xref[1]/@id"/>
-				<xsl:variable name="id_prev" select="preceding-sibling::mn:xref[1]/@id"/>
+				<xsl:variable name="id_next" select="following-sibling::mn:fmt-xref[1]/@id"/>
+				<xsl:variable name="id_prev" select="preceding-sibling::mn:fmt-xref[1]/@id"/>
 				
 				<xsl:variable name="pages_">
 					<xsl:for-each select="$index/index/item[@id = $id or @id = $id_next or @id = $id_prev]">
@@ -261,7 +262,7 @@
 		<xsl:variable name="item_number">
 			<xsl:number count="mn:li[ancestor::mn:indexsect]" level="any" />
 		</xsl:variable>
-		<xsl:variable name="xref_number"><xsl:number count="mn:xref"/></xsl:variable>
+		<xsl:variable name="xref_number"><xsl:number count="mn:fmt-xref"/></xsl:variable>
 		<xsl:value-of select="concat($docid_curr, '_', $item_number, '_', $xref_number)"/> <!-- $level, '_',  -->
 	</xsl:template>
 

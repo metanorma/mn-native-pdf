@@ -1300,7 +1300,7 @@
 					<xsl:call-template name="insertSeparatorPage"/>
 				</xsl:if>
 		
-			</xsl:when>
+			</xsl:when> <!-- EMD: $independentAppendix = '' and not($doctype = 'guide') -->
 			<xsl:otherwise> <!-- independentAppendix != '' -->
 			
 		
@@ -1457,7 +1457,7 @@
 					<xsl:with-param name="lang" select="$curr_lang"/>
 				</xsl:apply-templates>
 				
-			</xsl:otherwise>
+			</xsl:otherwise><!-- END: independentAppendix != '' -->
 		</xsl:choose>
 		
 	</xsl:template>
@@ -3163,7 +3163,7 @@
 	</xsl:template>
 
 	
-	<xsl:template match="mn:xref" priority="2">
+	<xsl:template match="mn:xref | mn:fmt-xref" priority="2">
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
 				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
