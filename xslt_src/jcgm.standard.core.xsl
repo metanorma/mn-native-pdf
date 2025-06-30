@@ -1292,7 +1292,7 @@
 	<!-- =================== -->
 	
 	
-	<xsl:template match="mn:xref"  priority="2">
+	<xsl:template match="mn:xref | mn:fmt-xref"  priority="2">
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
 				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
