@@ -275,6 +275,7 @@
 						
 						<xsl:variable name="updated_xml_with_pages">
 							<xsl:call-template name="processPrefaceAndMainSectionsDefault_items"/>
+							<xsl:copy-of select="//mn:indexsect"/>
 						</xsl:variable>
 						
 						<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
@@ -1983,7 +1984,7 @@
 	</xsl:template>
 
 	
-	<xsl:template match="mn:xref[@pagenumber = 'true']"  priority="2">
+	<xsl:template match="mn:xref[@pagenumber = 'true'] | mn:fmt-xref[@pagenumber = 'true']"  priority="2">
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
 				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">

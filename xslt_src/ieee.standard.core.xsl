@@ -3015,7 +3015,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:xref"  priority="2">
+	<xsl:template match="mn:xref | mn:fmt-xref"  priority="2">
 		<xsl:if test="@target and @target != ''">
 			<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
 				
