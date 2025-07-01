@@ -719,7 +719,7 @@
 	</xsl:template>
 
 	
-	<xsl:template match="mn:review" mode="contents_item"/>
+	<xsl:template match="mn:annotation" mode="contents_item"/>
 
 	<xsl:template match="mn:tab" mode="contents_item">
 		<xsl:text> </xsl:text>

@@ -630,7 +630,7 @@
 		<xsl:choose>
 			<xsl:when test="mn:fmt-title">
 				<xsl:variable name="fmt_title_section">
-					<xsl:copy-of select="mn:fmt-title//mn:span[@class = 'fmt-caption-delim'][mn:tab][1]/preceding-sibling::node()[not(self::mn:review)]"/>
+					<xsl:copy-of select="mn:fmt-title//mn:span[@class = 'fmt-caption-delim'][mn:tab][1]/preceding-sibling::node()[not(self::mn:annotation)]"/>
 				</xsl:variable>
 				<xsl:value-of select="normalize-space($fmt_title_section)"/>
 				<xsl:if test="normalize-space($fmt_title_section) = ''">
