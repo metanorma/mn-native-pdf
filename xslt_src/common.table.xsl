@@ -1949,6 +1949,10 @@
 							<xsl:with-param name="margin-side" select="$margin-side"/>
 						</xsl:call-template>
 						
+						<xsl:call-template name="setTableStyles">
+							<xsl:with-param name="scope">table</xsl:with-param>
+						</xsl:call-template>
+						
 					</xsl:element>
 				</xsl:variable>
 				
@@ -2898,6 +2902,12 @@
 						</xsl:if>
 					</xsl:if>
 					
+					<xsl:for-each select="ancestor::mn:table[1]">
+						<xsl:call-template name="setTableStyles">
+							<xsl:with-param name="scope">table</xsl:with-param>
+						</xsl:call-template>
+					</xsl:for-each>
+					
 					<xsl:choose>
 						<xsl:when test="xalan:nodeset($colgroup)//mn:col">
 							<xsl:for-each select="xalan:nodeset($colgroup)//mn:col">
@@ -2914,9 +2924,21 @@
 					
 					<fo:table-body role="SKIP">
 						<fo:table-row role="SKIP">
+							<xsl:for-each select="ancestor::mn:table[1]">
+								<xsl:call-template name="setTableStyles">
+									<xsl:with-param name="scope">ancestor_table</xsl:with-param>
+								</xsl:call-template>
+							</xsl:for-each>
+							
 							<fo:table-cell xsl:use-attribute-sets="table-footer-cell-style" number-columns-spanned="{$cols-count}" role="SKIP">
 								
 								<xsl:call-template name="refine_table-footer-cell-style"/>
+								
+								<xsl:for-each select="ancestor::mn:table[1]">
+									<xsl:call-template name="setTableStyles">
+										<xsl:with-param name="scope">ancestor_table_borders_only</xsl:with-param>
+									</xsl:call-template>
+								</xsl:for-each>
 								
 								<xsl:call-template name="setBordersTableArray"/>
 								
@@ -3294,7 +3316,12 @@
 			</xsl:if>
 		</xsl:if>
 		
-		<xsl:call-template name="setColors"/>
+		<xsl:for-each select="ancestor::mn:table[1]">
+			<xsl:call-template name="setTableStyles">
+				<xsl:with-param name="scope">ancestor_table</xsl:with-param>
+			</xsl:call-template>
+		</xsl:for-each>
+		<xsl:call-template name="setTableStyles"/>
 		
 	</xsl:template> <!-- setTableRowAttributes -->
 	<!-- ===================== -->
@@ -3348,7 +3375,13 @@
 			</xsl:attribute>
 		</xsl:if>
 		<xsl:call-template name="display-align" />
-		<xsl:call-template name="setColors"/>
+		
+		<xsl:for-each select="ancestor::mn:table[1]">
+			<xsl:call-template name="setTableStyles">
+				<xsl:with-param name="scope">ancestor_table_borders_only</xsl:with-param>
+			</xsl:call-template>
+		</xsl:for-each>
+		<xsl:call-template name="setTableStyles"/>
 	</xsl:template>
 	
 	<xsl:template name="display-align">
@@ -3364,7 +3397,8 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template name="setColors">
+	<xsl:template name="setTableStyles">
+		<xsl:param name="scope">cell</xsl:param>
 		<xsl:variable name="styles__">
 			<xsl:call-template name="split">
 				<xsl:with-param name="pText" select="concat(@style,';')"/>
@@ -3376,8 +3410,8 @@
 			<xsl:for-each select="xalan:nodeset($styles__)/mnx:item">
 				<xsl:variable name="key" select="normalize-space(substring-before(., ':'))"/>
 				<xsl:variable name="value" select="normalize-space(substring-after(translate(.,$quot,''), ':'))"/>
-				<xsl:if test="$key = 'color' or 
-					$key = 'background-color' or
+				<xsl:if test="($key = 'color' and ($scope = 'cell' or $scope = 'table')) or 
+					($key = 'background-color' and ($scope = 'cell' or $scope = 'ancestor_table')) or
 					$key = 'border' or
 					$key = 'border-top' or
 					$key = 'border-right' or
@@ -3400,13 +3434,19 @@
 					$key = 'border-bottom-color'">
 					<style name="{$key}"><xsl:value-of select="java:replaceAll(java:java.lang.String.new($value), 'currentColor', 'inherit')"/></style>
 				</xsl:if>
+				<xsl:if test="$key = 'border' and ($scope = 'table' or $scope = 'ancestor_table' or $scope = 'ancestor_table_borders_only')">
+					<style name="{$key}-top"><xsl:value-of select="$value"/></style>
+					<style name="{$key}-right"><xsl:value-of select="$value"/></style>
+					<style name="{$key}-left"><xsl:value-of select="$value"/></style>
+					<style name="{$key}-bottom"><xsl:value-of select="$value"/></style>
+				</xsl:if>
 			</xsl:for-each>
 		</xsl:variable>
 		<xsl:variable name="styles" select="xalan:nodeset($styles_)"/>
 		<xsl:for-each select="$styles/style">
 			<xsl:attribute name="{@name}"><xsl:value-of select="."/></xsl:attribute>
 		</xsl:for-each>
-	</xsl:template> <!-- setColors -->
+	</xsl:template> <!-- setTableStyles -->
 	
 	<!-- cell in table body, footer -->
 	<xsl:template match="*[local-name()='td']" name="td">
