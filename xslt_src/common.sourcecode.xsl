@@ -651,12 +651,12 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:annotation">
+	<xsl:template match="mn:callout-annotation">
 		<xsl:variable name="annotation-id" select="@id"/>
 		<xsl:variable name="callout" select="//*[@target = $annotation-id]/text()"/>		
 		<fo:block id="{$annotation-id}" white-space="nowrap">			
 			<xsl:if test="$namespace = 'ogc'">
-				<xsl:if test="not(preceding-sibling::mn:annotation)">
+				<xsl:if test="not(preceding-sibling::mn:callout-annotation)">
 					<xsl:attribute name="space-before">6pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -668,7 +668,7 @@
 		</fo:block>		
 	</xsl:template>	
 
-	<xsl:template match="mn:annotation/mn:p">
+	<xsl:template match="mn:callout-annotation/mn:p">
 		<xsl:param name="callout"/>
 		<fo:inline id="{@id}">
 			<xsl:call-template name="setNamedDestination"/>
