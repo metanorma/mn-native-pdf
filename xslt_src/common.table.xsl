@@ -1380,7 +1380,7 @@
 		</xsl:if>
 
 		<xsl:if test="$namespace = 'jcgm'">
-			<xsl:if test="count(*) = 1 and (local-name(*[1]) = 'stem' or local-name(*[1]) = 'figure')">
+			<xsl:if test="count(*) = 1 and (*[1][self::mn:fmt-stem] or *[1][self::mn:figure])">
 				<xsl:attribute name="padding-left">0mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="ancestor::mn:tfoot">
@@ -4487,7 +4487,7 @@
 				</xsl:if> -->
 			
 				<xsl:variable name="words">
-					<xsl:for-each select=".//*[local-name() = 'image' or local-name() = 'stem']">
+					<xsl:for-each select=".//*[local-name() = 'image' or local-name() = 'fmt-stem']">
 						<word>
 							<xsl:copy-of select="."/>
 						</word>
@@ -4546,7 +4546,7 @@
 		</xsl:copy>
 	</xsl:template>
 
-	<xsl:template match="*[local-name() = 'stem' or local-name() = 'image']" mode="td_text_with_formatting"/>
+	<xsl:template match="*[local-name() = 'fmt-stem' or local-name() = 'image']" mode="td_text_with_formatting"/>
 
 	<xsl:template match="*[local-name() = 'keep-together_within-line']/text()" mode="td_text_with_formatting">
 		<xsl:variable name="formatting_tags">

@@ -988,7 +988,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[self::mn:td or self::mn:th]/mn:formula/mn:stem" priority="2">
+	<xsl:template match="*[self::mn:td or self::mn:th]/mn:formula/mn:fmt-stem" priority="2">
 		<fo:block>
 			<xsl:if test="ancestor::*[self::mn:td or self::mn:th][1][@align]">
 				<xsl:attribute name="text-align">
@@ -1774,7 +1774,8 @@
 	<xsl:template match="mn:stem" mode="flatxml_step1"/>
 	
 	<xsl:template match="mn:fmt-stem[not(.//mn:passthrough) and not(.//*[@linebreak])]" mode="flatxml_step1">
-		<xsl:element name="stem" namespace="{$namespace_full}">
+		<!-- <xsl:element name="stem" namespace="{$namespace_full}"> -->
+		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:choose>
 				<xsl:when test="mn:semx and count(node()) = 1">
@@ -1784,7 +1785,8 @@
 					<xsl:copy-of select="node()"/>
 				</xsl:otherwise>
 			</xsl:choose>
-		</xsl:element>
+		</xsl:copy>
+		<!-- </xsl:element> -->
 	</xsl:template>
 	
 	<xsl:template match="mn:concept"  mode="flatxml_step1"/>

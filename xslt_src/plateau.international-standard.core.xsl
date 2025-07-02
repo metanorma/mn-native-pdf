@@ -1603,7 +1603,7 @@
 	<xsl:variable name="tag_font_en_bold_open">###<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
 	<xsl:variable name="tag_font_en_bold_close">###/<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
 	
-	<xsl:template match="mn:p//text()[not(ancestor::mn:strong) and not(ancestor::mn:stem)] |
+	<xsl:template match="mn:p//text()[not(ancestor::mn:strong) and not(ancestor::mn:fmt-stem)] |
 						mn:dt/text() | mn:td/text() | mn:th/text()" mode="update_xml_step1">
 		<!-- add hairspace after 'IDEOGRAPHIC SPACE' (U+3000) -->
 		<xsl:variable name="text" select="java:replaceAll(java:java.lang.String.new(.), '(\u3000)', concat('$1',$hair_space))"/>

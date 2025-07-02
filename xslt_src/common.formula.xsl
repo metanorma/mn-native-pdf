@@ -172,13 +172,13 @@
 		</fo:block-container>
 	</xsl:template>
 
-	<xsl:template match="mn:formula/mn:dt/mn:stem">
+	<xsl:template match="mn:formula/mn:dt/mn:fmt-stem">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="mn:admitted/mn:stem">
+	<xsl:template match="mn:admitted/mn:fmt-stem">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>
@@ -195,7 +195,7 @@
 	
 	
 	<!-- stem inside formula with name (with formula's number) -->
-	<xsl:template match="mn:formula[mn:fmt-name]/mn:stem">
+	<xsl:template match="mn:formula[mn:fmt-name]/mn:fmt-stem">
 		<fo:block xsl:use-attribute-sets="formula-style">
 		
 			<xsl:if test="$namespace = 'gb'">
@@ -238,7 +238,7 @@
 	
 
 	<!-- stem inside formula without name (without formula's number) -->
-	<xsl:template match="mn:formula[not(mn:fmt-name)]/mn:stem">
+	<xsl:template match="mn:formula[not(mn:fmt-name)]/mn:fmt-stem">
 		<fo:block xsl:use-attribute-sets="formula-style">
 			<fo:block xsl:use-attribute-sets="formula-stem-block-style">
 				<xsl:apply-templates />
@@ -660,7 +660,7 @@
 		<stem type="AsciiMath"><asciimath>x = 1</asciimath></stem>
 		<stem type="AsciiMath"><asciimath>x = 1</asciimath><latexmath>x = 1</latexmath></stem>
 	-->
-	<xsl:template match="mn:stem[@type = 'AsciiMath'][count(*) = 0]/text() | mn:stem[@type = 'AsciiMath'][mn:asciimath]" priority="3">
+	<xsl:template match="mn:fmt-stem[@type = 'AsciiMath'][count(*) = 0]/text() | mn:fmt-stem[@type = 'AsciiMath'][mn:asciimath]" priority="3">
 		<fo:inline xsl:use-attribute-sets="mathml-style">
 		
 			<xsl:call-template name="refine_mathml-style" />

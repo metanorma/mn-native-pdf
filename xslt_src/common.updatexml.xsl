@@ -229,7 +229,8 @@
 	<xsl:template match="mn:stem" mode="update_xml_step1"/>
 	
 	<xsl:template match="mn:fmt-stem" mode="update_xml_step1">
-		<xsl:element name="stem" namespace="{$namespace_full}">
+		<!-- <xsl:element name="stem" namespace="{$namespace_full}"> -->
+		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:choose>
 				<xsl:when test="mn:semx and count(node()) = 1">
@@ -253,7 +254,8 @@
 					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
-		</xsl:element>
+		</xsl:copy>
+		<!-- </xsl:element> -->
 	</xsl:template>
 	
 	<xsl:template match="mn:image[not(.//mn:passthrough)] | 
@@ -898,7 +900,7 @@
 			</xsl:call-template>
 		</xsl:template>
 		
-		<xsl:template match="mn:stem | mn:image" mode="update_xml_step2">
+		<xsl:template match="mn:fmt-stem | mn:image" mode="update_xml_step2">
 			<xsl:copy-of select="."/>
 		</xsl:template>
 		
@@ -1093,7 +1095,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:stem | mn:image" mode="update_xml_enclose_keep-together_within-line">
+	<xsl:template match="mn:fmt-stem | mn:image" mode="update_xml_enclose_keep-together_within-line">
 		<xsl:copy-of select="."/>
 	</xsl:template>
 	

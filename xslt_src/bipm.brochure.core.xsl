@@ -2468,7 +2468,7 @@
 		<xsl:apply-templates mode="header"/>
 	</xsl:template>
 
-	<xsl:template match="mn:stem" mode="header">
+	<xsl:template match="mn:fmt-stem" mode="header">
 		<xsl:apply-templates />
 	</xsl:template>
 
@@ -3826,7 +3826,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:stem/text()">
+	<xsl:template match="mn:fmt-stem/text()">
 		<xsl:value-of select="normalize-space()"/>
 	</xsl:template>
 	
