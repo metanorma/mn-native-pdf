@@ -820,13 +820,26 @@
 					<fo:external-graphic src="{$src}" fox:alt-text="Image {@alt}" vertical-align="middle">
 						
 						<xsl:if test="parent::mn:logo"> <!-- publisher's logo -->
-							<xsl:attribute name="width">100%</xsl:attribute>
+							<xsl:attribute name="scaling">uniform</xsl:attribute>
+							<xsl:choose>
+								<xsl:when test="@width and not(@height)">
+									<xsl:attribute name="width">100%</xsl:attribute>
+									<xsl:attribute name="content-height">100%</xsl:attribute>
+								</xsl:when>
+								<xsl:when test="@height and not(@width)">
+									<xsl:attribute name="height">100%</xsl:attribute>
+									<xsl:attribute name="content-height"><xsl:value-of select="@height"/></xsl:attribute>
+								</xsl:when>
+								<xsl:when test="not(@width) and not(@height)">
+									<xsl:attribute name="content-height">100%</xsl:attribute>
+								</xsl:when>
+							</xsl:choose>
+
 							<xsl:if test="normalize-space($logo_width) != ''">
 								<xsl:attribute name="width"><xsl:value-of select="$logo_width"/></xsl:attribute>
 							</xsl:if>
-							<xsl:attribute name="content-height">100%</xsl:attribute>
 							<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
-							<xsl:attribute name="scaling">uniform</xsl:attribute>
+							<xsl:attribute name="vertical-align">top</xsl:attribute>
 						</xsl:if>
 						
 						<xsl:variable name="width">

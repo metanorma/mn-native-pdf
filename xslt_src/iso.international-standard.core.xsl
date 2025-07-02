@@ -3030,9 +3030,62 @@
 	<xsl:template name="insertLogoImages2024">
 		<xsl:variable name="content-height">20</xsl:variable>
 		<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization">
+			<xsl:variable name="owner_number" select="count(ancestor::mn:copyright/preceding-sibling::mn:copyright) + 1"/>
+			<!-- https://github.com/metanorma/metanorma-iso/issues/1386 -->
+			<xsl:variable name="logo_width_">
+				<xsl:for-each select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/*[starts-with(local-name(), 'logo-publisher-pdf-width-')]">
+					<xsl:if test="local-name() = concat('logo-publisher-pdf-width-', $owner_number)">
+						<xsl:value-of select="."/>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:variable name="logo_width">
+				<xsl:choose>
+					<xsl:when test="normalize-space($logo_width_) != '' and normalize-space(translate($logo_width_, '1234567890', '')) = ''"><xsl:value-of select="$logo_width_"/>px</xsl:when>
+					<xsl:otherwise><xsl:value-of select="$logo_width_"/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:variable name="logo_height_">
+				<xsl:for-each select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/*[starts-with(local-name(), 'logo-publisher-pdf-height-')]">
+					<xsl:if test="local-name() = concat('logo-publisher-pdf-height-', $owner_number)">
+						<xsl:value-of select="."/>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:variable name="logo_height">
+				<xsl:choose>
+					<xsl:when test="normalize-space($logo_height_) != '' and normalize-space(translate($logo_height_, '1234567890', '')) = ''"><xsl:value-of select="$logo_height_"/>px</xsl:when>
+					<xsl:otherwise><xsl:value-of select="$logo_height_"/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+		<!-- 	<fo:block>logo_width=<xsl:value-of select="$logo_width"/></fo:block>
+			<fo:block>logo_height=<xsl:value-of select="$logo_height"/></fo:block> -->
 			<xsl:choose>
 				<xsl:when test="mn:logo/mn:image">
-					<xsl:apply-templates select="mn:logo/mn:image"/>
+					<xsl:choose>
+						<xsl:when test="normalize-space($logo_width) != '' or normalize-space($logo_height) != ''">
+							<xsl:variable name="logo_image">
+								<xsl:for-each select="mn:logo/mn:image"> <!-- set context to logo/image -->
+									<xsl:element name="logo" namespace="{$namespace_full}">
+										<xsl:element name="image" namespace="{$namespace_full}">
+											<xsl:copy-of select="@*"/>
+											<xsl:if test="$logo_width != ''">
+												<xsl:attribute name="width"><xsl:value-of select="$logo_width"/></xsl:attribute>
+											</xsl:if>
+											<xsl:if test="$logo_height != ''">
+												<xsl:attribute name="height"><xsl:value-of select="$logo_height"/></xsl:attribute>
+											</xsl:if>
+											<xsl:copy-of select="node()"/>
+										</xsl:element>
+									</xsl:element>
+								</xsl:for-each>
+							</xsl:variable>
+							<xsl:apply-templates select="xalan:nodeset($logo_image)//mn:logo/mn:image"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates select="mn:logo/mn:image"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:when>
 				<xsl:when test="mn:abbreviation = 'ISO'">
 					<fo:instream-foreign-object content-height="{$content-height}mm" fox:alt-text="Image ISO Logo">
