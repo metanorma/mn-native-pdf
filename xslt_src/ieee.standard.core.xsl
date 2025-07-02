@@ -18,7 +18,7 @@
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
 	<!-- mandatory 'key' -->
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
 	<!-- mandatory variable -->
 	<xsl:variable name="namespace">ieee</xsl:variable>
@@ -611,7 +611,8 @@
 												</xsl:call-template>
 												<xsl:text>: </xsl:text>
 											</fo:inline>
-											<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:abstract/node()[not(self::mn:title)] | /mn:metanorma/mn:preface/mn:clause[@id = '_abstract' or mn:title = 'Abstract']/node()[not(self::mn:title)]"/>
+											<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:abstract/node()[not(self::mn:fmt-title)] | 
+													/mn:metanorma/mn:preface/mn:clause[@id = '_abstract' or mn:fmt-title = 'Abstract']/node()[not(self::mn:fmt-title)]"/>
 										</fo:block>
 										<fo:block>&#xa0;</fo:block>
 										<fo:block>
@@ -677,7 +678,7 @@
 										<fo:block>
 											<!-- TRADEMARKS AND DISCLAIMERS -->
 											<!-- ACKNOWLEDGEMENTS -->
-											<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement/*[@id = 'boilerplate-tm' or mn:title = 'Trademarks and Disclaimers' or @id = 'boilerplate-participants' or mn:title = 'Acknowledgements']" mode="whitepaper"/>
+											<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement/*[@id = 'boilerplate-tm' or normalize-space(mn:fmt-title) = 'Trademarks and Disclaimers' or @id = 'boilerplate-participants' or normalize-space(mn:fmt-title) = 'Acknowledgements']" mode="whitepaper"/>
 										</fo:block>
 										
 										<!-- Example:
@@ -691,7 +692,7 @@
 										
 										<!-- NOTICE AND DISCLAIMER OF LIABILITY CONCERNING THE USE OF IEEE SA DOCUMENTS -->
 										<fo:block break-after="page"/>
-										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement/*[not(@id = 'boilerplate-tm') and not(mn:title = 'Trademarks and Disclaimers') and not(@id = 'boilerplate-participants') and not(mn:title = 'Acknowledgements')]"/>
+										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement/*[not(@id = 'boilerplate-tm') and not(normalize-space(mn:fmt-title) = 'Trademarks and Disclaimers') and not(@id = 'boilerplate-participants') and not(normalize-space(mn:title) = 'Acknowledgements')]"/>
 										
 									</fo:block-container>
 								</fo:flow>
@@ -1170,7 +1171,8 @@
 										</xsl:call-template>
 										<xsl:text>: </xsl:text>
 									</fo:inline>
-									<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:abstract/node()[not(self::mn:title)] | /mn:metanorma/mn:preface/mn:clause[@id = '_abstract' or mn:title = 'Abstract']/node()[not(self::mn:title)]"/>
+									<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:abstract/node()[not(self::mn:fmt-title)] | 
+												/mn:metanorma/mn:preface/mn:clause[@id = '_abstract' or normalize-space(mn:fmt-title) = 'Abstract']/node()[not(self::mn:fmt-title)]"/>
 								</fo:block>
 								<fo:block>&#xa0;</fo:block>
 								<fo:block>
@@ -1230,7 +1232,7 @@
 		
 		<xsl:apply-templates />
 		
-		<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
+		<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 			<fo:block role="TOC">
 				<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']">
 					<xsl:choose>
@@ -1441,7 +1443,7 @@
 		</xsl:if>
 	</xsl:template>
 									
-	<xsl:template match="mn:preface/mn:clause[@type = 'toc']/mn:title" priority="3">
+	<xsl:template match="mn:preface/mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<xsl:choose>
 			<xsl:when test="$current_template = 'standard' or $current_template = 'draft'">
 				<fo:block font-family="Arial" font-size="12pt" role="H1" font-weight="bold" margin-top="12pt" margin-bottom="24pt">
@@ -1514,21 +1516,21 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause[@id = 'boilerplate-participants' or mn:title = 'Participants']" priority="2">
+	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause[@id = 'boilerplate-participants' or normalize-space(mn:fmt-title) = 'Participants']" priority="2">
 		<fo:block break-after="page"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause[@id = 'boilerplate-participants' or mn:title = 'Participants']/mn:clause" priority="2">
+	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause[@id = 'boilerplate-participants' or normalize-space(mn:fmt-title) = 'Participants']/mn:clause" priority="2">
 		<fo:block id="{@id}" space-before="12pt">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
 	<!-- Example: Important Notices and Disclaimers Concerning IEEE Standards Documents -->
-	<xsl:template match="mn:boilerplate/mn:legal-statement//mn:title" priority="3">
+	<xsl:template match="mn:boilerplate/mn:legal-statement//mn:fmt-title" priority="3">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -1658,7 +1660,7 @@
 			
 				<xsl:variable name="attributes_">
 					<attributes>
-						<xsl:if test="@align = 'center' and ancestor::mn:clause[@id = 'boilerplate-participants' or mn:title = 'Participants'] and following-sibling::*[1][self::mn:p and @align = 'center']">
+						<xsl:if test="@align = 'center' and ancestor::mn:clause[@id = 'boilerplate-participants' or normalize-space(mn:fmt-title) = 'Participants'] and following-sibling::*[1][self::mn:p and @align = 'center']">
 							<xsl:attribute name="space-after">0</xsl:attribute>
 						</xsl:if>
 						<xsl:call-template name="setTextAlignment">
@@ -1697,11 +1699,11 @@
 		<xsl:apply-templates mode="whitepaper"/>
 	</xsl:template>
 	
-	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause/mn:title" mode="whitepaper">
+	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause/mn:fmt-title" mode="whitepaper">
 		<fo:block font-family="Arial Black" font-size="13pt"><xsl:apply-templates mode="whitepaper"/></fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause/mn:title//text()" mode="whitepaper">
+	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause/mn:fmt-title//text()" mode="whitepaper">
 		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/>
 	</xsl:template>
 	
@@ -1737,7 +1739,7 @@
 	</xsl:template>
 	
 	<!-- for 'draft' -->
-	<xsl:template match="mn:preface/mn:abstract/mn:p[1] | /mn:metanorma/mn:preface/mn:clause[@id = '_abstract' or mn:title = 'Abstract']/mn:p[1]" priority="2">
+	<xsl:template match="mn:preface/mn:abstract/mn:p[1] | /mn:metanorma/mn:preface/mn:clause[@id = '_abstract' or normalize-space(mn:fmt-title) = 'Abstract']/mn:p[1]" priority="2">
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
@@ -1962,18 +1964,18 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="mn:figure[mn:name] | mn:table[mn:name and not(@unnumbered = 'true' and java:endsWith(java:java.lang.String.new(mn:name),'Key'))]" priority="2" mode="contents">		
+	<xsl:template match="mn:figure[mn:fmt-name] | mn:table[mn:fmt-name and not(@unnumbered = 'true' and java:endsWith(java:java.lang.String.new(mn:fmt-name),'Key'))]" priority="2" mode="contents">		
 		<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 			<xsl:variable name="level">
 				<xsl:for-each select="ancestor::mn:clause[1] | ancestor::mn:annex[1]">
 					<xsl:call-template name="getLevel">
-						<xsl:with-param name="depth" select="mn:title/@depth"/>
+						<xsl:with-param name="depth" select="mn:fmt-title/@depth"/>
 					</xsl:call-template>
 				</xsl:for-each>
 			</xsl:variable>
 			<mnx:item id="{@id}" level="{$level}" section="" type="{local-name()}" root="" display="true">
 				<xsl:variable name="name">
-					<xsl:apply-templates select="mn:name" mode="contents_item">
+					<xsl:apply-templates select="mn:fmt-name" mode="contents_item">
 						<xsl:with-param name="mode">contents</xsl:with-param>
 					</xsl:apply-templates>
 				</xsl:variable>
@@ -1987,7 +1989,7 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="mn:add[parent::mn:name and ancestor::mn:figure and normalize-space(following-sibling::node()) = '']" mode="contents_item" priority="2"/>
+	<xsl:template match="mn:add[parent::mn:fmt-name and ancestor::mn:figure and normalize-space(following-sibling::node()) = '']" mode="contents_item" priority="2"/>
 
 	<xsl:template match="text()" mode="contents_item">
 		<xsl:choose>
@@ -2068,8 +2070,8 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="mn:figures/mn:figure/mn:name/text()[1] |
-								mn:tables/mn:table/mn:name/text()[1]" mode="contents" priority="3">
+	<xsl:template match="mnx:figures/mnx:figure/mn:fmt-name/text()[1] |
+								mnx:tables/mnx:table/mn:fmt-name/text()[1]" mode="contents" priority="3">
 		<xsl:choose>
 			<xsl:when test="$current_template = 'standard' and contains(.,'—')"><xsl:value-of select="substring-after(.,'—')"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
@@ -2173,7 +2175,7 @@
 		<xsl:apply-templates select="mn:term" mode="flatxml"/>
 	</xsl:template>
 	
-	<xsl:template match="mn:introduction//mn:title | mn:foreword//mn:title | mn:sections//mn:title | mn:annex//mn:title | mn:bibliography/mn:clause/mn:title | mn:references/mn:title" mode="flatxml" priority="2"> <!-- | mn:term -->
+	<xsl:template match="mn:introduction//mn:fmt-title | mn:foreword//mn:fmt-title | mn:sections//mn:fmt-title | mn:annex//mn:fmt-title | mn:bibliography/mn:clause/mn:fmt-title | mn:references/mn:fmt-title" mode="flatxml" priority="2"> <!-- | mn:term -->
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -2232,7 +2234,7 @@
 				<xsl:value-of select="local-name(//*[@id = current()/@target][1])"/>
 			</xsl:attribute>
 			<xsl:attribute name="depth">
-				<xsl:value-of select="//*[@id = current()/@target][1]/mn:title/@depth"/>
+				<xsl:value-of select="//*[@id = current()/@target][1]/mn:fmt-title/@depth"/>
 			</xsl:attribute>
 			<xsl:apply-templates select="node()" mode="flatxml"/>
 		</xsl:copy>
@@ -2275,7 +2277,7 @@
 		</fn>
 	-->
 	
-	<xsl:template match="mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:name))]" mode="flatxml">
+	<xsl:template match="mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:fmt-name))]" mode="flatxml">
 		<xsl:variable name="p_fn_">
 			<xsl:call-template name="get_fn_list"/>
 		</xsl:variable>
@@ -2341,7 +2343,7 @@
 			<xsl:when test="@hidden = 'true'"><!-- skip --></xsl:when>
 			<xsl:otherwise>
 				<xsl:choose>
-					<xsl:when test="self::mn:title or self::mn:term">
+					<xsl:when test="self::mn:fmt-title or self::mn:term">
 						<xsl:apply-templates select="."/>
 					</xsl:when>
 					<!-- <xsl:when test="not(node()) and @mainsection = 'true'"> -->
@@ -2401,14 +2403,14 @@
 	</xsl:template> -->
 	
 	<!-- Bibliography -->
-	<xsl:template match="mn:references[not(@normative='true')]/mn:title">
+	<xsl:template match="mn:references[not(@normative='true')]/mn:fmt-title">
 		<fo:block font-size="16pt" font-weight="bold" margin-top="6pt" margin-bottom="36pt" keep-with-next="always" role="H1">
 				<xsl:apply-templates />
 			</fo:block>
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:title[@inline-header = 'true'][following-sibling::*[1][self::mn:p] or following-sibling::*[1][self::mn:clause] or not(following-sibling::*)]" priority="3">
+	<xsl:template match="mn:fmt-title[@inline-header = 'true'][following-sibling::*[1][self::mn:p] or following-sibling::*[1][self::mn:clause] or not(following-sibling::*)]" priority="3">
 		<fo:block>
 			<xsl:attribute name="space-before">
 				<xsl:call-template name="getTitleMarginTop"/>
@@ -2474,7 +2476,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:title" priority="2" name="title">
+	<xsl:template match="mn:fmt-title" priority="2" name="title">
 	
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -2652,7 +2654,7 @@
 	</xsl:template>
 	
 	<!-- add blue box after first break in Annex title -->
-	<xsl:template match="mn:br[not(preceding-sibling::mn:br)][ancestor::mn:title[preceding-sibling::*[1][self::mn:annex]]]" priority="2">
+	<xsl:template match="mn:br[not(preceding-sibling::mn:br)][ancestor::mn:fmt-title[preceding-sibling::*[1][self::mn:annex]]]" priority="2">
 		<xsl:choose>
 			<xsl:when test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') ">
 				<xsl:call-template name="addBlueBox"/>
@@ -2697,7 +2699,7 @@
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					<!-- term/name -->
-					<xsl:apply-templates select="mn:name" />
+					<xsl:apply-templates select="mn:fmt-name" />
 					<xsl:text> </xsl:text>
 					<xsl:apply-templates select="mn:preferred" />
 					<xsl:for-each select="mn:admitted">
@@ -2707,7 +2709,7 @@
 						<xsl:if test="position() = last()"><xsl:text>)</xsl:text></xsl:if>
 					</xsl:for-each>
 				</fo:block>
-				<xsl:apply-templates select="*[not(self::mn:preferred) and not(self::mn:admitted) and not(self::mn:name)]"/> <!-- further processing child elements -->
+				<xsl:apply-templates select="*[not(self::mn:preferred) and not(self::mn:admitted) and not(self::mn:fmt-name)]"/> <!-- further processing child elements -->
 		</fo:block>
 		
 	</xsl:template>
@@ -2752,7 +2754,7 @@
 	
 		<xsl:choose>
 		
-			<xsl:when test="preceding-sibling::*[1][self::mn:title]/@inline-header = 'true' and $inline-header = 'false'"/> <!-- paragraph displayed in title template -->
+			<xsl:when test="preceding-sibling::*[1][self::mn:fmt-title]/@inline-header = 'true' and $inline-header = 'false'"/> <!-- paragraph displayed in title template -->
 			
 			<xsl:otherwise>
 			
@@ -2841,7 +2843,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:name))]" priority="3">
+	<xsl:template match="mn:fn[not(ancestor::*[(self::mn:table or self::mn:figure)] and not(ancestor::mn:fmt-name))]" priority="3">
 		<xsl:call-template name="fn" />
 	</xsl:template>
 	
@@ -2911,7 +2913,7 @@
 	</xsl:template> -->
 
 
-	<xsl:template match="*[self::mn:table or self::mn:figure or self::mn:image]/mn:name/node()[1][self::text()]" priority="2">
+	<xsl:template match="*[self::mn:table or self::mn:figure or self::mn:image]/mn:fmt-name/node()[1][self::text()]" priority="2">
 		<xsl:choose>
 			<xsl:when test="contains(., '—')">
 				<xsl:variable name="substring_after" select="substring-after(., '—')"/>
@@ -2990,7 +2992,7 @@
 	</xsl:template> -->
 
 	<!-- remove space after 'NOTE' without number -->
-	<xsl:template match="*[self::mn:note or self::mn:termnote]/mn:name/text()" priority="2">
+	<xsl:template match="*[self::mn:note or self::mn:termnote]/mn:fmt-name/text()" priority="2">
 		<xsl:value-of select="normalize-space()"/>
 	</xsl:template>
 
@@ -3013,7 +3015,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:xref"  priority="2">
+	<xsl:template match="mn:xref | mn:fmt-xref"  priority="2">
 		<xsl:if test="@target and @target != ''">
 			<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
 				

@@ -14,7 +14,7 @@
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="yes"/>
 
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
 	<xsl:variable name="namespace">csa</xsl:variable>
 
@@ -327,7 +327,7 @@
 			
 				<xsl:apply-templates />
 				
-				<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
+				<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 					<fo:block margin-left="-3mm" role="TOC">
 						<xsl:for-each select="$contents//mnx:item[@display = 'true']">
 							<fo:block role="TOCI">
@@ -387,7 +387,7 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:title" priority="3">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<fo:block font-size="26pt" color="black" margin-top="2pt" margin-bottom="30pt" role="H1">
 			<xsl:apply-templates />
 		</fo:block>
@@ -452,7 +452,7 @@
 	<!-- ====== -->
 	<!-- title      -->
 	<!-- ====== -->	
-	<xsl:template match="mn:annex/mn:title">
+	<xsl:template match="mn:annex/mn:fmt-title">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -468,7 +468,7 @@
 		</fo:block>		
 	</xsl:template>
 	
-	<xsl:template match="mn:title" name="title">
+	<xsl:template match="mn:fmt-title" name="title">
 
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -539,7 +539,7 @@
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
-				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
+				<xsl:when test="../@inline-header = 'true' and $previous-element = 'fmt-title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
 				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
@@ -610,8 +610,8 @@
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
 				<fo:block>
-					<xsl:apply-templates select="mn:name" />
-					<xsl:apply-templates select="node()[not(self::mn:name)]" />
+					<xsl:apply-templates select="mn:fmt-name" />
+					<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>

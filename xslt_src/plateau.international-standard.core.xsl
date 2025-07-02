@@ -18,7 +18,7 @@
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
 	<xsl:variable name="namespace">plateau</xsl:variable>
 	
@@ -408,7 +408,7 @@
 				<xsl:element name="sections" namespace="{$namespace_full}"> <!-- save context element -->
 					
 					<!-- determine clause 2 element number -->
-					<xsl:variable name="clause_2_num_" select="count(/*/mn:sections/*[normalize-space(mn:title/mn:tab/preceding-sibling::*) = '2']/preceding-sibling::*)"/>
+					<xsl:variable name="clause_2_num_" select="count(/*/mn:sections/*[normalize-space(mn:fmt-title/mn:tab/preceding-sibling::*) = '2']/preceding-sibling::*)"/>
 					<xsl:variable name="clause_2_num__">
 						<xsl:choose>
 							<xsl:when test="$clause_2_num_ = 0">2</xsl:when>
@@ -489,7 +489,7 @@
 			<fo:block><fo:leader leader-pattern="rule" rule-style="double" rule-thickness="1.5pt" leader-length="100%"/></fo:block>
 		</xsl:if>
 		<xsl:apply-templates />
-		<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
+		<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 			<!-- fill ToC -->
 			<fo:block role="TOC" font-weight="bold">
 				<xsl:if test="$doctype = 'technical-report'">
@@ -585,7 +585,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="mn:clause[@type = 'toc']/mn:title" priority="3"/>
+	<xsl:template match="mn:clause[@type = 'toc']/mn:fmt-title" priority="3"/>
 		
 	<xsl:template name="insertTocItem">
 		<xsl:param name="printSection">false</xsl:param>
@@ -893,7 +893,7 @@
 		<xsl:choose>
 			<xsl:when test="self::mn:p and count(node()) = count(processing-instruction())"><!-- skip --></xsl:when> <!-- empty paragraph with processing-instruction -->
 			<xsl:when test="@hidden = 'true'"><!-- skip --></xsl:when>
-			<xsl:when test="self::mn:title or self::mn:term">
+			<xsl:when test="self::mn:fmt-title or self::mn:term">
 				<xsl:apply-templates select="."/>
 			</xsl:when>
 			<xsl:when test="@mainsection = 'true'">
@@ -921,7 +921,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:title" priority="2" name="title">
+	<xsl:template match="mn:fmt-title" priority="2" name="title">
 	
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -968,8 +968,8 @@
 				<xsl:when test="ancestor::mn:foreword and $level = 2">0mm</xsl:when>
 				<!-- <xsl:when test="ancestor::mn:annex and $level = 2">4.5mm</xsl:when> -->
 				<xsl:when test="ancestor::mn:bibliography and $level = 2">0mm</xsl:when>
-				<xsl:when test="$doctype = 'technical-report' and $level = 2 and preceding-sibling::*[2][self::mn:title]">0mm</xsl:when>
-				<xsl:when test="$doctype = 'technical-report' and $level = 3 and preceding-sibling::*[2][self::mn:title]">0mm</xsl:when>
+				<xsl:when test="$doctype = 'technical-report' and $level = 2 and preceding-sibling::*[2][self::mn:fmt-title]">0mm</xsl:when>
+				<xsl:when test="$doctype = 'technical-report' and $level = 3 and preceding-sibling::*[2][self::mn:fmt-title]">0mm</xsl:when>
 				<xsl:when test="$level = 2">2mm</xsl:when>
 				<xsl:when test="$level &gt;= 3">2mm</xsl:when>
 				<xsl:otherwise>0mm</xsl:otherwise>
@@ -1108,15 +1108,15 @@
 	</xsl:template>
 	
 	<!-- indent for clause level 4 and more -->
-	<xsl:template match="mn:sections/mn:page_sequence//mn:clause[mn:title[@depth &gt;= 4]]" priority="20">
+	<xsl:template match="mn:sections/mn:page_sequence//mn:clause[mn:fmt-title[@depth &gt;= 4]]" priority="20">
 		<fo:block keep-with-next="always">
 			<fo:block id="{@id}" />
 		</fo:block>
-		<xsl:apply-templates select="mn:title"/>
+		<xsl:apply-templates select="mn:fmt-title"/>
 		<fo:block-container margin-left="6mm">
 			<fo:block-container margin-left="0">
 				<fo:block>
-					<xsl:apply-templates select="*[not(self::mn:title)]"/>
+					<xsl:apply-templates select="*[not(self::mn:fmt-title)]"/>
 				</fo:block>
 			</fo:block-container>
 		</fo:block-container>
@@ -1147,7 +1147,7 @@
 		
 		<xsl:choose>
 		
-			<xsl:when test="preceding-sibling::*[1][self::mn:title]/@inline-header = 'true' and $inline-header = 'false'"/> <!-- paragraph displayed in title template -->
+			<xsl:when test="preceding-sibling::*[1][self::mn:fmt-title]/@inline-header = 'true' and $inline-header = 'false'"/> <!-- paragraph displayed in title template -->
 			
 			<xsl:otherwise>
 			
@@ -1280,10 +1280,10 @@
 						<fo:table-row>
 							<fo:table-cell padding="2mm">
 								<fo:block keep-with-next="always" margin-bottom="10pt" role="SKIP">
-									<xsl:apply-templates select="mn:name" />
+									<xsl:apply-templates select="mn:fmt-name" />
 								</fo:block>
 								<fo:block>
-									<xsl:apply-templates select="node()[not(self::mn:name)]" />
+									<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 								</fo:block>
 							</fo:table-cell>
 						</fo:table-row>
@@ -1306,12 +1306,12 @@
 				<fo:list-item>
 					<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
 						<fo:block xsl:use-attribute-sets="note-name-style">
-							<xsl:apply-templates select="mn:name" />
+							<xsl:apply-templates select="mn:fmt-name" />
 						</fo:block>
 					</fo:list-item-label>
 					<fo:list-item-body start-indent="body-start()">
 						<fo:block>
-							<xsl:apply-templates select="node()[not(self::mn:name)]" />
+							<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 						</fo:block>
 					</fo:list-item-body>
 				</fo:list-item>
@@ -1696,12 +1696,14 @@
 		</xsl:copy>
 	</xsl:template>
 	<xsl:template match="mn:example/mn:fmt-name[contains(mn:span/text(), ' — ')]" mode="update_xml_step1" priority="2">
-		<xsl:element name="name" namespace="{$namespace_full}">
+		<!-- <xsl:element name="name" namespace="{$namespace_full}"> -->
+		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates select="*[1]" mode="update_xml_step1"/>
-		</xsl:element>
+		</xsl:copy>
+		<!-- </xsl:element> -->
 	</xsl:template>
-	<xsl:template match="mn:example/mn:name/text()" mode="update_xml_step1">
+	<xsl:template match="mn:example/mn:fmt-name/text()" mode="update_xml_step1">
 		<xsl:variable name="example_name" select="."/>
 		<!-- 
 			<xsl:choose>
@@ -1788,14 +1790,14 @@
 			<!-- <xsl:if test="ancestor::mn:preferred">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if> -->
-			<xsl:if test="(ancestor::mn:figure or ancestor::mn:table) and parent::mn:name">
+			<xsl:if test="(ancestor::mn:figure or ancestor::mn:table) and parent::mn:fmt-name">
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 				<xsl:if test="$doctype = 'technical-report'">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			
-			<xsl:if test="ancestor::mn:annex and ancestor::mn:title and not(ancestor::mn:clause)">
+			<xsl:if test="ancestor::mn:annex and ancestor::mn:fmt-title and not(ancestor::mn:clause)">
 				<xsl:attribute name="font-family">inherit</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 			</xsl:if>
@@ -1881,7 +1883,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:xref[@pagenumber = 'true']"  priority="2">
+	<xsl:template match="mn:xref[@pagenumber = 'true'] | mn:fmt-xref[@pagenumber = 'true']"  priority="2">
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
 				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">

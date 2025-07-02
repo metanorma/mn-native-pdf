@@ -106,7 +106,7 @@
 
 	<xsl:template name="refine_sourcecode-style">
 		<xsl:if test="$namespace = 'rsd'"> <!-- background for image -->
-			<xsl:if test="starts-with(mn:name/text()[1], 'Figure ')">
+			<xsl:if test="starts-with((mn:fmt-name//text())[1], 'Figure ')">
 				<xsl:attribute name="background-color">rgb(236,242,246)</xsl:attribute>
 				<xsl:attribute name="padding-left">11mm</xsl:attribute>
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
@@ -114,7 +114,7 @@
 				<xsl:attribute name="margin-right">0mm</xsl:attribute>
 				<xsl:attribute name="padding-top">7.5mm</xsl:attribute>
 				<xsl:attribute name="padding-bottom">7.5mm</xsl:attribute>
-				<xsl:if test="following-sibling::*[1][self::mn:sourcecode] and starts-with(mn:name/text()[1], 'Figure ')">
+				<xsl:if test="following-sibling::*[1][self::mn:sourcecode] and starts-with((mn:fmt-name//text())[1], 'Figure ')">
 					<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -255,7 +255,7 @@
 						<xsl:value-of select="."/>
 					</xsl:attribute>
 				</xsl:for-each>
-				<xsl:apply-templates select="node()[not(self::mn:name)]" />
+				<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 			</xsl:when>
 			
 			<xsl:otherwise>
@@ -285,7 +285,7 @@
 					<fo:block-container margin-left="0mm" role="SKIP">
 				
 						<xsl:if test="$namespace = 'rsd'">
-							<xsl:apply-templates select="mn:name" /> <!-- show sourcecode's name BEFORE content -->
+							<xsl:apply-templates select="mn:fmt-name" /> <!-- show sourcecode's name BEFORE content -->
 						</xsl:if>
 						
 						<xsl:if test="$namespace = 'ogc'">
@@ -310,7 +310,7 @@
 								<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 							</xsl:if>
 							
-							<xsl:apply-templates select="node()[not(self::mn:name or self::mn:dl)]" />
+							<xsl:apply-templates select="node()[not(self::mn:fmt-name or self::mn:dl)]" />
 						</fo:block>
 						
 						<xsl:apply-templates select="mn:dl"/> <!-- Key table -->
@@ -318,7 +318,7 @@
 						<xsl:choose>
 							<xsl:when test="$namespace = 'rsd'"></xsl:when>
 							<xsl:otherwise>
-								<xsl:apply-templates select="mn:name" /> <!-- show sourcecode's name AFTER content -->
+								<xsl:apply-templates select="mn:fmt-name" /> <!-- show sourcecode's name AFTER content -->
 							</xsl:otherwise>
 						</xsl:choose>
 							
@@ -633,7 +633,7 @@
 	
 	
 	
-	<xsl:template match="mn:sourcecode/mn:name">
+	<xsl:template match="mn:sourcecode/mn:fmt-name">
 		<xsl:if test="normalize-space() != ''">		
 			<fo:block xsl:use-attribute-sets="sourcecode-name-style">				
 				<xsl:apply-templates/>
@@ -651,12 +651,12 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:annotation">
+	<xsl:template match="mn:callout-annotation">
 		<xsl:variable name="annotation-id" select="@id"/>
 		<xsl:variable name="callout" select="//*[@target = $annotation-id]/text()"/>		
 		<fo:block id="{$annotation-id}" white-space="nowrap">			
 			<xsl:if test="$namespace = 'ogc'">
-				<xsl:if test="not(preceding-sibling::mn:annotation)">
+				<xsl:if test="not(preceding-sibling::mn:callout-annotation)">
 					<xsl:attribute name="space-before">6pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -668,7 +668,7 @@
 		</fo:block>		
 	</xsl:template>	
 
-	<xsl:template match="mn:annotation/mn:p">
+	<xsl:template match="mn:callout-annotation/mn:p">
 		<xsl:param name="callout"/>
 		<fo:inline id="{@id}">
 			<xsl:call-template name="setNamedDestination"/>

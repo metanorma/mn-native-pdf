@@ -143,10 +143,10 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="color">blue</xsl:attribute>
-			<xsl:if test="not(parent::mn:title)">
+			<xsl:if test="not(parent::mn:fmt-title)">
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="parent::mn:title">
+			<xsl:if test="parent::mn:fmt-title">
 				<xsl:attribute name="color">inherit</xsl:attribute>
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>

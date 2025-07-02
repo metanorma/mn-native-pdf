@@ -145,12 +145,12 @@
 	<xsl:template match="mn:permission">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="permission-style">			
-			<xsl:apply-templates select="mn:name" />
-			<xsl:apply-templates select="node()[not(self::mn:name)]" />
+			<xsl:apply-templates select="mn:fmt-name" />
+			<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:permission/mn:name">
+	<xsl:template match="mn:permission/mn:fmt-name">
 		<xsl:if test="normalize-space() != ''">
 			<xsl:choose>
 			
@@ -186,15 +186,15 @@
 	<xsl:template match="mn:requirement">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="requirement-style">			
-			<xsl:apply-templates select="mn:name" />
+			<xsl:apply-templates select="mn:fmt-name" />
 			<xsl:apply-templates select="mn:label" />
 			<xsl:apply-templates select="@obligation"/>
 			<xsl:apply-templates select="mn:subject" />
-			<xsl:apply-templates select="node()[not(self::mn:name) and not(self::mn:label) and not(self::mn:subject)]" />
+			<xsl:apply-templates select="node()[not(self::mn:fmt-name) and not(self::mn:label) and not(self::mn:subject)]" />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:requirement/mn:name">
+	<xsl:template match="mn:requirement/mn:fmt-name">
 		<xsl:if test="normalize-space() != ''">
 			<xsl:choose>
 			
@@ -250,12 +250,12 @@
 	<xsl:template match="mn:recommendation">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="recommendation-style">
-			<xsl:apply-templates select="mn:name" />
-			<xsl:apply-templates select="node()[not(self::mn:name)]" />
+			<xsl:apply-templates select="mn:fmt-name" />
+			<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:recommendation/mn:name">
+	<xsl:template match="mn:recommendation/mn:fmt-name">
 		<xsl:if test="normalize-space() != ''">
 			<xsl:choose>
 			

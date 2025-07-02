@@ -574,10 +574,10 @@
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}"/>
 		
-		<xsl:apply-templates select="mn:title[@columns = 1]"/>
+		<xsl:apply-templates select="mn:fmt-title[@columns = 1]"/>
 		
 		<fo:block xsl:use-attribute-sets="references-non-normative-style">
-			<xsl:apply-templates select="node()[not(self::mn:title and @columns = 1)]" />
+			<xsl:apply-templates select="node()[not(self::mn:fmt-title and @columns = 1)]" />
 			
 			<xsl:if test="$namespace = 'jis'">
 				<!-- render footnotes after references -->

@@ -437,7 +437,7 @@
 						
 							<xsl:call-template name="refine_multicomponent_block_style"/>
 							
-							<xsl:apply-templates select="mn:name">
+							<xsl:apply-templates select="mn:fmt-name">
 								<xsl:with-param name="process">true</xsl:with-param>
 							</xsl:apply-templates>
 							
@@ -765,7 +765,7 @@
 	</xsl:template> <!-- refine_multicomponent_block_style -->
 	
 	<!-- dl/name -->
-	<xsl:template match="mn:dl/mn:name">
+	<xsl:template match="mn:dl/mn:fmt-name">
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
 			<fo:block xsl:use-attribute-sets="dl-name-style">

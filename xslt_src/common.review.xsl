@@ -13,13 +13,13 @@
 											version="1.0">
 	
 	<xsl:variable name="reviews_">
-		<xsl:for-each select="//mn:review[not(parent::mn:review-container)][@from]">
+		<xsl:for-each select="//mn:annotation[not(parent::mn:annotation-container)][@from]">
 			<xsl:copy>
 				<xsl:copy-of select="@from"/>
 				<xsl:copy-of select="@id"/>
 			</xsl:copy>
 		</xsl:for-each>
-		<xsl:for-each select="//mn:fmt-review-start[@source]">
+		<xsl:for-each select="//mn:fmt-annotation-start[@source]">
 			<xsl:copy>
 				<xsl:copy-of select="@source"/>
 				<xsl:copy-of select="@id"/>
@@ -33,7 +33,7 @@
 			<!-- if there is review with from="...", then add small helper block for Annot tag adding, see 'review' template -->
 			<xsl:variable name="curr_id" select="@id"/>
 			<!-- <xsl:variable name="review_id" select="normalize-space(/@id)"/> -->
-			<xsl:for-each select="$reviews//mn:review[@from = $curr_id]"> <!-- $reviews//mn:fmt-review-start[@source = $curr_id] -->
+			<xsl:for-each select="$reviews//mn:annotation[@from = $curr_id]"> <!-- $reviews//mn:fmt-review-start[@source = $curr_id] -->
 				<xsl:variable name="review_id" select="normalize-space(@id)"/>
 				<xsl:if test="$review_id != ''"> <!-- i.e. if review found -->
 					<fo:block keep-with-next="always" line-height="0.1" id="{$review_id}" font-size="1pt" role="SKIP"><xsl:value-of select="$hair_space"/><fo:basic-link internal-destination="{$review_id}" fox:alt-text="Annot___{$review_id}" role="Annot"><xsl:value-of select="$hair_space"/></fo:basic-link></fo:block>
@@ -48,7 +48,7 @@
 
 	<!-- document text (not figures, or tables) footnotes -->
 	<xsl:variable name="reviews_container_">
-		<xsl:for-each select="//mn:review-container/mn:fmt-review-body">
+		<xsl:for-each select="//mn:annotation-container/mn:fmt-annotation-body">
 			<xsl:variable name="update_xml_step1">
 				<xsl:apply-templates select="." mode="update_xml_step1"/>
 			</xsl:variable>
@@ -57,10 +57,10 @@
 	</xsl:variable>
 	<xsl:variable name="reviews_container" select="xalan:nodeset($reviews_container_)"/>
   
-	<xsl:template match="mn:review-container"/>
+	<xsl:template match="mn:annotation-container"/>
 	
 	<!-- for old Presentation XML (before https://github.com/metanorma/isodoc/issues/670) -->
-	<xsl:template match="mn:review[not(parent::mn:review-container)]">  <!-- 'review' will be processed in mn2pdf/review.xsl -->
+	<xsl:template match="mn:annotation[not(parent::mn:annotation-container)]">  <!-- 'review' will be processed in mn2pdf/review.xsl -->
 		<xsl:variable name="id_from" select="normalize-space(current()/@from)"/>
 		<xsl:if test="$isGenerateTableIF = 'false'">
 		<xsl:choose>
@@ -80,7 +80,7 @@
 	</xsl:template>
 	
 	<!-- for new Presentation XML (https://github.com/metanorma/isodoc/issues/670) -->
-	<xsl:template match="mn:fmt-review-start" name="fmt-review-start"> <!-- 'review' will be processed in mn2pdf/review.xsl -->
+	<xsl:template match="mn:fmt-annotation-start" name="fmt-annotation-start"> <!-- 'review' will be processed in mn2pdf/review.xsl -->
 		<!-- comment 2019-11-29 -->
 		<!-- <fo:block font-weight="bold">Review:</fo:block>
 		<xsl:apply-templates /> -->
@@ -136,6 +136,6 @@
 	</xsl:template>
 
 	<!-- https://github.com/metanorma/mn-samples-bsi/issues/312 -->
-	<xsl:template match="mn:review[@type = 'other']"/>
+	<xsl:template match="mn:annotation[@type = 'other']"/>
 
 </xsl:stylesheet>

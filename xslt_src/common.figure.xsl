@@ -63,7 +63,7 @@
 
 	<xsl:template name="refine_figure-block-style">
 		<xsl:if test="$namespace = 'bipm'">
-			<xsl:if test="mn:name">
+			<xsl:if test="mn:fmt-name">
 				<xsl:attribute name="space-after">12pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -451,7 +451,7 @@
 				<ancestor><xsl:copy-of select="ancestor::mn:figure[.//mn:name[.//mn:fn]]"/></ancestor> -->
 				<xsl:choose>
 					<!-- skip figure/name/fn -->
-					<xsl:when test="ancestor::mn:figure[.//mn:name[.//mn:fn[@target = $curr_id]]]"><!-- skip --></xsl:when>
+					<xsl:when test="ancestor::mn:figure[.//mn:fmt-name[.//mn:fn[@target = $curr_id]]]"><!-- skip --></xsl:when>
 					<xsl:otherwise>
 						<xsl:element name="figure" namespace="{$namespace_full}">
 							<xsl:element name="fmt-footnote-container" namespace="{$namespace_full}">
@@ -691,7 +691,7 @@
 			</xsl:call-template>
 			
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'rsd'"> <!-- show figure's name BEFORE image -->
-				<xsl:apply-templates select="mn:name" />
+				<xsl:apply-templates select="mn:fmt-name" />
 			</xsl:if>
 			
 			<!-- Example: Dimensions in millimeters -->
@@ -711,11 +711,11 @@
 			
 			<fo:block xsl:use-attribute-sets="figure-style" role="SKIP">
 				
-				<xsl:for-each select="mn:name"> <!-- set context -->
+				<xsl:for-each select="mn:fmt-name"> <!-- set context -->
 					<xsl:call-template name="setIDforNamedDestination"/>
 				</xsl:for-each>
 				
-				<xsl:apply-templates select="node()[not(self::mn:name) and not(self::mn:note and @type = 'units')]" />
+				<xsl:apply-templates select="node()[not(self::mn:fmt-name) and not(self::mn:note and @type = 'units')]" />
 			</fo:block>
 		
 			<xsl:if test="normalize-space($show_figure_key_in_block_container) = 'true'">
@@ -725,7 +725,7 @@
 			<xsl:choose>
 				<xsl:when test="$namespace = 'bsi' or $namespace = 'rsd'"></xsl:when>
 				<xsl:otherwise>
-					<xsl:apply-templates select="mn:name" /> <!-- show figure's name AFTER image -->
+					<xsl:apply-templates select="mn:fmt-name" /> <!-- show figure's name AFTER image -->
 				</xsl:otherwise>
 			</xsl:choose>
 			
@@ -739,7 +739,7 @@
 					</xsl:apply-templates>
 					<xsl:call-template name="showFigureKey"/>
 				</fo:block>
-				<xsl:apply-templates select="mn:name">
+				<xsl:apply-templates select="mn:fmt-name">
 					<xsl:with-param name="process">true</xsl:with-param>
 				</xsl:apply-templates>
 			</xsl:if>
@@ -767,9 +767,9 @@
 	<xsl:template match="mn:figure[@class = 'pseudocode']">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}">
-			<xsl:apply-templates select="node()[not(self::mn:name)]" />
+			<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 		</fo:block>
-		<xsl:apply-templates select="mn:name" />
+		<xsl:apply-templates select="mn:fmt-name" />
 	</xsl:template>
 	
 	<xsl:template match="mn:figure[@class = 'pseudocode']//mn:p">
@@ -799,7 +799,7 @@
 		<xsl:variable name="isAdded" select="../@added"/>
 		<xsl:variable name="isDeleted" select="../@deleted"/>
 		<xsl:choose>
-			<xsl:when test="ancestor::mn:title or not(parent::mn:figure) or parent::mn:p"> <!-- inline image ( 'image:path' in adoc, with one colon after image) -->
+			<xsl:when test="ancestor::mn:fmt-title or not(parent::mn:figure) or parent::mn:p"> <!-- inline image ( 'image:path' in adoc, with one colon after image) -->
 				<fo:inline padding-left="1mm" padding-right="1mm">
 					<xsl:if test="not(parent::mn:figure) or parent::mn:p">
 						<xsl:attribute name="padding-left">0mm</xsl:attribute>
@@ -820,13 +820,26 @@
 					<fo:external-graphic src="{$src}" fox:alt-text="Image {@alt}" vertical-align="middle">
 						
 						<xsl:if test="parent::mn:logo"> <!-- publisher's logo -->
-							<xsl:attribute name="width">100%</xsl:attribute>
+							<xsl:attribute name="scaling">uniform</xsl:attribute>
+							<xsl:choose>
+								<xsl:when test="@width and not(@height)">
+									<xsl:attribute name="width">100%</xsl:attribute>
+									<xsl:attribute name="content-height">100%</xsl:attribute>
+								</xsl:when>
+								<xsl:when test="@height and not(@width)">
+									<xsl:attribute name="height">100%</xsl:attribute>
+									<xsl:attribute name="content-height"><xsl:value-of select="@height"/></xsl:attribute>
+								</xsl:when>
+								<xsl:when test="not(@width) and not(@height)">
+									<xsl:attribute name="content-height">100%</xsl:attribute>
+								</xsl:when>
+							</xsl:choose>
+
 							<xsl:if test="normalize-space($logo_width) != ''">
 								<xsl:attribute name="width"><xsl:value-of select="$logo_width"/></xsl:attribute>
 							</xsl:if>
-							<xsl:attribute name="content-height">100%</xsl:attribute>
 							<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
-							<xsl:attribute name="scaling">uniform</xsl:attribute>
+							<xsl:attribute name="vertical-align">top</xsl:attribute>
 						</xsl:if>
 						
 						<xsl:variable name="width">
@@ -1153,7 +1166,7 @@
 	<xsl:variable name="width_effective_px" select="$width_effective div 25.4 * $image_dpi"/>
 	<xsl:variable name="height_effective_px" select="$height_effective div 25.4 * $image_dpi"/>
 	
-	<xsl:template match="mn:figure[not(mn:image) and *[local-name() = 'svg']]/mn:name/mn:bookmark" priority="2"/>
+	<xsl:template match="mn:figure[not(mn:image) and *[local-name() = 'svg']]/mn:fmt-name/mn:bookmark" priority="2"/>
 	<xsl:template match="mn:figure[not(mn:image)]/*[local-name() = 'svg']" priority="2" name="image_svg">
 		<xsl:param name="name"/>
 		
@@ -1163,8 +1176,8 @@
 		
 		<xsl:variable name="alt-text">
 			<xsl:choose>
-				<xsl:when test="normalize-space(../mn:name) != ''">
-					<xsl:value-of select="../mn:name"/>
+				<xsl:when test="normalize-space(../mn:fmt-name) != ''">
+					<xsl:value-of select="../mn:fmt-name"/>
 				</xsl:when>
 				<xsl:when test="normalize-space($name) != ''">
 					<xsl:value-of select="$name"/>
@@ -1173,7 +1186,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="isPrecedingTitle" select="normalize-space(ancestor::mn:figure/preceding-sibling::*[1][self::mn:title] and 1 = 1)"/>
+		<xsl:variable name="isPrecedingTitle" select="normalize-space(ancestor::mn:figure/preceding-sibling::*[1][self::mn:fmt-title] and 1 = 1)"/>
 		
 		<xsl:choose>
 			<xsl:when test=".//*[local-name() = 'a'][*[local-name() = 'rect'] or *[local-name() = 'polygon'] or *[local-name() = 'circle'] or *[local-name() = 'ellipse']]">
@@ -1222,9 +1235,9 @@
 								<fo:table-cell column-number="2">
 									<fo:block>
 										<fo:block-container width="{$width_scale}px" height="{$height_scale}px">
-											<xsl:if test="../mn:name/mn:bookmark">
+											<xsl:if test="../mn:fmt-name/mn:bookmark">
 												<fo:block  line-height="0" font-size="0">
-													<xsl:for-each select="../mn:name/mn:bookmark">
+													<xsl:for-each select="../mn:fmt-name/mn:bookmark">
 														<xsl:call-template name="bookmark"/>
 													</xsl:for-each>
 												</fo:block>
@@ -1465,7 +1478,7 @@
 	
 	<!-- image with svg and emf -->
 	<xsl:template match="mn:figure/mn:image[*[local-name() = 'svg']]" priority="3">
-		<xsl:variable name="name" select="ancestor::mn:figure/mn:name"/>
+		<xsl:variable name="name" select="ancestor::mn:figure/mn:fmt-name"/>
 		<xsl:for-each select="*[local-name() = 'svg']">
 			<xsl:call-template name="image_svg">
 				<xsl:with-param name="name" select="$name"/>
@@ -1482,7 +1495,7 @@
 	
 	<xsl:template match="mn:figure/mn:image[@mimetype = 'image/svg+xml' and @src[not(starts-with(., 'data:image/'))]]" priority="2">
 		<xsl:variable name="svg_content" select="document(@src)"/>
-		<xsl:variable name="name" select="ancestor::mn:figure/mn:name"/>
+		<xsl:variable name="name" select="ancestor::mn:figure/mn:fmt-name"/>
 		<xsl:for-each select="xalan:nodeset($svg_content)/node()">
 			<xsl:call-template name="image_svg">
 				<xsl:with-param name="name" select="$name"/>
@@ -1605,8 +1618,8 @@
 	<xsl:template match="mn:emf"/>
 	
 	<!-- figure/name -->
-	<xsl:template match="mn:figure/mn:name |
-								mn:image/mn:name">
+	<xsl:template match="mn:figure/mn:fmt-name |
+								mn:image/mn:fmt-name">
 		<xsl:if test="normalize-space() != ''">			
 			<fo:block xsl:use-attribute-sets="figure-name-style">
 			

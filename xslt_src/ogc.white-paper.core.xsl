@@ -14,7 +14,7 @@
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 	
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 
 	<xsl:variable name="namespace">ogc-white-paper</xsl:variable>
 
@@ -137,7 +137,7 @@
 					<xsl:with-param name="contents" select="$contents"/>
 					<xsl:with-param name="contents_addon">
 						<xsl:variable name="list_of_tables_figures_">
-							<xsl:for-each select="//mn:table[@id and mn:name] | //mn:figure[@id and mn:name]">
+							<xsl:for-each select="//mn:table[@id and mn:fmt-name] | //mn:figure[@id and mn:fmt-name]">
 								<table_figure id="{@id}"><xsl:apply-templates select="mn:fmt-name" mode="bookmarks"/></table_figure>
 							</xsl:for-each>
 						</xsl:variable>
@@ -395,13 +395,13 @@
 		<fo:block break-after="page"/>
 		<fo:block-container line-height="1.08" font-family="Lato">
 		
-			<xsl:apply-templates select="mn:title"/>
+			<xsl:apply-templates select="mn:fmt-title"/>
 		
 			<fo:block role="TOC">
 				
-				<xsl:apply-templates select="*[not(self::mn:title)]"/>
+				<xsl:apply-templates select="*[not(self::mn:fmt-title)]"/>
 			
-				<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
+				<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 				
 					<xsl:variable name="margin-left">3.9</xsl:variable>
 					<xsl:for-each select="$contents//mnx:item[@display = 'true']">
@@ -419,7 +419,7 @@
 						</fo:block>
 					</xsl:for-each>
 					
-					<xsl:if test="//mn:figure[@id and mn:name] or //mn:table[@id and mn:name]">
+					<xsl:if test="//mn:figure[@id and mn:fmt-name] or //mn:table[@id and mn:fmt-name]">
 						<fo:block font-size="11pt" margin-top="8pt">&#xA0;</fo:block>
 						<fo:block font-size="11pt" margin-top="8pt">&#xA0;</fo:block>							
 						<fo:block xsl:use-attribute-sets="title-toc-style">
@@ -428,10 +428,10 @@
 								<xsl:with-param name="key">table_of_figures</xsl:with-param>
 							</xsl:call-template>
 						</fo:block>
-						<xsl:for-each select="//mn:figure[@id and mn:name] | //mn:table[@id and mn:name]">
+						<xsl:for-each select="//mn:figure[@id and mn:fmt-name] | //mn:table[@id and mn:fmt-name]">
 							<fo:block margin-top="8pt" margin-bottom="5pt" text-align-last="justify" role="TOCI">
-								<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:name}">
-									<xsl:apply-templates select="mn:name" mode="contents"/>										
+								<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:fmt-name}">
+									<xsl:apply-templates select="mn:fmt-name" mode="contents"/>										
 									<fo:inline keep-together.within-line="always">
 										<fo:leader leader-pattern="dots"/>
 										<fo:page-number-citation ref-id="{@id}"/>
@@ -445,7 +445,7 @@
 		</fo:block-container>
 	</xsl:template>
 
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:title" priority="3">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<fo:block xsl:use-attribute-sets="title-toc-style" role="H1">
 			<!-- <xsl:call-template name="getTitle">
 				<xsl:with-param name="name" select="'title-toc'"/>
@@ -586,14 +586,14 @@
 	<!-- title      -->
 	<!-- ====== -->
 	
-	<xsl:template match="mn:annex/mn:title">
+	<xsl:template match="mn:annex/mn:fmt-title">
 		<fo:block xsl:use-attribute-sets="title-depth1-style" role="H1">			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:title" name="title">
+	<xsl:template match="mn:fmt-title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -667,7 +667,7 @@
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
-				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
+				<xsl:when test="../@inline-header = 'true' and $previous-element = 'fmt-title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
 				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>

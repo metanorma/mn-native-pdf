@@ -14,7 +14,7 @@
 
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 	
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 
 	<xsl:variable name="namespace">rsd</xsl:variable>
 	
@@ -626,7 +626,7 @@
 		<fo:block role="TOC">
 			<xsl:apply-templates />	
 			
-			<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
+			<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 			
 				<xsl:if test="$contents//mnx:item[@display = 'true']">
 				
@@ -693,7 +693,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="mn:preface/mn:clause[@type = 'toc']/mn:title" priority="3">
+	<xsl:template match="mn:preface/mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<fo:block font-size="27pt" font-weight="bold" color="black" margin-left="-15mm" margin-bottom="13mm" role="H1">
 			<!-- <xsl:call-template name="getLocalizedString">
 				<xsl:with-param name="key">table_of_contents</xsl:with-param>
@@ -809,7 +809,7 @@
 		</fo:block>
 	</xsl:template> -->
 	
-	<xsl:template match="mn:title" name="title">
+	<xsl:template match="mn:fmt-title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -937,7 +937,7 @@
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
-				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
+				<xsl:when test="../@inline-header = 'true' and $previous-element = 'fmt-title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
 				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
@@ -1011,8 +1011,8 @@
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
 				<fo:block>
-					<xsl:apply-templates select="mn:name" />
-					<xsl:apply-templates select="node()[not(parent::mn:name)]" />
+					<xsl:apply-templates select="mn:fmt-name" />
+					<xsl:apply-templates select="node()[not(parent::mn:fmt-name)]" />
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
@@ -1034,10 +1034,10 @@
 			<xsl:call-template name="getLevelTermName"/>
 		</xsl:variable>
 		<fo:block font-weight="bold" color="black" font-size="{$font-size}" keep-with-next="always" role="H{$levelTerm}"> <!-- 600 - semibold -->
-			<xsl:if test="preceding-sibling::*[1][self::mn:name]">
+			<xsl:if test="preceding-sibling::*[1][self::mn:fmt-name]">
 				<xsl:attribute name="space-before">11mm</xsl:attribute>
 				<fo:inline padding-right="1mm">
-					<xsl:apply-templates select="ancestor::mn:term[1]/mn:name" />
+					<xsl:apply-templates select="ancestor::mn:term[1]/mn:fmt-name" />
 				</fo:inline>
 			</xsl:if>
 			
@@ -1087,7 +1087,7 @@
 								<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
 								<xsl:attribute name="color">black</xsl:attribute>
 								<xsl:attribute name="line-height">125%</xsl:attribute>
-								<xsl:apply-templates select="mn:title/node()"/>
+								<xsl:apply-templates select="mn:fmt-title/node()"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -1096,7 +1096,7 @@
 					<fo:table-row>
 						<fo:table-cell text-align="left">
 							<fo:block>
-								<xsl:apply-templates select="node()[not(self::mn:title)]" />
+								<xsl:apply-templates select="node()[not(self::mn:fmt-title)]" />
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -1108,7 +1108,7 @@
 	
 	
 	
-	<xsl:template match="*[self::mn:table or self::mn:figure or self::mn:sourcecode]/mn:name/node()[1][self::text()]" priority="2">
+	<xsl:template match="*[self::mn:table or self::mn:figure or self::mn:sourcecode]/mn:fmt-name/node()[1][self::text()]" priority="2">
 		<xsl:choose>
 			<xsl:when test="contains(., '—')">
 				<xsl:variable name="name_number" select="normalize-space(translate(substring-before(., '—'), '&#xa0;', ' '))"/>

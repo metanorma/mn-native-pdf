@@ -21,7 +21,7 @@
 	<xsl:param name="add_math_as_attachment">true</xsl:param>
 	<xsl:param name="final_transform">true</xsl:param>
 	
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
 	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
 	
@@ -604,7 +604,7 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="mn:title[following-sibling::*[1][self::mn:eref]]" mode="title_eref">
+	<xsl:template match="mn:fmt-title[following-sibling::*[1][self::mn:eref]]" mode="title_eref">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="title_eref"/>
 			<!-- move next eref inside title -->
@@ -612,7 +612,7 @@
 		</xsl:copy>
 	</xsl:template>
 	<!-- remove eref immediately after title -->
-	<xsl:template match="mn:eref[preceding-sibling::*[1][self::mn:title]]" mode="title_eref"/>
+	<xsl:template match="mn:eref[preceding-sibling::*[1][self::mn:fmt-title]]" mode="title_eref"/>
 	<!-- ================================= -->
 	<!-- END Move eref inside title -->
 	<!-- ================================= -->	
@@ -704,7 +704,7 @@
 		</xsl:copy>
 	</xsl:template>
 
-	<xsl:template match="mn:annex/mn:title" mode="flatxml">
+	<xsl:template match="mn:annex/mn:fmt-title" mode="flatxml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
 			<xsl:attribute name="depth">1</xsl:attribute>
@@ -738,8 +738,8 @@
 			</xsl:for-each>
 			
 			<!-- if current node is title level is 3 with notes, and next level is 4 -->
-			<xsl:if test="self::mn:title and @depth = 3 and
-						../mn:clause/mn:title/@depth = 4 and count(following-sibling::*[1][self::mn:note]) &gt; 0">
+			<xsl:if test="self::mn:fmt-title and @depth = 3 and
+						../mn:clause/mn:fmt-title/@depth = 4 and count(following-sibling::*[1][self::mn:note]) &gt; 0">
 				<!-- then move here footnotes from clause level 4 -->
 				<xsl:for-each select="../mn:clause//mn:fn[ancestor::mn:quote or not(ancestor::mn:table)]"> 
 					<!-- <debug><xsl:for-each select="ancestor::*"><xsl:value-of select="local-name()"/>@<xsl:value-of select="@id"/><xsl:text>/</xsl:text></xsl:for-each>
@@ -763,7 +763,7 @@
 			<xsl:for-each select="following-sibling::mn:note">
 				<xsl:call-template name="change_note_kind"/>
 			</xsl:for-each>
-			<xsl:if test="@depth = 3 and local-name() = 'title' and ../mn:clause/mn:title/@depth = 4 and count(following-sibling::*[1][local-name() = 'note']) &gt; 0"> <!-- it means that current node is title level is 3 with notes, next level is 4 -->
+			<xsl:if test="@depth = 3 and local-name() = 'fmt-title' and ../mn:clause/mn:fmt-title/@depth = 4 and count(following-sibling::*[1][local-name() = 'note']) &gt; 0"> <!-- it means that current node is title level is 3 with notes, next level is 4 -->
 				<!-- <put_note_side_level4_here/> -->
 				<xsl:for-each select="../mn:clause//mn:fn[ancestor::mn:quote or not(ancestor::mn:table)]"> <!-- move here footnotes from clause level 4 -->
 					<xsl:call-template name="fn_to_note_side"/>
@@ -796,8 +796,8 @@
 	<xsl:template match="mn:fn[ancestor::mn:quote or not(ancestor::mn:table)]" mode="flatxml">
 		<xsl:choose>		
 			<!-- see template above with @depth = 4 -->
-			<xsl:when test="ancestor::mn:clause[1]/mn:title/@depth = 4 and 																
-																count(ancestor::mn:clause[2]/mn:title[@depth = 3]/following-sibling::*[1][self::mn:note]) &gt; 0">
+			<xsl:when test="ancestor::mn:clause[1]/mn:fmt-title/@depth = 4 and 																
+																count(ancestor::mn:clause[2]/mn:fmt-title[@depth = 3]/following-sibling::*[1][self::mn:note]) &gt; 0">
 				<xsl:apply-templates select="." mode="fn_to_xref"/>
 			</xsl:when>
 			<xsl:when test="ancestor::mn:li">
@@ -814,8 +814,8 @@
 	<xsl:template match="mn:fn[ancestor::mn:quote or not(ancestor::mn:table)]" mode="flatxml_list">
 		<xsl:choose>
 			<!-- see template above with @depth = 4 -->
-			<xsl:when test="ancestor::mn:clause[1]/mn:title/@depth = 4 and 																
-																count(ancestor::mn:clause[2]/mn:title[@depth = 3]/following-sibling::*[1][self::mn:note]) &gt; 0">
+			<xsl:when test="ancestor::mn:clause[1]/mn:fmt-title/@depth = 4 and 																
+																count(ancestor::mn:clause[2]/mn:fmt-title[@depth = 3]/following-sibling::*[1][self::mn:note]) &gt; 0">
 				<xsl:apply-templates select="." mode="fn_to_xref"/>
 			</xsl:when>
 			<xsl:when test="ancestor::mn:li">
@@ -914,8 +914,8 @@
 				
 					<xsl:choose>
 						<!-- see template above with @depth = 4 -->
-						<xsl:when test="ancestor::mn:clause[1]/mn:title/@depth = 4 and 																
-																count(ancestor::mn:clause[2]/mn:title[@depth = 3]/following-sibling::*[1][self::mn:note]) &gt; 0"></xsl:when>
+						<xsl:when test="ancestor::mn:clause[1]/mn:fmt-title/@depth = 4 and 																
+																count(ancestor::mn:clause[2]/mn:fmt-title[@depth = 3]/following-sibling::*[1][self::mn:note]) &gt; 0"></xsl:when>
 						<xsl:otherwise>
 				
 							<!-- move all footnotes in the current list (not only current list item) into first 'li' -->
@@ -1148,11 +1148,11 @@
 						
 						<xsl:variable name="header-title">
 							<xsl:choose>
-								<xsl:when test="mn:preface/*[not(self::mn:note or self::mn:admonition)][1]/mn:title[1]/mn:tab">
-									<xsl:apply-templates select="mn:preface/*[not(self::mn:note or self::mn:admonition)][1]/mn:title[1]/mn:tab[1]/following-sibling::node()" mode="header"/>
+								<xsl:when test="mn:preface/*[not(self::mn:note or self::mn:admonition)][1]/mn:fmt-title[1]/mn:tab">
+									<xsl:apply-templates select="mn:preface/*[not(self::mn:note or self::mn:admonition)][1]/mn:fmt-title[1]/mn:tab[1]/following-sibling::node()" mode="header"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:apply-templates select="mn:preface/*[not(self::mn:note or self::mn:admonition)][1]/mn:title[1]" mode="header"/>
+									<xsl:apply-templates select="mn:preface/*[not(self::mn:note or self::mn:admonition)][1]/mn:fmt-title[1]" mode="header"/>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
@@ -1300,7 +1300,7 @@
 					<xsl:call-template name="insertSeparatorPage"/>
 				</xsl:if>
 		
-			</xsl:when>
+			</xsl:when> <!-- EMD: $independentAppendix = '' and not($doctype = 'guide') -->
 			<xsl:otherwise> <!-- independentAppendix != '' -->
 			
 		
@@ -1457,7 +1457,7 @@
 					<xsl:with-param name="lang" select="$curr_lang"/>
 				</xsl:apply-templates>
 				
-			</xsl:otherwise>
+			</xsl:otherwise><!-- END: independentAppendix != '' -->
 		</xsl:choose>
 		
 	</xsl:template>
@@ -2221,20 +2221,20 @@
 				<xsl:choose>
 					<xsl:when test="parent::mn:sections">
 						<xsl:choose>
-							<xsl:when test="./mn:title[1]/mn:tab">
-								<xsl:apply-templates select="./mn:title[1]/mn:tab[1]/following-sibling::node()" mode="header"/>
+							<xsl:when test="./mn:fmt-title[1]/mn:tab">
+								<xsl:apply-templates select="./mn:fmt-title[1]/mn:tab[1]/following-sibling::node()" mode="header"/>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:apply-templates select="./mn:title[1]" mode="header"/>
+								<xsl:apply-templates select="./mn:fmt-title[1]" mode="header"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
 					
 					<xsl:when test="self::mn:annex">
 						<xsl:choose>
-							<xsl:when test="./*[1]/mn:title[1]/mn:tab">
+							<xsl:when test="./*[1]/mn:fmt-title[1]/mn:tab">
 								<xsl:variable name="title_annex">
-										<xsl:value-of select="normalize-space(./*[1]/mn:title[1]/mn:tab[1]/preceding-sibling::node())"/>
+										<xsl:value-of select="normalize-space(./*[1]/mn:fmt-title[1]/mn:tab[1]/preceding-sibling::node())"/>
 									</xsl:variable>
 									<xsl:choose>
 										<xsl:when test="substring($title_annex, string-length($title_annex)) = '.'">
@@ -2246,13 +2246,13 @@
 									</xsl:choose>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:apply-templates select="./*[1]/mn:title[1]" mode="header"/>
+								<xsl:apply-templates select="./*[1]/mn:fmt-title[1]" mode="header"/>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
 					
 					<xsl:otherwise>
-						<xsl:apply-templates select="./mn:title[1]" mode="header"/>
+						<xsl:apply-templates select="./mn:fmt-title[1]" mode="header"/>
 					</xsl:otherwise>
 					
 				</xsl:choose>
@@ -2332,7 +2332,7 @@
 	<!-- ====== -->
 	
 	
-	<xsl:template match="mn:title" name="title">
+	<xsl:template match="mn:fmt-title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -2635,7 +2635,7 @@
 	<xsl:template match="mn:sections/mn:clause | mn:annex/mn:clause" priority="3">
 			
 		<xsl:variable name="space-before"> <!-- margin-top for title, see mn:title -->
-			<xsl:if test="local-name(*[1]) = 'title'">
+			<xsl:if test="local-name(*[1]) = 'fmt-title'">
 					<xsl:if test="*[1]/@depth = 1 and not(*[1]/ancestor::mn:annex) and $independentAppendix != ''">30pt</xsl:if>
 					<xsl:if test="*[1]/@depth = 2 and not(*[1]/ancestor::mn:annex)">30pt</xsl:if>
 					<xsl:if test="*[1]/@depth = 2 and *[1]/ancestor::mn:annex">18pt</xsl:if> <!-- 24pt -->
@@ -2748,7 +2748,7 @@
 				<xsl:variable name="start_row" select="xalan:nodeset($rows)/num[$curr_row_num]/@span_start"/>
 				<xsl:variable name="end_row" select="$start_row + xalan:nodeset($rows)/num[$curr_row_num]/@span_num - 1"/>
 				<fo:table-row > <!-- DEBUG border-top="1.5pt solid blue" border-bottom="1.5pt solid blue" -->
-					<xsl:if test="local-name(*[$end_row]) = 'title'"> <!-- if last element is title, then keep row with next--> <!--  or local-name(*[$end_row]) = 'clause' or clause, then keep row with next -->
+					<xsl:if test="local-name(*[$end_row]) = 'fmt-title'"> <!-- if last element is title, then keep row with next--> <!--  or local-name(*[$end_row]) = 'clause' or clause, then keep row with next -->
 						<xsl:attribute  name="keep-with-next.within-page">always</xsl:attribute>
 					</xsl:if>
 					
@@ -2757,7 +2757,7 @@
 					<xsl:variable name="start_row_next_num" select="number($start_row_next)"/>
 					
 					<xsl:variable name="table-row-padding-bottom">						
-						<xsl:if test="$start_row_next != '' and local-name(*[$start_row_next_num]) = 'title'">							
+						<xsl:if test="$start_row_next != '' and local-name(*[$start_row_next_num]) = 'fmt-title'">
 								<xsl:if test="*[$start_row_next_num]/@depth = 2 and not(*[$start_row_next_num]/ancestor::mn:annex)">30pt</xsl:if>
 								<xsl:if test="*[$start_row_next_num]/@depth = 2 and *[$start_row_next_num]/ancestor::mn:annex">18pt</xsl:if> <!-- 24pt -->
 								<xsl:if test="*[$start_row_next_num]/@depth = 3 and not(*[$start_row_next_num]/ancestor::mn:annex)">20pt</xsl:if>
@@ -2862,7 +2862,7 @@
 		<xsl:choose>
 			<xsl:when test="count(./node()) = 0"> <!-- if empty clause, then move id into next title -->
 				<xsl:choose>
-					<xsl:when test="local-name(following-sibling::*[1]) = 'title'"/> <!-- id will set in title -->
+					<xsl:when test="local-name(following-sibling::*[1]) = 'fmt-title'"/> <!-- id will set in title -->
 					<xsl:otherwise>
 						<fo:block>
 							<xsl:call-template name="setId"/>
@@ -2902,7 +2902,7 @@
 				<xsl:variable name="num">
 					<xsl:number count="//mn:table[@id = $table_id]//mn:note_side" level="any"/>
 				</xsl:variable>
-				<xsl:if test="$num = 1 and ancestor::mn:table[1]/mn:name/mn:tab" >
+				<xsl:if test="$num = 1 and ancestor::mn:table[1]/mn:fmt-name/mn:tab" >
 					<xsl:attribute name="margin-top">48pt</xsl:attribute>				
 				</xsl:if>
 				
@@ -2911,13 +2911,13 @@
 			<xsl:call-template name="addReviewHelper"/>
 			
 			<!-- if note relates to title, but not fn -->
-			<xsl:if test="ancestor::mn:title and not(mn:sup_fn)"><fo:inline>* </fo:inline></xsl:if>
+			<xsl:if test="ancestor::mn:fmt-title and not(mn:sup_fn)"><fo:inline>* </fo:inline></xsl:if>
 			
 			<xsl:apply-templates mode="note_side"/>
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:note_side/mn:name" mode="note_side" priority="2"/>	
+	<xsl:template match="mn:note_side/mn:fmt-name" mode="note_side" priority="2"/>	
 	<xsl:template match="mn:note_side/*" mode="note_side">
 		<xsl:apply-templates select="."/>
 	</xsl:template>
@@ -2960,7 +2960,7 @@
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
-				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
+				<xsl:when test="../@inline-header = 'true' and $previous-element = 'fmt-title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
 				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
@@ -3124,12 +3124,12 @@
 					<fo:table-row>
 						<fo:table-cell>
 							<fo:block>
-								<xsl:apply-templates select="mn:name"/>
+								<xsl:apply-templates select="mn:fmt-name"/>
 							</fo:block>
 						</fo:table-cell>
 						<fo:table-cell>
 							<fo:block>
-								<xsl:apply-templates select="node()[not(self::mn:name)]"/>
+								<xsl:apply-templates select="node()[not(self::mn:fmt-name)]"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -3141,12 +3141,12 @@
 	<xsl:template match="mn:preferred" priority="2">		
 		<fo:block font-weight="bold" keep-with-next="always" space-before="8pt" margin-bottom="6pt">
 			<xsl:call-template name="setStyle_preferred"/>
-			<xsl:if test="ancestor::mn:term[1]/mn:name">
+			<xsl:if test="ancestor::mn:term[1]/mn:fmt-name">
 				<xsl:variable name="level">
 					<xsl:call-template name="getLevelTermName"/>
 				</xsl:variable>
 				<fo:inline role="H{$level}" font-weight="bold" padding-right="2mm">
-					<xsl:apply-templates select="ancestor::mn:term[1]/mn:name" />
+					<xsl:apply-templates select="ancestor::mn:term[1]/mn:fmt-name" />
 				</fo:inline>
 			</xsl:if>
 			<xsl:apply-templates />
@@ -3163,12 +3163,12 @@
 	</xsl:template>
 
 	
-	<xsl:template match="mn:xref" priority="2">
+	<xsl:template match="mn:xref | mn:fmt-xref" priority="2">
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
 				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}">
 				
-					<xsl:if test="parent::mn:title">
+					<xsl:if test="parent::mn:fmt-title">
 						<xsl:attribute name="font-weight">normal</xsl:attribute>
 					</xsl:if>
 					
@@ -3229,7 +3229,7 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="mn:note[not(ancestor::mn:preface)]/mn:name" priority="2">
+	<xsl:template match="mn:note[not(ancestor::mn:preface)]/mn:fmt-name" priority="2">
 		<xsl:choose>
 			<xsl:when test="not(../preceding-sibling::mn:note) and not((../following-sibling::mn:note))">
 				<!-- <xsl:variable name="curr_lang" select="ancestor::mn:metanorma/mn:bibdata/mn:language[@current = 'true']"/>
@@ -3275,7 +3275,7 @@
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="mn:name/text()" priority="2">
+	<xsl:template match="mn:fmt-name/text()" priority="2">
 		<xsl:value-of select="."/>
 	</xsl:template>
 
@@ -3494,7 +3494,7 @@
 	<xsl:template match="mn:clause[@type = 'toc']" priority="3">
 		<fo:block>
 			<xsl:copy-of select="@id"/>
-			<xsl:apply-templates select="mn:title[1]"/>
+			<xsl:apply-templates select="mn:fmt-title[1]"/>
 			
 			<!-- create virtual table to determine column's width -->
 			<xsl:variable name="toc_table_simple">
@@ -3532,7 +3532,7 @@
 					<fo:table-row role="SKIP">
 						<fo:table-cell role="SKIP">
 							<fo:block role="SKIP">
-								<xsl:variable name="title_id" select="generate-id(mn:title[1])"/>
+								<xsl:variable name="title_id" select="generate-id(mn:fmt-title[1])"/>
 								<xsl:apply-templates select="*[not(generate-id() = $title_id)]">
 									<xsl:with-param name="colwidths" select="$colwidths"/>
 								</xsl:apply-templates>
@@ -3546,8 +3546,8 @@
 	
 	
 	<!-- ignore section number before tab -->
-	<xsl:template match="mn:clause[@type = 'toc']//mn:title/text()[1][not(preceding-sibling::mn:tab) and following-sibling::*[1][self::mn:tab]]"/>
-	<xsl:template match="mn:clause[@type = 'toc']//mn:title/mn:tab" priority="2"/>
+	<xsl:template match="mn:clause[@type = 'toc']//mn:fmt-title/text()[1][not(preceding-sibling::mn:tab) and following-sibling::*[1][self::mn:tab]]"/>
+	<xsl:template match="mn:clause[@type = 'toc']//mn:fmt-title/mn:tab" priority="2"/>
 
 	<xsl:template match="mn:xref" mode="toc_table_width" priority="2">
 		<!-- <xref target="cgpm9th1948r6">1.6.3<tab/>&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->

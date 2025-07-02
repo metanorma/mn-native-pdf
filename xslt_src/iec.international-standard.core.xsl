@@ -16,7 +16,7 @@
 	
 	<xsl:param name="additionalXMLs" select="''"/> <!-- iec-rice.fr.xml  -->
 	
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 		
 	<xsl:variable name="additionalXMLsArray">
 		<xsl:call-template name="split">
@@ -275,6 +275,7 @@
 						
 						<xsl:variable name="updated_xml_with_pages">
 							<xsl:call-template name="processPrefaceAndMainSectionsDefault_items"/>
+							<xsl:copy-of select="//mn:indexsect"/>
 						</xsl:variable>
 						
 						<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
@@ -1313,7 +1314,7 @@
 	
 	<xsl:template name="insertListOf_Item">
 		<fo:block text-align-last="justify" margin-bottom="5pt" margin-left="8mm" text-indent="-8mm" role="TOCI">
-			<xsl:variable name="alt_text" select="normalize-space(translate(normalize-space(mn:name), '&#xa0;—', ' -'))"/>
+			<xsl:variable name="alt_text" select="normalize-space(translate(normalize-space(mn:fmt-name), '&#xa0;—', ' -'))"/>
 			<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}"> <!-- {local-name()} {@id} -->
 				<xsl:apply-templates select="." mode="contents"/>
 				<fo:inline keep-together.within-line="always" role="SKIP">
@@ -1329,11 +1330,11 @@
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="3">
 		<fo:block-container role="SKIP">
 			<!-- render 'Contents' outside if role="TOC" -->
-			<xsl:apply-templates select="mn:title"/>
+			<xsl:apply-templates select="mn:fmt-title"/>
 			<fo:block role="TOC">
-				<xsl:apply-templates select="node()[not(self::mn:title)]"/>
+				<xsl:apply-templates select="node()[not(self::mn:fmt-title)]"/>
 				
-				<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
+				<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 					<xsl:variable name="docid">
 						<xsl:call-template name="getDocumentId"/>
 					</xsl:variable>
@@ -1345,7 +1346,7 @@
 		</fo:block-container>
 	</xsl:template>
 	
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:title" priority="3">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<fo:block font-size="12pt" text-align="center" margin-bottom="22pt">
 			<xsl:call-template name="addLetterSpacing">
 				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(.))"/>
@@ -1539,7 +1540,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:feedback-statement/mn:clause[@id = 'boilerplate-cenelec-attention']//mn:title" priority="3">
+	<xsl:template match="mn:feedback-statement/mn:clause[@id = 'boilerplate-cenelec-attention']//mn:fmt-title" priority="3">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -1677,7 +1678,7 @@
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
-	<xsl:template match="mn:license-statement//mn:title" mode="cover-page-internal">
+	<xsl:template match="mn:license-statement//mn:fmt-title" mode="cover-page-internal">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -1753,7 +1754,7 @@
 		<fo:block id="{@id}" margin-bottom="12pt" font-size="12pt" text-align="center">
 			<xsl:call-template name="addLetterSpacing">
 				<!-- <xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(mn:title))"/> -->
-				<xsl:with-param name="text" select="mn:title"/>
+				<xsl:with-param name="text" select="mn:fmt-title"/>
 			</xsl:call-template>
 		</fo:block>
 		<!--  margin-left="6.3mm" -->
@@ -1761,7 +1762,7 @@
 			<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement/*"/>
 		</fo:block> -->
 		<fo:block>
-			<xsl:apply-templates select="*[not(self::mn:title)]"/>
+			<xsl:apply-templates select="*[not(self::mn:fmt-title)]"/>
 		</fo:block>
 	</xsl:template>
 		
@@ -1786,19 +1787,19 @@
 	<!-- ====== -->
 	<!-- title      -->
 	<!-- ====== -->
-	<xsl:template match="mn:introduction/mn:title">
+	<xsl:template match="mn:introduction/mn:fmt-title">
 		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" role="H1">
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
 	</xsl:template>
-	<xsl:template match="mn:introduction/mn:title/text()">
+	<xsl:template match="mn:introduction/mn:fmt-title/text()">
 		<xsl:call-template name="addLetterSpacing">
 			<xsl:with-param name="text" select="."/>
 		</xsl:call-template>			
 	</xsl:template>
 	
-	<xsl:template match="mn:annex/mn:title">
+	<xsl:template match="mn:annex/mn:fmt-title">
 		<fo:block font-size="12pt" text-align="center" margin-bottom="32pt" keep-with-next="always" role="H1">
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
@@ -1806,19 +1807,19 @@
 	</xsl:template>
 	
 	<!-- Bibliography -->
-	<xsl:template match="mn:references[not(@normative='true')]/mn:title">
+	<xsl:template match="mn:references[not(@normative='true')]/mn:fmt-title">
 		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" keep-with-next="always" role="H1">
 			<xsl:apply-templates />			
 		</fo:block>
 	</xsl:template>
-	<xsl:template match="mn:references[not(@normative='true')]/mn:title/text()">
+	<xsl:template match="mn:references[not(@normative='true')]/mn:fmt-title/text()">
 		<xsl:call-template name="addLetterSpacing">
 			<xsl:with-param name="text" select="."/>
 		</xsl:call-template>
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:title" name="title">
+	<xsl:template match="mn:fmt-title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -1855,7 +1856,7 @@
 							<xsl:when test="$level = 2 and ancestor::mn:annex">14pt</xsl:when>
 							<xsl:otherwise>5pt</xsl:otherwise>
 						</xsl:choose>
-					</xsl:attribute>					
+					</xsl:attribute>
 					<xsl:apply-templates />
 					<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 				</fo:block>
@@ -1873,7 +1874,7 @@
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
-				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
+				<xsl:when test="../@inline-header = 'true' and $previous-element = 'fmt-title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
 				<xsl:when test="parent::mn:admonition and $previous-element = 'p'">fo:block</xsl:when>
 				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
@@ -1983,7 +1984,7 @@
 	</xsl:template>
 
 	
-	<xsl:template match="mn:xref[@pagenumber = 'true']"  priority="2">
+	<xsl:template match="mn:xref[@pagenumber = 'true'] | mn:fmt-xref[@pagenumber = 'true']"  priority="2">
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
 				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">

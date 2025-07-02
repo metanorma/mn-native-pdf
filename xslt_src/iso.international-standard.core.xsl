@@ -17,7 +17,7 @@
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
 	<xsl:key name="kid" match="*" use="@id"/>
 	
@@ -3030,9 +3030,62 @@
 	<xsl:template name="insertLogoImages2024">
 		<xsl:variable name="content-height">20</xsl:variable>
 		<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization">
+			<xsl:variable name="owner_number" select="count(ancestor::mn:copyright/preceding-sibling::mn:copyright) + 1"/>
+			<!-- https://github.com/metanorma/metanorma-iso/issues/1386 -->
+			<xsl:variable name="logo_width_">
+				<xsl:for-each select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/*[starts-with(local-name(), 'logo-publisher-pdf-width-')]">
+					<xsl:if test="local-name() = concat('logo-publisher-pdf-width-', $owner_number)">
+						<xsl:value-of select="."/>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:variable name="logo_width">
+				<xsl:choose>
+					<xsl:when test="normalize-space($logo_width_) != '' and normalize-space(translate($logo_width_, '1234567890', '')) = ''"><xsl:value-of select="$logo_width_"/>px</xsl:when>
+					<xsl:otherwise><xsl:value-of select="$logo_width_"/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:variable name="logo_height_">
+				<xsl:for-each select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/*[starts-with(local-name(), 'logo-publisher-pdf-height-')]">
+					<xsl:if test="local-name() = concat('logo-publisher-pdf-height-', $owner_number)">
+						<xsl:value-of select="."/>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:variable name="logo_height">
+				<xsl:choose>
+					<xsl:when test="normalize-space($logo_height_) != '' and normalize-space(translate($logo_height_, '1234567890', '')) = ''"><xsl:value-of select="$logo_height_"/>px</xsl:when>
+					<xsl:otherwise><xsl:value-of select="$logo_height_"/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+		<!-- 	<fo:block>logo_width=<xsl:value-of select="$logo_width"/></fo:block>
+			<fo:block>logo_height=<xsl:value-of select="$logo_height"/></fo:block> -->
 			<xsl:choose>
 				<xsl:when test="mn:logo/mn:image">
-					<xsl:apply-templates select="mn:logo/mn:image"/>
+					<xsl:choose>
+						<xsl:when test="normalize-space($logo_width) != '' or normalize-space($logo_height) != ''">
+							<xsl:variable name="logo_image">
+								<xsl:for-each select="mn:logo/mn:image"> <!-- set context to logo/image -->
+									<xsl:element name="logo" namespace="{$namespace_full}">
+										<xsl:element name="image" namespace="{$namespace_full}">
+											<xsl:copy-of select="@*"/>
+											<xsl:if test="$logo_width != ''">
+												<xsl:attribute name="width"><xsl:value-of select="$logo_width"/></xsl:attribute>
+											</xsl:if>
+											<xsl:if test="$logo_height != ''">
+												<xsl:attribute name="height"><xsl:value-of select="$logo_height"/></xsl:attribute>
+											</xsl:if>
+											<xsl:copy-of select="node()"/>
+										</xsl:element>
+									</xsl:element>
+								</xsl:for-each>
+							</xsl:variable>
+							<xsl:apply-templates select="xalan:nodeset($logo_image)//mn:logo/mn:image"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates select="mn:logo/mn:image"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:when>
 				<xsl:when test="mn:abbreviation = 'ISO'">
 					<fo:instream-foreign-object content-height="{$content-height}mm" fox:alt-text="Image ISO Logo">
@@ -3302,13 +3355,13 @@
 					</xsl:if>
 				
 					<!-- render 'Contents' outside if role="TOC" -->
-					<xsl:apply-templates select="mn:title"/>
+					<xsl:apply-templates select="mn:fmt-title"/>
 				
 					<fo:block role="TOC">
 					
-						<xsl:apply-templates select="node()[not(self::mn:title)]"/>
+						<xsl:apply-templates select="node()[not(self::mn:fmt-title)]"/>
 					
-						<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
+						<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 			
 							<xsl:if test="$debug = 'true'">
 								<redirect:write file="contents_.xml">
@@ -3466,7 +3519,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:title" priority="3">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<fo:block text-align-last="justify" font-size="16pt" margin-top="10pt" margin-bottom="18pt">
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="margin-top">0</xsl:attribute>
@@ -3800,7 +3853,7 @@
 	<!-- END display titles   -->
 	<!-- ==================== -->
 	
-	<xsl:template match="mn:title/mn:span[contains(@style, 'text-transform:none')]//text()" priority="6">
+	<xsl:template match="mn:fmt-title/mn:span[contains(@style, 'text-transform:none')]//text()" priority="6">
 		<fo:inline font-weight="normal"><xsl:value-of select="."/></fo:inline>
 	</xsl:template>
 	
@@ -3929,7 +3982,7 @@
 				<fo:block>www.iso.org</fo:block>
 			</fo:block> -->
 	
-	<xsl:template match="mn:copyright-statement/mn:clause[1]/mn:title" priority="2">
+	<xsl:template match="mn:copyright-statement/mn:clause[1]/mn:fmt-title" priority="2">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'">
 				<fo:block><xsl:apply-templates /></fo:block> <!--  font-weight="bold" -->
@@ -4038,7 +4091,7 @@
 	<!-- title      -->
 	<!-- ====== -->
 	
-	<xsl:template match="mn:annex/mn:title">
+	<xsl:template match="mn:annex/mn:fmt-title">
 		<xsl:choose>
 			<xsl:when test="$doctype = 'amendment'">
 				<xsl:call-template name="titleAmendment"/>				
@@ -4061,7 +4114,7 @@
 	</xsl:template>
 	
 	<!-- Bibliography -->
-	<xsl:template match="mn:references[not(@normative='true')]/mn:title">
+	<xsl:template match="mn:references[not(@normative='true')]/mn:fmt-title">
 		<xsl:choose>
 			<xsl:when test="$doctype = 'amendment'">
 				<xsl:call-template name="titleAmendment"/>				
@@ -4082,7 +4135,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:title" name="title">
+	<xsl:template match="mn:fmt-title" name="title">
 		<xsl:param name="without_number">false</xsl:param>
 		
 		<xsl:variable name="level">
@@ -4379,7 +4432,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:title[../@inline-header = 'true'][following-sibling::*[1][self::mn:p]]" priority="3">
+	<xsl:template match="mn:fmt-title[../@inline-header = 'true'][following-sibling::*[1][self::mn:p]]" priority="3">
 		<xsl:param name="without_number">false</xsl:param>
 		<xsl:choose>
 			<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1"/> <!-- don't show 'title' with inline-header='true' if next element is 'p' -->
@@ -4410,7 +4463,7 @@
 	<xsl:template match="mn:clause[normalize-space() != '' or mn:figure]" priority="2">
 		<xsl:choose>
 			<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and
-				self::mn:clause and count(node()) = 0 and following-sibling::*[1][self::mn:title and not(@id)]"></xsl:when> <!-- @id will be added to title -->
+				self::mn:clause and count(node()) = 0 and following-sibling::*[1][self::mn:fmt-title and not(@id)]"></xsl:when> <!-- @id will be added to title -->
 			<xsl:otherwise>
 				<xsl:call-template name="template_clause_iso"/>
 			</xsl:otherwise>
@@ -4425,7 +4478,7 @@
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
-				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
+				<xsl:when test="../@inline-header = 'true' and $previous-element = 'fmt-title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
 				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
@@ -4507,7 +4560,7 @@
 			<!-- put inline title in the first paragraph -->
 			<xsl:if test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
 				<!-- <xsl:if test="preceding-sibling::*[1]/@inline-header = 'true' and preceding-sibling::*[1][self::mn:title]"> -->
-				<xsl:if test="ancestor::*[1]/@inline-header = 'true' and preceding-sibling::*[1][self::mn:title]">
+				<xsl:if test="ancestor::*[1]/@inline-header = 'true' and preceding-sibling::*[1][self::mn:fmt-title]">
 					<xsl:attribute name="space-before">0pt</xsl:attribute>
 					<xsl:for-each select="preceding-sibling::*[1]">
 						<xsl:call-template name="title"/>
@@ -4587,7 +4640,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:note/mn:name/text()" priority="5">
+	<xsl:template match="mn:note/mn:fmt-name/text()" priority="5">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951' and not(translate(.,'0123456789','') = .)"> <!-- NOTE with number -->
 				<fo:inline padding-right="2mm" role="SKIP">
@@ -4606,7 +4659,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:example/mn:name/text()" priority="5">
+	<xsl:template match="mn:example/mn:fmt-name/text()" priority="5">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'"> <!--  and $revision_date_num &lt; 19610101 -->
 				<xsl:call-template name="smallcaps"/>
@@ -4616,7 +4669,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:figure/mn:name/text()" priority="5">
+	<xsl:template match="mn:figure/mn:fmt-name/text()" priority="5">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951' and not(ancestor::mn:figure[1]/@unnumbered = 'true') and not(preceding-sibling::node())">
 				<xsl:choose>
@@ -4634,7 +4687,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:table/mn:name/text()" priority="5">
+	<xsl:template match="mn:table/mn:fmt-name/text()" priority="5">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951' and not(ancestor::mn:table[1]/@unnumbered = 'true') and not(preceding-sibling::node())">
 				<xsl:choose>
@@ -4656,16 +4709,16 @@
 	<xsl:template match="mn:clause[@type = 'section']" priority="3">
 		<xsl:choose>
 			<!-- skip empty clause after templates mode="update_xml_step_move_pagebreak" -->
-			<xsl:when test="not(mn:title) and normalize-space() = ''"></xsl:when>
+			<xsl:when test="not(mn:fmt-title) and normalize-space() = ''"></xsl:when>
 			<xsl:otherwise>
 				<xsl:if test="preceding-sibling::mn:clause[@type = 'section']">
 					<fo:block break-after="page"/>
 				</xsl:if>
 				<fo:block span="all">
 					<xsl:copy-of select="@id"/>
-					<xsl:apply-templates select="mn:title"/>
+					<xsl:apply-templates select="mn:fmt-title"/>
 				</fo:block>
-				<xsl:apply-templates select="*[not(self::mn:title)]"/>
+				<xsl:apply-templates select="*[not(self::mn:fmt-title)]"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -4716,7 +4769,7 @@
 	<xsl:template name="processElementContent">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="mn:title/@depth"/>
+				<xsl:with-param name="depth" select="mn:fmt-title/@depth"/>
 			</xsl:call-template>
 		</xsl:variable>
 		<xsl:choose>
@@ -4737,7 +4790,7 @@
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block>
 								<xsl:variable name="element_title">
-									<xsl:apply-templates select="mn:title"/>
+									<xsl:apply-templates select="mn:fmt-title"/>
 								</xsl:variable>
 								<xsl:for-each select="xalan:nodeset($element_title)/*[1]"> <!-- process fo: element -->
 									<xsl:copy-of select="@font-size"/>
@@ -4750,10 +4803,10 @@
 						</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()">
 							<fo:block>
-								<xsl:apply-templates select="mn:title">
+								<xsl:apply-templates select="mn:fmt-title">
 									<xsl:with-param name="without_number">true</xsl:with-param>
 								</xsl:apply-templates>
-								<xsl:apply-templates select="node()[not(self::mn:title)]"/>
+								<xsl:apply-templates select="node()[not(self::mn:fmt-title)]"/>
 							</fo:block>
 						</fo:list-item-body>
 					</fo:list-item>
@@ -4802,17 +4855,17 @@
 			
 			<fo:flow flow-name="xsl-region-body">
 				<fo:block id="{@id}" text-align="center" span="all">
-					<xsl:apply-templates select="mn:title"/>
+					<xsl:apply-templates select="mn:fmt-title"/>
 				</fo:block>
 				<fo:block role="Index">
-					<xsl:apply-templates select="*[not(self::mn:title)]"/>
+					<xsl:apply-templates select="*[not(self::mn:fmt-title)]"/>
 				</fo:block>
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:xref" priority="2">
+	<xsl:template match="mn:xref | mn:fmt-xref" priority="2">
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
 				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
@@ -4871,7 +4924,7 @@
 	<!-- =================== -->
 
 	<!-- add columns=1 for elements which should be rendered in <block span="all"> -->
-	<xsl:template match="mn:annex/mn:title" mode="update_xml_step_move_pagebreak">
+	<xsl:template match="mn:annex/mn:fmt-title" mode="update_xml_step_move_pagebreak">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:if test="$layout_columns != 1">
@@ -4881,7 +4934,7 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="mn:references[not(@normative='true')]/mn:title" mode="update_xml_step_move_pagebreak">
+	<xsl:template match="mn:references[not(@normative='true')]/mn:fmt-title" mode="update_xml_step_move_pagebreak">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:if test="$layout_columns != 1">

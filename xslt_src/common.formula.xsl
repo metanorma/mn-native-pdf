@@ -166,7 +166,7 @@
 			<fo:block-container margin-left="0mm" role="SKIP">	
 				<xsl:call-template name="setNamedDestination"/>
 				<fo:block id="{@id}">
-					<xsl:apply-templates select="node()[not(self::mn:name)]" /> <!-- formula's number will be process in 'stem' template -->
+					<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" /> <!-- formula's number will be process in 'stem' template -->
 				</fo:block>
 			</fo:block-container>
 		</fo:block-container>
@@ -185,7 +185,7 @@
 	</xsl:template>
 
 
-	<xsl:template match="mn:formula/mn:name"> <!-- show in 'stem' template -->
+	<xsl:template match="mn:formula/mn:fmt-name"> <!-- show in 'stem' template -->
 		<!-- https://github.com/metanorma/isodoc/issues/607 
 		<xsl:if test="normalize-space() != ''">
 			<xsl:text>(</xsl:text><xsl:apply-templates /><xsl:text>)</xsl:text>
@@ -195,7 +195,7 @@
 	
 	
 	<!-- stem inside formula with name (with formula's number) -->
-	<xsl:template match="mn:formula[mn:name]/mn:stem">
+	<xsl:template match="mn:formula[mn:fmt-name]/mn:stem">
 		<fo:block xsl:use-attribute-sets="formula-style">
 		
 			<xsl:if test="$namespace = 'gb'">
@@ -221,13 +221,13 @@
 							
 							<fo:block xsl:use-attribute-sets="formula-stem-number-style" role="SKIP">
 							
-								<xsl:for-each select="../mn:name">
+								<xsl:for-each select="../mn:fmt-name">
 									<xsl:call-template name="setIDforNamedDestination"/>
 								</xsl:for-each>
 							
 								<xsl:call-template name="refine_formula-stem-number-style"/>
 								
-								<xsl:apply-templates select="../mn:name"/>
+								<xsl:apply-templates select="../mn:fmt-name"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
@@ -238,7 +238,7 @@
 	
 
 	<!-- stem inside formula without name (without formula's number) -->
-	<xsl:template match="mn:formula[not(mn:name)]/mn:stem">
+	<xsl:template match="mn:formula[not(mn:fmt-name)]/mn:stem">
 		<fo:block xsl:use-attribute-sets="formula-style">
 			<fo:block xsl:use-attribute-sets="formula-stem-block-style">
 				<xsl:apply-templates />

@@ -190,7 +190,7 @@
 		</fo:block>
 	</xsl:template> <!-- copyright-statement -->
 	
-	<xsl:template match="mn:copyright-statement//mn:title">
+	<xsl:template match="mn:copyright-statement//mn:fmt-title">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 				<xsl:variable name="level">
@@ -220,7 +220,7 @@
 						<xsl:if test="$doctype = 'flex-standard'">
 							<xsl:attribute name="space-after">6pt</xsl:attribute>
 						</xsl:if>
-						<xsl:if test="ancestor::mn:boilerplate and contains(ancestor::mn:clause[1]/mn:title, 'Publication history')">
+						<xsl:if test="ancestor::mn:boilerplate and contains(ancestor::mn:clause[1]/mn:fmt-title, 'Publication history')">
 							<xsl:attribute name="space-after">0pt</xsl:attribute>
 						</xsl:if>
 					</xsl:if>
@@ -250,7 +250,7 @@
 		</fo:block>
 	</xsl:template> <!-- license-statement -->
 
-	<xsl:template match="mn:license-statement//mn:title">
+	<xsl:template match="mn:license-statement//mn:fmt-title">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'bipm' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist-sp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 				<xsl:variable name="level">
@@ -308,7 +308,7 @@
 		</fo:block>
 	</xsl:template> <!-- legal-statement -->
 	
-	<xsl:template match="mn:legal-statement//mn:title">
+	<xsl:template match="mn:legal-statement//mn:fmt-title">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
 				<!-- ogc-white-paper rsd -->
@@ -358,7 +358,7 @@
 		</fo:block>
 	</xsl:template> <!-- feedback-statement -->
 	
-	<xsl:template match="mn:feedback-statement//mn:title">
+	<xsl:template match="mn:feedback-statement//mn:fmt-title">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iec'">
 				<xsl:variable name="level">

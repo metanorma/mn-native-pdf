@@ -97,7 +97,8 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="mn:xref" mode="index_add_id">
+	<xsl:template match="mn:xref" mode="index_add_id"/>
+	<xsl:template match="mn:fmt-xref" mode="index_add_id">
 		<xsl:param name="docid"/>
 		<xsl:variable name="id">
 			<xsl:call-template name="generateIndexXrefId">
@@ -140,10 +141,10 @@
 	<xsl:template match="mn:indexsect//mn:li" mode="index_update">
 		<xsl:copy>
 			<xsl:apply-templates select="@*"  mode="index_update"/>
-		<xsl:apply-templates select="node()[1]" mode="process_li_element"/>
+		<xsl:apply-templates select="node()[not(self::mn:fmt-name)][1]" mode="process_li_element"/>
 		</xsl:copy>
 	</xsl:template>
-
+	
 	<xsl:template match="mn:indexsect//mn:li/node()" mode="process_li_element" priority="2">
 		<xsl:param name="element" />
 		<xsl:param name="remove" select="'false'"/>
@@ -161,11 +162,11 @@
 				<xsl:value-of select="."/>
 				<xsl:apply-templates select="following-sibling::node()[1]" mode="process_li_element"/>
 			</xsl:when>
-			<xsl:when test="self::* and local-name(.) = 'xref'">
+			<xsl:when test="self::* and local-name(.) = 'fmt-xref'">
 				<xsl:variable name="id" select="@id"/>
 				
-				<xsl:variable name="id_next" select="following-sibling::mn:xref[1]/@id"/>
-				<xsl:variable name="id_prev" select="preceding-sibling::mn:xref[1]/@id"/>
+				<xsl:variable name="id_next" select="following-sibling::mn:fmt-xref[1]/@id"/>
+				<xsl:variable name="id_prev" select="preceding-sibling::mn:fmt-xref[1]/@id"/>
 				
 				<xsl:variable name="pages_">
 					<xsl:for-each select="$index/index/item[@id = $id or @id = $id_next or @id = $id_prev]">
@@ -261,18 +262,18 @@
 		<xsl:variable name="item_number">
 			<xsl:number count="mn:li[ancestor::mn:indexsect]" level="any" />
 		</xsl:variable>
-		<xsl:variable name="xref_number"><xsl:number count="mn:xref"/></xsl:variable>
+		<xsl:variable name="xref_number"><xsl:number count="mn:fmt-xref"/></xsl:variable>
 		<xsl:value-of select="concat($docid_curr, '_', $item_number, '_', $xref_number)"/> <!-- $level, '_',  -->
 	</xsl:template>
 
-	<xsl:template match="mn:indexsect/mn:title" priority="4">
+	<xsl:template match="mn:indexsect/mn:fmt-title | mn:indexsect/mn:title" priority="4">
 		<fo:block xsl:use-attribute-sets="indexsect-title-style">
 			<!-- Index -->
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="mn:indexsect/mn:clause/mn:title" priority="4">
+	<xsl:template match="mn:indexsect/mn:clause/mn:fmt-title | mn:indexsect/mn:clause/mn:title" priority="4">
 		<!-- Letter A, B, C, ... -->
 		<fo:block xsl:use-attribute-sets="indexsect-clause-title-style">
 			<xsl:apply-templates />
@@ -325,14 +326,14 @@
 				<fmt-review-start id="_7ef81cf7-3f6c-4ed4-9c1f-1ba092052bbd" source="_dda23915-8574-ef1e-29a1-822d465a5b97" target="_ecfb2210-3b1b-46a2-b63a-8b8505be6686" end="_dda23915-8574-ef1e-29a1-822d465a5b97" author="" date="2025-03-24T00:00:00Z"/>
 				<bookmark id="_dda23915-8574-ef1e-29a1-822d465a5b97"/>
 				<fmt-review-end id="_f336a8d0-08a8-4b7f-a1aa-b04688ed40c1" source="_dda23915-8574-ef1e-29a1-822d465a5b97" target="_ecfb2210-3b1b-46a2-b63a-8b8505be6686" start="_dda23915-8574-ef1e-29a1-822d465a5b97" author="" date="2025-03-24T00:00:00Z"/> -->
-			<xsl:when test="1 = 2 and preceding-sibling::node()[self::mn:fmt-review-start][@source = $bookmark_id] and 
-						following-sibling::node()[self::mn:fmt-review-end][@source = $bookmark_id]">
+			<xsl:when test="1 = 2 and preceding-sibling::node()[self::mn:fmt-annotation-start][@source = $bookmark_id] and 
+						following-sibling::node()[self::mn:fmt-annotation-end][@source = $bookmark_id]">
 				<!-- skip here, see the template 'fmt-review-start' -->
 			</xsl:when>
 			<xsl:otherwise>
 				<!-- <fo:inline id="{@id}" font-size="1pt"/> -->
-				<fo:inline id="{@id}" font-size="1pt"><xsl:if test="preceding-sibling::node()[self::mn:fmt-review-start][@source = $bookmark_id] and 
-						following-sibling::node()[self::mn:fmt-review-end][@source = $bookmark_id]"><xsl:attribute name="line-height">0.1</xsl:attribute></xsl:if><xsl:value-of select="$hair_space"/></fo:inline>
+				<fo:inline id="{@id}" font-size="1pt"><xsl:if test="preceding-sibling::node()[self::mn:fmt-annotation-start][@source = $bookmark_id] and 
+						following-sibling::node()[self::mn:fmt-annotation-end][@source = $bookmark_id]"><xsl:attribute name="line-height">0.1</xsl:attribute></xsl:if><xsl:value-of select="$hair_space"/></fo:inline>
 				<!-- we need to add zero-width space, otherwise this fo:inline is missing in IF xml -->
 				<xsl:if test="not(following-sibling::node()[normalize-space() != ''])"><fo:inline font-size="1pt">&#xA0;</fo:inline></xsl:if>
 			</xsl:otherwise>

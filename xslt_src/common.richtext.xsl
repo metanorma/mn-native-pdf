@@ -287,7 +287,7 @@
 				<xsl:choose>
 					<xsl:when test="$skip = 'true' and 
 					((local-name(../..) = 'note' and not(preceding-sibling::node())) or 
-					(local-name(..) = 'title' and preceding-sibling::node()[1][self::mn:tab]) or
+					(parent::mn:fmt-title and preceding-sibling::node()[1][self::mn:tab]) or
 					local-name(..) = 'formattedref' and not(preceding-sibling::node()))
 					and 
 					../node()[last()][self::mn:add][starts-with(text(), $ace_tag)]"><!-- start tag displayed in template name="note" and title --></xsl:when>

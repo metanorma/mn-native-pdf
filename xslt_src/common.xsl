@@ -630,9 +630,12 @@
 		<xsl:choose>
 			<xsl:when test="mn:fmt-title">
 				<xsl:variable name="fmt_title_section">
-					<xsl:copy-of select="mn:fmt-title//mn:span[@class = 'fmt-caption-delim'][mn:tab][1]/preceding-sibling::node()[not(self::mn:review)]"/>
+					<xsl:copy-of select="mn:fmt-title//mn:span[@class = 'fmt-caption-delim'][mn:tab][1]/preceding-sibling::node()[not(self::mn:annotation)]"/>
 				</xsl:variable>
 				<xsl:value-of select="normalize-space($fmt_title_section)"/>
+				<xsl:if test="normalize-space($fmt_title_section) = ''">
+					<xsl:value-of select="mn:fmt-title/mn:tab[1]/preceding-sibling::node()"/>
+				</xsl:if>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="mn:title/mn:tab[1]/preceding-sibling::node()"/>
@@ -644,6 +647,9 @@
 		<xsl:choose>
 			<xsl:when test="mn:fmt-title//mn:span[@class = 'fmt-caption-delim'][mn:tab]">
 				<xsl:copy-of select="mn:fmt-title//mn:span[@class = 'fmt-caption-delim'][mn:tab][1]/following-sibling::node()"/>
+			</xsl:when>
+			<xsl:when test="mn:fmt-title/mn:tab">
+				<xsl:copy-of select="mn:fmt-title/mn:tab[1]/following-sibling::node()"/>
 			</xsl:when>
 			<xsl:when test="mn:fmt-title">
 				<xsl:copy-of select="mn:fmt-title/node()"/>
@@ -888,10 +894,10 @@
 					
 				</fo:block>
 				
-				<xsl:apply-templates select="mn:title[@columns = 1]"/>
+				<xsl:apply-templates select="mn:fmt-title[@columns = 1]"/>
 				
 				<fo:block>
-					<xsl:apply-templates select="node()[not(self::mn:title and @columns = 1)]" />
+					<xsl:apply-templates select="node()[not(self::mn:fmt-title and @columns = 1)]" />
 				</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -906,7 +912,7 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="mn:name/text()">
+	<xsl:template match="mn:name/text() | mn:fmt-name/text()">
 		<!-- 0xA0 to space replacement -->
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),' ',' ')"/>
 	</xsl:template>
@@ -970,10 +976,10 @@
 	<xsl:template match="mn:amend" />
 
 	<!-- fmt-title renamed to title in update_xml_step1 -->
-	<xsl:template match="mn:fmt-title" />
+	<!-- <xsl:template match="mn:fmt-title" /> -->
 
 	<!-- fmt-name renamed to name in update_xml_step1 -->
-	<xsl:template match="mn:fmt-name" />
+	<!-- <xsl:template match="mn:fmt-name" /> -->
 		
 	<!-- fmt-preferred renamed to preferred in update_xml_step1 -->
 	<xsl:template match="mn:fmt-preferred" />
@@ -1528,12 +1534,12 @@
 						<xsl:when test="ancestor::mn:preface">
 							<xsl:value-of select="$level_total - 2"/>
 						</xsl:when>
-						<xsl:when test="ancestor::mn:sections and self::mn:title">
+						<xsl:when test="ancestor::mn:sections and self::mn:fmt-title">
 							<!-- determine 'depth' depends on upper clause with title/@depth -->
 							<!-- <xsl:message>title=<xsl:value-of select="."/></xsl:message> -->
-							<xsl:variable name="clause_with_depth_depth" select="ancestor::mn:clause[mn:title/@depth][1]/mn:title/@depth"/>
+							<xsl:variable name="clause_with_depth_depth" select="ancestor::mn:clause[mn:fmt-title/@depth][1]/mn:fmt-title/@depth"/>
 							<!-- <xsl:message>clause_with_depth_depth=<xsl:value-of select="$clause_with_depth_depth"/></xsl:message> -->
-							<xsl:variable name="clause_with_depth_level" select="count(ancestor::mn:clause[mn:title/@depth][1]/ancestor::*)"/>
+							<xsl:variable name="clause_with_depth_level" select="count(ancestor::mn:clause[mn:fmt-title/@depth][1]/ancestor::*)"/>
 							<!-- <xsl:message>clause_with_depth_level=<xsl:value-of select="$clause_with_depth_level"/></xsl:message> -->
 							<xsl:variable name="curr_level" select="count(ancestor::*) - 1"/>
 							<!-- <xsl:message>curr_level=<xsl:value-of select="$curr_level"/></xsl:message> -->
@@ -1549,8 +1555,8 @@
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:when>
-						<xsl:when test="ancestor::mn:sections and self::mn:name and parent::mn:term">
-							<xsl:variable name="upper_terms_depth" select="normalize-space(ancestor::mn:terms[1]/mn:title/@depth)"/>
+						<xsl:when test="ancestor::mn:sections and self::mn:fmt-name and parent::mn:term">
+							<xsl:variable name="upper_terms_depth" select="normalize-space(ancestor::mn:terms[1]/mn:fmt-title/@depth)"/>
 							<xsl:choose>
 								<xsl:when test="string(number($upper_terms_depth)) != 'NaN'">
 									<xsl:value-of select="number($upper_terms_depth + 1)"/>
@@ -1561,7 +1567,7 @@
 							</xsl:choose>
 						</xsl:when>
 						<xsl:when test="ancestor::mn:sections">
-							<xsl:variable name="upper_clause_depth" select="normalize-space(ancestor::*[self::mn:clause or self::mn:terms][1]/mn:title/@depth)"/>
+							<xsl:variable name="upper_clause_depth" select="normalize-space(ancestor::*[self::mn:clause or self::mn:terms][1]/mn:fmt-title/@depth)"/>
 							<xsl:choose>
 								<xsl:when test="string(number($upper_clause_depth)) != 'NaN'">
 									<xsl:value-of select="number($upper_clause_depth + 1)"/>
@@ -1577,8 +1583,8 @@
 						<xsl:when test="parent::mn:annex">
 							<xsl:value-of select="$level_total - 1"/>
 						</xsl:when>
-						<xsl:when test="ancestor::mn:annex and self::mn:title">
-							<xsl:variable name="upper_clause_depth" select="normalize-space(ancestor::mn:clause[2]/mn:title/@depth)"/>
+						<xsl:when test="ancestor::mn:annex and self::mn:fmt-title">
+							<xsl:variable name="upper_clause_depth" select="normalize-space(ancestor::mn:clause[2]/mn:fmt-title/@depth)"/>
 							<xsl:choose>
 								<xsl:when test="string(number($upper_clause_depth)) != 'NaN'">
 									<xsl:value-of select="number($upper_clause_depth + 1)"/>
@@ -1611,7 +1617,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:variable name="title_level_">
-					<xsl:for-each select="../preceding-sibling::mn:title[1]">
+					<xsl:for-each select="../preceding-sibling::mn:fmt-title[1]">
 						<xsl:call-template name="getLevel"/>
 					</xsl:for-each>
 				</xsl:variable>
@@ -1696,7 +1702,7 @@
 					normalize-space(java:matches(java:java.lang.String.new(@id), '_[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}')) = 'false'">
 				<fox:destination internal-destination="{@id}"/>
 			</xsl:if>
-			<xsl:for-each select=". | mn:title | mn:name">
+			<xsl:for-each select=". | mn:fmt-title | mn:fmt-name">
 				<xsl:if test="@named_dest">
 					<fox:destination internal-destination="{@named_dest}"/>
 				</xsl:if>
@@ -2051,7 +2057,7 @@
 						</xsl:when>
 						<xsl:otherwise>
 							<!--  namespace-uri(ancestor::mn:title) != '' to skip title from $contents  -->
-							<xsl:if test="namespace-uri(ancestor::mn:title) != '' and ($char_prev = '' and ../preceding-sibling::node())">
+							<xsl:if test="namespace-uri(ancestor::mn:fmt-title) != '' and ($char_prev = '' and ../preceding-sibling::node())">
 								<fo:inline padding-left="1mm"><xsl:value-of select="$zero_width_space"/></fo:inline>
 							</xsl:if>
 							<fo:inline-container text-align="center"
@@ -2087,7 +2093,7 @@
 									</fo:block>
 								</fo:block-container>
 							</fo:inline-container>
-							<xsl:if test="namespace-uri(ancestor::mn:title) != '' and ($char_next != '' or ../following-sibling::node())">
+							<xsl:if test="namespace-uri(ancestor::mn:fmt-title) != '' and ($char_next != '' or ../following-sibling::node())">
 								<fo:inline padding-left="1mm"><xsl:value-of select="$zero_width_space"/></fo:inline>
 							</xsl:if>
 						</xsl:otherwise>

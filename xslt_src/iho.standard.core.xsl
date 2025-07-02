@@ -14,7 +14,7 @@
 
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 	
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
 	<xsl:variable name="namespace">iho</xsl:variable>
 	
@@ -597,7 +597,7 @@
 				</redirect:write>
 			</xsl:if>
 			
-			<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
+			<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 			
 				<fo:block line-height="115%" role="TOC">
 				
@@ -666,7 +666,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:title" priority="3">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<fo:block font-weight="bold" margin-bottom="7.5pt" font-size="12pt" margin-top="4pt" role="SKIP">
 			<fo:block-container width="18.3mm" border-bottom="1.25pt solid black" role="SKIP">
 				<fo:block line-height="75%">
@@ -815,14 +815,14 @@
 	<!-- title      -->
 	<!-- ====== -->
 	
-	<xsl:template match="mn:annex/mn:title">
+	<xsl:template match="mn:annex/mn:fmt-title">
 		<fo:block font-size="12pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always" role="H1">			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][mn:variant-title][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
 	</xsl:template>
 		
-	<xsl:template match="mn:bibliography/mn:references[not(@normative='true')]/mn:title">
+	<xsl:template match="mn:bibliography/mn:references[not(@normative='true')]/mn:fmt-title">
 		<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always" role="H1">
 			<xsl:apply-templates />
 		</fo:block>
@@ -833,7 +833,7 @@
 			<fo:block break-after="page"/>
 		</xsl:if>
 		<xsl:choose>
-			<xsl:when test="mn:title">
+			<xsl:when test="mn:fmt-title">
 				<xsl:apply-templates />
 			</xsl:when>
 			<xsl:otherwise>
@@ -846,7 +846,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:title" name="title">
+	<xsl:template match="mn:fmt-title" name="title">
 		
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -877,7 +877,7 @@
 			<xsl:attribute name="space-before">
 				<xsl:choose>
 					<xsl:when test="$level = 1">24pt</xsl:when>
-					<xsl:when test="$level = 2 and ../preceding-sibling::*[1][self::mn:title]">10pt</xsl:when>
+					<xsl:when test="$level = 2 and ../preceding-sibling::*[1][self::mn:fmt-title]">10pt</xsl:when>
 					<xsl:when test="$level = 2">24pt</xsl:when>
 					<xsl:when test="$level &gt;= 3">6pt</xsl:when>
 					<xsl:when test="ancestor::mn:preface">8pt</xsl:when>
@@ -923,7 +923,7 @@
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
-				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
+				<xsl:when test="../@inline-header = 'true' and $previous-element = 'fmt-title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
 				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
 				<xsl:when test="ancestor::*[self::mn:recommendation or self::mn:requirement or self::mn:permission] and not(preceding-sibling::mn:p)">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>

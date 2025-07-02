@@ -16,7 +16,7 @@
 	
 	<xsl:param name="align-cross-elements" />
 	
-	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:name))]" use="@reference"/>
+	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
 	<xsl:variable name="namespace">jcgm</xsl:variable>
 	
@@ -625,7 +625,7 @@
 			
 				<xsl:apply-templates />
 
-				<xsl:if test="count(*) = 1 and mn:title"> <!-- if there isn't user ToC -->
+				<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 				
 					<xsl:variable name="docid">
 						<xsl:call-template name="getDocumentId"/>
@@ -666,7 +666,7 @@
 		</fo:block-container>
 	</xsl:template>
 
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:title" priority="3">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<fo:block text-align-last="justify">
 			<fo:inline font-size="15pt" font-weight="bold" role="H1">
 				<xsl:call-template name="getLocalizedString">
@@ -804,8 +804,8 @@
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="$inline = 'true'">fo:inline</xsl:when>
-				<xsl:when test="../@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
-				<xsl:when test="preceding-sibling::*[1]/@inline-header = 'true' and $previous-element = 'title'">fo:inline</xsl:when> <!-- first paragraph after inline title, for two columns layout -->
+				<xsl:when test="../@inline-header = 'true' and $previous-element = 'fmt-title'">fo:inline</xsl:when> <!-- first paragraph after inline title -->
+				<xsl:when test="preceding-sibling::*[1]/@inline-header = 'true' and $previous-element = 'fmt-title'">fo:inline</xsl:when> <!-- first paragraph after inline title, for two columns layout -->
 				<xsl:when test="parent::mn:admonition">fo:inline</xsl:when>
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
@@ -1151,7 +1151,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="mn:title" name="title">
+	<xsl:template match="mn:fmt-title" name="title">
 	
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -1292,7 +1292,7 @@
 	<!-- =================== -->
 	
 	
-	<xsl:template match="mn:xref"  priority="2">
+	<xsl:template match="mn:xref | mn:fmt-xref"  priority="2">
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
 				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
@@ -1569,7 +1569,8 @@
 	<!-- allow cross-align for element title -->
 	<xsl:template match="mn:sections//mn:title | mn:annex//mn:title" mode="flatxml_step1"/>
 	<xsl:template match="mn:sections//mn:fmt-title | mn:annex//mn:fmt-title" mode="flatxml_step1">
-		<xsl:element name="title" namespace="{$namespace_full}">
+		<!-- <xsl:element name="title" namespace="{$namespace_full}"> -->
+		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
 			<xsl:call-template name="setCrossAlignAttributes"/>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -1580,7 +1581,8 @@
 				<xsl:copy-of select="../@inline-header"/>
 			</xsl:if>
 			<xsl:apply-templates mode="flatxml_step1"/>
-		</xsl:element>
+		</xsl:copy>
+		<!-- </xsl:element> -->
 	</xsl:template>
 	
 	<xsl:template match="mn:annex" mode="flatxml_step1">
@@ -1967,7 +1969,7 @@
 			<xsl:if test="self::mn:clause">
 				<xsl:copy-of select="@keep-with-next"/>
 			</xsl:if>
-			<xsl:if test="self::mn:title">
+			<xsl:if test="self::mn:fmt-title">
 				<xsl:copy-of select="@keep-with-next"/>
 			</xsl:if>
 			<xsl:copy-of select="@multilingual-rendering"/>

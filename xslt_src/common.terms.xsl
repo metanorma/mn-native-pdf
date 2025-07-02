@@ -227,7 +227,7 @@
 				</fo:block>
 			</xsl:if>
 			<xsl:if test="$namespace = 'ogc'">
-				<xsl:apply-templates select="mn:name" />
+				<xsl:apply-templates select="mn:fmt-name" />
 			</xsl:if>
 			
 			<xsl:if test="parent::mn:term and not(preceding-sibling::mn:term)">
@@ -235,12 +235,12 @@
 					<xsl:attribute name="space-before">12pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:apply-templates select="node()[not(self::mn:name)]" />
+			<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 		</fo:block>
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:term/mn:name">
+	<xsl:template match="mn:term/mn:fmt-name">
 		<xsl:if test="normalize-space() != ''">
 			<!-- <xsl:variable name="level">
 				<xsl:call-template name="getLevelTermName"/>
@@ -421,11 +421,11 @@
 						</xsl:if>
 					</xsl:if>
 					
-					<xsl:for-each select="ancestor::mn:term[1]/mn:name"><!-- change context -->
+					<xsl:for-each select="ancestor::mn:term[1]/mn:fmt-name"><!-- change context -->
 						<xsl:call-template name="setIDforNamedDestination"/>
 					</xsl:for-each>
 					
-					<xsl:apply-templates select="ancestor::mn:term[1]/mn:name" />
+					<xsl:apply-templates select="ancestor::mn:term[1]/mn:fmt-name" />
 				</fo:block>
 			</xsl:if>
 			
