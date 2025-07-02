@@ -866,7 +866,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:preferred[not(parent::mn:term)]" priority="2">		
+	<xsl:template match="mn:fmt-preferred[not(parent::mn:term)]" priority="2">		
 		<xsl:variable name="levelTerm">
 			<xsl:call-template name="getLevelTermName"/>
 		</xsl:variable>
@@ -1193,7 +1193,7 @@
 					<xsl:choose>
 						<xsl:when test="ancestor::mn:preface">12pt</xsl:when>
 						<xsl:when test="parent::mn:annex">30pt</xsl:when>
-						<xsl:when test="following-sibling::*[1][self::mn:admitted]">0pt</xsl:when>
+						<xsl:when test="following-sibling::*[1][self::mn:fmt-admitted]">0pt</xsl:when>
 						<!-- <xsl:otherwise>12pt</xsl:otherwise> -->
 						<xsl:otherwise>12pt</xsl:otherwise>
 					</xsl:choose>
@@ -1727,7 +1727,7 @@
 		<xsl:apply-templates mode="flatxml_step1"/>
 	</xsl:template>
 	<xsl:template match="mn:fmt-preferred[not(mn:p)] | mn:fmt-preferred/mn:p" mode="flatxml_step1">
-		<xsl:element name="preferred" namespace="{$namespace_full}">
+		<xsl:element name="fmt-preferred" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
@@ -1736,7 +1736,7 @@
 		<xsl:apply-templates mode="flatxml_step1"/>
 	</xsl:template>
 	<xsl:template match="mn:fmt-admitted[not(mn:p)] | mn:fmt-admitted/mn:p" mode="flatxml_step1">
-		<xsl:element name="admitted" namespace="{$namespace_full}">
+		<xsl:element name="fmt-admitted" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
@@ -1745,7 +1745,7 @@
 		<xsl:apply-templates mode="flatxml_step1"/>
 	</xsl:template>
 	<xsl:template match="mn:fmt-deprecates[not(mn:p)] | mn:fmt-deprecates/mn:p" mode="flatxml_step1">
-		<xsl:element name="deprecates" namespace="{$namespace_full}">
+		<xsl:element name="fmt-deprecates" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>

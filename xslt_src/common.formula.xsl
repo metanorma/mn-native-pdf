@@ -178,7 +178,7 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="mn:admitted/mn:fmt-stem">
+	<xsl:template match="mn:fmt-admitted/mn:fmt-stem">
 		<fo:inline>
 			<xsl:apply-templates />
 		</fo:inline>

@@ -498,7 +498,7 @@
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
 	<xsl:template match="mn:fmt-preferred[not(mn:p)] | mn:fmt-preferred/mn:p" mode="update_xml_step1">
-		<xsl:element name="preferred" namespace="{$namespace_full}">
+		<xsl:element name="fmt-preferred" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
@@ -508,7 +508,7 @@
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
 	<xsl:template match="mn:fmt-admitted[not(mn:p)] | mn:fmt-admitted/mn:p" mode="update_xml_step1">
-		<xsl:element name="admitted" namespace="{$namespace_full}">
+		<xsl:element name="fmt-admitted" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
@@ -518,7 +518,7 @@
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
 	<xsl:template match="mn:fmt-deprecates[not(mn:p)] | mn:fmt-deprecates/mn:p" mode="update_xml_step1">
-		<xsl:element name="deprecates" namespace="{$namespace_full}">
+		<xsl:element name="fmt-deprecates" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>

@@ -2701,20 +2701,20 @@
 					<!-- term/name -->
 					<xsl:apply-templates select="mn:fmt-name" />
 					<xsl:text> </xsl:text>
-					<xsl:apply-templates select="mn:preferred" />
-					<xsl:for-each select="mn:admitted">
+					<xsl:apply-templates select="mn:fmt-preferred" />
+					<xsl:for-each select="mn:fmt-admitted">
 						<xsl:if test="position() = 1"><xsl:text> (</xsl:text></xsl:if>
 						<xsl:apply-templates />
 						<xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if>
 						<xsl:if test="position() = last()"><xsl:text>)</xsl:text></xsl:if>
 					</xsl:for-each>
 				</fo:block>
-				<xsl:apply-templates select="*[not(self::mn:preferred) and not(self::mn:admitted) and not(self::mn:fmt-name)]"/> <!-- further processing child elements -->
+				<xsl:apply-templates select="*[not(self::mn:fmt-preferred) and not(self::mn:fmt-admitted) and not(self::mn:fmt-name)]"/> <!-- further processing child elements -->
 		</fo:block>
 		
 	</xsl:template>
 	
-	<xsl:template match="mn:preferred" priority="2">
+	<xsl:template match="mn:fmt-preferred" priority="2">
 		<xsl:apply-templates />
 	</xsl:template>
 	

@@ -982,13 +982,13 @@
 	<!-- <xsl:template match="mn:fmt-name" /> -->
 		
 	<!-- fmt-preferred renamed to preferred in update_xml_step1 -->
-	<xsl:template match="mn:fmt-preferred" />
+	<!-- <xsl:template match="mn:fmt-preferred" /> -->
 		
 	<!-- fmt-admitted renamed to admitted in update_xml_step1 -->
-	<xsl:template match="mn:fmt-admitted" />
+	<!-- <xsl:template match="mn:fmt-admitted" /> -->
 	
 	<!-- fmt-deprecates renamed to deprecates in update_xml_step1 -->
-	<xsl:template match="mn:fmt-deprecates" />
+	<!-- <xsl:template match="mn:fmt-deprecates" /> -->
 	
 	<!-- fmt-definition renamed to definition in update_xml_step1 -->
 	<xsl:template match="mn:fmt-definition" />

@@ -3169,7 +3169,7 @@
 		<fo:inline>
 			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
-			<xsl:if test="ancestor::mn:preferred">
+			<xsl:if test="ancestor::mn:fmt-preferred">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates/>
@@ -3194,7 +3194,7 @@
 			<xsl:if test="not(ancestor::mn:p[@class = 'zzSTDTitle2']) and not(ancestor::mn:span[@class = 'JIS'])">
 				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::mn:preferred">
+			<xsl:if test="ancestor::mn:fmt-preferred">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates/>
@@ -3213,7 +3213,7 @@
 		<fo:inline>
 			<xsl:if test="not(ancestor::mn:p[@class = 'zzSTDTitle2']) and not(ancestor::mn:span[@class = 'JIS'])">
 			</xsl:if>
-			<xsl:if test="ancestor::mn:preferred">
+			<xsl:if test="ancestor::mn:fmt-preferred">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
 			<xsl:for-each select="node()">

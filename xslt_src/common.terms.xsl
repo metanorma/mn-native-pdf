@@ -367,7 +367,7 @@
 	<!-- ====== -->
 	
 	<!-- Preferred, admitted, deprecated -->
-	<xsl:template match="mn:preferred">
+	<xsl:template match="mn:fmt-preferred">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -400,7 +400,7 @@
 		<fo:block font-size="{normalize-space($font-size)}" role="H{$levelTerm}" xsl:use-attribute-sets="preferred-block-style">
 		
 			<xsl:if test="$namespace = 'iec'">
-				<xsl:if test="preceding-sibling::*[1][self::mn:preferred]">
+				<xsl:if test="preceding-sibling::*[1][self::mn:fmt-preferred]">
 					<xsl:attribute name="space-before">1pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
@@ -412,7 +412,7 @@
 				</xsl:if>
 			</xsl:if>
 			
-			<xsl:if test="parent::mn:term and not(preceding-sibling::mn:preferred)"> <!-- if first preffered in term, then display term's name -->
+			<xsl:if test="parent::mn:term and not(preceding-sibling::mn:fmt-preferred)"> <!-- if first preffered in term, then display term's name -->
 				
 				<fo:block xsl:use-attribute-sets="term-name-style" role="SKIP">
 					<xsl:if test="$namespace = 'jis'">
@@ -460,13 +460,13 @@
 	<!-- https://github.com/metanorma/isodoc/issues/632#issuecomment-2567163931 -->
 	<xsl:template match="mn:domain"/>
 	
-	<xsl:template match="mn:admitted">
+	<xsl:template match="mn:fmt-admitted">
 		<fo:block xsl:use-attribute-sets="admitted-style">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:deprecates">
+	<xsl:template match="mn:fmt-deprecates">
 		<fo:block xsl:use-attribute-sets="deprecates-style">
 			<xsl:apply-templates />
 		</fo:block>
@@ -488,7 +488,7 @@
 	
 	<!-- regarding ISO 10241-1:2011,  If there is more than one preferred term, each preferred term follows the previous one on a new line. -->
 	<!-- in metanorma xml preferred terms delimited by semicolons -->
-	<xsl:template match="mn:preferred/text()[contains(., ';')] | mn:preferred/mn:strong/text()[contains(., ';')]">
+	<xsl:template match="mn:fmt-preferred/text()[contains(., ';')] | mn:fmt-preferred/mn:strong/text()[contains(., ';')]">
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.), ';', $linebreak)"/>
 	</xsl:template>
 	<!--  End Preferred, admitted, deprecated -->

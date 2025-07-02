@@ -1631,7 +1631,6 @@
 		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
-	<!-- mn:term/mn:preferred2//text() | -->
 	
 	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
 	<xsl:template match="mn:title/text() | mn:fmt-title/text() | 
@@ -1787,9 +1786,7 @@
 			</xsl:choose>
 		</xsl:if>
 		<fo:inline font-family="Noto Sans Condensed" font-weight="300"> <!--  font-weight="bold" -->
-			<!-- <xsl:if test="ancestor::mn:preferred">
-				<xsl:attribute name="font-weight">normal</xsl:attribute>
-			</xsl:if> -->
+			
 			<xsl:if test="(ancestor::mn:figure or ancestor::mn:table) and parent::mn:fmt-name">
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 				<xsl:if test="$doctype = 'technical-report'">
@@ -1825,7 +1822,7 @@
 				<xsl:attribute name="font-family">Noto Sans Condensed</xsl:attribute>
 				<xsl:attribute name="font-weight">300</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::mn:preferred">
+			<xsl:if test="ancestor::mn:fmt-preferred">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates/>

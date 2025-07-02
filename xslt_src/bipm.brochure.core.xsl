@@ -3138,7 +3138,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="mn:preferred" priority="2">		
+	<xsl:template match="mn:fmt-preferred" priority="2">		
 		<fo:block font-weight="bold" keep-with-next="always" space-before="8pt" margin-bottom="6pt">
 			<xsl:call-template name="setStyle_preferred"/>
 			<xsl:if test="ancestor::mn:term[1]/mn:fmt-name">

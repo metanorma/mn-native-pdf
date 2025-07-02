@@ -2417,7 +2417,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:preferred" priority="2">
+	<xsl:template match="mn:fmt-preferred" priority="2">
 		<!-- DEBUG need -->
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -2496,14 +2496,14 @@
 		</xsl:if> -->
 	</xsl:template> <!-- preferred -->
 	
-	<xsl:template match="mn:term[mn:preferred]/mn:termsource" priority="2">
+	<xsl:template match="mn:term[mn:fmt-preferred]/mn:termsource" priority="2">
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
 			<xsl:apply-templates />
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="mn:term[mn:preferred]/mn:definition" priority="2">
+	<xsl:template match="mn:term[mn:fmt-preferred]/mn:definition" priority="2">
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
 			<xsl:apply-templates />

@@ -1020,7 +1020,7 @@
 	
 	
 	
-	<xsl:template match="mn:preferred | mn:deprecates | mn:admitted" priority="2">
+	<xsl:template match="mn:fmt-preferred | mn:fmt-deprecates | mn:fmt-admitted" priority="2">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -1041,11 +1041,11 @@
 				</fo:inline>
 			</xsl:if>
 			
-			<fo:inline padding-right="4mm"><xsl:if test="self::mn:preferred"><xsl:call-template name="setStyle_preferred"/></xsl:if><xsl:apply-templates /></fo:inline>
+			<fo:inline padding-right="4mm"><xsl:if test="self::mn:fmt-preferred"><xsl:call-template name="setStyle_preferred"/></xsl:if><xsl:apply-templates /></fo:inline>
 			
 			<xsl:variable name="term_kind">
 				<xsl:choose>
-					<xsl:when test="self::mn:deprecates">
+					<xsl:when test="self::mn:fmt-deprecates">
 						<xsl:call-template name="getLocalizedString">
 							<xsl:with-param name="key">deprecated</xsl:with-param>
 						</xsl:call-template>
@@ -1058,9 +1058,9 @@
 			<fo:inline-container text-align="center" width="29mm" >
 				<xsl:attribute name="background-color">
 					<xsl:choose>
-						<xsl:when test="$kind = 'preferred'">rgb(255, 240, 198)</xsl:when>
-						<xsl:when test="$kind = 'deprecates'">rgb(252, 221, 194)</xsl:when>
-						<xsl:when test="$kind = 'admitted'">rgb(208, 223, 239)</xsl:when>							
+						<xsl:when test="$kind = 'fmt-preferred'">rgb(255, 240, 198)</xsl:when>
+						<xsl:when test="$kind = 'fmt-deprecates'">rgb(252, 221, 194)</xsl:when>
+						<xsl:when test="$kind = 'fmt-admitted'">rgb(208, 223, 239)</xsl:when>							
 					</xsl:choose>
 				</xsl:attribute>
 				<fo:block padding-top="1mm" padding-bottom="0.5mm">
