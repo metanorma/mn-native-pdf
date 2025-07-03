@@ -2521,7 +2521,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:fmt-termsource" mode="td_text">
-		<xsl:value-of select="*[local-name()='origin']/@citeas"/>
+		<xsl:value-of select="mn:fmt-origin/@citeas"/>
 	</xsl:template>
 	
 	<xsl:template match="mn:fmt-link" mode="td_text">

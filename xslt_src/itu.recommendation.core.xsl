@@ -2445,9 +2445,9 @@
 				<!-- https://github.com/metanorma/isodoc/issues/614 -->
 				<!-- <xsl:text>: </xsl:text> -->
 				<xsl:text> </xsl:text>
-				<xsl:variable name="citeas" select="../mn:fmt-termsource/mn:origin/@citeas"/>
-				<xsl:variable name="bibitemid" select="../mn:fmt-termsource/mn:origin/@bibitemid"/>
-				<xsl:variable name="origin_text" select="normalize-space(../mn:fmt-termsource/mn:origin/text())"/>
+				<xsl:variable name="citeas" select="../mn:fmt-termsource/mn:fmt-origin/@citeas"/>
+				<xsl:variable name="bibitemid" select="../mn:fmt-termsource/mn:fmt-origin/@bibitemid"/>
+				<xsl:variable name="origin_text" select="normalize-space(../mn:fmt-termsource/mn:fmt-origin/text())"/>
 				
 				<xsl:choose>
 					<xsl:when test="$origin_text != '' or $citeas != ''">
@@ -2456,7 +2456,7 @@
 								<fo:basic-link internal-destination="{$bibitemid}" fox:alt-text="{$citeas}">
 									<xsl:choose>
 										<xsl:when test="$origin_text != ''">
-											<xsl:text> </xsl:text><xsl:apply-templates select="../mn:fmt-termsource/mn:origin/node()"/>
+											<xsl:text> </xsl:text><xsl:apply-templates select="../mn:fmt-termsource/mn:fmt-origin/node()"/>
 										</xsl:when>
 										<!-- https://github.com/metanorma/isodoc/issues/614 -->
 										<!-- <xsl:when test="contains($citeas, '[')">

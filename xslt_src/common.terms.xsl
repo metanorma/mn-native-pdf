@@ -314,13 +314,13 @@
 	
 	
 	<!-- text SOURCE: -->
-	<xsl:template match="mn:fmt-termsource/mn:strong[1][following-sibling::*[1][self::mn:origin]]/text()">
+	<xsl:template match="mn:fmt-termsource/mn:strong[1][following-sibling::*[1][self::mn:fmt-origin]]/text()">
 		<fo:inline xsl:use-attribute-sets="termsource-text-style">
 			<xsl:value-of select="."/>
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="mn:origin">
+	<xsl:template match="mn:fmt-origin">
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
 				<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">

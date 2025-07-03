@@ -3070,7 +3070,7 @@
 	<!-- End of Index processing -->
 	<!-- =================== -->
 	
-	<xsl:template match="mn:origin" priority="3">
+	<xsl:template match="mn:fmt-origin" priority="3">
 		<xsl:variable name="current_bibitemid" select="@bibitemid"/>
 		<xsl:variable name="bibitemid">
 			<xsl:choose>
