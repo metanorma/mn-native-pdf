@@ -524,12 +524,12 @@
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="mn:fmt-definition" mode="update_xml_step1">
+	<!-- <xsl:template match="mn:fmt-definition" mode="update_xml_step1">
 		<xsl:element name="definition" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="mn:fmt-termsource" mode="update_xml_step1">
 		<xsl:element name="termsource" namespace="{$namespace_full}">

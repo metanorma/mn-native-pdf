@@ -1890,7 +1890,7 @@
 					</xsl:call-template>
 					
 					<xsl:attribute name="margin-top">5pt</xsl:attribute>
-					<xsl:if test="ancestor::mn:definition">
+					<xsl:if test="ancestor::mn:fmt-definition">
 						<xsl:attribute name="margin-top">1pt</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="ancestor::mn:dl">

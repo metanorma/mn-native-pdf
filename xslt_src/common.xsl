@@ -991,7 +991,7 @@
 	<!-- <xsl:template match="mn:fmt-deprecates" /> -->
 	
 	<!-- fmt-definition renamed to definition in update_xml_step1 -->
-	<xsl:template match="mn:fmt-definition" />
+	<!-- <xsl:template match="mn:fmt-definition" /> -->
 	
 	<!-- fmt-termsource renamed to termsource in update_xml_step1 -->
 	<xsl:template match="mn:fmt-termsource" />

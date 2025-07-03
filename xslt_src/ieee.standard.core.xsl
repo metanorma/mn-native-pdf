@@ -2718,7 +2718,7 @@
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="mn:term/mn:definition" priority="2">
+	<xsl:template match="mn:term/mn:fmt-definition" priority="2">
 		<fo:block xsl:use-attribute-sets="definition-style">
 			<xsl:apply-templates />
 		</fo:block>

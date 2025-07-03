@@ -507,16 +507,16 @@
 	<!-- ========== -->
 	<!-- definition -->
 	<!-- ========== -->
-	<xsl:template match="mn:definition">
+	<xsl:template match="mn:fmt-definition">
 		<fo:block xsl:use-attribute-sets="definition-style" role="SKIP">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:definition[preceding-sibling::mn:domain]">
+	<xsl:template match="mn:fmt-definition[preceding-sibling::mn:domain]">
 		<xsl:apply-templates />
 	</xsl:template>
-	<xsl:template match="mn:definition[preceding-sibling::mn:domain]/mn:p[1]">
+	<xsl:template match="mn:fmt-definition[preceding-sibling::mn:domain]/mn:p[1]">
 		<fo:inline> <xsl:apply-templates /></fo:inline>
 		<fo:block></fo:block>
 	</xsl:template>

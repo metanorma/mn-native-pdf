@@ -900,7 +900,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="mn:definition/mn:p" priority="2">
+	<xsl:template match="mn:fmt-definition/mn:p" priority="2">
 		<fo:block widows="1" orphans="1"><xsl:apply-templates /></fo:block>
 	</xsl:template>
 
@@ -1750,12 +1750,12 @@
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="mn:fmt-definition" mode="flatxml_step1">
+	<!-- <xsl:template match="mn:fmt-definition" mode="flatxml_step1">
 		<xsl:element name="definition" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="mn:span[
 															@class = 'fmt-caption-label' or 

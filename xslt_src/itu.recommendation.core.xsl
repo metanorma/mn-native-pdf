@@ -2480,13 +2480,13 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>			
-			<xsl:if test="following-sibling::mn:definition/node()">
+			<xsl:if test="following-sibling::mn:fmt-definition/node()">
 				<xsl:if test="../mn:termsource">
 					<xsl:text>:</xsl:text>
 				</xsl:if>
 				<xsl:text> </xsl:text>
 				<!-- <xsl:apply-templates select="following-sibling::mn:definition/node()" mode="process"/>			 -->
-				<xsl:apply-templates select="following-sibling::mn:definition">
+				<xsl:apply-templates select="following-sibling::mn:fmt-definition">
 					<xsl:with-param name="process">true</xsl:with-param>
 				</xsl:apply-templates>
 			</xsl:if>
@@ -2503,7 +2503,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="mn:term[mn:fmt-preferred]/mn:definition" priority="2">
+	<xsl:template match="mn:term[mn:fmt-preferred]/mn:fmt-definition" priority="2">
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
 			<xsl:apply-templates />
@@ -2514,7 +2514,7 @@
 	<xsl:template match="mn:definition/mn:formula" priority="2"/> -->
 	
 	<!-- <xsl:template match="mn:definition/mn:p" mode="process" priority="2"> -->
-	<xsl:template match="mn:definition/mn:p" priority="2">
+	<xsl:template match="mn:fmt-definition/mn:p" priority="2">
 		<xsl:choose>
 			<xsl:when test="position() = 1">
 				<fo:inline>
