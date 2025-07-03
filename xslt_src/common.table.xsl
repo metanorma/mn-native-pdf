@@ -2524,7 +2524,7 @@
 		<xsl:value-of select="*[local-name()='origin']/@citeas"/>
 	</xsl:template>
 	
-	<xsl:template match="mn:link" mode="td_text">
+	<xsl:template match="mn:fmt-link" mode="td_text">
 		<xsl:value-of select="@target"/>
 	</xsl:template>
 
@@ -4581,7 +4581,7 @@
 		</xsl:call-template>
 	</xsl:template>
 
-	<xsl:template match="mn:link[normalize-space() = '']" mode="td_text_with_formatting">
+	<xsl:template match="mn:fmt-link[normalize-space() = '']" mode="td_text_with_formatting">
 		<xsl:variable name="link">
 			<link_updated>
 				<xsl:variable name="target_text">

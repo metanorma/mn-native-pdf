@@ -1817,12 +1817,12 @@
 	
 	<xsl:template match="mn:link" mode="flatxml_step1"/>
 	
-	<xsl:template match="mn:fmt-link" mode="flatxml_step1">
+	<!-- <xsl:template match="mn:fmt-link" mode="flatxml_step1">
 		<xsl:element name="link" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="mn:origin" mode="flatxml_step1"/>
 	

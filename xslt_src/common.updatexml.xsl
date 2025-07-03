@@ -605,12 +605,12 @@
   
 	<xsl:template match="mn:link" mode="update_xml_step1"/>
 	
-	<xsl:template match="mn:fmt-link" mode="update_xml_step1">
+	<!-- <xsl:template match="mn:fmt-link" mode="update_xml_step1">
 		<xsl:element name="link" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
   
 	<xsl:template match="mn:origin" mode="update_xml_step1"/>
 	
@@ -940,7 +940,7 @@
 	<xsl:variable name="regex_dots_units">((\b((<xsl:value-of select="$non_white_space"/>{1,3}\.<xsl:value-of select="$non_white_space"/>+)|(<xsl:value-of select="$non_white_space"/>+\.<xsl:value-of select="$non_white_space"/>{1,3}))\b)|(\.<xsl:value-of select="$non_white_space"/>{1,3})\b)</xsl:variable>
 	
 	<xsl:template match="text()[not(ancestor::mn:bibdata or 
-				ancestor::mn:link[not(contains(.,' '))] or 
+				ancestor::mn:fmt-link[not(contains(normalize-space(),' '))] or 
 				ancestor::mn:sourcecode or 
 				ancestor::*[local-name() = 'math'] or
 				ancestor::*[local-name() = 'svg'] or

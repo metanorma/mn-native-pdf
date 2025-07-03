@@ -2694,7 +2694,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:link" priority="2">
+	<xsl:template match="mn:fmt-link" priority="2">
 		<fo:inline color="blue">
 			<xsl:if test="parent::mn:formattedref or ancestor::mn:preface">
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>

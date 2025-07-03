@@ -79,7 +79,7 @@
 		</xsl:if>
 	</xsl:template> <!-- refine_link-style -->
 
-	<xsl:template match="mn:link" name="link">
+	<xsl:template match="mn:fmt-link" name="link">
 		<xsl:variable name="target_normalized" select="translate(@target, '\', '/')"/>
 		<xsl:variable name="target_attachment_name" select="substring-after($target_normalized, '_attachments/')"/>
 		<xsl:variable name="isLinkToEmbeddedFile" select="normalize-space(@attachment = 'true' and $pdfAttachmentsList//attachment[@filename = current()/@target])"/>

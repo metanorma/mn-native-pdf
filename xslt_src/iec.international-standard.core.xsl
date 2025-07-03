@@ -1716,7 +1716,7 @@
 	<xsl:template match="mn:br" mode="coverpage">
 		<xsl:value-of select="$linebreak"/>
 	</xsl:template>
-	<xsl:template match="mn:link" mode="coverpage">
+	<xsl:template match="mn:fmt-link" mode="coverpage">
 		<xsl:param name="lastpage">false</xsl:param>
 		<xsl:choose>
 			<xsl:when test="$lastpage = 'true'">
