@@ -2723,11 +2723,11 @@
 			<xsl:apply-templates />
 		</fo:block>
 		<!-- change termsource order - show after definition before termnote -->
-		<xsl:for-each select="ancestor::mn:term[1]/mn:termsource">
+		<xsl:for-each select="ancestor::mn:term[1]/mn:fmt-termsource">
 			<xsl:call-template name="termsource"/>
 		</xsl:for-each>
 	</xsl:template>
-	<xsl:template match="mn:term/mn:termsource" priority="2">
+	<xsl:template match="mn:term/mn:fmt-termsource" priority="2">
 		<xsl:call-template name="termsource"/>
 	</xsl:template>
 	

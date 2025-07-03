@@ -65,7 +65,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="(ancestor::mn:copyright-statement and contains(@target, 'mailto:')) or
-							($layoutVersion = '2024' and ancestor::mn:termsource)">
+							($layoutVersion = '2024' and ancestor::mn:fmt-termsource)">
 				<xsl:attribute name="color">inherit</xsl:attribute>
 				<xsl:attribute name="text-decoration">none</xsl:attribute>
 			</xsl:if>

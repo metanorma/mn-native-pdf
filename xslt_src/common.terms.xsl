@@ -260,7 +260,7 @@
 	<!-- origin -->	
 	<!-- modification -->		
 	<!-- ====== -->
-	<xsl:template match="mn:termsource" name="termsource">
+	<xsl:template match="mn:fmt-termsource" name="termsource">
 		<fo:block xsl:use-attribute-sets="termsource-style">
 			
 			<xsl:call-template name="refine_termsource-style"/>
@@ -300,13 +300,13 @@
 	</xsl:template>
 
 	
-	<xsl:template match="mn:termsource/text()[starts-with(., '[SOURCE: Adapted from: ') or
+	<xsl:template match="mn:fmt-termsource/text()[starts-with(., '[SOURCE: Adapted from: ') or
 				starts-with(., '[SOURCE: Quoted from: ') or
 				starts-with(., '[SOURCE: Modified from: ')]" priority="2">
 		<xsl:text>[</xsl:text><xsl:value-of select="substring-after(., '[SOURCE: ')"/>
 	</xsl:template>
 	
-	<xsl:template match="mn:termsource/text()">
+	<xsl:template match="mn:fmt-termsource/text()">
 		<xsl:if test="normalize-space() != ''">
 			<xsl:value-of select="."/>
 		</xsl:if>
@@ -314,7 +314,7 @@
 	
 	
 	<!-- text SOURCE: -->
-	<xsl:template match="mn:termsource/mn:strong[1][following-sibling::*[1][self::mn:origin]]/text()">
+	<xsl:template match="mn:fmt-termsource/mn:strong[1][following-sibling::*[1][self::mn:origin]]/text()">
 		<fo:inline xsl:use-attribute-sets="termsource-text-style">
 			<xsl:value-of select="."/>
 		</fo:inline>

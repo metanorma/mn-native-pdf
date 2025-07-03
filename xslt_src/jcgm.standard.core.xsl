@@ -1710,7 +1710,7 @@
 		</xsl:copy>
 	</xsl:template>
 	<xsl:template match="mn:sections//mn:fmt-termsource | mn:annex//mn:fmt-termsource" mode="flatxml_step1">
-		<xsl:element name="termsource" namespace="{$namespace_full}">
+		<xsl:element name="fmt-termsource" namespace="{$namespace_full}">
 			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
 			<xsl:call-template name="setCrossAlignAttributes"/>
 			<xsl:apply-templates mode="flatxml_step1"/>

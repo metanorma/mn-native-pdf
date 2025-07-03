@@ -994,7 +994,7 @@
 	<!-- <xsl:template match="mn:fmt-definition" /> -->
 	
 	<!-- fmt-termsource renamed to termsource in update_xml_step1 -->
-	<xsl:template match="mn:fmt-termsource" />
+	<!-- <xsl:template match="mn:fmt-termsource" /> -->
 		
 	<!-- fmt-source renamed to source in update_xml_step1 -->
 	<xsl:template match="mn:fmt-source" />

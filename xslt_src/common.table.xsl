@@ -2520,7 +2520,7 @@
 		<xsl:value-of select="translate(., $zero_width_space, ' ')"/><xsl:text> </xsl:text>
 	</xsl:template>
 	
-	<xsl:template match="mn:termsource" mode="td_text">
+	<xsl:template match="mn:fmt-termsource" mode="td_text">
 		<xsl:value-of select="*[local-name()='origin']/@citeas"/>
 	</xsl:template>
 	

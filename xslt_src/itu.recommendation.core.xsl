@@ -2441,13 +2441,13 @@
 				<xsl:call-template name="setStyle_preferred"/>
 				<xsl:apply-templates />
 			</fo:inline>
-			<xsl:if test="../mn:termsource">
+			<xsl:if test="../mn:fmt-termsource">
 				<!-- https://github.com/metanorma/isodoc/issues/614 -->
 				<!-- <xsl:text>: </xsl:text> -->
 				<xsl:text> </xsl:text>
-				<xsl:variable name="citeas" select="../mn:termsource/mn:origin/@citeas"/>
-				<xsl:variable name="bibitemid" select="../mn:termsource/mn:origin/@bibitemid"/>
-				<xsl:variable name="origin_text" select="normalize-space(../mn:termsource/mn:origin/text())"/>
+				<xsl:variable name="citeas" select="../mn:fmt-termsource/mn:origin/@citeas"/>
+				<xsl:variable name="bibitemid" select="../mn:fmt-termsource/mn:origin/@bibitemid"/>
+				<xsl:variable name="origin_text" select="normalize-space(../mn:fmt-termsource/mn:origin/text())"/>
 				
 				<xsl:choose>
 					<xsl:when test="$origin_text != '' or $citeas != ''">
@@ -2456,7 +2456,7 @@
 								<fo:basic-link internal-destination="{$bibitemid}" fox:alt-text="{$citeas}">
 									<xsl:choose>
 										<xsl:when test="$origin_text != ''">
-											<xsl:text> </xsl:text><xsl:apply-templates select="../mn:termsource/mn:origin/node()"/>
+											<xsl:text> </xsl:text><xsl:apply-templates select="../mn:fmt-termsource/mn:origin/node()"/>
 										</xsl:when>
 										<!-- https://github.com/metanorma/isodoc/issues/614 -->
 										<!-- <xsl:when test="contains($citeas, '[')">
@@ -2474,14 +2474,14 @@
 						</xsl:call-template>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:apply-templates select="../mn:termsource">
+						<xsl:apply-templates select="../mn:fmt-termsource">
 							<xsl:with-param name="process">true</xsl:with-param>
 						</xsl:apply-templates>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>			
 			<xsl:if test="following-sibling::mn:fmt-definition/node()">
-				<xsl:if test="../mn:termsource">
+				<xsl:if test="../mn:fmt-termsource">
 					<xsl:text>:</xsl:text>
 				</xsl:if>
 				<xsl:text> </xsl:text>
@@ -2496,7 +2496,7 @@
 		</xsl:if> -->
 	</xsl:template> <!-- preferred -->
 	
-	<xsl:template match="mn:term[mn:fmt-preferred]/mn:termsource" priority="2">
+	<xsl:template match="mn:term[mn:fmt-preferred]/mn:fmt-termsource" priority="2">
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
 			<xsl:apply-templates />
