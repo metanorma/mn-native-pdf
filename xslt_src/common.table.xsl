@@ -2030,7 +2030,7 @@
 									<xsl:apply-templates select="*[local-name()='thead']" mode="process_tbody"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:apply-templates select="node()[not(self::mn:fmt-name) and not(self::mn:note) and not(self::mn:example) and not(self::mn:dl) and not(self::mn:source) and not(self::mn:p)
+									<xsl:apply-templates select="node()[not(self::mn:fmt-name) and not(self::mn:note) and not(self::mn:example) and not(self::mn:dl) and not(self::mn:fmt-source) and not(self::mn:p)
 									and not(self::mn:thead) and not(self::mn:tfoot) and not(self::mn:fmt-footnote-container)]" /> <!-- process all table' elements, except name, header, footer, note, source and dl which render separaterely -->
 								</xsl:otherwise>
 							</xsl:choose>
@@ -2354,7 +2354,7 @@
 	</xsl:template>
 	
 	<!-- SOURCE: ... -->
-	<xsl:template match="*[local-name()='table']/mn:source" priority="2">
+	<xsl:template match="*[local-name()='table']/mn:fmt-source" priority="2">
 		<xsl:call-template name="termsource"/>
 	</xsl:template>
 	
@@ -2849,11 +2849,11 @@
 		<xsl:param name="colwidths"/>
 		<xsl:param name="colgroup"/>
 		
-		<xsl:variable name="isNoteOrFnExist" select="../mn:note[not(@type = 'units')] or ../mn:example or ../mn:dl or ..//mn:fn[not(parent::mn:fmt-name)] or ../mn:source or ../mn:p"/>
+		<xsl:variable name="isNoteOrFnExist" select="../mn:note[not(@type = 'units')] or ../mn:example or ../mn:dl or ..//mn:fn[not(parent::mn:fmt-name)] or ../mn:fmt-source or ../mn:p"/>
 		
 		<xsl:variable name="isNoteOrFnExistShowAfterTable">
 			<xsl:if test="$namespace = 'bsi'">
-				 <xsl:value-of select="../mn:note[not(@type = 'units')] or ../mn:source or ../mn:dl or ..//mn:fn"/>
+				 <xsl:value-of select="../mn:note[not(@type = 'units')] or ../mn:fmt-source or ../mn:dl or ..//mn:fn"/>
 			</xsl:if>
 		</xsl:variable>
 		
@@ -2973,14 +2973,14 @@
 									<xsl:if test="$document_type != 'PAS'">
 										<xsl:apply-templates select="../mn:dl" />
 										<xsl:apply-templates select="../mn:note[not(@type = 'units')]" />
-										<xsl:apply-templates select="../mn:source" />
+										<xsl:apply-templates select="../mn:fmt-source" />
 									</xsl:if>
 								</xsl:if>
 								
 								<xsl:choose>
 									<xsl:when test="$namespace = 'gb' or $namespace = 'bsi'"><!-- except gb and bsi  --></xsl:when>
 									<xsl:when test="$namespace = 'jis'">
-										<xsl:apply-templates select="../*[self::mn:p or self::mn:dl or (self::mn:note and not(@type = 'units')) or self::mn:example or self::mn:source]" />
+										<xsl:apply-templates select="../*[self::mn:p or self::mn:dl or (self::mn:note and not(@type = 'units')) or self::mn:example or self::mn:fmt-source]" />
 									</xsl:when>
 									<!-- <xsl:when test="$namespace = 'plateau'">
 										- https://github.com/metanorma/metanorma-plateau/issues/171 : the order is: definition list, text paragraphs, EXAMPLEs, NOTEs, footnotes, then source at the end -
@@ -2997,7 +2997,7 @@
 										<xsl:apply-templates select="../mn:dl" />
 										<xsl:apply-templates select="../mn:note[not(@type = 'units')]" />
 										<xsl:apply-templates select="../mn:example" />
-										<xsl:apply-templates select="../mn:source" />
+										<xsl:apply-templates select="../mn:fmt-source" />
 									</xsl:otherwise>
 								</xsl:choose>
 								
@@ -3038,7 +3038,7 @@
 									<xsl:if test="$document_type = 'PAS'">
 										<xsl:apply-templates select="../mn:dl" />
 										<xsl:apply-templates select="../mn:note[not(@type = 'units')]" />
-										<xsl:apply-templates select="../mn:source" />
+										<xsl:apply-templates select="../mn:fmt-source" />
 									</xsl:if>
 								</xsl:if>
 								

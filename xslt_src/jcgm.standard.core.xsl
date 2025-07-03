@@ -1710,11 +1710,13 @@
 		</xsl:copy>
 	</xsl:template>
 	<xsl:template match="mn:sections//mn:fmt-termsource | mn:annex//mn:fmt-termsource" mode="flatxml_step1">
-		<xsl:element name="fmt-termsource" namespace="{$namespace_full}">
+		<!-- <xsl:element name="fmt-termsource" namespace="{$namespace_full}"> -->
+		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
 			<xsl:call-template name="setCrossAlignAttributes"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
-		</xsl:element>
+		</xsl:copy>
+		<!-- </xsl:element> -->
 	</xsl:template>
 	
 	<xsl:template match="mn:preferred" mode="flatxml_step1"/>
@@ -1867,13 +1869,13 @@
 	<!-- https://github.com/metanorma/isodoc/issues/687 -->
 	<xsl:template match="mn:source" mode="flatxml_step1"/>
 	
-	<xsl:template match="mn:fmt-source" />
-	<xsl:template match="mn:fmt-source" mode="flatxml_step1">
+	<!-- <xsl:template match="mn:fmt-source" /> -->
+	<!-- <xsl:template match="mn:fmt-source" mode="flatxml_step1">
 		<xsl:element name="source" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template name="setCrossAlignAttributes">
 		<xsl:variable name="is_cross_aligned">

@@ -780,7 +780,7 @@
 
 	<!-- SOURCE: ... -->
 	<!-- figure/source -->
-	<xsl:template match="mn:figure/mn:source" priority="2">
+	<xsl:template match="mn:figure/mn:fmt-source" priority="2">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iec'">
 				<fo:block xsl:use-attribute-sets="figure-source-style">

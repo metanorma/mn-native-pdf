@@ -536,14 +536,14 @@
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
-	</xsl:template> -->
+	</xsl:template>
 	
 	<xsl:template match="mn:fmt-source" mode="update_xml_step1">
 		<xsl:element name="source" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="mn:span[
 															@class = 'fmt-caption-label' or 

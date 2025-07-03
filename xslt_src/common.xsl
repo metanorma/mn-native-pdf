@@ -997,7 +997,7 @@
 	<!-- <xsl:template match="mn:fmt-termsource" /> -->
 		
 	<!-- fmt-source renamed to source in update_xml_step1 -->
-	<xsl:template match="mn:fmt-source" />
+	<!-- <xsl:template match="mn:fmt-source" /> -->
 		
 	<xsl:template match="mn:semx">
 		<xsl:apply-templates />
