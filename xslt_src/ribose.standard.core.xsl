@@ -1050,7 +1050,7 @@
 							<xsl:with-param name="key">deprecated</xsl:with-param>
 						</xsl:call-template>
 					</xsl:when>
-					<xsl:otherwise><xsl:value-of select="local-name()"/></xsl:otherwise>
+					<xsl:otherwise><xsl:value-of select="substring-after(local-name(), 'fmt-')"/></xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
 			<xsl:variable name="kind" select="local-name()"/>
