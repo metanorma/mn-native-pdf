@@ -21,8 +21,8 @@
 	
 	<xsl:key name="kid" match="*" use="@id"/>
 	
-	<xsl:key name="attachments" match="mn:eref[java:endsWith(java:java.lang.String.new(@bibitemid),'.exp')]" use="@bibitemid"/>
-	<xsl:key name="attachments2" match="mn:eref[contains(@bibitemid,'.exp_')]" use="@bibitemid"/>
+	<xsl:key name="attachments" match="mn:fmt-eref[java:endsWith(java:java.lang.String.new(@bibitemid),'.exp')]" use="@bibitemid"/>
+	<xsl:key name="attachments2" match="mn:fmt-eref[contains(@bibitemid,'.exp_')]" use="@bibitemid"/>
 	
 	<xsl:variable name="namespace">iso</xsl:variable>
 	
@@ -851,11 +851,11 @@
 
 			<fo:declarations>
 				<xsl:call-template name="addPDFUAmeta"/>
-				<xsl:for-each select="//mn:eref[generate-id(.)=generate-id(key('attachments',@bibitemid)[1])]">
+				<xsl:for-each select="//mn:fmt-eref[generate-id(.)=generate-id(key('attachments',@bibitemid)[1])]">
 					<xsl:variable name="url" select="concat('url(file:',$basepath, @bibitemid, ')')"/>
 					<pdf:embedded-file src="{$url}" filename="{@bibitemid}"/>
 				</xsl:for-each>
-				<xsl:for-each select="//mn:eref[generate-id(.)=generate-id(key('attachments2',@bibitemid)[1])]">
+				<xsl:for-each select="//mn:fmt-eref[generate-id(.)=generate-id(key('attachments2',@bibitemid)[1])]">
 					<xsl:variable name="bibitemid" select="@bibitemid" />
 					<xsl:variable name="uri" select="normalize-space($bibitems/mn:bibitem[@hidden = 'true'][@id = $bibitemid][1]/mn:uri[@type='citation'])"/>
 					<xsl:if test="$uri != ''">
@@ -4606,7 +4606,7 @@
 	
 	
 	<!-- For express listings PDF attachments -->
-	<xsl:template match="mn:eref[java:endsWith(java:java.lang.String.new(@bibitemid),'.exp')]" priority="2">
+	<xsl:template match="mn:fmt-eref[java:endsWith(java:java.lang.String.new(@bibitemid),'.exp')]" priority="2">
 		<fo:inline xsl:use-attribute-sets="eref-style">
 			<xsl:variable name="url" select="concat('url(embedded-file:', @bibitemid, ')')"/>
 			<fo:basic-link external-destination="{$url}" fox:alt-text="{@citeas}">
@@ -4618,7 +4618,7 @@
 		</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="mn:eref[contains(@bibitemid,'.exp_')]" priority="2">
+	<xsl:template match="mn:fmt-eref[contains(@bibitemid,'.exp_')]" priority="2">
 		<xsl:variable name="bibitemid" select="@bibitemid" />
 		<xsl:variable name="uri" select="normalize-space($bibitems/mn:bibitem[@hidden = 'true'][@id = $bibitemid][1]/mn:uri[@type='citation'])"/>
 		<xsl:choose>

@@ -72,7 +72,7 @@
 	<!-- ====== -->
 	<!-- eref -->	
 	<!-- ====== -->
-	<xsl:template match="mn:eref" name="eref">
+	<xsl:template match="mn:fmt-eref" name="eref">
 		<xsl:variable name="current_bibitemid" select="@bibitemid"/>
 		<!-- <xsl:variable name="external-destination" select="normalize-space(key('bibitems', $current_bibitemid)/mn:uri[@type = 'citation'])"/> -->
 		<xsl:variable name="external-destination" select="normalize-space($bibitems/mn:bibitem[@id = $current_bibitemid]/mn:uri[@type = 'citation'])"/>

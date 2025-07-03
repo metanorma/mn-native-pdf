@@ -1973,7 +1973,7 @@
 						</xsl:attribute>
 					</xsl:for-each>
 					
-					<xsl:variable name="isNoteOrFnExist" select="./mn:note[not(@type = 'units')] or ./mn:example or .//mn:fn[not(parent::mn:fmt-name)] or ./mn:source"/>				
+					<xsl:variable name="isNoteOrFnExist" select="./mn:note[not(@type = 'units')] or ./mn:example or .//mn:fn[not(parent::mn:fmt-name)] or ./mn:fmt-source"/>				
 					<xsl:if test="$isNoteOrFnExist = 'true'">
 						<!-- <xsl:choose>
 							<xsl:when test="$namespace = 'plateau'"></xsl:when>

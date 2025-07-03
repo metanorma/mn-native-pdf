@@ -587,12 +587,12 @@
 	
 	<xsl:template match="mn:eref" mode="update_xml_step1"/>
 	
-	<xsl:template match="mn:fmt-eref" mode="update_xml_step1">
+	<!-- <xsl:template match="mn:fmt-eref" mode="update_xml_step1">
 		<xsl:element name="eref" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
   
 	<xsl:template match="mn:xref" mode="update_xml_step1"/>
 	
@@ -830,7 +830,7 @@
 		</xsl:variable>
 		
 		<!-- add 'fn' after eref and origin, to reference bibitem with note = 'Withdrawn.' or 'Cancelled and replaced...' -->
-		<xsl:template match="mn:eref | mn:origin" mode="update_xml_step2">
+		<xsl:template match="mn:fmt-eref | mn:origin" mode="update_xml_step2">
 			<xsl:copy-of select="."/>
 			
 			<xsl:variable name="bibitemid" select="@bibitemid"/>

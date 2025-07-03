@@ -1723,7 +1723,7 @@
 		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
-	<xsl:template match="mn:eref//text()" mode="update_xml_step1">
+	<xsl:template match="mn:fmt-eref//text()" mode="update_xml_step1">
 		<!-- Example: JIS Z 8301:2011 to <font_en_bold>JIS Z 8301</font_en_bold><font_en>:2011</font_en> -->
 		<xsl:variable name="parts">
 			<xsl:choose>

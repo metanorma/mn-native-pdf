@@ -1799,12 +1799,12 @@
 	
 	<xsl:template match="mn:eref" mode="flatxml_step1"/>
 	
-	<xsl:template match="mn:fmt-eref" mode="flatxml_step1">
+	<!-- <xsl:template match="mn:fmt-eref" mode="flatxml_step1">
 		<xsl:element name="eref" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="mn:xref" mode="flatxml_step1"/>
 	

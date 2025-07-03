@@ -598,7 +598,7 @@
 	<!-- ================================= -->
 	<!-- Move eref inside title -->
 	<!-- ================================= -->	
-	<xsl:template match="@*|node()" mode="title_eref">
+	<!-- <xsl:template match="@*|node()" mode="title_eref">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="title_eref"/>
 		</xsl:copy>
@@ -607,12 +607,12 @@
 	<xsl:template match="mn:fmt-title[following-sibling::*[1][self::mn:eref]]" mode="title_eref">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="title_eref"/>
-			<!-- move next eref inside title -->
+			- - move next eref inside title - -
 			<xsl:copy-of select="following-sibling::*[1][self::mn:eref]"/>
 		</xsl:copy>
 	</xsl:template>
-	<!-- remove eref immediately after title -->
-	<xsl:template match="mn:eref[preceding-sibling::*[1][self::mn:fmt-title]]" mode="title_eref"/>
+	- - remove eref immediately after title - -
+	<xsl:template match="mn:eref[preceding-sibling::*[1][self::mn:fmt-title]]" mode="title_eref"/> -->
 	<!-- ================================= -->
 	<!-- END Move eref inside title -->
 	<!-- ================================= -->	
@@ -3216,7 +3216,7 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="mn:eref[.//mn:locality[@type = 'anchor']]" priority="2">
+	<xsl:template match="mn:fmt-eref[.//mn:locality[@type = 'anchor']]" priority="2">
 		<xsl:variable name="target" select=".//mn:locality[@type = 'anchor']/mn:referenceFrom"/>
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
