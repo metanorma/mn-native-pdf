@@ -830,7 +830,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:fn" mode="fn_to_xref">
-		<xsl:element name="xref" namespace="{$namespace_full}">
+		<xsl:element name="fmt-xref" namespace="{$namespace_full}">
 			
 			<xsl:copy-of select="@target"/>
 			
@@ -3549,7 +3549,7 @@
 	<xsl:template match="mn:clause[@type = 'toc']//mn:fmt-title/text()[1][not(preceding-sibling::mn:tab) and following-sibling::*[1][self::mn:tab]]"/>
 	<xsl:template match="mn:clause[@type = 'toc']//mn:fmt-title/mn:tab" priority="2"/>
 
-	<xsl:template match="mn:xref" mode="toc_table_width" priority="2">
+	<xsl:template match="mn:fmt-xref" mode="toc_table_width" priority="2">
 		<!-- <xref target="cgpm9th1948r6">1.6.3<tab/>&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
 		<!-- New format - one tab <xref target="cgpm9th1948r6">&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
 		<xsl:for-each select="mn:tab">

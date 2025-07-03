@@ -4905,7 +4905,7 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="mn:sup[mn:xref[@type = 'footnote']]" priority="2">
+	<xsl:template match="mn:sup[mn:fmt-xref[@type = 'footnote']]" priority="2">
 		<fo:inline font-size="80%">
 			<xsl:choose>
 				<xsl:when test="$layoutVersion = '2024'">

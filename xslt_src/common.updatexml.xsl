@@ -596,12 +596,12 @@
   
 	<xsl:template match="mn:xref" mode="update_xml_step1"/>
 	
-	<xsl:template match="mn:fmt-xref" mode="update_xml_step1">
+	<!-- <xsl:template match="mn:fmt-xref" mode="update_xml_step1">
 		<xsl:element name="xref" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
   
 	<xsl:template match="mn:link" mode="update_xml_step1"/>
 	

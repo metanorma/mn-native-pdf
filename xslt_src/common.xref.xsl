@@ -32,7 +32,7 @@
 		</xsl:if>
 	</xsl:attribute-set>
 
-	<xsl:template match="mn:xref">
+	<xsl:template match="mn:fmt-xref">
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
 				<xsl:variable name="alt_text">
@@ -57,8 +57,8 @@
 	</xsl:template> <!-- xref -->
 	
 	<!-- command between two xref points to non-standard bibitem -->
-	<xsl:template match="text()[. = ','][preceding-sibling::node()[1][self::mn:sup][mn:xref[@type = 'footnote']] and 
-		following-sibling::node()[1][self::mn:sup][mn:xref[@type = 'footnote']]]">
+	<xsl:template match="text()[. = ','][preceding-sibling::node()[1][self::mn:sup][mn:fmt-xref[@type = 'footnote']] and 
+		following-sibling::node()[1][self::mn:sup][mn:fmt-xref[@type = 'footnote']]]">
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iso'">
 				<fo:inline baseline-shift="20%" font-size="80%"><xsl:value-of select="."/></fo:inline>

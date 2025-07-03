@@ -2226,7 +2226,7 @@
 	
 	<!-- add @to = figure, table, clause -->
 	<!-- add @depth = from  -->
-	<xsl:template match="mn:xref" mode="flatxml">
+	<xsl:template match="mn:fmt-xref" mode="flatxml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
 			<xsl:variable name="target" select="@target"/>
@@ -3057,11 +3057,11 @@
 	</xsl:template>
 	
 	<!-- Figure 1 to Figure&#xA0;<bold>1</bold> -->
-	<xsl:template match="mn:xref[@to = 'figure' or @to = 'table']/text()" priority="2">
+	<xsl:template match="mn:fmt-xref[@to = 'figure' or @to = 'table']/text()" priority="2">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="mn:td/mn:xref/mn:strong"  priority="2">
+	<xsl:template match="mn:td/mn:fmt-xref/mn:strong"  priority="2">
 		<xsl:apply-templates />
 	</xsl:template>
 

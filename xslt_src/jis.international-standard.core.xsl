@@ -2961,7 +2961,7 @@
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:choose>
-					<xsl:when test="ancestor::mn:xref and 
+					<xsl:when test="(ancestor::mn:xref or ancestor::mn:fmt-xref) and 
 					(starts-with(., 'http:') or starts-with(., 'https') or starts-with(., 'www') or starts-with(., 'mailto') or starts-with(., 'ftp'))">
 						<xsl:value-of select="."/>
 					</xsl:when>
@@ -5834,7 +5834,7 @@
 	
 	<!-- add @to = figure, table, clause -->
 	<!-- add @depth = from  -->
-	<xsl:template match="mn:xref" mode="linear_xml">
+	<xsl:template match="mn:fmt-xref" mode="linear_xml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="linear_xml"/>
 			<xsl:variable name="target" select="@target"/>

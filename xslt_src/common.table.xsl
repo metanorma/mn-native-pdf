@@ -327,7 +327,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'bipm'">					
-			<xsl:if test="not(ancestor::mn:preface) and not(ancestor::mn:note_side) and not(ancestor::mn:annex and .//mn:xref[@pagenumber]) and not(ancestor::mn:doccontrol) and not(ancestor::mn:colophon)">
+			<xsl:if test="not(ancestor::mn:preface) and not(ancestor::mn:note_side) and not(ancestor::mn:annex and .//mn:fmt-xref[@pagenumber]) and not(ancestor::mn:doccontrol) and not(ancestor::mn:colophon)">
 				<xsl:attribute name="border-top">0.5pt solid black</xsl:attribute>
 				<xsl:attribute name="border-bottom">0.5pt solid black</xsl:attribute>
 			</xsl:if>
@@ -976,7 +976,7 @@
 	<xsl:template name="refine_table-header-cell-style">
 			
 		<xsl:if test="$namespace = 'bipm'">
-			<xsl:if test="(ancestor::mn:annex and ancestor::mn:table//mn:xref[@pagenumber]) or ancestor::mn:doccontrol or ancestor::mn:colophon"><!-- for Annex ToC -->
+			<xsl:if test="(ancestor::mn:annex and ancestor::mn:table//mn:fmt-xref[@pagenumber]) or ancestor::mn:doccontrol or ancestor::mn:colophon"><!-- for Annex ToC -->
 				<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
 				<xsl:attribute name="border-bottom">solid black 0pt</xsl:attribute>
 			</xsl:if>

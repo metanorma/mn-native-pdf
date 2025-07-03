@@ -886,7 +886,7 @@
 		<xsl:apply-templates />
 	</xsl:template>
 
-	<xsl:template match="mn:toc//mn:xref" priority="3">
+	<xsl:template match="mn:toc//mn:xref | mn:toc//mn:fmt-xref" priority="3">
 		<!-- <xref target="cgpm9th1948r6">1.6.3<tab/>&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
 		<!-- New format: one tab <xref target="cgpm9th1948r6">&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
 		<!-- <test><xsl:copy-of select="."/></test> -->
@@ -963,7 +963,7 @@
 		</mn:tr>
 	</xsl:template>
 	
-	<xsl:template match="mn:xref" mode="toc_table_width">
+	<xsl:template match="mn:fmt-xref" mode="toc_table_width">
 		<!-- <xref target="cgpm9th1948r6">1.6.3<tab/>&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
 		<!-- New format - one tab <xref target="cgpm9th1948r6">&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
 		<xsl:for-each select="mn:tab">

@@ -2209,7 +2209,7 @@
 		<xsl:choose>
 			<xsl:when test="local-name() = 'id' or 
 														local-name() = 'bibitemid' or
-														(local-name() = 'target' and parent::mn:xref)">
+														(local-name() = 'target' and parent::mn:fmt-xref)">
 				<xsl:attribute name="{local-name()}">
 					<xsl:value-of select="."/>_<xsl:value-of select="$lang"/>
 				</xsl:attribute>
