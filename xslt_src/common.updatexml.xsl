@@ -229,7 +229,8 @@
 	<xsl:template match="mn:stem" mode="update_xml_step1"/>
 	
 	<xsl:template match="mn:fmt-stem" mode="update_xml_step1">
-		<xsl:element name="stem" namespace="{$namespace_full}">
+		<!-- <xsl:element name="stem" namespace="{$namespace_full}"> -->
+		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:choose>
 				<xsl:when test="mn:semx and count(node()) = 1">
@@ -253,7 +254,8 @@
 					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
-		</xsl:element>
+		</xsl:copy>
+		<!-- </xsl:element> -->
 	</xsl:template>
 	
 	<xsl:template match="mn:image[not(.//mn:passthrough)] | 
@@ -496,7 +498,7 @@
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
 	<xsl:template match="mn:fmt-preferred[not(mn:p)] | mn:fmt-preferred/mn:p" mode="update_xml_step1">
-		<xsl:element name="preferred" namespace="{$namespace_full}">
+		<xsl:element name="fmt-preferred" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
@@ -506,7 +508,7 @@
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
 	<xsl:template match="mn:fmt-admitted[not(mn:p)] | mn:fmt-admitted/mn:p" mode="update_xml_step1">
-		<xsl:element name="admitted" namespace="{$namespace_full}">
+		<xsl:element name="fmt-admitted" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
@@ -516,13 +518,13 @@
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
 	<xsl:template match="mn:fmt-deprecates[not(mn:p)] | mn:fmt-deprecates/mn:p" mode="update_xml_step1">
-		<xsl:element name="deprecates" namespace="{$namespace_full}">
+		<xsl:element name="fmt-deprecates" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="mn:fmt-definition" mode="update_xml_step1">
+	<!-- <xsl:template match="mn:fmt-definition" mode="update_xml_step1">
 		<xsl:element name="definition" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
@@ -541,7 +543,7 @@
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="mn:span[
 															@class = 'fmt-caption-label' or 
@@ -570,12 +572,12 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:identifier" mode="update_xml_step1"/>
-	<xsl:template match="mn:fmt-identifier" mode="update_xml_step1">
+	<!-- <xsl:template match="mn:fmt-identifier" mode="update_xml_step1">
 		<xsl:element name="identifier" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="mn:concept" mode="update_xml_step1"/>
 	
@@ -585,39 +587,39 @@
 	
 	<xsl:template match="mn:eref" mode="update_xml_step1"/>
 	
-	<xsl:template match="mn:fmt-eref" mode="update_xml_step1">
+	<!-- <xsl:template match="mn:fmt-eref" mode="update_xml_step1">
 		<xsl:element name="eref" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
   
 	<xsl:template match="mn:xref" mode="update_xml_step1"/>
 	
-	<xsl:template match="mn:fmt-xref" mode="update_xml_step1">
+	<!-- <xsl:template match="mn:fmt-xref" mode="update_xml_step1">
 		<xsl:element name="xref" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
   
 	<xsl:template match="mn:link" mode="update_xml_step1"/>
 	
-	<xsl:template match="mn:fmt-link" mode="update_xml_step1">
+	<!-- <xsl:template match="mn:fmt-link" mode="update_xml_step1">
 		<xsl:element name="link" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
   
 	<xsl:template match="mn:origin" mode="update_xml_step1"/>
 	
-	<xsl:template match="mn:fmt-origin" mode="update_xml_step1">
+	<!-- <xsl:template match="mn:fmt-origin" mode="update_xml_step1">
 		<xsl:element name="origin" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="update_xml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="mn:erefstack" mode="update_xml_step1"/>
 	
@@ -828,7 +830,7 @@
 		</xsl:variable>
 		
 		<!-- add 'fn' after eref and origin, to reference bibitem with note = 'Withdrawn.' or 'Cancelled and replaced...' -->
-		<xsl:template match="mn:eref | mn:origin" mode="update_xml_step2">
+		<xsl:template match="mn:fmt-eref | mn:fmt-origin" mode="update_xml_step2">
 			<xsl:copy-of select="."/>
 			
 			<xsl:variable name="bibitemid" select="@bibitemid"/>
@@ -898,7 +900,7 @@
 			</xsl:call-template>
 		</xsl:template>
 		
-		<xsl:template match="mn:stem | mn:image" mode="update_xml_step2">
+		<xsl:template match="mn:fmt-stem | mn:image" mode="update_xml_step2">
 			<xsl:copy-of select="."/>
 		</xsl:template>
 		
@@ -938,7 +940,7 @@
 	<xsl:variable name="regex_dots_units">((\b((<xsl:value-of select="$non_white_space"/>{1,3}\.<xsl:value-of select="$non_white_space"/>+)|(<xsl:value-of select="$non_white_space"/>+\.<xsl:value-of select="$non_white_space"/>{1,3}))\b)|(\.<xsl:value-of select="$non_white_space"/>{1,3})\b)</xsl:variable>
 	
 	<xsl:template match="text()[not(ancestor::mn:bibdata or 
-				ancestor::mn:link[not(contains(.,' '))] or 
+				ancestor::mn:fmt-link[not(contains(normalize-space(),' '))] or 
 				ancestor::mn:sourcecode or 
 				ancestor::*[local-name() = 'math'] or
 				ancestor::*[local-name() = 'svg'] or
@@ -1093,7 +1095,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:stem | mn:image" mode="update_xml_enclose_keep-together_within-line">
+	<xsl:template match="mn:fmt-stem | mn:image" mode="update_xml_enclose_keep-together_within-line">
 		<xsl:copy-of select="."/>
 	</xsl:template>
 	

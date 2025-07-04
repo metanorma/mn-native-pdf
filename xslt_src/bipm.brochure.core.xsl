@@ -598,7 +598,7 @@
 	<!-- ================================= -->
 	<!-- Move eref inside title -->
 	<!-- ================================= -->	
-	<xsl:template match="@*|node()" mode="title_eref">
+	<!-- <xsl:template match="@*|node()" mode="title_eref">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="title_eref"/>
 		</xsl:copy>
@@ -607,12 +607,12 @@
 	<xsl:template match="mn:fmt-title[following-sibling::*[1][self::mn:eref]]" mode="title_eref">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="title_eref"/>
-			<!-- move next eref inside title -->
+			- - move next eref inside title - -
 			<xsl:copy-of select="following-sibling::*[1][self::mn:eref]"/>
 		</xsl:copy>
 	</xsl:template>
-	<!-- remove eref immediately after title -->
-	<xsl:template match="mn:eref[preceding-sibling::*[1][self::mn:fmt-title]]" mode="title_eref"/>
+	- - remove eref immediately after title - -
+	<xsl:template match="mn:eref[preceding-sibling::*[1][self::mn:fmt-title]]" mode="title_eref"/> -->
 	<!-- ================================= -->
 	<!-- END Move eref inside title -->
 	<!-- ================================= -->	
@@ -830,7 +830,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:fn" mode="fn_to_xref">
-		<xsl:element name="xref" namespace="{$namespace_full}">
+		<xsl:element name="fmt-xref" namespace="{$namespace_full}">
 			
 			<xsl:copy-of select="@target"/>
 			
@@ -2468,7 +2468,7 @@
 		<xsl:apply-templates mode="header"/>
 	</xsl:template>
 
-	<xsl:template match="mn:stem" mode="header">
+	<xsl:template match="mn:fmt-stem" mode="header">
 		<xsl:apply-templates />
 	</xsl:template>
 
@@ -3138,7 +3138,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="mn:preferred" priority="2">		
+	<xsl:template match="mn:fmt-preferred" priority="2">		
 		<fo:block font-weight="bold" keep-with-next="always" space-before="8pt" margin-bottom="6pt">
 			<xsl:call-template name="setStyle_preferred"/>
 			<xsl:if test="ancestor::mn:term[1]/mn:fmt-name">
@@ -3216,7 +3216,7 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="mn:eref[.//mn:locality[@type = 'anchor']]" priority="2">
+	<xsl:template match="mn:fmt-eref[.//mn:locality[@type = 'anchor']]" priority="2">
 		<xsl:variable name="target" select=".//mn:locality[@type = 'anchor']/mn:referenceFrom"/>
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
@@ -3549,7 +3549,7 @@
 	<xsl:template match="mn:clause[@type = 'toc']//mn:fmt-title/text()[1][not(preceding-sibling::mn:tab) and following-sibling::*[1][self::mn:tab]]"/>
 	<xsl:template match="mn:clause[@type = 'toc']//mn:fmt-title/mn:tab" priority="2"/>
 
-	<xsl:template match="mn:xref" mode="toc_table_width" priority="2">
+	<xsl:template match="mn:fmt-xref" mode="toc_table_width" priority="2">
 		<!-- <xref target="cgpm9th1948r6">1.6.3<tab/>&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
 		<!-- New format - one tab <xref target="cgpm9th1948r6">&#8220;9th CGPM, 1948:<tab/>decision to establish the SI&#8221;</xref> -->
 		<xsl:for-each select="mn:tab">
@@ -3826,7 +3826,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:stem/text()">
+	<xsl:template match="mn:fmt-stem/text()">
 		<xsl:value-of select="normalize-space()"/>
 	</xsl:template>
 	

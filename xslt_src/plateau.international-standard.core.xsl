@@ -1191,7 +1191,7 @@
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::mn:definition">
+					<xsl:if test="parent::mn:fmt-definition">
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					
@@ -1603,7 +1603,7 @@
 	<xsl:variable name="tag_font_en_bold_open">###<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
 	<xsl:variable name="tag_font_en_bold_close">###/<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
 	
-	<xsl:template match="mn:p//text()[not(ancestor::mn:strong) and not(ancestor::mn:stem)] |
+	<xsl:template match="mn:p//text()[not(ancestor::mn:strong) and not(ancestor::mn:fmt-stem)] |
 						mn:dt/text() | mn:td/text() | mn:th/text()" mode="update_xml_step1">
 		<!-- add hairspace after 'IDEOGRAPHIC SPACE' (U+3000) -->
 		<xsl:variable name="text" select="java:replaceAll(java:java.lang.String.new(.), '(\u3000)', concat('$1',$hair_space))"/>
@@ -1631,7 +1631,6 @@
 		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
-	<!-- mn:term/mn:preferred2//text() | -->
 	
 	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
 	<xsl:template match="mn:title/text() | mn:fmt-title/text() | 
@@ -1724,7 +1723,7 @@
 		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
 	</xsl:template>
 	
-	<xsl:template match="mn:eref//text()" mode="update_xml_step1">
+	<xsl:template match="mn:fmt-eref//text()" mode="update_xml_step1">
 		<!-- Example: JIS Z 8301:2011 to <font_en_bold>JIS Z 8301</font_en_bold><font_en>:2011</font_en> -->
 		<xsl:variable name="parts">
 			<xsl:choose>
@@ -1787,9 +1786,7 @@
 			</xsl:choose>
 		</xsl:if>
 		<fo:inline font-family="Noto Sans Condensed" font-weight="300"> <!--  font-weight="bold" -->
-			<!-- <xsl:if test="ancestor::mn:preferred">
-				<xsl:attribute name="font-weight">normal</xsl:attribute>
-			</xsl:if> -->
+			
 			<xsl:if test="(ancestor::mn:figure or ancestor::mn:table) and parent::mn:fmt-name">
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 				<xsl:if test="$doctype = 'technical-report'">
@@ -1825,7 +1822,7 @@
 				<xsl:attribute name="font-family">Noto Sans Condensed</xsl:attribute>
 				<xsl:attribute name="font-weight">300</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::mn:preferred">
+			<xsl:if test="ancestor::mn:fmt-preferred">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates/>

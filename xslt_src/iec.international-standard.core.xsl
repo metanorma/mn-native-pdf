@@ -1716,7 +1716,7 @@
 	<xsl:template match="mn:br" mode="coverpage">
 		<xsl:value-of select="$linebreak"/>
 	</xsl:template>
-	<xsl:template match="mn:link" mode="coverpage">
+	<xsl:template match="mn:fmt-link" mode="coverpage">
 		<xsl:param name="lastpage">false</xsl:param>
 		<xsl:choose>
 			<xsl:when test="$lastpage = 'true'">
@@ -1890,7 +1890,7 @@
 					</xsl:call-template>
 					
 					<xsl:attribute name="margin-top">5pt</xsl:attribute>
-					<xsl:if test="ancestor::mn:definition">
+					<xsl:if test="ancestor::mn:fmt-definition">
 						<xsl:attribute name="margin-top">1pt</xsl:attribute>
 					</xsl:if>
 					<xsl:if test="ancestor::mn:dl">
@@ -2209,7 +2209,7 @@
 		<xsl:choose>
 			<xsl:when test="local-name() = 'id' or 
 														local-name() = 'bibitemid' or
-														(local-name() = 'target' and parent::mn:xref)">
+														(local-name() = 'target' and parent::mn:fmt-xref)">
 				<xsl:attribute name="{local-name()}">
 					<xsl:value-of select="."/>_<xsl:value-of select="$lang"/>
 				</xsl:attribute>

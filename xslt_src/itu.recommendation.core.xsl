@@ -2417,7 +2417,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:preferred" priority="2">
+	<xsl:template match="mn:fmt-preferred" priority="2">
 		<!-- DEBUG need -->
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -2441,13 +2441,13 @@
 				<xsl:call-template name="setStyle_preferred"/>
 				<xsl:apply-templates />
 			</fo:inline>
-			<xsl:if test="../mn:termsource">
+			<xsl:if test="../mn:fmt-termsource">
 				<!-- https://github.com/metanorma/isodoc/issues/614 -->
 				<!-- <xsl:text>: </xsl:text> -->
 				<xsl:text> </xsl:text>
-				<xsl:variable name="citeas" select="../mn:termsource/mn:origin/@citeas"/>
-				<xsl:variable name="bibitemid" select="../mn:termsource/mn:origin/@bibitemid"/>
-				<xsl:variable name="origin_text" select="normalize-space(../mn:termsource/mn:origin/text())"/>
+				<xsl:variable name="citeas" select="../mn:fmt-termsource/mn:fmt-origin/@citeas"/>
+				<xsl:variable name="bibitemid" select="../mn:fmt-termsource/mn:fmt-origin/@bibitemid"/>
+				<xsl:variable name="origin_text" select="normalize-space(../mn:fmt-termsource/mn:fmt-origin/text())"/>
 				
 				<xsl:choose>
 					<xsl:when test="$origin_text != '' or $citeas != ''">
@@ -2456,7 +2456,7 @@
 								<fo:basic-link internal-destination="{$bibitemid}" fox:alt-text="{$citeas}">
 									<xsl:choose>
 										<xsl:when test="$origin_text != ''">
-											<xsl:text> </xsl:text><xsl:apply-templates select="../mn:termsource/mn:origin/node()"/>
+											<xsl:text> </xsl:text><xsl:apply-templates select="../mn:fmt-termsource/mn:fmt-origin/node()"/>
 										</xsl:when>
 										<!-- https://github.com/metanorma/isodoc/issues/614 -->
 										<!-- <xsl:when test="contains($citeas, '[')">
@@ -2474,19 +2474,19 @@
 						</xsl:call-template>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:apply-templates select="../mn:termsource">
+						<xsl:apply-templates select="../mn:fmt-termsource">
 							<xsl:with-param name="process">true</xsl:with-param>
 						</xsl:apply-templates>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>			
-			<xsl:if test="following-sibling::mn:definition/node()">
-				<xsl:if test="../mn:termsource">
+			<xsl:if test="following-sibling::mn:fmt-definition/node()">
+				<xsl:if test="../mn:fmt-termsource">
 					<xsl:text>:</xsl:text>
 				</xsl:if>
 				<xsl:text> </xsl:text>
 				<!-- <xsl:apply-templates select="following-sibling::mn:definition/node()" mode="process"/>			 -->
-				<xsl:apply-templates select="following-sibling::mn:definition">
+				<xsl:apply-templates select="following-sibling::mn:fmt-definition">
 					<xsl:with-param name="process">true</xsl:with-param>
 				</xsl:apply-templates>
 			</xsl:if>
@@ -2496,14 +2496,14 @@
 		</xsl:if> -->
 	</xsl:template> <!-- preferred -->
 	
-	<xsl:template match="mn:term[mn:preferred]/mn:termsource" priority="2">
+	<xsl:template match="mn:term[mn:fmt-preferred]/mn:fmt-termsource" priority="2">
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
 			<xsl:apply-templates />
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="mn:term[mn:preferred]/mn:definition" priority="2">
+	<xsl:template match="mn:term[mn:fmt-preferred]/mn:fmt-definition" priority="2">
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
 			<xsl:apply-templates />
@@ -2514,7 +2514,7 @@
 	<xsl:template match="mn:definition/mn:formula" priority="2"/> -->
 	
 	<!-- <xsl:template match="mn:definition/mn:p" mode="process" priority="2"> -->
-	<xsl:template match="mn:definition/mn:p" priority="2">
+	<xsl:template match="mn:fmt-definition/mn:p" priority="2">
 		<xsl:choose>
 			<xsl:when test="position() = 1">
 				<fo:inline>
@@ -2694,7 +2694,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:link" priority="2">
+	<xsl:template match="mn:fmt-link" priority="2">
 		<fo:inline color="blue">
 			<xsl:if test="parent::mn:formattedref or ancestor::mn:preface">
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>

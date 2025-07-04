@@ -2250,7 +2250,7 @@
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:if test="parent::mn:definition">
+					<xsl:if test="parent::mn:fmt-definition">
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					
@@ -2961,7 +2961,7 @@
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:choose>
-					<xsl:when test="ancestor::mn:xref and 
+					<xsl:when test="(ancestor::mn:xref or ancestor::mn:fmt-xref) and 
 					(starts-with(., 'http:') or starts-with(., 'https') or starts-with(., 'www') or starts-with(., 'mailto') or starts-with(., 'ftp'))">
 						<xsl:value-of select="."/>
 					</xsl:when>
@@ -3169,7 +3169,7 @@
 		<fo:inline>
 			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
-			<xsl:if test="ancestor::mn:preferred">
+			<xsl:if test="ancestor::mn:fmt-preferred">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates/>
@@ -3194,7 +3194,7 @@
 			<xsl:if test="not(ancestor::mn:p[@class = 'zzSTDTitle2']) and not(ancestor::mn:span[@class = 'JIS'])">
 				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::mn:preferred">
+			<xsl:if test="ancestor::mn:fmt-preferred">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates/>
@@ -3213,7 +3213,7 @@
 		<fo:inline>
 			<xsl:if test="not(ancestor::mn:p[@class = 'zzSTDTitle2']) and not(ancestor::mn:span[@class = 'JIS'])">
 			</xsl:if>
-			<xsl:if test="ancestor::mn:preferred">
+			<xsl:if test="ancestor::mn:fmt-preferred">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
 			<xsl:for-each select="node()">
@@ -5834,7 +5834,7 @@
 	
 	<!-- add @to = figure, table, clause -->
 	<!-- add @depth = from  -->
-	<xsl:template match="mn:xref" mode="linear_xml">
+	<xsl:template match="mn:fmt-xref" mode="linear_xml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="linear_xml"/>
 			<xsl:variable name="target" select="@target"/>

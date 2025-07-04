@@ -327,7 +327,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'bipm'">					
-			<xsl:if test="not(ancestor::mn:preface) and not(ancestor::mn:note_side) and not(ancestor::mn:annex and .//mn:xref[@pagenumber]) and not(ancestor::mn:doccontrol) and not(ancestor::mn:colophon)">
+			<xsl:if test="not(ancestor::mn:preface) and not(ancestor::mn:note_side) and not(ancestor::mn:annex and .//mn:fmt-xref[@pagenumber]) and not(ancestor::mn:doccontrol) and not(ancestor::mn:colophon)">
 				<xsl:attribute name="border-top">0.5pt solid black</xsl:attribute>
 				<xsl:attribute name="border-bottom">0.5pt solid black</xsl:attribute>
 			</xsl:if>
@@ -976,7 +976,7 @@
 	<xsl:template name="refine_table-header-cell-style">
 			
 		<xsl:if test="$namespace = 'bipm'">
-			<xsl:if test="(ancestor::mn:annex and ancestor::mn:table//mn:xref[@pagenumber]) or ancestor::mn:doccontrol or ancestor::mn:colophon"><!-- for Annex ToC -->
+			<xsl:if test="(ancestor::mn:annex and ancestor::mn:table//mn:fmt-xref[@pagenumber]) or ancestor::mn:doccontrol or ancestor::mn:colophon"><!-- for Annex ToC -->
 				<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
 				<xsl:attribute name="border-bottom">solid black 0pt</xsl:attribute>
 			</xsl:if>
@@ -1380,7 +1380,7 @@
 		</xsl:if>
 
 		<xsl:if test="$namespace = 'jcgm'">
-			<xsl:if test="count(*) = 1 and (local-name(*[1]) = 'stem' or local-name(*[1]) = 'figure')">
+			<xsl:if test="count(*) = 1 and (*[1][self::mn:fmt-stem] or *[1][self::mn:figure])">
 				<xsl:attribute name="padding-left">0mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="ancestor::mn:tfoot">
@@ -1973,7 +1973,7 @@
 						</xsl:attribute>
 					</xsl:for-each>
 					
-					<xsl:variable name="isNoteOrFnExist" select="./mn:note[not(@type = 'units')] or ./mn:example or .//mn:fn[not(parent::mn:fmt-name)] or ./mn:source"/>				
+					<xsl:variable name="isNoteOrFnExist" select="./mn:note[not(@type = 'units')] or ./mn:example or .//mn:fn[not(parent::mn:fmt-name)] or ./mn:fmt-source"/>				
 					<xsl:if test="$isNoteOrFnExist = 'true'">
 						<!-- <xsl:choose>
 							<xsl:when test="$namespace = 'plateau'"></xsl:when>
@@ -2030,7 +2030,7 @@
 									<xsl:apply-templates select="*[local-name()='thead']" mode="process_tbody"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:apply-templates select="node()[not(self::mn:fmt-name) and not(self::mn:note) and not(self::mn:example) and not(self::mn:dl) and not(self::mn:source) and not(self::mn:p)
+									<xsl:apply-templates select="node()[not(self::mn:fmt-name) and not(self::mn:note) and not(self::mn:example) and not(self::mn:dl) and not(self::mn:fmt-source) and not(self::mn:p)
 									and not(self::mn:thead) and not(self::mn:tfoot) and not(self::mn:fmt-footnote-container)]" /> <!-- process all table' elements, except name, header, footer, note, source and dl which render separaterely -->
 								</xsl:otherwise>
 							</xsl:choose>
@@ -2354,7 +2354,7 @@
 	</xsl:template>
 	
 	<!-- SOURCE: ... -->
-	<xsl:template match="*[local-name()='table']/mn:source" priority="2">
+	<xsl:template match="*[local-name()='table']/mn:fmt-source" priority="2">
 		<xsl:call-template name="termsource"/>
 	</xsl:template>
 	
@@ -2520,11 +2520,11 @@
 		<xsl:value-of select="translate(., $zero_width_space, ' ')"/><xsl:text> </xsl:text>
 	</xsl:template>
 	
-	<xsl:template match="mn:termsource" mode="td_text">
-		<xsl:value-of select="*[local-name()='origin']/@citeas"/>
+	<xsl:template match="mn:fmt-termsource" mode="td_text">
+		<xsl:value-of select="mn:fmt-origin/@citeas"/>
 	</xsl:template>
 	
-	<xsl:template match="mn:link" mode="td_text">
+	<xsl:template match="mn:fmt-link" mode="td_text">
 		<xsl:value-of select="@target"/>
 	</xsl:template>
 
@@ -2849,11 +2849,11 @@
 		<xsl:param name="colwidths"/>
 		<xsl:param name="colgroup"/>
 		
-		<xsl:variable name="isNoteOrFnExist" select="../mn:note[not(@type = 'units')] or ../mn:example or ../mn:dl or ..//mn:fn[not(parent::mn:fmt-name)] or ../mn:source or ../mn:p"/>
+		<xsl:variable name="isNoteOrFnExist" select="../mn:note[not(@type = 'units')] or ../mn:example or ../mn:dl or ..//mn:fn[not(parent::mn:fmt-name)] or ../mn:fmt-source or ../mn:p"/>
 		
 		<xsl:variable name="isNoteOrFnExistShowAfterTable">
 			<xsl:if test="$namespace = 'bsi'">
-				 <xsl:value-of select="../mn:note[not(@type = 'units')] or ../mn:source or ../mn:dl or ..//mn:fn"/>
+				 <xsl:value-of select="../mn:note[not(@type = 'units')] or ../mn:fmt-source or ../mn:dl or ..//mn:fn"/>
 			</xsl:if>
 		</xsl:variable>
 		
@@ -2973,14 +2973,14 @@
 									<xsl:if test="$document_type != 'PAS'">
 										<xsl:apply-templates select="../mn:dl" />
 										<xsl:apply-templates select="../mn:note[not(@type = 'units')]" />
-										<xsl:apply-templates select="../mn:source" />
+										<xsl:apply-templates select="../mn:fmt-source" />
 									</xsl:if>
 								</xsl:if>
 								
 								<xsl:choose>
 									<xsl:when test="$namespace = 'gb' or $namespace = 'bsi'"><!-- except gb and bsi  --></xsl:when>
 									<xsl:when test="$namespace = 'jis'">
-										<xsl:apply-templates select="../*[self::mn:p or self::mn:dl or (self::mn:note and not(@type = 'units')) or self::mn:example or self::mn:source]" />
+										<xsl:apply-templates select="../*[self::mn:p or self::mn:dl or (self::mn:note and not(@type = 'units')) or self::mn:example or self::mn:fmt-source]" />
 									</xsl:when>
 									<!-- <xsl:when test="$namespace = 'plateau'">
 										- https://github.com/metanorma/metanorma-plateau/issues/171 : the order is: definition list, text paragraphs, EXAMPLEs, NOTEs, footnotes, then source at the end -
@@ -2997,7 +2997,7 @@
 										<xsl:apply-templates select="../mn:dl" />
 										<xsl:apply-templates select="../mn:note[not(@type = 'units')]" />
 										<xsl:apply-templates select="../mn:example" />
-										<xsl:apply-templates select="../mn:source" />
+										<xsl:apply-templates select="../mn:fmt-source" />
 									</xsl:otherwise>
 								</xsl:choose>
 								
@@ -3038,7 +3038,7 @@
 									<xsl:if test="$document_type = 'PAS'">
 										<xsl:apply-templates select="../mn:dl" />
 										<xsl:apply-templates select="../mn:note[not(@type = 'units')]" />
-										<xsl:apply-templates select="../mn:source" />
+										<xsl:apply-templates select="../mn:fmt-source" />
 									</xsl:if>
 								</xsl:if>
 								
@@ -4487,7 +4487,7 @@
 				</xsl:if> -->
 			
 				<xsl:variable name="words">
-					<xsl:for-each select=".//*[local-name() = 'image' or local-name() = 'stem']">
+					<xsl:for-each select=".//*[local-name() = 'image' or local-name() = 'fmt-stem']">
 						<word>
 							<xsl:copy-of select="."/>
 						</word>
@@ -4546,7 +4546,7 @@
 		</xsl:copy>
 	</xsl:template>
 
-	<xsl:template match="*[local-name() = 'stem' or local-name() = 'image']" mode="td_text_with_formatting"/>
+	<xsl:template match="*[local-name() = 'fmt-stem' or local-name() = 'image']" mode="td_text_with_formatting"/>
 
 	<xsl:template match="*[local-name() = 'keep-together_within-line']/text()" mode="td_text_with_formatting">
 		<xsl:variable name="formatting_tags">
@@ -4581,7 +4581,7 @@
 		</xsl:call-template>
 	</xsl:template>
 
-	<xsl:template match="mn:link[normalize-space() = '']" mode="td_text_with_formatting">
+	<xsl:template match="mn:fmt-link[normalize-space() = '']" mode="td_text_with_formatting">
 		<xsl:variable name="link">
 			<link_updated>
 				<xsl:variable name="target_text">

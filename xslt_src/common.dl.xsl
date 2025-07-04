@@ -732,7 +732,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
-			<xsl:if test="not(.//mn:dt//mn:stem)">
+			<xsl:if test="not(.//mn:dt//mn:fmt-stem)">
 				<xsl:attribute name="margin-left">5mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -749,7 +749,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'">
-			<xsl:if test="not(.//mn:dt//mn:stem)">
+			<xsl:if test="not(.//mn:dt//mn:fmt-stem)">
 				<xsl:attribute name="margin-left">-2.5mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -957,7 +957,7 @@
 				</xsl:attribute>
 				<xsl:choose>
 					<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
-						<xsl:if test="local-name(*[1]) != 'stem'">
+						<xsl:if test="local-name(*[1]) != 'fmt-stem'">
 							<xsl:apply-templates select="following-sibling::mn:dd[1]">
 								<xsl:with-param name="process">true</xsl:with-param>
 							</xsl:apply-templates>
@@ -972,7 +972,7 @@
 			</mn:td>
 		</mn:tr>
 		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
-			<xsl:if test="local-name(*[1]) = 'stem'">
+			<xsl:if test="local-name(*[1]) = 'fmt-stem'">
 				<mn:tr>
 					<mn:td>
 						<xsl:attribute name="id">

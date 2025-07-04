@@ -2226,7 +2226,7 @@
 	
 	<!-- add @to = figure, table, clause -->
 	<!-- add @depth = from  -->
-	<xsl:template match="mn:xref" mode="flatxml">
+	<xsl:template match="mn:fmt-xref" mode="flatxml">
 		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml"/>
 			<xsl:variable name="target" select="@target"/>
@@ -2701,33 +2701,33 @@
 					<!-- term/name -->
 					<xsl:apply-templates select="mn:fmt-name" />
 					<xsl:text> </xsl:text>
-					<xsl:apply-templates select="mn:preferred" />
-					<xsl:for-each select="mn:admitted">
+					<xsl:apply-templates select="mn:fmt-preferred" />
+					<xsl:for-each select="mn:fmt-admitted">
 						<xsl:if test="position() = 1"><xsl:text> (</xsl:text></xsl:if>
 						<xsl:apply-templates />
 						<xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if>
 						<xsl:if test="position() = last()"><xsl:text>)</xsl:text></xsl:if>
 					</xsl:for-each>
 				</fo:block>
-				<xsl:apply-templates select="*[not(self::mn:preferred) and not(self::mn:admitted) and not(self::mn:fmt-name)]"/> <!-- further processing child elements -->
+				<xsl:apply-templates select="*[not(self::mn:fmt-preferred) and not(self::mn:fmt-admitted) and not(self::mn:fmt-name)]"/> <!-- further processing child elements -->
 		</fo:block>
 		
 	</xsl:template>
 	
-	<xsl:template match="mn:preferred" priority="2">
+	<xsl:template match="mn:fmt-preferred" priority="2">
 		<xsl:apply-templates />
 	</xsl:template>
 	
-	<xsl:template match="mn:term/mn:definition" priority="2">
+	<xsl:template match="mn:term/mn:fmt-definition" priority="2">
 		<fo:block xsl:use-attribute-sets="definition-style">
 			<xsl:apply-templates />
 		</fo:block>
 		<!-- change termsource order - show after definition before termnote -->
-		<xsl:for-each select="ancestor::mn:term[1]/mn:termsource">
+		<xsl:for-each select="ancestor::mn:term[1]/mn:fmt-termsource">
 			<xsl:call-template name="termsource"/>
 		</xsl:for-each>
 	</xsl:template>
-	<xsl:template match="mn:term/mn:termsource" priority="2">
+	<xsl:template match="mn:term/mn:fmt-termsource" priority="2">
 		<xsl:call-template name="termsource"/>
 	</xsl:template>
 	
@@ -3057,11 +3057,11 @@
 	</xsl:template>
 	
 	<!-- Figure 1 to Figure&#xA0;<bold>1</bold> -->
-	<xsl:template match="mn:xref[@to = 'figure' or @to = 'table']/text()" priority="2">
+	<xsl:template match="mn:fmt-xref[@to = 'figure' or @to = 'table']/text()" priority="2">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="mn:td/mn:xref/mn:strong"  priority="2">
+	<xsl:template match="mn:td/mn:fmt-xref/mn:strong"  priority="2">
 		<xsl:apply-templates />
 	</xsl:template>
 
@@ -3070,7 +3070,7 @@
 	<!-- End of Index processing -->
 	<!-- =================== -->
 	
-	<xsl:template match="mn:origin" priority="3">
+	<xsl:template match="mn:fmt-origin" priority="3">
 		<xsl:variable name="current_bibitemid" select="@bibitemid"/>
 		<xsl:variable name="bibitemid">
 			<xsl:choose>

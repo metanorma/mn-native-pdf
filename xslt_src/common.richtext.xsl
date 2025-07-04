@@ -171,7 +171,7 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:if test="not(parent::mn:termsource)">
+			<xsl:if test="not(parent::mn:fmt-termsource)">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 				<xsl:attribute name="color">black</xsl:attribute>
 			</xsl:if>

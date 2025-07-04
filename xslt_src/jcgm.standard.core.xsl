@@ -866,7 +866,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:preferred[not(parent::mn:term)]" priority="2">		
+	<xsl:template match="mn:fmt-preferred[not(parent::mn:term)]" priority="2">		
 		<xsl:variable name="levelTerm">
 			<xsl:call-template name="getLevelTermName"/>
 		</xsl:variable>
@@ -900,7 +900,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="mn:definition/mn:p" priority="2">
+	<xsl:template match="mn:fmt-definition/mn:p" priority="2">
 		<fo:block widows="1" orphans="1"><xsl:apply-templates /></fo:block>
 	</xsl:template>
 
@@ -988,7 +988,7 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*[self::mn:td or self::mn:th]/mn:formula/mn:stem" priority="2">
+	<xsl:template match="*[self::mn:td or self::mn:th]/mn:formula/mn:fmt-stem" priority="2">
 		<fo:block>
 			<xsl:if test="ancestor::*[self::mn:td or self::mn:th][1][@align]">
 				<xsl:attribute name="text-align">
@@ -1193,7 +1193,7 @@
 					<xsl:choose>
 						<xsl:when test="ancestor::mn:preface">12pt</xsl:when>
 						<xsl:when test="parent::mn:annex">30pt</xsl:when>
-						<xsl:when test="following-sibling::*[1][self::mn:admitted]">0pt</xsl:when>
+						<xsl:when test="following-sibling::*[1][self::mn:fmt-admitted]">0pt</xsl:when>
 						<!-- <xsl:otherwise>12pt</xsl:otherwise> -->
 						<xsl:otherwise>12pt</xsl:otherwise>
 					</xsl:choose>
@@ -1710,11 +1710,13 @@
 		</xsl:copy>
 	</xsl:template>
 	<xsl:template match="mn:sections//mn:fmt-termsource | mn:annex//mn:fmt-termsource" mode="flatxml_step1">
-		<xsl:element name="termsource" namespace="{$namespace_full}">
+		<!-- <xsl:element name="fmt-termsource" namespace="{$namespace_full}"> -->
+		<xsl:copy>
 			<xsl:apply-templates select="@*" mode="flatxml_step1"/>
 			<xsl:call-template name="setCrossAlignAttributes"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
-		</xsl:element>
+		</xsl:copy>
+		<!-- </xsl:element> -->
 	</xsl:template>
 	
 	<xsl:template match="mn:preferred" mode="flatxml_step1"/>
@@ -1727,7 +1729,7 @@
 		<xsl:apply-templates mode="flatxml_step1"/>
 	</xsl:template>
 	<xsl:template match="mn:fmt-preferred[not(mn:p)] | mn:fmt-preferred/mn:p" mode="flatxml_step1">
-		<xsl:element name="preferred" namespace="{$namespace_full}">
+		<xsl:element name="fmt-preferred" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
@@ -1736,7 +1738,7 @@
 		<xsl:apply-templates mode="flatxml_step1"/>
 	</xsl:template>
 	<xsl:template match="mn:fmt-admitted[not(mn:p)] | mn:fmt-admitted/mn:p" mode="flatxml_step1">
-		<xsl:element name="admitted" namespace="{$namespace_full}">
+		<xsl:element name="fmt-admitted" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
@@ -1745,17 +1747,17 @@
 		<xsl:apply-templates mode="flatxml_step1"/>
 	</xsl:template>
 	<xsl:template match="mn:fmt-deprecates[not(mn:p)] | mn:fmt-deprecates/mn:p" mode="flatxml_step1">
-		<xsl:element name="deprecates" namespace="{$namespace_full}">
+		<xsl:element name="fmt-deprecates" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="mn:fmt-definition" mode="flatxml_step1">
+	<!-- <xsl:template match="mn:fmt-definition" mode="flatxml_step1">
 		<xsl:element name="definition" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="mn:span[
 															@class = 'fmt-caption-label' or 
@@ -1774,7 +1776,8 @@
 	<xsl:template match="mn:stem" mode="flatxml_step1"/>
 	
 	<xsl:template match="mn:fmt-stem[not(.//mn:passthrough) and not(.//*[@linebreak])]" mode="flatxml_step1">
-		<xsl:element name="stem" namespace="{$namespace_full}">
+		<!-- <xsl:element name="stem" namespace="{$namespace_full}"> -->
+		<xsl:copy>
 			<xsl:copy-of select="@*"/>
 			<xsl:choose>
 				<xsl:when test="mn:semx and count(node()) = 1">
@@ -1784,7 +1787,8 @@
 					<xsl:copy-of select="node()"/>
 				</xsl:otherwise>
 			</xsl:choose>
-		</xsl:element>
+		</xsl:copy>
+		<!-- </xsl:element> -->
 	</xsl:template>
 	
 	<xsl:template match="mn:concept"  mode="flatxml_step1"/>
@@ -1795,39 +1799,39 @@
 	
 	<xsl:template match="mn:eref" mode="flatxml_step1"/>
 	
-	<xsl:template match="mn:fmt-eref" mode="flatxml_step1">
+	<!-- <xsl:template match="mn:fmt-eref" mode="flatxml_step1">
 		<xsl:element name="eref" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="mn:xref" mode="flatxml_step1"/>
 	
-	<xsl:template match="mn:fmt-xref" mode="flatxml_step1">
+	<!-- <xsl:template match="mn:fmt-xref" mode="flatxml_step1">
 		<xsl:element name="xref" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template>-->
 	
 	<xsl:template match="mn:link" mode="flatxml_step1"/>
 	
-	<xsl:template match="mn:fmt-link" mode="flatxml_step1">
+	<!-- <xsl:template match="mn:fmt-link" mode="flatxml_step1">
 		<xsl:element name="link" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="mn:origin" mode="flatxml_step1"/>
 	
-	<xsl:template match="mn:fmt-origin" mode="flatxml_step1">
+	<!-- <xsl:template match="mn:fmt-origin" mode="flatxml_step1">
 		<xsl:element name="origin" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="mn:erefstack" mode="flatxml_step1"/>
 	
@@ -1865,13 +1869,13 @@
 	<!-- https://github.com/metanorma/isodoc/issues/687 -->
 	<xsl:template match="mn:source" mode="flatxml_step1"/>
 	
-	<xsl:template match="mn:fmt-source" />
-	<xsl:template match="mn:fmt-source" mode="flatxml_step1">
+	<!-- <xsl:template match="mn:fmt-source" /> -->
+	<!-- <xsl:template match="mn:fmt-source" mode="flatxml_step1">
 		<xsl:element name="source" namespace="{$namespace_full}">
 			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="flatxml_step1"/>
 		</xsl:element>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template name="setCrossAlignAttributes">
 		<xsl:variable name="is_cross_aligned">

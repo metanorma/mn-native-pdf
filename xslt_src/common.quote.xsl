@@ -117,16 +117,16 @@
 					<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
 						<fo:block role="BlockQuote">
 							<xsl:apply-templates select="./node()[not(self::mn:author) and 
-							not(self::mn:source) and 
+							not(self::mn:fmt-source) and 
 							not(self::mn:attribution)]"/> <!-- process all nested nodes, except author and source -->
 						</fo:block>
 					</fo:block-container>
 				</fo:block-container>
-				<xsl:if test="mn:author or mn:source or mn:attribution">
+				<xsl:if test="mn:author or mn:fmt-source or mn:attribution">
 					<fo:block xsl:use-attribute-sets="quote-source-style">
 						<!-- — ISO, ISO 7301:2011, Clause 1 -->
 						<xsl:apply-templates select="mn:author"/>
-						<xsl:apply-templates select="mn:source"/>
+						<xsl:apply-templates select="mn:fmt-source"/>
 						<!-- added for https://github.com/metanorma/isodoc/issues/607 -->
 						<xsl:apply-templates select="mn:attribution/mn:p/node()"/>
 					</fo:block>
@@ -144,7 +144,7 @@
 	</xsl:template>
 
 	
-	<xsl:template match="mn:source">
+	<xsl:template match="mn:fmt-source">
 		<xsl:if test="../mn:author">
 			<xsl:text>, </xsl:text>
 		</xsl:if>

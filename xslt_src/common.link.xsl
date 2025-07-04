@@ -65,7 +65,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="(ancestor::mn:copyright-statement and contains(@target, 'mailto:')) or
-							($layoutVersion = '2024' and ancestor::mn:termsource)">
+							($layoutVersion = '2024' and ancestor::mn:fmt-termsource)">
 				<xsl:attribute name="color">inherit</xsl:attribute>
 				<xsl:attribute name="text-decoration">none</xsl:attribute>
 			</xsl:if>
@@ -79,7 +79,7 @@
 		</xsl:if>
 	</xsl:template> <!-- refine_link-style -->
 
-	<xsl:template match="mn:link" name="link">
+	<xsl:template match="mn:fmt-link" name="link">
 		<xsl:variable name="target_normalized" select="translate(@target, '\', '/')"/>
 		<xsl:variable name="target_attachment_name" select="substring-after($target_normalized, '_attachments/')"/>
 		<xsl:variable name="isLinkToEmbeddedFile" select="normalize-space(@attachment = 'true' and $pdfAttachmentsList//attachment[@filename = current()/@target])"/>

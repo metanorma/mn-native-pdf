@@ -1588,7 +1588,7 @@
 					</fo:list-item-label>
 					<fo:list-item-body start-indent="body-start()">
 						<fo:block>
-							<xsl:apply-templates select="../mn:preferred | ../mn:deprecated | ../mn:deprecates | ../mn:admitted" mode="term_name"/>
+							<xsl:apply-templates select="../mn:fmt-preferred | ../mn:fmt-deprecated | ../mn:fmt-deprecates | ../mn:fmt-admitted" mode="term_name"/>
 						</fo:block>
 					</fo:list-item-body>
 				</fo:list-item>
@@ -1597,17 +1597,17 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:preferred | mn:deprecated | mn:deprecates | mn:admitted" priority="2"/>
+	<xsl:template match="mn:fmt-preferred | mn:fmt-deprecated | mn:fmt-deprecates | mn:fmt-admitted" priority="2"/>
 	
 	<!-- first preferred displays on the same line as term/name -->
-	<xsl:template match="mn:preferred[not(preceding-sibling::mn:preferred)]" mode="term_name" priority="2">
+	<xsl:template match="mn:fmt-preferred[not(preceding-sibling::mn:fmt-preferred)]" mode="term_name" priority="2">
 		<fo:inline font-size="18pt" padding-right="3mm"><xsl:call-template name="setStyle_preferred"/><xsl:apply-templates /></fo:inline>		
 		<fo:inline padding-right="2mm">&#xA0;</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="mn:preferred | mn:deprecated | mn:deprecates | mn:admitted" mode="term_name">
+	<xsl:template match="mn:fmt-preferred | mn:fmt-deprecated | mn:fmt-deprecates | mn:fmt-admitted" mode="term_name">
 		<xsl:choose>
-			<xsl:when test="preceding-sibling::*[self::mn:preferred or self::mn:deprecated or self::mn:deprecates or self::admitted]">
+			<xsl:when test="preceding-sibling::*[self::mn:fmt-preferred or self::mn:fmt-deprecated or self::mn:fmt-deprecates or self::mn:fmt-admitted]">
 				<fo:block space-before="6pt"><xsl:call-template name="displayTerm"/></fo:block> <!-- block wrapper -->
 			</xsl:when>
 			<xsl:otherwise><xsl:call-template name="displayTerm"/></xsl:otherwise>
@@ -1629,7 +1629,7 @@
 				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($kind))"/>
 			</xsl:call-template>			
 		</fo:inline> -->
-		<xsl:if test="following-sibling::*[self::mn:preferred or self::mn:deprecated or self::mn:deprecates or self::mn:admitted]">
+		<xsl:if test="following-sibling::*[self::mn:fmt-preferred or self::mn:fmt-deprecated or self::mn:fmt-deprecates or self::mn:fmt-admitted]">
 			<fo:inline padding-right="2mm">&#xA0;</fo:inline>
 		</xsl:if>
 	</xsl:template>
