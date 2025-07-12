@@ -276,16 +276,11 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="document-master-reference">
-		<xsl:choose>
-			<xsl:when test="$stage-abbreviation != ''">-publishedISO</xsl:when>
-			<xsl:otherwise></xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
+	<xsl:variable name="document-master-reference_addon"><xsl:if test="$stage-abbreviation = ''">-nonpublished</xsl:if></xsl:variable>
 
 	<xsl:variable name="force-page-count-preface">
 		<xsl:choose>
-			<xsl:when test="$document-master-reference != ''">end-on-even</xsl:when>
+			<xsl:when test="$document-master-reference_addon = ''">end-on-even</xsl:when>
 			<xsl:otherwise>no-force</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
@@ -462,7 +457,7 @@
 			<xsl:variable name="marginTopBottom_cover_page_2024">9.9</xsl:variable>
 			
 			<!-- cover page -->
-			<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="cover-page-nonpublished" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="25.4mm" margin-bottom="25.4mm" margin-left="31.7mm" margin-right="31.7mm"/>
 				<fo:region-before region-name="cover-page-header" extent="25.4mm" />
 				<fo:region-after/>
@@ -478,24 +473,24 @@
 				<fo:region-end region-name="cover-right-region" extent="18.5mm"/>
 			</fo:simple-page-master>
 			
-			<fo:simple-page-master master-name="cover-page-publishedISO-odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="cover-page-odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="12.7mm" margin-bottom="75mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
 				<fo:region-before region-name="cover-page-header" extent="12.7mm" />
 				<fo:region-after region-name="cover-page-footer" extent="75mm" display-align="after" />
 				<fo:region-start region-name="cover-left-region" extent="{$marginLeftRight1}mm"/>
 				<fo:region-end region-name="cover-right-region" extent="{$marginLeftRight2}mm"/>
 			</fo:simple-page-master>
-			<fo:simple-page-master master-name="cover-page-publishedISO-even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="cover-page-even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="12.7mm" margin-bottom="75mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
 				<fo:region-before region-name="cover-page-header" extent="12.7mm" />
 				<fo:region-after region-name="cover-page-footer" extent="75mm" display-align="after" />
 				<fo:region-start region-name="cover-left-region" extent="{$marginLeftRight2}mm"/>
 				<fo:region-end region-name="cover-right-region" extent="{$marginLeftRight1}mm"/>
 			</fo:simple-page-master>
-			<fo:page-sequence-master master-name="cover-page-publishedISO">
+			<fo:page-sequence-master master-name="cover-page">
 				<fo:repeatable-page-master-alternatives>
-					<fo:conditional-page-master-reference odd-or-even="even" master-reference="cover-page-publishedISO-even"/>
-					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="cover-page-publishedISO-odd"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="cover-page-even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="cover-page-odd"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
 			
@@ -533,14 +528,14 @@
 
 			<!-- contents pages -->
 			<!-- odd pages -->
-			<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="odd-nonpublished" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="27.4mm" margin-bottom="{$marginBottom}mm" margin-left="19mm" margin-right="19mm"/>
 				<fo:region-before region-name="header-odd" extent="27.4mm"/> <!--   display-align="center" -->
 				<fo:region-after region-name="footer-odd" extent="{$marginBottom - 2}mm" />
 				<fo:region-start region-name="left-region" extent="19mm"/>
 				<fo:region-end region-name="right-region" extent="19mm"/>
 			</fo:simple-page-master>
-			<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+			<fo:simple-page-master master-name="odd-nonpublished-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 				<fo:region-body margin-top="27.4mm" margin-bottom="{$marginBottom}mm" margin-left="19mm" margin-right="19mm"/>
 				<fo:region-before region-name="header-odd" extent="27.4mm"/>
 				<fo:region-after region-name="footer-odd" extent="{$marginBottom - 2}mm"/>
@@ -548,42 +543,42 @@
 				<fo:region-end region-name="right-region" extent="19mm"/>
 			</fo:simple-page-master>
 			<!-- even pages -->
-			<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="even-nonpublished" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="27.4mm" margin-bottom="{$marginBottom}mm" margin-left="19mm" margin-right="19mm"/>
 				<fo:region-before region-name="header-even" extent="27.4mm"/> <!--   display-align="center" -->
 				<fo:region-after region-name="footer-even" extent="{$marginBottom - 2}mm"/>
 				<fo:region-start region-name="left-region" extent="19mm"/>
 				<fo:region-end region-name="right-region" extent="19mm"/>
 			</fo:simple-page-master>
-			<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+			<fo:simple-page-master master-name="even-nonpublished-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 				<fo:region-body margin-top="27.4mm" margin-bottom="{$marginBottom}mm" margin-left="19mm" margin-right="19mm"/>
 				<fo:region-before region-name="header-even" extent="27.4mm"/> <!--   display-align="center" -->
 				<fo:region-after region-name="footer-even" extent="{$marginBottom - 2}mm"/>
 				<fo:region-start region-name="left-region" extent="19mm"/>
 				<fo:region-end region-name="right-region" extent="19mm"/>
 			</fo:simple-page-master>
-			<fo:page-sequence-master master-name="preface">
+			<fo:page-sequence-master master-name="preface-nonpublished">
 				<fo:repeatable-page-master-alternatives>
-					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
-					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-nonpublished"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-nonpublished"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
-			<fo:page-sequence-master master-name="preface-landscape">
+			<fo:page-sequence-master master-name="preface-nonpublished-landscape">
 				<fo:repeatable-page-master-alternatives>
-					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
-					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-nonpublished-landscape"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-nonpublished-landscape"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
-			<fo:page-sequence-master master-name="document">
+			<fo:page-sequence-master master-name="document-nonpublished">
 				<fo:repeatable-page-master-alternatives>
-					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
-					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-nonpublished"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-nonpublished"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
-			<fo:page-sequence-master master-name="document-landscape">
+			<fo:page-sequence-master master-name="document-nonpublished-landscape">
 				<fo:repeatable-page-master-alternatives>
-					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
-					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-nonpublished-landscape"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-nonpublished-landscape"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
 			
@@ -619,7 +614,7 @@
 			</fo:page-sequence-master>
 			
 			<!-- first page -->
-			<fo:simple-page-master master-name="first-publishedISO" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="firstpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
 				<fo:region-before region-name="header-first" extent="{$marginTop}mm">
 					<xsl:if test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))">
@@ -631,7 +626,7 @@
 				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 			</fo:simple-page-master>
 			<!-- odd pages -->
-			<fo:simple-page-master master-name="odd-publishedISO" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
 				<fo:region-before region-name="header-odd" extent="{$marginTop}mm">
 					<xsl:if test="$layoutVersion = '1951'">
@@ -643,7 +638,7 @@
 				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 			</fo:simple-page-master>
 			
-			<fo:simple-page-master master-name="odd-publishedISO-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+			<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
 				<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> <!--   display-align="center" -->
 				<fo:region-after region-name="footer-odd" extent="{$marginBottom - 2}mm"/>
@@ -651,7 +646,7 @@
 				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 			</fo:simple-page-master>
 			<!-- even pages -->
-			<fo:simple-page-master master-name="even-publishedISO" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
 				<fo:region-before region-name="header-even" extent="{$marginTop}mm">
 					<xsl:if test="$layoutVersion = '1951'">
@@ -664,7 +659,7 @@
 			</fo:simple-page-master>
 			
 			<!-- for 1951 layout only -->
-			<fo:simple-page-master master-name="even-last-publishedISO" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="even-last" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
 				<fo:region-before region-name="header-even" extent="{$marginTop}mm" precedence="true"/>
 				<fo:region-after region-name="footer-even-last" extent="{$marginBottom - 2}mm"/>
@@ -672,7 +667,7 @@
 				<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
 			</fo:simple-page-master>
 			
-			<fo:simple-page-master master-name="even-publishedISO-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+			<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
 				<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
 				<fo:region-after region-name="footer-even" extent="{$marginBottom - 2}mm"/>
@@ -686,18 +681,18 @@
 				<fo:region-start region-name="left" extent="{$marginLeftRight2}mm"/>
 				<fo:region-end region-name="right" extent="{$marginLeftRight1}mm"/>
 			</fo:simple-page-master>
-			<fo:page-sequence-master master-name="preface-publishedISO">
+			<fo:page-sequence-master master-name="preface">
 				<fo:repeatable-page-master-alternatives>
 					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank" />
-					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO"/>
-					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
-			<fo:page-sequence-master master-name="preface-publishedISO-landscape">
+			<fo:page-sequence-master master-name="preface-landscape">
 				<fo:repeatable-page-master-alternatives>
 					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank" />
-					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO-landscape"/>
-					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO-landscape"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
 			
@@ -712,47 +707,47 @@
 			<fo:page-sequence-master master-name="preface-1987_TR">
 				<fo:repeatable-page-master-alternatives>
 					<fo:conditional-page-master-reference master-reference="first-preface_1987_TR" page-position="first"/>
-					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO"/>
-					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
 
-			<fo:page-sequence-master master-name="document-publishedISO_first_sequence">
+			<fo:page-sequence-master master-name="document_first_sequence">
 				<fo:repeatable-page-master-alternatives>
 					<xsl:if test="not($layoutVersion = '1951')">
-						<fo:conditional-page-master-reference master-reference="first-publishedISO" page-position="first"/>
+						<fo:conditional-page-master-reference master-reference="firstpage" page-position="first"/>
 					</xsl:if>
 					<xsl:if test="$layoutVersion = '1951'">
-						<fo:conditional-page-master-reference page-position="last" master-reference="even-last-publishedISO"/> <!-- odd-or-even="even" -->
+						<fo:conditional-page-master-reference page-position="last" master-reference="even-last"/> <!-- odd-or-even="even" -->
 					</xsl:if>
-					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO"/>
-					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
 
-			<fo:page-sequence-master master-name="document-publishedISO">
+			<fo:page-sequence-master master-name="document">
 				<fo:repeatable-page-master-alternatives>
 					<xsl:if test="$layoutVersion = '1951'">
-						<fo:conditional-page-master-reference page-position="last" master-reference="even-last-publishedISO"/> <!-- odd-or-even="even" -->
+						<fo:conditional-page-master-reference page-position="last" master-reference="even-last"/> <!-- odd-or-even="even" -->
 					</xsl:if>
-					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO"/>
-					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
 			
-			<fo:page-sequence-master master-name="document-publishedISO-landscape_first_sequence">
+			<fo:page-sequence-master master-name="document-landscape_first_sequence">
 				<fo:repeatable-page-master-alternatives>
 					<xsl:if test="not($layoutVersion = '1951')">
-						<fo:conditional-page-master-reference master-reference="first-publishedISO" page-position="first"/>
+						<fo:conditional-page-master-reference master-reference="firstpage" page-position="first"/>
 					</xsl:if>
-					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO-landscape"/>
-					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO-landscape"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
-			<fo:page-sequence-master master-name="document-publishedISO-landscape">
+			<fo:page-sequence-master master-name="document-landscape">
 				<fo:repeatable-page-master-alternatives>
-					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-publishedISO-landscape"/>
-					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-publishedISO-landscape"/>
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
 			
@@ -907,7 +902,7 @@
 			
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
-						<fo:page-sequence master-reference="document{$document-master-reference}" initial-page-number="auto" force-page-count="no-force">
+						<fo:page-sequence master-reference="document{$document-master-reference_addon}" initial-page-number="auto" force-page-count="no-force">
 							<fo:static-content flow-name="xsl-footnote-separator">
 								<fo:block>
 									<fo:leader leader-pattern="rule" leader-length="30%"/>
@@ -1090,7 +1085,7 @@
 								<fo:page-sequence format="i" force-page-count="no-force">
 								
 									<xsl:attribute name="master-reference">
-										<xsl:value-of select="concat('preface',$document-master-reference)"/>
+										<xsl:value-of select="concat('preface',$document-master-reference_addon)"/>
 										<xsl:call-template name="getPageSequenceOrientation"/>
 									</xsl:attribute>
 								
@@ -1242,14 +1237,14 @@
 						<!-- BODY -->
 						<fo:page-sequence force-page-count="no-force">
 						
-							<!-- Example: msster-reference document-publishedISO-landscape_first_sequence -->
+							<!-- Example: msster-reference document-landscape_first_sequence -->
 							<xsl:attribute name="master-reference">
-								<xsl:value-of select="concat('document',$document-master-reference)"/>
+								<xsl:value-of select="concat('document',$document-master-reference_addon)"/>
 								<!-- <xsl:variable name="previous_orientation" select="preceding-sibling::page_sequence[@orientation][1]/@orientation"/>
 								<xsl:if test="(@orientation = 'landscape' or $previous_orientation = 'landscape') and not(@orientation = 'portrait')">-<xsl:value-of select="@orientation"/></xsl:if> -->
 								<xsl:call-template name="getPageSequenceOrientation"/>
 								<xsl:if test="position() = 1">
-									<xsl:if test="normalize-space($document-master-reference) != ''">_first_sequence</xsl:if>
+									<xsl:if test="normalize-space($document-master-reference_addon) = ''">_first_sequence</xsl:if>
 								</xsl:if>
 							</xsl:attribute>
 							<xsl:if test="position() = 1">
@@ -2234,7 +2229,7 @@
 				</xsl:when> <!-- END: $layoutVersion = '2024' -->
 				
 				<xsl:when test="$stage-abbreviation != ''">
-					<fo:page-sequence master-reference="cover-page-publishedISO" force-page-count="no-force">
+					<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
 						<fo:static-content flow-name="cover-page-footer" font-size="10pt">
 							<xsl:if test="$layoutVersion = '1989'">
 								<xsl:attribute name="font-size">9pt</xsl:attribute>
@@ -2877,7 +2872,7 @@
 					</fo:page-sequence>
 				</xsl:when> <!-- $isPublished = 'true' -->
 				<xsl:otherwise>
-					<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
+					<fo:page-sequence master-reference="cover-page-nonpublished" force-page-count="no-force">
 						<fo:static-content flow-name="cover-page-header" font-size="10pt">
 							<fo:block-container height="24mm" display-align="before">
 								<fo:block padding-top="12.5mm">
