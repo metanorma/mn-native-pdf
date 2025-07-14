@@ -62,7 +62,7 @@
 	<xsl:template name="layout-master-set">
 		<fo:layout-master-set>
 			<!-- cover page -->
-			<fo:simple-page-master master-name="cover" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="0mm" margin-bottom="5mm" margin-left="0mm" margin-right="5mm"/>
 			</fo:simple-page-master>
 			
@@ -385,7 +385,7 @@
 	<xsl:template name="cover-page">
 		<!-- =========================== -->
 		<!-- Cover Page -->
-		<fo:page-sequence master-reference="cover">				
+		<fo:page-sequence master-reference="cover-page">				
 			<fo:flow flow-name="xsl-region-body">
 			
 				<xsl:variable name="isCoverPageImage" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image']/mn:value/mn:image and 1 = 1)"/>
