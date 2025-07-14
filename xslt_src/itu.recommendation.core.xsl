@@ -146,13 +146,13 @@
 				<fo:region-start region-name="left-region" extent="19.2mm"/>
 				<fo:region-end region-name="right-region" extent="19.2mm"/>
 			</fo:simple-page-master>
-			<fo:page-sequence-master master-name="document-preface">
+			<fo:page-sequence-master master-name="preface">
 				<fo:repeatable-page-master-alternatives>
 					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-preface"/>
 					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-preface"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
-			<fo:page-sequence-master master-name="document-preface-landscape">
+			<fo:page-sequence-master master-name="preface-landscape">
 				<fo:repeatable-page-master-alternatives>
 					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-preface-landscape"/>
 					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-preface-landscape"/>
@@ -367,7 +367,7 @@
 						
 						<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 				
-							<fo:page-sequence master-reference="document-preface" format="i" force-page-count="no-force">
+							<fo:page-sequence master-reference="preface" format="i" force-page-count="no-force">
 							
 								<xsl:if test="$doctype = 'resolution'">
 									<xsl:attribute name="font-size">11pt</xsl:attribute>
@@ -378,7 +378,7 @@
 								</xsl:if>
 							
 								<xsl:attribute name="master-reference">
-									<xsl:text>document-preface</xsl:text>
+									<xsl:text>preface</xsl:text>
 									<xsl:call-template name="getPageSequenceOrientation"/>
 								</xsl:attribute>
 							
