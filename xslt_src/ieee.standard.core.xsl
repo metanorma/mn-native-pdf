@@ -143,7 +143,15 @@
 			<!-- IEEE cover page -->
 			
 			<!-- IEEE standard cover page -->
-			<fo:simple-page-master master-name="cover-and-back-page-standard" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="62mm" margin-bottom="25mm" margin-left="21.2mm" margin-right="25mm"/>
+				<fo:region-before region-name="header" extent="62mm" precedence="true"/>
+				<fo:region-after region-name="footer" extent="25mm"/>
+				<fo:region-start region-name="left-region" extent="21.2mm"/>
+				<fo:region-end region-name="right-region" extent="25mm"/>
+			</fo:simple-page-master>
+			<!-- IEEE standard back page -->
+			<fo:simple-page-master master-name="back-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="62mm" margin-bottom="25mm" margin-left="21.2mm" margin-right="25mm"/>
 				<fo:region-before region-name="header" extent="62mm" precedence="true"/>
 				<fo:region-after region-name="footer" extent="25mm"/>
@@ -274,7 +282,7 @@
 			<!-- ======================= -->
 			
 			<!-- Index pages -->
-			<fo:simple-page-master master-name="page-index" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="index" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="2" column-gap="10mm"/>
 				<fo:region-before region-name="header" extent="{$marginTop}mm"/>
 				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
@@ -936,7 +944,7 @@
 								<xsl:attribute name="initial-page-number">1</xsl:attribute>
 							</xsl:if> -->
 							<xsl:if test=".//mn:indexsect">
-								<xsl:attribute name="master-reference">page-index</xsl:attribute>
+								<xsl:attribute name="master-reference">index</xsl:attribute>
 							</xsl:if>
 							
 							<xsl:call-template name="insertFootnoteSeparator"/>
@@ -3438,7 +3446,7 @@
 		<xsl:param name="cutoff_date" />
 		<xsl:param name="expiration_date" />
 		
-		<fo:page-sequence master-reference="cover-and-back-page-standard" force-page-count="no-force">
+		<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
 		
 			<fo:static-content flow-name="header" role="artifact">
 				<fo:block-container position="absolute" left="14mm" top="17.8mm">
@@ -3768,7 +3776,7 @@
 	</xsl:template> <!-- END: back-page -->
 	
 	<xsl:template name="insertBackPage_Standard">
-		<fo:page-sequence master-reference="cover-and-back-page-standard" force-page-count="no-force">
+		<fo:page-sequence master-reference="back-page" force-page-count="no-force">
 		
 			<fo:static-content flow-name="header" role="artifact">
 				<fo:block-container position="absolute" left="14mm" top="17.8mm">
