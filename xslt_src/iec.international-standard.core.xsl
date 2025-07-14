@@ -210,7 +210,7 @@
 				<fo:region-body margin-top="107mm" margin-bottom="0mm" margin-left="18mm" margin-right="0mm"/>
 			</fo:simple-page-master>
 			
-			<fo:simple-page-master master-name="last-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="back-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="107mm" margin-bottom="0mm" margin-left="18mm" margin-right="0mm" background-color="rgb(236, 236, 236)"/>
 				<fo:region-before region-name="header" extent="107mm"/> 
 				<fo:region-start region-name="left-region" extent="18mm"/>
@@ -2061,7 +2061,7 @@
 				</fo:flow>
 			</fo:page-sequence>
 			
-			<fo:page-sequence master-reference="last-page">
+			<fo:page-sequence master-reference="back-page">
 				<fo:flow flow-name="xsl-region-body">
 					<fo:block-container margin-left="20mm" margin-top="19mm">
 						<fo:block-container margin-left="0mm" margin-top="0mm">
