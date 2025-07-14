@@ -751,15 +751,15 @@
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
 			
-			<fo:simple-page-master master-name="last-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="back-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
 				<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
-				<fo:region-after region-name="last-page-footer" extent="{$marginBottom - 2}mm"/>
+				<fo:region-after region-name="back-page-footer" extent="{$marginBottom - 2}mm"/>
 				<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
 				<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
 			</fo:simple-page-master>
 			
-			<fo:simple-page-master master-name="last-page_2024" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="back-page_2024" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="{$marginTopBottom_cover_page_2024}mm" margin-bottom="{$marginTopBottom_cover_page_2024}mm" margin-left="{$marginLeftRight_cover_page_2024}mm" margin-right="{$marginLeftRight_cover_page_2024}mm"/>
 				<fo:region-before region-name="header" extent="{$marginTopBottom_cover_page_2024}mm"/>
 				<fo:region-after region-name="footer" extent="{$marginTopBottom_cover_page_2024}mm"/>
@@ -834,7 +834,7 @@
 				<xsl:with-param name="root-style" select="$root-style"/>
 			</xsl:call-template>
 			
-			<xsl:if test="$layoutVersion = '2024'">
+			<xsl:if test="$layoutVersion = '2024' and /mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'author']/mn:organization/mn:abbreviation = 'ISO'">
 				<xsl:attribute name="color">rgb(35,31,32)</xsl:attribute>
 			</xsl:if>
 			
@@ -5497,9 +5497,9 @@
 	</xsl:template>
 	
 	<xsl:template name="insertLastPage">
-		<fo:page-sequence master-reference="last-page" force-page-count="no-force">
+		<fo:page-sequence master-reference="back-page" force-page-count="no-force">
 			<xsl:call-template name="insertHeaderEven"/>
-			<fo:static-content flow-name="last-page-footer" font-size="10pt">
+			<fo:static-content flow-name="back-page-footer" font-size="10pt">
 				<fo:table table-layout="fixed" width="100%">
 					<fo:table-column column-width="33%"/>
 					<fo:table-column column-width="33%"/>
@@ -5611,7 +5611,7 @@
 	</xsl:template> <!-- END: insertLastPage -->
 	
 	<xsl:template name="insertLastPage_2024">
-		<fo:page-sequence master-reference="last-page_2024" force-page-count="no-force">
+		<fo:page-sequence master-reference="back-page_2024" force-page-count="no-force">
 			<fo:flow flow-name="xsl-region-body">
 				<xsl:variable name="fo_last_page">
 				<fo:table table-layout="fixed" width="100%" margin-bottom="-1mm">
