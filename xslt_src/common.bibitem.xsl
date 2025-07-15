@@ -1034,9 +1034,10 @@
 					</xsl:copy>
 				</xsl:element>
 			</xsl:variable>
-			<xsl:for-each select="xalan:nodeset($note_node)//mn:note">
+			<!-- <xsl:for-each select="xalan:nodeset($note_node)//mn:note">
 				<xsl:call-template name="note"/>
-			</xsl:for-each>
+			</xsl:for-each> -->
+			<xsl:call-template name="note"/>
 		</xsl:if>
 	</xsl:template>
 	
