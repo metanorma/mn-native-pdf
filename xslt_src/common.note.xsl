@@ -176,6 +176,13 @@
 			</xsl:if>
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:if test="parent::mn:references">
+				<xsl:attribute name="margin-top">2pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:if test="ancestor::mn:ul or ancestor::mn:ol and not(ancestor::mn:note[1]/following-sibling::*)">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
