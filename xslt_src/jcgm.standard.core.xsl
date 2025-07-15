@@ -166,10 +166,10 @@
 	<xsl:template name="layout-master-set">
 		<fo:layout-master-set>
 			<!-- cover page -->
-			<fo:simple-page-master master-name="cover-page-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="85mm" margin-bottom="30mm" margin-left="100mm" margin-right="19mm"/>
 				<fo:region-before extent="85mm"/>
-				<fo:region-after  region-name="cover-page-jcgm-footer" extent="30mm"/>
+				<fo:region-after region-name="cover-page-footer" extent="30mm"/>
 				<fo:region-start extent="100mm"/>
 				<fo:region-end extent="19mm"/>
 			</fo:simple-page-master>
@@ -219,14 +219,14 @@
 				<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
 				<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
 			</fo:simple-page-master>
-			<fo:page-sequence-master master-name="document-jcgm">
+			<fo:page-sequence-master master-name="document">
 				<fo:repeatable-page-master-alternatives>
 					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
 					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-jcgm"/>
 					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-jcgm"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
-			<fo:page-sequence-master master-name="document-jcgm-landscape">
+			<fo:page-sequence-master master-name="document-landscape">
 				<fo:repeatable-page-master-alternatives>
 					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
 					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-jcgm-landscape"/>
@@ -279,13 +279,10 @@
 				
 					<xsl:for-each select=".//mn:page_sequence[parent::mn:boilerplate or parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 					
-						<fo:page-sequence master-reference="document-jcgm" format="i">
-				
-							<xsl:attribute name="master-reference">
-								<xsl:text>document-jcgm</xsl:text>
-								<xsl:call-template name="getPageSequenceOrientation"/>
-							</xsl:attribute>
-				
+						<xsl:variable name="page_orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:variable>
+						
+						<fo:page-sequence master-reference="document{$page_orientation}" format="i">
+							
 							<xsl:if test="position() = 1">
 								<xsl:attribute name="initial-page-number">2</xsl:attribute>
 							</xsl:if>
@@ -311,14 +308,11 @@
 						<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
 							
 							<xsl:for-each select=".//mn:page_sequence[not(parent::mn:boilerplate or parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
-					
-								<!-- JCGM BODY -->
-								<fo:page-sequence master-reference="document-jcgm" force-page-count="no-force">
 								
-									<xsl:attribute name="master-reference">
-										<xsl:text>document-jcgm</xsl:text>
-										<xsl:call-template name="getPageSequenceOrientation"/>
-									</xsl:attribute>
+								<xsl:variable name="page_orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:variable>
+								
+								<!-- JCGM BODY -->
+								<fo:page-sequence master-reference="document{$page_orientation}" force-page-count="no-force">
 								
 									<xsl:if test="position() = 1">
 										<xsl:attribute name="initial-page-number">1</xsl:attribute>
@@ -341,7 +335,7 @@
 					</xsl:when> <!-- END: count(//mn:metanorma) = 1 -->
 					
 					<xsl:otherwise> <!-- count(//mn:metanorma) != 1 -->
-						<fo:page-sequence master-reference="document-jcgm" initial-page-number="1" force-page-count="no-force">
+						<fo:page-sequence master-reference="document" initial-page-number="1" force-page-count="no-force">
 							
 							<xsl:call-template name="insertHeaderFooter"/>
 							
@@ -388,8 +382,8 @@
 	</xsl:template>
 
 	<xsl:template name="cover-page">
-		<fo:page-sequence master-reference="cover-page-jcgm" font-family="Arial" font-size="10.5pt" force-page-count="no-force">
-			<fo:static-content flow-name="cover-page-jcgm-footer" font-size="10pt">
+		<fo:page-sequence master-reference="cover-page" font-family="Arial" font-size="10.5pt" force-page-count="no-force">
+			<fo:static-content flow-name="cover-page-footer" font-size="10pt">
 				<fo:block font-size="10pt" border-bottom="0.5pt solid black" padding-bottom="2.5mm"  margin-left="-1mm" space-after="4mm">
 					<!-- Example: First edition  July 2009 -->
 					<xsl:call-template name="printEdition"/>
@@ -1261,7 +1255,7 @@
 	<xsl:template match="mn:indexsect" />
 	<xsl:template match="mn:indexsect" mode="index">
 	
-		<fo:page-sequence master-reference="document-jcgm" force-page-count="no-force">
+		<fo:page-sequence master-reference="document" force-page-count="no-force">
 			<xsl:variable name="header-title">
 				<xsl:choose>
 					<xsl:when test="./mn:title[1]/mn:tab">
