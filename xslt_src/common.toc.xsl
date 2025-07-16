@@ -12,6 +12,86 @@
 											extension-element-prefixes="redirect"
 											version="1.0">
 	
+	<xsl:attribute-set name="toc-style">
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="margin-left">32mm</xsl:attribute>
+			<xsl:attribute name="margin-right">-17mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="toc-title-style">
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="role">H1</xsl:attribute>
+			<xsl:attribute name="font-size">27pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="color">black</xsl:attribute>
+			<xsl:attribute name="margin-left">-15mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">13mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="toc-item-style">
+		<xsl:attribute name="role">TOCI</xsl:attribute>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-size">13pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_toc-item-style">
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:if test="@level = 1">
+				<xsl:if test="preceding-sibling::mnx:item[@display = 'true' and @level = 1]">
+					<xsl:attribute name="space-before">16pt</xsl:attribute>
+				</xsl:if>
+				<xsl:attribute name="space-after">4pt</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<xsl:attribute name="keep-with-next">always</xsl:attribute>
+				<xsl:attribute name="color">black</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@level &gt;= 2">
+				<xsl:attribute name="margin-left"><xsl:value-of select="(@level - 1) * 16.5"/>mm</xsl:attribute>
+				<xsl:attribute name="space-before">4pt</xsl:attribute>
+				<xsl:attribute name="space-after">5pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:attribute-set name="toc-leader-style">
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="leader-pattern">rule</xsl:attribute>
+			<xsl:attribute name="rule-thickness">0.2mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="toc-pagenumber-style">
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="padding-left">2mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<!-- List of Figures, Tables -->
+	<xsl:attribute-set name="toc-listof-title-style">
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-size">13pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="color">black</xsl:attribute>
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="toc-listof-item-style">
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-size">13pt</xsl:attribute>
+			<xsl:attribute name="role">TOCI</xsl:attribute>
+			<xsl:attribute name="margin-left">16.5mm</xsl:attribute>
+			<xsl:attribute name="space-before">4pt</xsl:attribute>
+			<xsl:attribute name="space-after">5pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	
 	<xsl:template name="processPrefaceSectionsDefault_Contents">
 		<xsl:variable name="nodes_preface_">
 			<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition or @type = 'toc')]">
