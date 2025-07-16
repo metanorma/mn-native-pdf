@@ -20,6 +20,11 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="toc-title-style">
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="font-size">26pt</xsl:attribute>		
+			<xsl:attribute name="border-bottom">2pt solid rgb(21, 43, 77)</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>				
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="role">H1</xsl:attribute>
 			<xsl:attribute name="font-size">27pt</xsl:attribute>
@@ -32,12 +37,24 @@
 	
 	<xsl:attribute-set name="toc-item-style">
 		<xsl:attribute name="role">TOCI</xsl:attribute>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="margin-top">8pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+			<xsl:attribute name="text-align-last">justify</xsl:attribute>
+			<xsl:attribute name="role">TOCI</xsl:attribute>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">13pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
 	<xsl:template name="refine_toc-item-style">
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:variable name="margin-left">3.9</xsl:variable>
+			<xsl:attribute name="margin-left"><xsl:value-of select="(@level - 1) * $margin-left"/>mm</xsl:attribute>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:if test="@level = 1">
 				<xsl:if test="preceding-sibling::mnx:item[@display = 'true' and @level = 1]">
@@ -57,6 +74,9 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="toc-leader-style">
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="leader-pattern">dots</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="leader-pattern">rule</xsl:attribute>
 			<xsl:attribute name="rule-thickness">0.2mm</xsl:attribute>
@@ -82,6 +102,12 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="toc-listof-item-style">
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			 <xsl:attribute name="margin-top">8pt</xsl:attribute>
+			 <xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+			 <xsl:attribute name="text-align-last">justify</xsl:attribute>
+			 <xsl:attribute name="role">TOCI</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">13pt</xsl:attribute>
 			<xsl:attribute name="role">TOCI</xsl:attribute>
