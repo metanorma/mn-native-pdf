@@ -13,6 +13,9 @@
 											version="1.0">
 	
 	<xsl:attribute-set name="toc-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="line-height">135%</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
@@ -41,6 +44,15 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="toc-title-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="margin-left">-14mm</xsl:attribute>
+			<xsl:attribute name="font-family">Arial</xsl:attribute>
+			<xsl:attribute name="font-size">16pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align-last">justify</xsl:attribute>
+			<xsl:attribute name="margin-bottom">82pt</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 			<xsl:attribute name="font-size">16pt</xsl:attribute>
@@ -87,6 +99,12 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="toc-title-page-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="text-align">right</xsl:attribute>
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="font-family">Arial</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -102,6 +120,8 @@
 	
 	<xsl:attribute-set name="toc-item-style">
 		<xsl:attribute name="role">TOCI</xsl:attribute>
+		<xsl:if test="$namespace = 'bipm'">
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
@@ -126,6 +146,34 @@
 	</xsl:attribute-set> <!-- END: toc-item-style -->
 	
 	<xsl:template name="refine_toc-item-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:if test="@level = 1">
+				<xsl:attribute name="font-family">Arial</xsl:attribute>
+				<xsl:attribute name="font-size">10pt</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@level &gt;= 2 and not(@parent = 'annex')">
+				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
+			</xsl:if>									
+			<xsl:if test="@level = 2">
+				<xsl:attribute name="margin-left">8mm</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@level &gt; 2">
+				<xsl:attribute name="margin-left">9mm</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@level &gt;= 2 and @parent = 'annex'">
+				<xsl:attribute name="font-family">Arial</xsl:attribute>
+				<xsl:attribute name="font-size">8pt</xsl:attribute>
+				<xsl:attribute name="margin-left">25mm</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@type = 'index'">
+				<xsl:attribute name="font-family">Arial</xsl:attribute>
+				<xsl:attribute name="font-size">10pt</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<xsl:attribute name="space-before">14pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="@level = 1">
 				<xsl:attribute name="margin-top">5pt</xsl:attribute>
@@ -227,6 +275,11 @@
 	</xsl:attribute-set> <!-- END: toc-leader-style -->
 	
 	<xsl:attribute-set name="toc-pagenumber-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="font-family">Arial</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="padding-left">2mm</xsl:attribute>
 		</xsl:if>
@@ -234,6 +287,13 @@
 	
 	<!-- List of Figures, Tables -->
 	<xsl:attribute-set name="toc-listof-title-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="font-family">Arial</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="padding-top">14pt</xsl:attribute>
+			<xsl:attribute name="padding-bottom">6pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="role">TOCI</xsl:attribute>
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
@@ -276,8 +336,11 @@
 	
 	<xsl:attribute-set name="toc-listof-item-style">
 		<xsl:attribute name="role">TOCI</xsl:attribute>
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
+			<xsl:attribute name="margin-left">8mm</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:attribute name="role">TOCI</xsl:attribute>
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 			<xsl:attribute name="margin-left">12mm</xsl:attribute>

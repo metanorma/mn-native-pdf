@@ -1189,9 +1189,9 @@
 					
 					<fo:flow flow-name="xsl-region-body">
 					
-						<fo:block-container margin-left="-14mm"  margin-right="0mm">
-							<fo:block-container margin-left="0mm" margin-right="0mm">							
-								<fo:block font-family="Arial" font-size="16pt" font-weight="bold" text-align-last="justify" margin-bottom="82pt" role="H1">
+						<!-- <fo:block-container margin-left="-14mm"  margin-right="0mm">
+							<fo:block-container margin-left="0mm" margin-right="0mm"> -->
+								<fo:block xsl:use-attribute-sets="toc-title-style">
 									<fo:inline><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:title[@language = $curr_lang and @type='title-main']"/></fo:inline>
 									<fo:inline keep-together.within-line="always">
 										<fo:leader leader-pattern="space"/>
@@ -1200,10 +1200,10 @@
 										</fo:inline>
 									</fo:inline>
 								</fo:block>
-							</fo:block-container>
-						</fo:block-container>
+							<!-- </fo:block-container>
+						</fo:block-container> -->
 					
-						<fo:block-container line-height="135%">
+						<fo:block-container xsl:use-attribute-sets="toc-style">
 							<fo:block role="TOC">
 								<!-- <xsl:copy-of select="$contents"/> -->
 								
@@ -1972,7 +1972,7 @@
 		
 	<xsl:template name="insertContentItem">
 		<xsl:param name="keep-with-next"/>
-		<fo:table-row role="TOCI">
+		<fo:table-row xsl:use-attribute-sets="toc-item-style">
 			<xsl:if test="$keep-with-next = 'true'">
 				<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			</xsl:if>
@@ -1998,33 +1998,8 @@
 					<xsl:attribute name="padding-bottom"><xsl:value-of select="normalize-space($space-after)"/></xsl:attribute>
 				</xsl:if>				
 				<fo:block role="SKIP">
-					<xsl:if test="@level = 1">
-						<xsl:attribute name="font-family">Arial</xsl:attribute>
-						<xsl:attribute name="font-size">10pt</xsl:attribute>
-						<xsl:attribute name="font-weight">bold</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="@level &gt;= 2 and not(@parent = 'annex')">
-						<xsl:attribute name="font-size">10.5pt</xsl:attribute>
-					</xsl:if>									
-					<xsl:if test="@level = 2">
-						<xsl:attribute name="margin-left">8mm</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="@level &gt; 2">
-						<xsl:attribute name="margin-left">9mm</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="@level &gt;= 2 and @parent = 'annex'">
-						<xsl:attribute name="font-family">Arial</xsl:attribute>
-						<xsl:attribute name="font-size">8pt</xsl:attribute>
-						<xsl:attribute name="margin-left">25mm</xsl:attribute>
-						<xsl:attribute name="font-weight">bold</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="@type = 'index'">
-						<xsl:attribute name="font-family">Arial</xsl:attribute>
-						<xsl:attribute name="font-size">10pt</xsl:attribute>
-						<xsl:attribute name="font-weight">bold</xsl:attribute>
-						<xsl:attribute name="space-before">14pt</xsl:attribute>
-					</xsl:if>
 					
+					<xsl:call-template name="refine_toc-item-style"/>
 					
 					<fo:list-block role="SKIP">
 						<xsl:attribute name="provisional-distance-between-starts">
@@ -2038,15 +2013,16 @@
 						</xsl:attribute>
 						
 						<fo:list-item role="SKIP">
+						
 							<fo:list-item-label end-indent="label-end()" role="SKIP">
 								<fo:block role="SKIP">
 									<xsl:if test="@level = 1 or (@level = 2 and not(@parent = 'annex'))">
 										<xsl:value-of select="@section"/>
 										<xsl:if test="normalize-space(@section) != '' and @type = 'annex'">.</xsl:if>
 									</xsl:if>
-									
 								</fo:block>
 							</fo:list-item-label>
+							
 							<fo:list-item-body start-indent="body-start()" role="SKIP">
 								<fo:block role="SKIP">
 									<xsl:if test="@level &gt;= 3">
@@ -2078,7 +2054,7 @@
 				</xsl:if>
 				<fo:block role="SKIP">
 					<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}" role="SKIP">
-						<fo:inline font-family="Arial" font-weight="bold" font-size="10pt" role="SKIP"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}" /></fo:wrapper></fo:inline>
+						<fo:inline xsl:use-attribute-sets="toc-pagenumber-style" role="SKIP"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}" /></fo:wrapper></fo:inline>
 					</fo:basic-link>
 				</fo:block>
 			</fo:table-cell>
@@ -2088,7 +2064,7 @@
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
 		<fo:table-row keep-with-next="always">
-			<fo:table-cell font-family="Arial" font-weight="bold" font-size="10pt" padding-top="14pt" padding-bottom="6pt">
+			<fo:table-cell xsl:use-attribute-sets="toc-listof-title-style">
 				<fo:block role="TOCI">
 					<xsl:value-of select="$title"/>
 				</fo:block>				
@@ -2102,7 +2078,7 @@
 	<xsl:template name="insertListOf_Item">
 		<fo:table-row>
 			<fo:table-cell>
-				<fo:block role="TOCI" font-size="10.5pt" margin-left="8mm">
+				<fo:block xsl:use-attribute-sets="toc-listof-item-style">
 					<fo:list-block provisional-distance-between-starts="8mm">
 						<fo:list-item>
 							<fo:list-item-label end-indent="label-end()">
@@ -2124,7 +2100,7 @@
 					</fo:list-block>
 				</fo:block>				
 			</fo:table-cell>
-			<fo:table-cell text-align="right" font-family="Arial" font-weight="bold" font-size="10pt">
+			<fo:table-cell xsl:use-attribute-sets="toc-pagenumber-style" text-align="right">
 				<fo:block>
 					<fo:basic-link internal-destination="{@id}">
 						<xsl:call-template name="setAltText">
@@ -3516,7 +3492,7 @@
 				<fo:table-column column-width="100%" />
 				<fo:table-header role="SKIP">
 					<fo:table-row font-weight="bold" role="SKIP">
-						<fo:table-cell text-align="right" font-size="9pt" font-family="Arial" role="SKIP">
+						<fo:table-cell xsl:use-attribute-sets="toc-title-page-style">
 							<fo:block role="Caption">
 								<xsl:variable name="page">
 									<xsl:call-template name="getLocalizedString">
