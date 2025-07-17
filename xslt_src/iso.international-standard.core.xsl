@@ -3331,6 +3331,10 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="3">
+		<xsl:call-template name="toc"/>
+	</xsl:template>
+	
+	<xsl:template name="toc">
 		<xsl:choose>
 			<xsl:when test="$isGenerateTableIF = 'true'"/>
 			<xsl:when test="$toc_level = 0"/>
@@ -3338,16 +3342,9 @@
 			<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"></xsl:when>
 			<xsl:otherwise>
 				
-				<fo:block-container font-weight="bold">
+				<fo:block-container xsl:use-attribute-sets="toc-style">
 				
-					<xsl:if test="$layoutVersion = '1987'">
-						<xsl:attribute name="font-size">9pt</xsl:attribute>
-						<xsl:attribute name="font-weight">normal</xsl:attribute>
-					</xsl:if>
-				
-					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
-						<xsl:attribute name="margin-top">62mm</xsl:attribute>
-					</xsl:if>
+					<xsl:call-template name="refine_toc-style"/>
 				
 					<!-- render 'Contents' outside if role="TOC" -->
 					<xsl:apply-templates select="mn:fmt-title"/>
@@ -3378,20 +3375,9 @@
 									</xsl:if>
 								</xsl:if>
 								
-								<fo:block role="TOCI">
-									<xsl:if test="@level = 1">
-										<xsl:attribute name="margin-top">5pt</xsl:attribute>
-									</xsl:if>
-									<xsl:if test="@level = 3">
-										<xsl:attribute name="margin-top">-0.7pt</xsl:attribute>
-									</xsl:if>
-									
-									<xsl:if test="$layoutVersion = '1987'">
-										<xsl:if test="@type = 'section'">
-											<xsl:attribute name="margin-top">12pt</xsl:attribute>
-										</xsl:if>
-										<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-									</xsl:if>
+								<fo:block role="TOCI" xsl:use-attribute-sets="toc-item-style">
+								
+									<xsl:call-template name="refine_toc-item-style"/>
 									
 									<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section} {mnx:title}"> <!-- link at this level needs for PDF structure tags -->
 									
@@ -3464,7 +3450,7 @@
 															<xsl:apply-templates select="mnx:title"/>
 															
 															<fo:inline keep-together.within-line="always" role="SKIP">
-																<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
+																<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
 																<fo:inline role="SKIP">
 																	<xsl:if test="@level = 1 and @type = 'annex'">
 																		<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -3488,24 +3474,24 @@
 							</xsl:for-each>
 							
 							<!-- List of Tables -->
-							<xsl:if test="$contents//mnx:tables/mnx:table">
-								<xsl:call-template name="insertListOf_Title">
-									<xsl:with-param name="title" select="$title-list-tables"/>
-								</xsl:call-template>
-								<xsl:for-each select="$contents//mnx:tables/mnx:table">
-									<xsl:call-template name="insertListOf_Item"/>
-								</xsl:for-each>
-							</xsl:if>
+							<xsl:for-each select="$contents//mnx:tables/mnx:table">
+								<xsl:if test="position() = 1">
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-tables"/>
+									</xsl:call-template>
+								</xsl:if>
+								<xsl:call-template name="insertListOf_Item"/>
+							</xsl:for-each>
 							
 							<!-- List of Figures -->
-							<xsl:if test="$contents//mnx:figures/mnx:figure">
-								<xsl:call-template name="insertListOf_Title">
-									<xsl:with-param name="title" select="$title-list-figures"/>
-								</xsl:call-template>
-								<xsl:for-each select="$contents//mnx:figures/mnx:figure">
-									<xsl:call-template name="insertListOf_Item"/>
-								</xsl:for-each>
-							</xsl:if>
+							<xsl:for-each select="$contents//mnx:figures/mnx:figure">
+								<xsl:if test="position() = 1">
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-figures"/>
+									</xsl:call-template>
+								</xsl:if>
+								<xsl:call-template name="insertListOf_Item"/>
+							</xsl:for-each>
 						
 						</xsl:if>
 					</fo:block>
@@ -3515,11 +3501,11 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
-		<fo:block text-align-last="justify" font-size="16pt" margin-top="10pt" margin-bottom="18pt">
+		<fo:block xsl:use-attribute-sets="toc-title-style">
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="margin-top">0</xsl:attribute>
 			</xsl:if>
-			<fo:inline font-size="16pt" font-weight="bold" role="SKIP">
+			<fo:inline role="SKIP">
 				<xsl:if test="$layoutVersion = '1987'">
 					<xsl:attribute name="font-size">14pt</xsl:attribute>
 				</xsl:if>
@@ -3532,9 +3518,9 @@
 				</xsl:call-template> -->
 				<xsl:apply-templates />
 			</fo:inline>
-			<fo:inline keep-together.within-line="always" role="SKIP">
+			<fo:inline font-weight="normal" keep-together.within-line="always" role="SKIP">
 				<fo:leader leader-pattern="space"/>
-				<fo:inline font-weight="normal" font-size="10pt" role="SKIP">
+				<fo:inline xsl:use-attribute-sets="toc-title-page-style">
 					<xsl:if test="$layoutVersion = '1987'">
 						<xsl:attribute name="font-size">8pt</xsl:attribute>
 					</xsl:if>
@@ -3567,20 +3553,20 @@
 
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
-		<fo:block role="TOCI" margin-top="5pt" keep-with-next="always">
+		<fo:block xsl:use-attribute-sets="toc-listof-title-style">
 			<xsl:value-of select="$title"/>
 		</fo:block>
 	</xsl:template>
 	
 	<xsl:template name="insertListOf_Item">
-		<fo:block role="TOCI" font-weight="normal" text-align-last="justify" margin-left="12mm">
+		<fo:block xsl:use-attribute-sets="toc-listof-item-style">
 			<fo:basic-link internal-destination="{@id}">
 				<xsl:call-template name="setAltText">
 					<xsl:with-param name="value" select="@alt-text"/>
 				</xsl:call-template>
 				<xsl:apply-templates select="." mode="contents"/>
 				<fo:inline keep-together.within-line="always">
-					<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
+					<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
 					<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
 				</fo:inline>
 			</fo:basic-link>

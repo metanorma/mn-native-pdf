@@ -13,6 +13,9 @@
 											version="1.0">
 	
 	<xsl:attribute-set name="toc-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'nist-sp'">
 			<xsl:attribute name="font-family">Arial</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
@@ -24,7 +27,27 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:template name="refine_toc-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1987'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+			</xsl:if>
+		
+			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
+				<xsl:attribute name="margin-top">62mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="toc-title-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="text-align-last">justify</xsl:attribute>
+			<xsl:attribute name="font-size">16pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-top">10pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
@@ -64,6 +87,11 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="toc-title-page-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="text-align">end</xsl:attribute>
@@ -74,6 +102,8 @@
 	
 	<xsl:attribute-set name="toc-item-style">
 		<xsl:attribute name="role">TOCI</xsl:attribute>
+		<xsl:if test="$namespace = 'iso'">
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-sp'">
@@ -96,6 +126,21 @@
 	</xsl:attribute-set> <!-- END: toc-item-style -->
 	
 	<xsl:template name="refine_toc-item-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="@level = 1">
+				<xsl:attribute name="margin-top">5pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@level = 3">
+				<xsl:attribute name="margin-top">-0.7pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$layoutVersion = '1987'">
+				<xsl:if test="@type = 'section'">
+					<xsl:attribute name="margin-top">12pt</xsl:attribute>
+				</xsl:if>
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:if test="@level = 1">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -154,6 +199,11 @@
 	</xsl:template> <!-- END: refine_toc-item-style -->
 	
 	<xsl:attribute-set name="toc-leader-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			 <xsl:attribute name="leader-pattern">dots</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="leader-pattern">dots</xsl:attribute>
 		</xsl:if>
@@ -184,6 +234,11 @@
 	
 	<!-- List of Figures, Tables -->
 	<xsl:attribute-set name="toc-listof-title-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="role">TOCI</xsl:attribute>
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="space-before">36pt</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
@@ -221,6 +276,12 @@
 	
 	<xsl:attribute-set name="toc-listof-item-style">
 		<xsl:attribute name="role">TOCI</xsl:attribute>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="role">TOCI</xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="text-align-last">justify</xsl:attribute>
+			<xsl:attribute name="margin-left">12mm</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
