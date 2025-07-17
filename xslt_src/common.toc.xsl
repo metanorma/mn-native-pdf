@@ -25,6 +25,12 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="toc-title-style">
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="font-size">15pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -57,8 +63,19 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:attribute-set name="toc-title-page-style">
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="text-align">end</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- toc-title-page-style -->
+	
 	<xsl:attribute-set name="toc-item-style">
 		<xsl:attribute name="role">TOCI</xsl:attribute>
+		<xsl:if test="$namespace = 'itu'">
+		</xsl:if>
 		<xsl:if test="$namespace = 'nist-sp'">
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 			<xsl:attribute name="margin-left">12mm</xsl:attribute>
@@ -76,10 +93,18 @@
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">13pt</xsl:attribute>
 		</xsl:if>
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- END: toc-item-style -->
 	
 	<xsl:template name="refine_toc-item-style">
-	
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:if test="@level = 1">
+				<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@level &gt;= 2">
+				<xsl:attribute name="margin-top">4pt</xsl:attribute>
+				<!-- <xsl:attribute name="margin-left">12mm</xsl:attribute> -->
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'nist-sp'">
 			<xsl:if test="@level = 1">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -129,6 +154,9 @@
 	</xsl:template> <!-- END: refine_toc-item-style -->
 	
 	<xsl:attribute-set name="toc-leader-style">
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="leader-pattern">dots</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="leader-pattern">dots</xsl:attribute>
@@ -156,6 +184,12 @@
 	
 	<!-- List of Figures, Tables -->
 	<xsl:attribute-set name="toc-listof-title-style">
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="space-before">36pt</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
@@ -187,8 +221,11 @@
 	
 	<xsl:attribute-set name="toc-listof-item-style">
 		<xsl:attribute name="role">TOCI</xsl:attribute>
-		<xsl:if test="$namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="margin-left">17mm</xsl:attribute>
 			<xsl:attribute name="text-indent">-12mm</xsl:attribute>
 		</xsl:if>
@@ -208,7 +245,6 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">13pt</xsl:attribute>
-			<xsl:attribute name="role">TOCI</xsl:attribute>
 			<xsl:attribute name="margin-left">16.5mm</xsl:attribute>
 			<xsl:attribute name="space-before">4pt</xsl:attribute>
 		</xsl:if>

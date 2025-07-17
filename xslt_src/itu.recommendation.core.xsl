@@ -334,17 +334,8 @@
 						</xsl:choose>
 					</xsl:variable>
 					
-					
-					
-					
-					
-					
-					
-					
 					<xsl:variable name="i18n_keywords"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">keywords</xsl:with-param><xsl:with-param name="bibdata_updated" select="/*/mn:bibdata"/></xsl:call-template></xsl:variable>
-					<xsl:variable name="i18n_page"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Page.sg</xsl:with-param><xsl:with-param name="bibdata_updated" select="/*/mn:bibdata"/></xsl:call-template></xsl:variable>
 					
-				
 					<xsl:call-template name="cover-page">
 						<xsl:with-param name="num" select="$num"/>
 					</xsl:call-template>
@@ -1861,20 +1852,20 @@
 
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
-		<fo:block space-before="36pt" text-align="center" font-weight="bold" keep-with-next="always">
+		<fo:block xsl:use-attribute-sets="toc-listof-title-style">
 			<xsl:value-of select="$title"/>
 		</fo:block>
 	</xsl:template>
 	
 	<xsl:template name="insertListOf_Item">
-		<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
+		<fo:block xsl:use-attribute-sets="toc-listof-item-style">
 			<fo:basic-link internal-destination="{@id}">
 				<xsl:call-template name="setAltText">
 					<xsl:with-param name="value" select="@alt-text"/>
 				</xsl:call-template>
 				<xsl:apply-templates select="." mode="contents"/>
 				<fo:inline keep-together.within-line="always">
-					<fo:leader leader-pattern="dots"/>
+					<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
 					<fo:page-number-citation ref-id="{@id}"/>
 				</fo:inline>
 			</fo:basic-link>
@@ -1897,15 +1888,12 @@
 					<fo:block role="TOC">
 						<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 
-							<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']">									
-								<fo:block role="TOCI">
-									<xsl:if test="@level = 1">
-										<xsl:attribute name="margin-top">6pt</xsl:attribute>
-									</xsl:if>
-									<xsl:if test="@level &gt;= 2">
-										<xsl:attribute name="margin-top">4pt</xsl:attribute>
-										<!-- <xsl:attribute name="margin-left">12mm</xsl:attribute> -->
-									</xsl:if>
+							<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']">
+							
+								<fo:block xsl:use-attribute-sets="toc-item-style">
+									
+									<xsl:call-template name="refine_toc-item-style"/>
+									
 									<fo:list-block provisional-label-separation="3mm">
 										<xsl:attribute name="provisional-distance-between-starts">
 											<xsl:choose>
@@ -1919,7 +1907,7 @@
 														</xsl:choose>
 													</xsl:if>
 													<xsl:if test="@level &gt;= 2"><xsl:value-of select="(@level - 1) * 26"/>mm</xsl:if>
-												</xsl:when> <!--   -->
+												</xsl:when>
 												<xsl:otherwise>0mm</xsl:otherwise>
 											</xsl:choose>
 										</xsl:attribute>
@@ -1939,7 +1927,7 @@
 														<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
 															<xsl:apply-templates select="mnx:title"/>
 															<fo:inline keep-together.within-line="always">
-																<fo:leader leader-pattern="dots"/>
+																<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
 																<fo:page-number-citation ref-id="{@id}"/>
 															</fo:inline>
 														</fo:basic-link>
@@ -1953,34 +1941,30 @@
 							<xsl:variable name="i18n_page"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Page.sg</xsl:with-param><xsl:with-param name="bibdata_updated" select="/*/mn:bibdata"/></xsl:call-template></xsl:variable>
 							
 							<!-- List of Tables -->
-							<xsl:if test="$contents//mnx:tables/mnx:table">
-								<xsl:call-template name="insertListOf_Title">
-									<xsl:with-param name="title" select="$title-list-tables"/>
-								</xsl:call-template>
-								<fo:block margin-top="6pt" text-align="end" font-weight="bold"  keep-with-next="always">
-									<xsl:value-of select="$i18n_page"/>
-								</fo:block>
-								<fo:block-container>
-									<xsl:for-each select="$contents//mnx:tables/mnx:table">
-										<xsl:call-template name="insertListOf_Item"/>
-									</xsl:for-each>
-								</fo:block-container>
-							</xsl:if>
+							<xsl:for-each select="$contents//mnx:tables/mnx:table">
+								<xsl:if test="position() = 1">
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-tables"/>
+									</xsl:call-template>
+									<fo:block xsl:use-attribute-sets="toc-title-page-style">
+										<xsl:value-of select="$i18n_page"/>
+									</fo:block>
+								</xsl:if>
+								<xsl:call-template name="insertListOf_Item"/>
+							</xsl:for-each>
 							
 							<!-- List of Figures -->
-							<xsl:if test="$contents//mnx:figures/mnx:figure">
-								<xsl:call-template name="insertListOf_Title">
-									<xsl:with-param name="title" select="$title-list-figures"/>
-								</xsl:call-template>
-								<fo:block margin-top="6pt" text-align="end" font-weight="bold" keep-with-next="always">
-									<xsl:value-of select="$i18n_page"/>
-								</fo:block>
-								<fo:block-container>
-									<xsl:for-each select="$contents//mnx:figures/mnx:figure">
-										<xsl:call-template name="insertListOf_Item"/>
-									</xsl:for-each>
-								</fo:block-container>
-							</xsl:if>
+							<xsl:for-each select="$contents//mnx:figures/mnx:figure">
+								<xsl:if test="position() = 1">
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-figures"/>
+									</xsl:call-template>
+									<fo:block margin-top="6pt" text-align="end" font-weight="bold" keep-with-next="always">
+										<xsl:value-of select="$i18n_page"/>
+									</fo:block>
+								</xsl:if>
+								<xsl:call-template name="insertListOf_Item"/>
+							</xsl:for-each>
 						
 						</xsl:if>
 					</fo:block>
@@ -1990,15 +1974,11 @@
 	</xsl:template>
 
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="4">
-		<fo:block margin-top="6pt" text-align="center" font-weight="bold" role="H1">
-			<!-- <xsl:call-template name="getLocalizedString">
-				<xsl:with-param name="key">table_of_contents</xsl:with-param>
-			</xsl:call-template> -->
+		<fo:block xsl:use-attribute-sets="toc-title-style">
 			<xsl:apply-templates />
 		</fo:block>
-		<fo:block margin-top="6pt" text-align="end" font-weight="bold">
-			<xsl:variable name="i18n_page"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Page.sg</xsl:with-param><xsl:with-param name="bibdata_updated" select="/*/mn:bibdata"/></xsl:call-template></xsl:variable>
-			<xsl:value-of select="$i18n_page"/>
+		<fo:block  xsl:use-attribute-sets="toc-title-page-style">
+			<xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Page.sg</xsl:with-param><xsl:with-param name="bibdata_updated" select="/*/mn:bibdata"/></xsl:call-template>
 		</fo:block>
 	</xsl:template>
 
