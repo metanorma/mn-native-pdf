@@ -588,32 +588,34 @@
 
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
-		<fo:block font-weight="bold" margin-top="12pt" keep-with-next="always">
+		<fo:block xsl:use-attribute-sets="toc-listof-title-style">
 			<xsl:value-of select="$title"/>
 		</fo:block>
 	</xsl:template>
 	
 	<xsl:template name="insertListOf_Item">
-		<fo:block margin-left="5mm" role="TOCI">
-			<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-				<fo:basic-link internal-destination="{@id}">
-					<xsl:call-template name="setAltText">
-						<xsl:with-param name="value" select="@alt-text"/>
-					</xsl:call-template>
-					<fo:inline>
-						<xsl:apply-templates select="." mode="contents"/>
-					</fo:inline>
-					<xsl:text> </xsl:text>
-					<fo:inline keep-together.within-line="always" font-weight="normal">
-						<fo:leader font-size="9pt" leader-pattern="dots"/>
-						<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-					</fo:inline>
-				</fo:basic-link>
-			</fo:block>
+		<fo:block xsl:use-attribute-sets="toc-listof-item-style">
+			<fo:basic-link internal-destination="{@id}">
+				<xsl:call-template name="setAltText">
+					<xsl:with-param name="value" select="@alt-text"/>
+				</xsl:call-template>
+				<fo:inline>
+					<xsl:apply-templates select="." mode="contents"/>
+				</fo:inline>
+				<xsl:text> </xsl:text>
+				<fo:inline keep-together.within-line="always" font-weight="normal">
+					<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+					<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+				</fo:inline>
+			</fo:basic-link>
 		</fo:block>
 	</xsl:template>
 
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="3">
+		<xsl:call-template name="toc"/>
+	</xsl:template>
+	
+	<xsl:template name="toc">
 		<fo:block-container>
 			<fo:block role="TOC">
 			
@@ -637,24 +639,25 @@
 					</xsl:for-each>	
 					
 					<!-- List of Tables -->
-					<xsl:if test="$contents//mnx:tables/mnx:table">
-						<xsl:call-template name="insertListOf_Title">
-							<xsl:with-param name="title" select="$title-list-tables"/>
-						</xsl:call-template>
-						<xsl:for-each select="$contents//mnx:tables/mnx:table">
-							<xsl:call-template name="insertListOf_Item"/>
-						</xsl:for-each>
-					</xsl:if>
+					<xsl:for-each select="$contents//mnx:tables/mnx:table">
+						<xsl:if test="position() = 1">
+							<xsl:call-template name="insertListOf_Title">
+								<xsl:with-param name="title" select="$title-list-tables"/>
+							</xsl:call-template>
+						</xsl:if>
+						<xsl:call-template name="insertListOf_Item"/>
+					</xsl:for-each>
 					
 					<!-- List of Figures -->
-					<xsl:if test="$contents//mnx:figures/mnx:figure">
+					<xsl:for-each select="$contents//mnx:figures/mnx:figure">
+						<xsl:if test="position() = 1">
 						<xsl:call-template name="insertListOf_Title">
 							<xsl:with-param name="title" select="$title-list-figures"/>
 						</xsl:call-template>
-						<xsl:for-each select="$contents//mnx:figures/mnx:figure">
-							<xsl:call-template name="insertListOf_Item"/>
-						</xsl:for-each>
-					</xsl:if>
+						</xsl:if>
+						<xsl:call-template name="insertListOf_Item"/>
+					</xsl:for-each>
+					
 				</xsl:if>
 			</fo:block>
 		</fo:block-container>
@@ -662,7 +665,7 @@
 
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<fo:block text-align-last="justify">
-			<fo:inline font-size="15pt" font-weight="bold" role="H1">
+			<fo:inline xsl:use-attribute-sets="toc-title-style">
 				<xsl:call-template name="getLocalizedString">
 					<xsl:with-param name="key">table_of_contents</xsl:with-param>
 				</xsl:call-template>
@@ -1033,7 +1036,7 @@
 								</fo:inline>
 								<xsl:text> </xsl:text>
 								<fo:inline keep-together.within-line="always" font-weight="normal">
-									<fo:leader font-size="9pt" leader-pattern="dots"/>
+									<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
 									<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
 								</fo:inline>
 							</fo:basic-link>
