@@ -16,6 +16,11 @@
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="line-height">135%</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="line-height">115%</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
@@ -51,6 +56,11 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 			<xsl:attribute name="margin-bottom">82pt</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="font-size">14pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">15.5pt</xsl:attribute>
 			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
@@ -122,6 +132,8 @@
 		<xsl:attribute name="role">TOCI</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
 		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
@@ -172,6 +184,11 @@
 				<xsl:attribute name="font-size">10pt</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 				<xsl:attribute name="space-before">14pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:if test="@level = 1">
+				<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
@@ -247,6 +264,9 @@
 	</xsl:template> <!-- END: refine_toc-item-style -->
 	
 	<xsl:attribute-set name="toc-leader-style">
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="leader-pattern">dots</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -294,6 +314,11 @@
 			<xsl:attribute name="padding-top">14pt</xsl:attribute>
 			<xsl:attribute name="padding-bottom">6pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="role">TOCI</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="role">TOCI</xsl:attribute>
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
@@ -339,6 +364,10 @@
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 			<xsl:attribute name="margin-left">8mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="provisional-distance-between-starts">8mm</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>

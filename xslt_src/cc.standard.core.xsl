@@ -360,14 +360,14 @@
 
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
-		<fo:block role="TOCI" margin-top="6pt" keep-with-next="always">
+		<fo:block xsl:use-attribute-sets="toc-listof-title-style">
 			<xsl:value-of select="$title"/>
 		</fo:block>
 	</xsl:template>
 	
 	<xsl:template name="insertListOf_Item">
 		<fo:block role="TOCI">
-			<fo:list-block provisional-distance-between-starts="8mm" role="SKIP">
+			<fo:list-block xsl:use-attribute-sets="toc-listof-item-style">
 				<fo:list-item role="SKIP">
 					<fo:list-item-label end-indent="label-end()" role="SKIP">
 						<fo:block></fo:block>
@@ -380,7 +380,7 @@
 								</xsl:call-template>
 								<xsl:apply-templates select="." mode="contents"/>
 								<fo:inline keep-together.within-line="always" role="SKIP">
-									<fo:leader leader-pattern="dots"/>
+									<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
 									<fo:inline role="SKIP"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}"/></fo:wrapper></fo:inline>
 								</fo:inline>
 							</fo:basic-link>
@@ -392,7 +392,7 @@
 	</xsl:template>
 
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="3">
-		<fo:block-container font-weight="bold" line-height="115%" role="SKIP">
+		<fo:block-container xsl:use-attribute-sets="toc-style">
 			<!-- render 'Contents' outside if role="TOC" -->
 			<xsl:apply-templates select="mn:fmt-title"/>
 			<fo:block role="TOC">
@@ -403,10 +403,9 @@
 				
 					<xsl:for-each select="$contents//mnx:item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
 						
-						<fo:block role="TOCI">
-							<xsl:if test="@level = 1">
-								<xsl:attribute name="margin-top">6pt</xsl:attribute>
-							</xsl:if>
+						<fo:block xsl:use-attribute-sets="toc-item-style">
+							
+							<xsl:call-template name="refine_toc-item-style"/>
 							
 							<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section} {mnx:title}"> <!-- link at this level needs for PDF structure tags -->
 								<fo:list-block role="SKIP">
@@ -428,7 +427,7 @@
 												<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}" role="SKIP">													
 													<xsl:apply-templates select="mnx:title"/>
 													<fo:inline keep-together.within-line="always" role="SKIP">
-														<fo:leader leader-pattern="dots"/>
+														<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
 														<fo:inline role="SKIP"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}"/></fo:wrapper></fo:inline>
 													</fo:inline>
 												</fo:basic-link>
@@ -441,37 +440,31 @@
 					</xsl:for-each>
 					
 					<!-- List of Tables -->
-					<xsl:if test="$contents//mnx:tables/mnx:table">
-						<xsl:call-template name="insertListOf_Title">
-							<xsl:with-param name="title" select="$title-list-tables"/>
-						</xsl:call-template>
-						<xsl:for-each select="$contents//mnx:tables/mnx:table">
-							<xsl:call-template name="insertListOf_Item"/>
-						</xsl:for-each>
-					</xsl:if>
+					<xsl:for-each select="$contents//mnx:tables/mnx:table">
+						<xsl:if test="position() = 1">
+							<xsl:call-template name="insertListOf_Title">
+								<xsl:with-param name="title" select="$title-list-tables"/>
+							</xsl:call-template>
+						</xsl:if>
+						<xsl:call-template name="insertListOf_Item"/>
+					</xsl:for-each>
 					
 					<!-- List of Figures -->
-					<xsl:if test="$contents//mnx:figures/mnx:figure">
-						<xsl:call-template name="insertListOf_Title">
-							<xsl:with-param name="title" select="$title-list-figures"/>
-						</xsl:call-template>
-						<xsl:for-each select="$contents//mnx:figures/mnx:figure">
-							<xsl:call-template name="insertListOf_Item"/>
-						</xsl:for-each>
-					</xsl:if>
+					<xsl:for-each select="$contents//mnx:figures/mnx:figure">
+						<xsl:if test="position() = 1">
+							<xsl:call-template name="insertListOf_Title">
+								<xsl:with-param name="title" select="$title-list-figures"/>
+							</xsl:call-template>
+						</xsl:if>
+						<xsl:call-template name="insertListOf_Item"/>
+					</xsl:for-each>
 				</xsl:if>
 			</fo:block>
 		</fo:block-container>
 	</xsl:template>
 
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
-		<!-- <xsl:variable name="title-toc">
-			<xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-toc'"/>
-			</xsl:call-template>
-		</xsl:variable> -->
-		<fo:block font-size="14pt"  margin-bottom="15.5pt" role="H1">
-			<!-- <xsl:value-of select="$title-toc"/> -->
+		<fo:block xsl:use-attribute-sets="toc-title-style">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
