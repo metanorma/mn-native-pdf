@@ -16,6 +16,11 @@
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="line-height">135%</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="line-height">170%</xsl:attribute>
+			<xsl:attribute name="color">rgb(7, 72, 156)</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="line-height">115%</xsl:attribute>
@@ -56,6 +61,13 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 			<xsl:attribute name="margin-bottom">82pt</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="font-size">26pt</xsl:attribute>
+			<xsl:attribute name="color">black</xsl:attribute>
+			<xsl:attribute name="margin-top">2pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">30pt</xsl:attribute>
 			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
@@ -128,9 +140,29 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- toc-title-page-style -->
 	
+	<xsl:attribute-set name="toc-item-block-style">
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="provisional-distance-between-starts">3mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_toc-item-block-style">
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:if test="@level &gt;= 2">
+				<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="(@level - 1) * 10"/>mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="toc-item-style">
 		<xsl:attribute name="role">TOCI</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="text-align-last">justify</xsl:attribute>
+			<xsl:attribute name="margin-left">12mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-12mm</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
 		</xsl:if>
@@ -264,6 +296,9 @@
 	</xsl:template> <!-- END: refine_toc-item-style -->
 	
 	<xsl:attribute-set name="toc-leader-style">
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="leader-pattern">dots</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
 			<xsl:attribute name="leader-pattern">dots</xsl:attribute>
 		</xsl:if>
@@ -314,6 +349,9 @@
 			<xsl:attribute name="padding-top">14pt</xsl:attribute>
 			<xsl:attribute name="padding-bottom">6pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="provisional-distance-between-starts">3mm</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
 			<xsl:attribute name="role">TOCI</xsl:attribute>
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -359,14 +397,31 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:attribute-set name="toc-listof-item-block-style">
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="provisional-distance-between-starts">10mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="provisional-distance-between-starts">8mm</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
 	<xsl:attribute-set name="toc-listof-item-style">
 		<xsl:attribute name="role">TOCI</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 			<xsl:attribute name="margin-left">8mm</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="text-align-last">justify</xsl:attribute>
+			<xsl:attribute name="margin-left">12mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-12mm</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
-			<xsl:attribute name="provisional-distance-between-starts">8mm</xsl:attribute>
+			<xsl:attribute name="text-align-last">justify</xsl:attribute>
+			<xsl:attribute name="margin-left">12mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-12mm</xsl:attribute>
 			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
