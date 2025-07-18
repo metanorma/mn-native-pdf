@@ -367,13 +367,13 @@
 	
 	<xsl:template name="insertListOf_Item">
 		<fo:block role="TOCI">
-			<fo:list-block xsl:use-attribute-sets="toc-listof-item-style">
+			<fo:list-block xsl:use-attribute-sets="toc-listof-item-block-style">
 				<fo:list-item role="SKIP">
 					<fo:list-item-label end-indent="label-end()" role="SKIP">
 						<fo:block></fo:block>
 					</fo:list-item-label>
 					<fo:list-item-body start-indent="body-start()" role="SKIP">
-						<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm" role="SKIP">
+						<fo:block xsl:use-attribute-sets="toc-listof-item-style">
 							<fo:basic-link internal-destination="{@id}">
 								<xsl:call-template name="setAltText">
 									<xsl:with-param name="value" select="@alt-text"/>
@@ -391,7 +391,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="3">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" name="toc" priority="3">
 		<fo:block-container xsl:use-attribute-sets="toc-style">
 			<!-- render 'Contents' outside if role="TOC" -->
 			<xsl:apply-templates select="mn:fmt-title"/>
