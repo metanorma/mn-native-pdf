@@ -385,11 +385,7 @@
 		</xsl:call-template>
 	</xsl:template> <!-- END: processPrefaceAndMainSectionsOGC_items -->
 
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="4">
-		<xsl:call-template name="toc"/>
-	</xsl:template>
-	
-	<xsl:template name="toc">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" name="toc" priority="4">
 		<fo:block break-after="page"/>
 		<fo:block-container line-height="1.08" font-family="Lato">
 		

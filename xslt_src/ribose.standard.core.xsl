@@ -619,11 +619,7 @@
 		<xsl:apply-templates />
 	</xsl:template>
 
-	<xsl:template match="mn:preface/mn:clause[@type = 'toc']" priority="3">
-		<xsl:call-template name="toc"/>
-	</xsl:template>
-
-	<xsl:template name="toc">
+	<xsl:template match="mn:preface/mn:clause[@type = 'toc']" name="toc" priority="3">
 		<fo:block role="TOC">
 			<xsl:apply-templates />	
 			

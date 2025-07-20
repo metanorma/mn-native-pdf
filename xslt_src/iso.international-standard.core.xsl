@@ -3330,11 +3330,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="3">
-		<xsl:call-template name="toc"/>
-	</xsl:template>
-	
-	<xsl:template name="toc">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" name="toc" priority="3">
 		<xsl:choose>
 			<xsl:when test="$isGenerateTableIF = 'true'"/>
 			<xsl:when test="$toc_level = 0"/>

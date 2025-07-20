@@ -886,11 +886,7 @@
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="4">
-		<xsl:call-template name="toc"/>
-	</xsl:template>
-	
-	<xsl:template name="toc">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" name="toc" priority="4">
 		<fo:block color="{$color_text_title}">
 						
 			<xsl:apply-templates />			
