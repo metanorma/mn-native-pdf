@@ -75,6 +75,11 @@
 			<xsl:attribute name="margin-bottom">15.5pt</xsl:attribute>
 			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-bottom">22pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 			<xsl:attribute name="font-size">16pt</xsl:attribute>
@@ -166,6 +171,9 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
 		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="role">SKIP</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
@@ -222,6 +230,40 @@
 			<xsl:if test="@level = 1">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:if test="@level = 1">
+				<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@level = 2">
+				<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@level &gt;= 3">
+				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@type = 'indexsect'">
+				<xsl:attribute name="space-before">16pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@type = 'references'">
+				<xsl:attribute name="space-before">5pt</xsl:attribute>
+			</xsl:if>
+			<xsl:attribute name="margin-left">
+				<xsl:choose>
+					<xsl:when test="mnx:title/@variant-title = 'true'">0mm</xsl:when>
+					<xsl:when test="@level = 2">8mm</xsl:when>
+					<xsl:when test="@level &gt;= 3"><xsl:value-of select="(@level - 2) * 23"/>mm</xsl:when>
+					<xsl:otherwise>0mm</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:attribute name="provisional-distance-between-starts">
+				<xsl:choose>
+					<xsl:when test="@section = ''">0mm</xsl:when>
+					<xsl:when test="@level = 1">8mm</xsl:when>
+					<xsl:when test="@level = 2">15mm</xsl:when>
+					<xsl:when test="@level &gt;= 3"><xsl:value-of select="(@level - 2) * 19"/>mm</xsl:when>
+					<xsl:otherwise>0mm</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="@level = 1">
@@ -300,6 +342,9 @@
 			<xsl:attribute name="leader-pattern">dots</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="leader-pattern">dots</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="leader-pattern">dots</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
@@ -423,6 +468,12 @@
 			<xsl:attribute name="margin-left">12mm</xsl:attribute>
 			<xsl:attribute name="text-indent">-12mm</xsl:attribute>
 			<xsl:attribute name="role">SKIP</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="text-align-last">justify</xsl:attribute>
+			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+			<xsl:attribute name="margin-left">8mm</xsl:attribute>
+			<xsl:attribute name="text-indent">-8mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
