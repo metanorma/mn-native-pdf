@@ -176,6 +176,13 @@
 			</xsl:if>
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:if test="parent::mn:references">
+				<xsl:attribute name="margin-top">2pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:if test="ancestor::mn:ul or ancestor::mn:ol and not(ancestor::mn:note[1]/following-sibling::*)">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
@@ -541,7 +548,10 @@
 		<xsl:choose>
 			<xsl:when test="$namespace = 'jis'">
 				<xsl:call-template name="setNamedDestination"/>
-				<fo:block id="{@id}" xsl:use-attribute-sets="note-style" role="SKIP">
+				<fo:block xsl:use-attribute-sets="note-style" role="SKIP">
+					<xsl:if test="not(parent::mn:references)">
+						<xsl:copy-of select="@id"/>
+					</xsl:if>
 					<xsl:call-template name="setBlockSpanAll"/>
 					
 					<xsl:call-template name="refine_note-style"/>
@@ -577,7 +587,10 @@
 			
 				<xsl:call-template name="setNamedDestination"/>
 				
-				<fo:block-container id="{@id}" xsl:use-attribute-sets="note-style" role="SKIP">
+				<fo:block-container xsl:use-attribute-sets="note-style" role="SKIP">
+					<xsl:if test="not(parent::mn:references)">
+						<xsl:copy-of select="@id"/>
+					</xsl:if>
 				
 					<xsl:call-template name="setBlockSpanAll"/>
 					

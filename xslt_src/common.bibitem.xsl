@@ -743,6 +743,7 @@
 				<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-style">
 					<xsl:apply-templates select="mn:biblio-tag"/>
 					<xsl:apply-templates select="mn:formattedref"/>
+					<xsl:call-template name="processBibliographyNote"/>
 				</fo:block>
 				<!-- END CSA bibitem processing -->
 			</xsl:when>
@@ -787,6 +788,7 @@
 									<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 								</xsl:apply-templates>
 								<xsl:apply-templates select="mn:formattedref"/>
+								<xsl:call-template name="processBibliographyNote"/>
 							</fo:block>
 						</fo:list-item-body>
 					</fo:list-item>
@@ -872,16 +874,6 @@
 							<xsl:call-template name="processBibitem">
 								<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 							</xsl:call-template>
-							<xsl:if test="self::mn:note">
-								<xsl:variable name="note_node">
-									<xsl:copy> <!-- skip @id -->
-										<xsl:copy-of select="node()"/>
-									</xsl:copy>
-								</xsl:variable>
-								<xsl:for-each select="xalan:nodeset($note_node)/*">
-									<xsl:call-template name="note"/>
-								</xsl:for-each>
-							</xsl:if>
 						</fo:block>
 					</fo:list-item-body>
 				</fo:list-item>
@@ -1029,8 +1021,25 @@
 			</xsl:otherwise>
 			
 		</xsl:choose>
+		
+		<xsl:call-template name="processBibliographyNote"/>
 	</xsl:template> <!-- processBibitem (bibitem) -->
 	
+	<xsl:template name="processBibliographyNote">
+		<xsl:if test="self::mn:note">
+			<xsl:variable name="note_node">
+				<xsl:element name="{local-name(..)}" namespace="{$namespace_full}"> <!-- save parent context node for determining styles -->
+					<xsl:copy> <!-- skip @id -->
+						<xsl:copy-of select="node()"/>
+					</xsl:copy>
+				</xsl:element>
+			</xsl:variable>
+			<!-- <xsl:for-each select="xalan:nodeset($note_node)//mn:note">
+				<xsl:call-template name="note"/>
+			</xsl:for-each> -->
+			<xsl:call-template name="note"/>
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:template match="mn:title" mode="title">
 		<fo:inline><xsl:apply-templates /></fo:inline>

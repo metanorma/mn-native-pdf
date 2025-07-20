@@ -98,7 +98,7 @@
 				<fo:region-end region-name="right-region" extent="8.5mm"/>
 			</fo:simple-page-master>
 		
-			<fo:simple-page-master master-name="document_preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="preface" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<xsl:if test="$vertical_layout = 'true'">
 					<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
 					<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
@@ -114,7 +114,16 @@
 				<fo:region-end region-name="right-region" extent="34mm"/>
 			</fo:simple-page-master>
 			
-			<fo:simple-page-master master-name="document_toc" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<!-- preface landscape -->
+			<fo:simple-page-master master-name="preface-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="15mm" margin-bottom="{$cover_page_margin_bottom}mm" margin-left="36mm" margin-right="8.5mm"/>
+				<fo:region-before region-name="header" extent="15mm"/>
+				<fo:region-after region-name="footer" extent="{$cover_page_margin_bottom}mm"/>
+				<fo:region-start region-name="left-region-landscape" extent="36mm"/>
+				<fo:region-end region-name="right-region-landscape" extent="8.5mm"/>
+			</fo:simple-page-master>
+			
+			<fo:simple-page-master master-name="toc" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<xsl:if test="$vertical_layout = 'true'">
 					<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
 					<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
@@ -155,7 +164,7 @@
 				<fo:region-end region-name="right-region-landscape" extent="{$marginLeftRight2}mm"/>
 			</fo:simple-page-master>
 			
-			<fo:simple-page-master master-name="last-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="back-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="179.5mm" margin-bottom="30mm" margin-left="15mm" margin-right="22.7mm"/>
 				<fo:region-before region-name="header" extent="179.5mm"/>
 				<fo:region-after region-name="footer" extent="30mm"/>
@@ -163,7 +172,7 @@
 				<fo:region-end region-name="right-region" extent="22.7mm"/>
 			</fo:simple-page-master>
 			
-			<fo:simple-page-master master-name="last-page_technical-report" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="back-page_technical-report" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="191mm" margin-bottom="41mm" margin-left="26mm" margin-right="26mm"/>
 				<fo:region-before region-name="header" extent="{$marginTop}mm"/>
 				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
@@ -198,13 +207,13 @@
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
 			
-			<!-- <xsl:if test="$debug = 'true'">
+			<xsl:if test="$debug = 'true'">
 				<xsl:message>start contents redirect</xsl:message>
 				<redirect:write file="contents.xml">
 					<xsl:copy-of select="$contents"/>
 				</redirect:write>
 				<xsl:message>end contents redirect</xsl:message>
-			</xsl:if> -->
+			</xsl:if>
 			
 			<xsl:variable name="updated_xml_pres">
 				<xsl:apply-templates mode="update_xml_pres"/>
@@ -273,7 +282,7 @@
 					
 						<xsl:choose>
 							<xsl:when test="mn:clause[@type = 'toc']">
-								<fo:page-sequence master-reference="document_toc" initial-page-number="1" force-page-count="no-force">
+								<fo:page-sequence master-reference="toc" initial-page-number="1" force-page-count="no-force">
 									<xsl:if test="$doctype = 'technical-report'">
 										<xsl:attribute name="master-reference">document</xsl:attribute>
 									</xsl:if>
@@ -295,14 +304,11 @@
 								</fo:page-sequence>
 							</xsl:when>
 							<xsl:otherwise>
+							
+								<xsl:variable name="page_orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:variable>
 					
-								<fo:page-sequence master-reference="document_preface" force-page-count="no-force" font-family="Noto Sans JP" font-size="10pt">
+								<fo:page-sequence master-reference="preface{$page_orientation}" force-page-count="no-force" font-family="Noto Sans JP" font-size="10pt">
 								
-									<xsl:attribute name="master-reference">
-										<xsl:text>document_preface</xsl:text>
-										<xsl:call-template name="getPageSequenceOrientation"/>
-									</xsl:attribute>
-									
 									<fo:static-content flow-name="header" role="artifact" id="__internal_layout__preface_header_{generate-id()}">
 										<!-- grey background  -->
 										<fo:block-container absolute-position="fixed" left="24.2mm" top="40mm" height="231.4mm" width="161mm" background-color="rgb(242,242,242)" id="__internal_layout__preface_header_{$num}_{generate-id()}">
@@ -339,12 +345,9 @@
 					<!-- ========================== -->
 					
 					<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
-						<fo:page-sequence master-reference="document" force-page-count="no-force">
-							
-							<xsl:attribute name="master-reference">
-								<xsl:text>document</xsl:text>
-								<xsl:call-template name="getPageSequenceOrientation"/>
-							</xsl:attribute>
+						<xsl:variable name="page_orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:variable>
+						
+						<fo:page-sequence master-reference="document{$page_orientation}" force-page-count="no-force">
 							
 							<xsl:if test="position() = 1">
 								<xsl:attribute name="initial-page-number">1</xsl:attribute>
@@ -1943,7 +1946,7 @@
 	<xsl:template name="back-page">
 		<xsl:choose>
 			<xsl:when test="$doctype = 'technical-report'">
-				<fo:page-sequence master-reference="last-page_technical-report" force-page-count="no-force">
+				<fo:page-sequence master-reference="back-page_technical-report" force-page-count="no-force">
 					<xsl:call-template name="insertHeaderFooter"/>
 					<fo:flow flow-name="xsl-region-body">
 						<fo:block-container width="100%" height="64mm" border="0.75pt solid black" font-size="14pt" text-align="center" display-align="center" line-height="1.7">
@@ -1965,7 +1968,7 @@
 				</fo:page-sequence>
 			</xsl:when>
 			<xsl:otherwise> <!-- handbook -->
-				<fo:page-sequence master-reference="last-page" force-page-count="no-force">
+				<fo:page-sequence master-reference="back-page" force-page-count="no-force">
 					<fo:flow flow-name="xsl-region-body">
 						<fo:block-container width="100%" border="0.75pt solid black" font-size="10pt" line-height="1.7">
 							<fo:block margin-left="4.5mm" margin-top="1mm">

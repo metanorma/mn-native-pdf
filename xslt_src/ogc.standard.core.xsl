@@ -861,7 +861,7 @@
 
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
-		<fo:block-container margin-left="-18mm" keep-with-next="always" margin-bottom="10pt" space-before="36pt" role="SKIP">
+		<fo:block-container xsl:use-attribute-sets="toc-listof-title-style">
 			<fo:block-container margin-left="0mm" role="H2">								
 				<xsl:call-template name="insertSectionTitle">
 					<xsl:with-param name="title" select="$title"/>
@@ -871,7 +871,7 @@
 	</xsl:template>
 	
 	<xsl:template name="insertListOf_Item">
-		<fo:block text-align-last="justify" margin-top="2pt" role="TOCI">
+		<fo:block xsl:use-attribute-sets="toc-listof-item-style">
 			<fo:basic-link internal-destination="{@id}">
 				<xsl:call-template name="setAltText">
 					<xsl:with-param name="value" select="@alt-text"/>
@@ -879,14 +879,14 @@
 				<!-- <xsl:copy-of select="node()"/> -->
 				<xsl:apply-templates select="." mode="contents"/>
 				<fo:inline keep-together.within-line="always">
-					<fo:leader leader-pattern="dots"/>
+					<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
 					<fo:page-number-citation ref-id="{@id}"/>
 				</fo:inline>
 			</fo:basic-link>
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="4">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" name="toc" priority="4">
 		<fo:block color="{$color_text_title}">
 						
 			<xsl:apply-templates />			
@@ -897,16 +897,9 @@
 					<fo:block role="TOC">
 						<xsl:for-each select="$contents//mnx:item[@display = 'true' and normalize-space(@id) != '']">
 							
-							<fo:block role="TOCI">
-								<xsl:if test="@level = 1">
-									<xsl:attribute name="margin-top">14pt</xsl:attribute>
-								</xsl:if>
-								<xsl:if test="@level = 1 or @parent = 'annex'">										
-									<xsl:attribute name="font-size">12pt</xsl:attribute>
-								</xsl:if>
-								<xsl:if test="@level &gt;= 2"> <!-- and not(@parent = 'annex') -->
-									<xsl:attribute name="font-size">10pt</xsl:attribute>
-								</xsl:if>
+							<fo:block xsl:use-attribute-sets="toc-item-style">
+							
+								<xsl:call-template name="refine_toc-item-style"/>
 								
 								<xsl:choose>
 									<xsl:when test="@level = 1">
@@ -932,7 +925,7 @@
 															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($sectionTitle))"/>															
 															<xsl:text> </xsl:text>															
 															<fo:inline keep-together.within-line="always">
-																<fo:leader leader-pattern="dots"/>																																		
+																<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
 																<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
 															</fo:inline>
 														</fo:basic-link>
@@ -958,7 +951,7 @@
 												<xsl:apply-templates select="mnx:title"/>
 												<xsl:text> </xsl:text>
 												<fo:inline keep-together.within-line="always">
-													<fo:leader leader-pattern="dots"/>
+													<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
 													<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
 												</fo:inline>
 											</fo:basic-link>
@@ -1012,7 +1005,7 @@
 									<xsl:copy-of select="title/node()"/>
 									<xsl:text> </xsl:text>
 									<fo:inline keep-together.within-line="always">
-										<fo:leader leader-pattern="dots"/>
+										<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
 										<fo:page-number-citation ref-id="{@id}"/>
 									</fo:inline>
 								</fo:basic-link>
@@ -1030,22 +1023,17 @@
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<xsl:variable name="title-toc">
 			<xsl:apply-templates />
-			<!-- <xsl:call-template name="getTitle">
-				<xsl:with-param name="name" select="'title-toc'"/>
-			</xsl:call-template> -->
 		</xsl:variable>
 		
-		<fo:block-container margin-left="-18mm">
+		<fo:block-container margin-left="-18mm" margin-bottom="40pt">
 			<fo:block-container margin-left="0mm">
-				<fo:block margin-bottom="40pt">						
-					<fo:block font-size="33pt" margin-bottom="4pt" role="H1">							
-						<xsl:call-template name="addLetterSpacing">
-							<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($title-toc))"/>
-							<xsl:with-param name="letter-spacing" select="1.1"/>
-						</xsl:call-template>
-					</fo:block>
-					<xsl:call-template name="insertBigHorizontalLine"/>
+				<fo:block xsl:use-attribute-sets="toc-title-style">
+					<xsl:call-template name="addLetterSpacing">
+						<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($title-toc))"/>
+						<xsl:with-param name="letter-spacing" select="1.1"/>
+					</xsl:call-template>
 				</fo:block>
+				<xsl:call-template name="insertBigHorizontalLine"/>
 			</fo:block-container>
 		</fo:block-container>
 	</xsl:template>

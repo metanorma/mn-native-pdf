@@ -41,13 +41,7 @@
 	<xsl:variable name="color_text_title" select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-text-title']/mn:value"/>
 	<xsl:variable name="color_table_header_row" select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-background-table-header']/mn:value"/>
 	
-	<xsl:attribute-set name="title-toc-style">
-		<xsl:attribute name="font-size">26pt</xsl:attribute>		
-		<xsl:attribute name="border-bottom">2pt solid rgb(21, 43, 77)</xsl:attribute>
-		<xsl:attribute name="keep-with-next">always</xsl:attribute>				
-	</xsl:attribute-set>
-	
-	<xsl:attribute-set name="title-depth1-style" use-attribute-sets="title-toc-style">		
+	<xsl:attribute-set name="title-depth1-style" use-attribute-sets="toc-title-style">		
 		<xsl:attribute name="font-family">Lato</xsl:attribute>
 		<xsl:attribute name="color">rgb(59, 56, 56)</xsl:attribute>
 		<xsl:attribute name="margin-top">18pt</xsl:attribute>
@@ -391,7 +385,7 @@
 		</xsl:call-template>
 	</xsl:template> <!-- END: processPrefaceAndMainSectionsOGC_items -->
 
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="4">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" name="toc" priority="4">
 		<fo:block break-after="page"/>
 		<fo:block-container line-height="1.08" font-family="Lato">
 		
@@ -403,17 +397,19 @@
 			
 				<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 				
-					<xsl:variable name="margin-left">3.9</xsl:variable>
 					<xsl:for-each select="$contents//mnx:item[@display = 'true']">
-						<fo:block margin-top="8pt" margin-bottom="5pt" margin-left="{(@level - 1) * $margin-left}mm" text-align-last="justify" role="TOCI">
+						<fo:block xsl:use-attribute-sets="toc-item-style">
+							
+							<xsl:call-template name="refine_toc-item-style"/>
+							
 							<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
 								<xsl:if test="@section != ''">
 									<xsl:value-of select="@section"/><xsl:text> </xsl:text>
 								</xsl:if>
 								<xsl:apply-templates select="mnx:title"/>
 								<fo:inline keep-together.within-line="always">
-									<fo:leader leader-pattern="dots"/>
-									<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+									<fo:leader xsl:use-attribute-sets="toc-leader-style" />
+									<fo:inline xsl:use-attribute-sets="toc-pagenumber-style"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
 								</fo:inline>
 							</fo:basic-link>
 						</fo:block>
@@ -422,18 +418,18 @@
 					<xsl:if test="//mn:figure[@id and mn:fmt-name] or //mn:table[@id and mn:fmt-name]">
 						<fo:block font-size="11pt" margin-top="8pt">&#xA0;</fo:block>
 						<fo:block font-size="11pt" margin-top="8pt">&#xA0;</fo:block>							
-						<fo:block xsl:use-attribute-sets="title-toc-style">
+						<fo:block xsl:use-attribute-sets="toc-title-style">
 							<!-- <xsl:text>Table of Figures</xsl:text> -->
 							<xsl:call-template name="getLocalizedString">
 								<xsl:with-param name="key">table_of_figures</xsl:with-param>
 							</xsl:call-template>
 						</fo:block>
 						<xsl:for-each select="//mn:figure[@id and mn:fmt-name] | //mn:table[@id and mn:fmt-name]">
-							<fo:block margin-top="8pt" margin-bottom="5pt" text-align-last="justify" role="TOCI">
+							<fo:block xsl:use-attribute-sets="toc-listof-item-style">
 								<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:fmt-name}">
 									<xsl:apply-templates select="mn:fmt-name" mode="contents"/>										
 									<fo:inline keep-together.within-line="always">
-										<fo:leader leader-pattern="dots"/>
+										<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
 										<fo:page-number-citation ref-id="{@id}"/>
 									</fo:inline>
 								</fo:basic-link>
@@ -446,7 +442,7 @@
 	</xsl:template>
 
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
-		<fo:block xsl:use-attribute-sets="title-toc-style" role="H1">
+		<fo:block xsl:use-attribute-sets="toc-title-style" role="H1">
 			<!-- <xsl:call-template name="getTitle">
 				<xsl:with-param name="name" select="'title-toc'"/>
 			</xsl:call-template> -->
