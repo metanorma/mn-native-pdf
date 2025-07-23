@@ -80,6 +80,14 @@
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-bottom">22pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="font-family">Arial</xsl:attribute>
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 			<xsl:attribute name="font-size">16pt</xsl:attribute>
@@ -347,6 +355,11 @@
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="leader-pattern">dots</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			 <xsl:attribute name="leader-pattern">dots</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -402,6 +415,11 @@
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			 <xsl:attribute name="role">TOCI</xsl:attribute>
+			 <xsl:attribute name="space-before">12pt</xsl:attribute>
+			 <xsl:attribute name="keep-with-next">always</xsl:attribute>keep-with-next="always"
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="role">TOCI</xsl:attribute>
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
@@ -442,6 +460,17 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:template name="refine_toc-listof-title-style">
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:if test="$current_template = 'standard'">
+				<xsl:attribute name="font-size">12pt</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<xsl:attribute name="font-family">Arial</xsl:attribute>
+				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="toc-listof-item-block-style">
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="provisional-distance-between-starts">10mm</xsl:attribute>
@@ -474,6 +503,12 @@
 			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 			<xsl:attribute name="margin-left">8mm</xsl:attribute>
 			<xsl:attribute name="text-indent">-8mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="provisional-distance-between-starts">22.5mm</xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="role">TOCI</xsl:attribute>
+			<xsl:attribute name="margin-left">2mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
