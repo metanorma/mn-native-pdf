@@ -1450,7 +1450,7 @@
 		</xsl:if>
 	</xsl:template>
 									
-	<xsl:template match="mn:preface/mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
+	<xsl:template match="mn:preface/mn:clause[@type = 'toc']/mn:fmt-title" name="toc" priority="3">
 		<xsl:choose>
 			<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 				<!-- no title -->
