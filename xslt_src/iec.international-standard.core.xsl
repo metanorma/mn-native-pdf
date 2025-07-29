@@ -1191,23 +1191,40 @@
 	
 	<xsl:template name="outputLogo">
 		<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-IEC))}" width="18mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/> -->
-		<xsl:for-each select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:abbreviation">
-			<xsl:choose>
-				<xsl:when test=". = 'IEC'">
-					<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-IEC))}" content-height="18mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/> -->
-					<fo:instream-foreign-object content-height="18mm" fox:alt-text="Image Logo IEC">
-						<xsl:copy-of select="$Image-Logo-IEC-SVG"/>
-					</fo:instream-foreign-object>
-				</xsl:when>
-				<xsl:when test=". = 'ISO'">
-					<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-ISO))}" content-height="18mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo ISO"/>
-				</xsl:when>
-				<xsl:otherwise></xsl:otherwise>
-			</xsl:choose>
-			<xsl:if test="position() != last()">
-				<fo:inline padding-right="1mm">&#xA0;</fo:inline>
-			</xsl:if>
-		</xsl:for-each>
+		<xsl:choose>
+			<xsl:when test="(//mn:metanorma)[1]/mn:bibdata/mn:contributor[mn:role/mn:description[not(@lang)] = 'Technical committee']/mn:organization/mn:abbreviation">
+				<!-- https://github.com/metanorma/metanorma-iec/issues/190#issuecomment-3122029444 -->
+				<xsl:for-each select="(//mn:metanorma)[1]/mn:bibdata/mn:contributor[mn:role/mn:description[not(@lang)] = 'Technical committee']/mn:organization/mn:abbreviation">
+					<xsl:call-template name="insertLogoImage"/>
+					<xsl:if test="position() != last()">
+						<fo:inline padding-right="1mm">&#xA0;</fo:inline>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:for-each select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:abbreviation">
+					<xsl:call-template name="insertLogoImage"/>
+						<xsl:if test="position() != last()">
+							<fo:inline padding-right="1mm">&#xA0;</fo:inline>
+						</xsl:if>
+				</xsl:for-each>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="insertLogoImage">
+		<xsl:choose>
+			<xsl:when test=". = 'IEC'">
+				<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-IEC))}" content-height="18mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/> -->
+				<fo:instream-foreign-object content-height="18mm" fox:alt-text="Image Logo IEC">
+					<xsl:copy-of select="$Image-Logo-IEC-SVG"/>
+				</fo:instream-foreign-object>
+			</xsl:when>
+			<xsl:when test=". = 'ISO'">
+				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-ISO))}" content-height="18mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo ISO"/>
+			</xsl:when>
+			<xsl:otherwise></xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template name="insertTOCpages">
