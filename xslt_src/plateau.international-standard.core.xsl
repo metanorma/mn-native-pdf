@@ -485,7 +485,7 @@
 	</xsl:template> <!-- END: processPrefaceAndMainSectionsPlateau_items -->
 	
 	
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="4">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" name="toc" priority="4">
 		<xsl:param name="num"/>
 		<xsl:if test="$doctype = 'technical-report'">
 			<fo:block font-size="16pt" margin-top="5mm"><xsl:value-of select="$i18n_table_of_contents"/></fo:block>
@@ -494,11 +494,10 @@
 		<xsl:apply-templates />
 		<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 			<!-- fill ToC -->
-			<fo:block role="TOC" font-weight="bold">
-				<xsl:if test="$doctype = 'technical-report'">
-					<xsl:attribute name="font-weight">normal</xsl:attribute>
-					<xsl:attribute name="line-height">1.2</xsl:attribute>
-				</xsl:if>
+			<fo:block role="TOC" xsl:use-attribute-sets="toc-style">
+			
+				<xsl:call-template name="refine_toc-style"/>
+				
 				<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']">
 					<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
 						<fo:block role="TOCI">
@@ -592,7 +591,7 @@
 		
 	<xsl:template name="insertTocItem">
 		<xsl:param name="printSection">false</xsl:param>
-		<fo:block text-align-last="justify" role="TOCI">
+		<fo:block xsl:use-attribute-sets="toc-item-style">
 			<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
 				<xsl:if test="$printSection = 'true' and @section != ''">
 					<xsl:value-of select="@section"/>
@@ -600,7 +599,7 @@
 				</xsl:if>
 				<fo:inline><xsl:apply-templates select="mnx:title" /><xsl:text> </xsl:text></fo:inline>
 				<fo:inline keep-together.within-line="always">
-					<fo:leader leader-pattern="dots"/>
+					<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
 					<fo:inline>
 						<xsl:if test="$doctype = 'technical-report'"><xsl:text>- </xsl:text></xsl:if>
 						<fo:page-number-citation ref-id="{@id}"/>

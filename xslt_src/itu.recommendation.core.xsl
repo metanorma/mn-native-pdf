@@ -1872,7 +1872,7 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" priority="4">
+	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" name="toc" priority="4">
 		<xsl:param name="process">false</xsl:param>
 		<xsl:param name="num"/>
 		

@@ -1272,7 +1272,7 @@
 													<xsl:apply-templates select="mnx:title"/>
 												
 													<fo:inline keep-together.within-line="always">
-														<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
+														<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
 														<fo:inline>
 															<fo:page-number-citation ref-id="{@id}"/>
 														</fo:inline>
@@ -1284,24 +1284,24 @@
 									</xsl:for-each>
 									
 									<!-- List of Tables -->
-									<xsl:if test="$contents//mnx:tables/mnx:table">
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="$title-list-tables"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//mnx:tables/mnx:table">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
+									<xsl:for-each select="$contents//mnx:tables/mnx:table">
+										<xsl:if test="position() = 1">
+											<xsl:call-template name="insertListOf_Title">
+												<xsl:with-param name="title" select="$title-list-tables"/>
+											</xsl:call-template>
+										</xsl:if>
+										<xsl:call-template name="insertListOf_Item"/>
+									</xsl:for-each>
 									
 									<!-- List of Figures -->
-									<xsl:if test="$contents//mnx:figures/mnx:figure">
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="$title-list-figures"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//mnx:figures/mnx:figure">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
+									<xsl:for-each select="$contents//mnx:figures/mnx:figure">
+										<xsl:if test="position() = 1">
+											<xsl:call-template name="insertListOf_Title">
+												<xsl:with-param name="title" select="$title-list-figures"/>
+											</xsl:call-template>
+										</xsl:if>
+										<xsl:call-template name="insertListOf_Item"/>
+									</xsl:for-each>
 							
 								</xsl:when> <!-- $stage = 'draft' -->
 								
@@ -1341,7 +1341,7 @@
 															<xsl:apply-templates select="mnx:title"/>
 														
 															<fo:inline keep-together.within-line="always">
-																<fo:leader font-size="9pt" font-weight="normal" leader-pattern="dots"/>
+																<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
 																<fo:inline>
 																	<fo:page-number-citation ref-id="{@id}"/>
 																</fo:inline>
@@ -1356,27 +1356,26 @@
 									</xsl:for-each>
 									
 									<!-- List of Figures -->
-									<xsl:if test="$contents//mnx:figures/mnx:figure">
-										<fo:block break-after="page"/>
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="'Figures'"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//mnx:figures/mnx:figure">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
+									<xsl:for-each select="$contents//mnx:figures/mnx:figure">
+										<xsl:if test="position() = 1">
+											<fo:block break-after="page"/>
+											<xsl:call-template name="insertListOf_Title">
+												<xsl:with-param name="title" select="'Figures'"/>
+											</xsl:call-template>
+										</xsl:if>
+										<xsl:call-template name="insertListOf_Item"/>
+									</xsl:for-each>
 									
 									<!-- List of Tables -->
-									<xsl:if test="$contents//mnx:tables/mnx:table">
-										<fo:block break-after="page"/>
-										<xsl:call-template name="insertListOf_Title">
-											<xsl:with-param name="title" select="'Tables'"/>
-										</xsl:call-template>
-										<xsl:for-each select="$contents//mnx:tables/mnx:table">
-											<xsl:call-template name="insertListOf_Item"/>
-										</xsl:for-each>
-									</xsl:if>
-									
+									<xsl:for-each select="$contents//mnx:tables/mnx:table">
+										<xsl:if test="position() = 1">
+											<fo:block break-after="page"/>
+												<xsl:call-template name="insertListOf_Title">
+													<xsl:with-param name="title" select="'Tables'"/>
+												</xsl:call-template>
+										</xsl:if>
+										<xsl:call-template name="insertListOf_Item"/>
+									</xsl:for-each>
 									
 								</xsl:when> <!-- $stage = 'published' or 'approved' -->
 							</xsl:choose>
@@ -1451,24 +1450,18 @@
 		</xsl:if>
 	</xsl:template>
 									
-	<xsl:template match="mn:preface/mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
+	<xsl:template match="mn:preface/mn:clause[@type = 'toc']/mn:fmt-title" name="toc" priority="3">
 		<xsl:choose>
-			<xsl:when test="$current_template = 'standard' or $current_template = 'draft'">
-				<fo:block font-family="Arial" font-size="12pt" role="H1" font-weight="bold" margin-top="12pt" margin-bottom="24pt">
-					<xsl:if test="$stage = 'published' or $stage = 'approved'">
+			<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
+				<!-- no title -->
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block xsl:use-attribute-sets="toc-title-style">
+					<xsl:if test="($current_template = 'standard' or $current_template = 'draft') and
+							($stage = 'published' or $stage = 'approved')">
 						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 					</xsl:if>
 					<!-- Contents -->
-					<!-- <xsl:call-template name="getLocalizedString">
-						<xsl:with-param name="key">table_of_contents</xsl:with-param>
-					</xsl:call-template> -->
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:when>
-			<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:block font-family="Arial" font-size="12pt" role="H1" font-weight="bold" margin-top="12pt" margin-bottom="24pt">
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>
@@ -2016,13 +2009,10 @@
 	
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
-		<fo:block role="TOCI" space-before="12pt" keep-with-next="always">
-			<xsl:if test="$current_template = 'standard'">
-				<xsl:attribute name="font-size">12pt</xsl:attribute>
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
-				<xsl:attribute name="font-family">Arial</xsl:attribute>
-				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-			</xsl:if>
+		<fo:block xsl:use-attribute-sets="toc-listof-title-style">
+		
+			<xsl:call-template name="refine_toc-listof-title-style"/>
+			
 			<xsl:value-of select="$title"/>
 		</fo:block>
 	</xsl:template>
@@ -2031,8 +2021,7 @@
 	
 		<xsl:choose>
 			<xsl:when test="$current_template = 'standard'">
-				<fo:list-block provisional-distance-between-starts="22.5mm" font-weight="normal" role="TOCI" margin-left="2mm">
-					
+				<fo:list-block xsl:use-attribute-sets="toc-listof-item-style">
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block>
@@ -2057,8 +2046,8 @@
 						</fo:list-item-body>
 					</fo:list-item>
 				</fo:list-block>
-			
 			</xsl:when>
+			
 			<xsl:otherwise>
 				<fo:block role="TOCI" font-weight="normal" text-align-last="justify" margin-left="12mm">
 					<fo:basic-link internal-destination="{@id}">

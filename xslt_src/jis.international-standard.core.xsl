@@ -1070,18 +1070,14 @@
 		<fo:inline><xsl:if test="not($vertical_layout = 'true')"><xsl:attribute name="font-family">IPAexGothic</xsl:attribute></xsl:if>：</fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="mn:preface/mn:clause[@type = 'toc']" priority="4">
+	<xsl:template match="mn:preface/mn:clause[@type = 'toc']" name="toc" priority="4">
 		<xsl:param name="num"/>
 		<xsl:apply-templates />
 		<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 			<!-- fill ToC -->
 			<fo:block role="TOC">
-				<xsl:if test="not($vertical_layout = 'true') and not($lang = 'en')">
-					<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="$vertical_layout = 'true'">
-					<xsl:attribute name="font-size">10.5pt</xsl:attribute>
-				</xsl:if>
+			
+				<xsl:call-template name="refine_toc-style"/>
 			
 				<xsl:if test="$updated_contents_xml/mnx:doc[@num = $num]//mnx:item[@display = 'true']">
 					<xsl:for-each select="$updated_contents_xml/mnx:doc[@num = $num]//mnx:item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
@@ -1150,18 +1146,11 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
-		<fo:block text-align="center" font-size="14pt" margin-top="8.5mm">
-			<xsl:if test="not($vertical_layout = 'true')">
-				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
-			</xsl:if>
+		<fo:block xsl:use-attribute-sets="toc-title-style">
+		
+			<xsl:call-template name="refine_toc-title-style"/>
+		
 			<xsl:if test="$vertical_layout = 'true'">
-				<xsl:attribute name="text-align">left</xsl:attribute>
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
-				<!-- <xsl:attribute name="margin-top">26mm</xsl:attribute> -->
-				<!-- Contents -->
-				<!-- <xsl:call-template name="getLocalizedString">
-					<xsl:with-param name="key">table_of_contents</xsl:with-param>
-				</xsl:call-template> -->
 				<fo:marker marker-class-name="section_title">
 					<xsl:variable name="section_title_"><xsl:apply-templates/></xsl:variable>
 					<xsl:variable name="section_title" select="translate($section_title_, '　', '')"/>
@@ -1172,16 +1161,10 @@
 			</xsl:if>
 			<xsl:apply-templates/>
 		</fo:block>
-		<fo:block text-align="right" margin-top="10mm">
-			<xsl:if test="not($vertical_layout = 'true')">
-				<xsl:attribute name="font-family">IPAexMincho</xsl:attribute>
-				<xsl:attribute name="font-size">8pt</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$vertical_layout = 'true'">
-				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
-				<xsl:attribute name="margin-top">1mm</xsl:attribute>
-				<xsl:attribute name="margin-bottom">6mm</xsl:attribute>
-			</xsl:if>
+		<fo:block xsl:use-attribute-sets="toc-title-page-style">
+			
+			<xsl:call-template name="refine_toc-title-page-style"/>
+			
 			<!-- Page -->
 			<xsl:call-template name="getLocalizedString">
 				<xsl:with-param name="key">locality.page</xsl:with-param>
@@ -1191,7 +1174,7 @@
 	
 	
 	<xsl:template name="insertTocItem">
-		<fo:block text-align-last="justify" role="SKIP">
+		<fo:block xsl:use-attribute-sets="toc-item-style">
 			<fo:basic-link internal-destination="{@id}" fox:alt-text="{normalize-space(mnx:title)}">
 				<fo:inline>
 					<xsl:if test="$vertical_layout = 'true'">
@@ -1200,7 +1183,7 @@
 					<xsl:apply-templates select="mnx:title" />
 				</fo:inline>
 				<fo:inline keep-together.within-line="always">
-					<fo:leader leader-pattern="dots">
+					<fo:leader xsl:use-attribute-sets="toc-leader-style">
 						<xsl:if test="$vertical_layout = 'true'">
 							<xsl:attribute name="leader-pattern">rule</xsl:attribute>
 							<xsl:attribute name="rule-thickness">0.5pt</xsl:attribute>

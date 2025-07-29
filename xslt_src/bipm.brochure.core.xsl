@@ -454,7 +454,9 @@
 									</redirect:write>
 								</xsl:if>
 								
-								<xsl:message>START flatxml_</xsl:message>
+								<xsl:if test="$debug = 'true'">
+									<xsl:message>START flatxml_</xsl:message>
+								</xsl:if>
 								<xsl:variable name="startTime2" select="java:getTime(java:java.util.Date.new())"/>
 								<xsl:variable name="flatxml__">
 									<!-- <xsl:apply-templates select="xalan:nodeset($title_eref)" mode="flatxml"/> -->
@@ -473,16 +475,44 @@
 									<xsl:with-param name="filepath" select="$updated_flatxml_filename"/>
 								</xsl:call-template>
 								<xsl:variable name="endTime2" select="java:getTime(java:java.util.Date.new())"/>
+								<xsl:if test="$debug = 'true'">
+									<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime2 - $startTime2"/> msec.</xsl:message>
+									<xsl:message>END flatxml_</xsl:message>
+								</xsl:if>
 								
+								<xsl:if test="$debug = 'true'">
+									<redirect:write file="flatxml.xml">
+										<xsl:copy-of select="xalan:nodeset($flatxml_)"/>
+									</redirect:write>
+								</xsl:if>
+								
+								<xsl:if test="$debug = 'true'">
+									<xsl:message>START flatxml</xsl:message>
+								</xsl:if>
+								<xsl:variable name="startTime3" select="java:getTime(java:java.util.Date.new())"/>
 								<xsl:variable name="flatxml">
 									<xsl:apply-templates select="xalan:nodeset($flatxml_)" mode="pagebreak"/>
 								</xsl:variable>
+								<xsl:variable name="endTime3" select="java:getTime(java:java.util.Date.new())"/>
+								<xsl:if test="$debug = 'true'">
+									<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime3 - $startTime3"/> msec.</xsl:message>
+									<xsl:message>END flatxml</xsl:message>
+								</xsl:if>
 								
 								<!-- flatxml=<xsl:copy-of select="$flatxml"/> -->
 								
+								<xsl:if test="$debug = 'true'">
+									<xsl:message>START bipm-standard</xsl:message>
+								</xsl:if>
+								<xsl:variable name="startTime4" select="java:getTime(java:java.util.Date.new())"/>
 								<xsl:apply-templates select="xalan:nodeset($flatxml)/mn:metanorma" mode="bipm-standard">
 									<xsl:with-param name="curr_docnum" select="$num"/>
 								</xsl:apply-templates>
+								<xsl:variable name="endTime4" select="java:getTime(java:java.util.Date.new())"/>
+								<xsl:if test="$debug = 'true'">
+									<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime4 - $startTime4"/> msec.</xsl:message>
+									<xsl:message>END bipm-standard</xsl:message>
+								</xsl:if>
 								
 							</xsl:for-each>
 						</xsl:when>
@@ -1189,75 +1219,11 @@
 					
 					<fo:flow flow-name="xsl-region-body">
 					
-						<!-- <fo:block-container margin-left="-14mm"  margin-right="0mm">
-							<fo:block-container margin-left="0mm" margin-right="0mm"> -->
-								<fo:block xsl:use-attribute-sets="toc-title-style">
-									<fo:inline><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:title[@language = $curr_lang and @type='title-main']"/></fo:inline>
-									<fo:inline keep-together.within-line="always">
-										<fo:leader leader-pattern="space"/>
-										<fo:inline>
-											<xsl:value-of select="$title-toc"/>
-										</fo:inline>
-									</fo:inline>
-								</fo:block>
-							<!-- </fo:block-container>
-						</fo:block-container> -->
-					
-						<fo:block-container xsl:use-attribute-sets="toc-style">
-							<fo:block role="TOC">
-								<!-- <xsl:copy-of select="$contents"/> -->
-								
-								<xsl:if test="$contents/mnx:doc[@id = $docid]//mnx:item[@display='true']">
-									<fo:table table-layout="fixed" width="100%" id="__internal_layout__toc_{generate-id()}" role="SKIP">
-										<fo:table-column column-width="127mm"/>
-										<fo:table-column column-width="12mm"/>
-										<fo:table-body role="SKIP">											
-											<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:item[@display='true' and not(@type = 'annex') and not(@type = 'index') and not(@parent = 'annex')]">
-												<xsl:call-template name="insertContentItem"/>								
-											</xsl:for-each>
-											<!-- insert page break between main sections and appendixes in ToC -->
-											<!-- <xsl:if test="$doctype ='brochure'">
-												<fo:table-row>
-													<fo:table-cell number-columns-spanned="2">
-														<fo:block break-after="page"/>
-													</fo:table-cell>
-												</fo:table-row>
-											</xsl:if> -->
-											<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:item[@display='true' and (@type = 'annex')]"> <!--  or (@level = 2 and @parent = 'annex') -->
-												<xsl:call-template name="insertContentItem">
-													<xsl:with-param name="keep-with-next">true</xsl:with-param>
-												</xsl:call-template>
-											</xsl:for-each>
-											<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:item[@display='true' and (@type = 'index')]">
-												<xsl:call-template name="insertContentItem"/>								
-											</xsl:for-each>
-											
-											<!-- List of Tables -->
-											<xsl:if test="$contents/mnx:doc[@id = $docid]//mnx:tables/mnx:table">
-												<xsl:call-template name="insertListOf_Title">
-													<xsl:with-param name="title" select="$title-list-tables"/>
-												</xsl:call-template>
-												<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:tables/mnx:table">
-													<xsl:call-template name="insertListOf_Item"/>
-												</xsl:for-each>
-											</xsl:if>
-											
-											<!-- List of Figures -->
-											<xsl:if test="$contents/doc[@id = $docid]//mnx:figures/mnx:figure">
-												<xsl:call-template name="insertListOf_Title">
-													<xsl:with-param name="title" select="$title-list-figures"/>
-												</xsl:call-template>
-												<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:figures/mnx:figure">
-													<xsl:call-template name="insertListOf_Item"/>
-												</xsl:for-each>
-											</xsl:if>
-											
-										</fo:table-body>
-									</fo:table>
-								</xsl:if>
-							</fo:block>
-						</fo:block-container>
-				
+						<xsl:call-template name="toc">
+							<xsl:with-param name="docid" select="$docid"/>
+							<xsl:with-param name="curr_lang" select="$curr_lang"/>
+						</xsl:call-template>
+						
 					</fo:flow>
 					
 				</fo:page-sequence>
@@ -1285,6 +1251,7 @@
 				<!-- Document Control -->
 				<xsl:apply-templates select="mn:doccontrol | mn:colophon" mode="sections"/> 
 				
+				<!-- indexes=<xsl:copy-of select="$indexes"/> -->
 				<!-- Index -->
 				<xsl:apply-templates select="xalan:nodeset($indexes)/doc[@id = $docid]//mn:indexsect" mode="index">
 					<xsl:with-param name="isDraft" select="normalize-space(//mn:metanorma/mn:bibdata/mn:version/mn:draft or
@@ -1939,8 +1906,6 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	
-	
 		
 	<xsl:template name="insertSeparatorPage">
 		<!-- 3 Pages with BIPM Metro logo -->
@@ -1968,6 +1933,82 @@
 				<lang><xsl:value-of select="$doc_split_by_language"/></lang>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="toc">
+		<xsl:param name="curr_lang"/>
+		<xsl:param name="docid"/>
+		
+		<xsl:variable name="title-toc"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">table_of_contents</xsl:with-param></xsl:call-template></xsl:variable>
+		
+		<!-- <fo:block-container margin-left="-14mm"  margin-right="0mm">
+			<fo:block-container margin-left="0mm" margin-right="0mm"> -->
+				<fo:block xsl:use-attribute-sets="toc-title-style">
+					<fo:inline><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:title[@language = $curr_lang and @type='title-main']"/></fo:inline>
+					<fo:inline keep-together.within-line="always">
+						<fo:leader leader-pattern="space"/>
+						<fo:inline>
+							<xsl:value-of select="$title-toc"/>
+						</fo:inline>
+					</fo:inline>
+				</fo:block>
+			<!-- </fo:block-container>
+		</fo:block-container> -->
+	
+		<fo:block-container xsl:use-attribute-sets="toc-style">
+			<fo:block role="TOC">
+				<!-- <xsl:copy-of select="$contents"/> -->
+				
+				<xsl:if test="$contents/mnx:doc[@id = $docid]//mnx:item[@display='true']">
+					<fo:table table-layout="fixed" width="100%" id="__internal_layout__toc_{generate-id()}" role="SKIP">
+						<fo:table-column column-width="127mm"/>
+						<fo:table-column column-width="12mm"/>
+						<fo:table-body role="SKIP">											
+							<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:item[@display='true' and not(@type = 'annex') and not(@type = 'index') and not(@parent = 'annex')]">
+								<xsl:call-template name="insertContentItem"/>								
+							</xsl:for-each>
+							<!-- insert page break between main sections and appendixes in ToC -->
+							<!-- <xsl:if test="$doctype ='brochure'">
+								<fo:table-row>
+									<fo:table-cell number-columns-spanned="2">
+										<fo:block break-after="page"/>
+									</fo:table-cell>
+								</fo:table-row>
+							</xsl:if> -->
+							<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:item[@display='true' and (@type = 'annex')]"> <!--  or (@level = 2 and @parent = 'annex') -->
+								<xsl:call-template name="insertContentItem">
+									<xsl:with-param name="keep-with-next">true</xsl:with-param>
+								</xsl:call-template>
+							</xsl:for-each>
+							<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:item[@display='true' and (@type = 'index')]">
+								<xsl:call-template name="insertContentItem"/>								
+							</xsl:for-each>
+							
+							<!-- List of Tables -->
+							<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:tables/mnx:table">
+								<xsl:if test="position() = 1">
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-tables"/>
+									</xsl:call-template>
+								</xsl:if>
+								<xsl:call-template name="insertListOf_Item"/>
+							</xsl:for-each>
+							
+							<!-- List of Figures -->
+							<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:figures/mnx:figure">
+								<xsl:if test="position() = 1">
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-figures"/>
+									</xsl:call-template>
+								</xsl:if>
+								<xsl:call-template name="insertListOf_Item"/>
+							</xsl:for-each>
+							
+						</fo:table-body>
+					</fo:table>
+				</xsl:if>
+			</fo:block>
+		</fo:block-container>
 	</xsl:template>
 		
 	<xsl:template name="insertContentItem">
