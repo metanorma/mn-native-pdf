@@ -2991,9 +2991,19 @@
 		<xsl:choose>
 			<xsl:when test="mn:metanorma/mn:bibdata/mn:contributor[mn:role/mn:description[not(@lang)] = 'Technical committee']/mn:organization">
 				<xsl:for-each select="mn:metanorma/mn:bibdata/mn:contributor[mn:role/mn:description[not(@lang)] = 'Technical committee']/mn:organization">
-					<xsl:call-template name="insertLogoImage">
-						<xsl:with-param name="content-height" select="$content-height"/>
-					</xsl:call-template>
+				
+					<xsl:variable name="items">
+						<xsl:call-template name="split_abbreviation"/>
+					</xsl:variable>
+				
+					<xsl:for-each select="xalan:nodeset($items)//mnx:item">
+						<xsl:call-template name="insertLogoImage">
+							<xsl:with-param name="content-height" select="$content-height"/>
+						</xsl:call-template>
+						<xsl:if test="position() != last()">
+							<fo:inline padding-right="1mm" role="SKIP">&#xA0;</fo:inline>
+						</xsl:if>
+					</xsl:for-each>
 					<xsl:if test="position() != last()">
 						<fo:inline padding-right="1mm" role="SKIP">&#xA0;</fo:inline>
 					</xsl:if>
@@ -3015,6 +3025,28 @@
 				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE-Logo))}" content-height="11mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
 			</fo:block>
 		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="split_abbreviation">
+		<xsl:variable name="items">
+			<xsl:choose>
+				<!-- ISO/IEC -->
+				<xsl:when test="contains(mn:abbreviation, '/')">
+					<xsl:call-template name="split">
+						<xsl:with-param name="pText" select="mn:abbreviation"/>
+						<xsl:with-param name="sep">/</xsl:with-param>
+					</xsl:call-template>
+				</xsl:when>
+				<xsl:otherwise>
+					<mnx:item><xsl:value-of select="mn:abbreviation"/></mnx:item>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:for-each select="xalan:nodeset($items)//mnx:item">
+			<xsl:copy>
+				<mn:abbreviation><xsl:value-of select="."/></mn:abbreviation>
+			</xsl:copy>
+		</xsl:for-each>
 	</xsl:template>
 	
 	<xsl:template name="insertLogoImage">
@@ -3056,9 +3088,19 @@
 		<xsl:choose>
 			<xsl:when test="mn:metanorma/mn:bibdata/mn:contributor[mn:role/mn:description[not(@lang)] = 'Technical committee']/mn:organization">
 				<xsl:for-each select="mn:metanorma/mn:bibdata/mn:contributor[mn:role/mn:description[not(@lang)] = 'Technical committee']/mn:organization">
-					<xsl:call-template name="insertLogoImage2024">
-						<xsl:with-param name="content-height" select="$content-height"/>
-					</xsl:call-template>
+					
+					<xsl:variable name="items">
+						<xsl:call-template name="split_abbreviation"/>
+					</xsl:variable>
+					
+					<xsl:for-each select="xalan:nodeset($items)//mnx:item">
+						<xsl:call-template name="insertLogoImage2024">
+							<xsl:with-param name="content-height" select="$content-height"/>
+						</xsl:call-template>
+						<xsl:if test="position() != last()">
+							<fo:inline padding-right="1mm" role="SKIP">&#xA0;</fo:inline>
+						</xsl:if>
+					</xsl:for-each>
 					<xsl:if test="position() != last()">
 						<fo:inline padding-right="1mm" role="SKIP">&#xA0;</fo:inline>
 					</xsl:if>
