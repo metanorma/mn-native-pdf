@@ -1196,7 +1196,28 @@
 			<xsl:when test="(//mn:metanorma)[1]/mn:bibdata/mn:contributor[mn:role/mn:description[not(@lang)] = 'Technical committee']/mn:organization/mn:abbreviation">
 				<!-- https://github.com/metanorma/metanorma-iec/issues/190#issuecomment-3122029444 -->
 				<xsl:for-each select="(//mn:metanorma)[1]/mn:bibdata/mn:contributor[mn:role/mn:description[not(@lang)] = 'Technical committee']/mn:organization/mn:abbreviation">
-					<xsl:call-template name="insertLogoImage"/>
+					<xsl:variable name="copyright_year" select="ancestor::mn:bibdata/mn:copyright/mn:from"/>
+					<xsl:variable name="items">
+						<xsl:choose>
+							<!-- ISO/IEC -->
+							<xsl:when test="contains(., '/')">
+								<xsl:call-template name="split">
+									<xsl:with-param name="sep">/</xsl:with-param>
+								</xsl:call-template>
+							</xsl:when>
+							<xsl:otherwise>
+								<mnx:item><xsl:value-of select="."/></mnx:item>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<xsl:for-each select="xalan:nodeset($items)//mnx:item">
+						<xsl:call-template name="insertLogoImage">
+							<xsl:with-param name="copyright_year" select="$copyright_year"/>
+						</xsl:call-template>
+						<xsl:if test="position() != last()">
+							<fo:inline padding-right="1mm">&#xA0;</fo:inline>
+						</xsl:if>
+					</xsl:for-each>
 					<xsl:if test="position() != last()">
 						<fo:inline padding-right="1mm">&#xA0;</fo:inline>
 					</xsl:if>
@@ -1204,7 +1225,9 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:for-each select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:abbreviation">
-					<xsl:call-template name="insertLogoImage"/>
+					<xsl:call-template name="insertLogoImage">
+						<xsl:with-param name="copyright_year" select="ancestor::mn:bibdata/mn:copyright/mn:from"/>
+					</xsl:call-template>
 						<xsl:if test="position() != last()">
 							<fo:inline padding-right="1mm">&#xA0;</fo:inline>
 						</xsl:if>
@@ -1214,6 +1237,7 @@
 	</xsl:template>
 	
 	<xsl:template name="insertLogoImage">
+		<xsl:param name="copyright_year"/>
 		<xsl:choose>
 			<xsl:when test=". = 'IEC'">
 				<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-IEC))}" content-height="18mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/> -->
@@ -1225,7 +1249,7 @@
 				<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-ISO))}" content-height="18mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo ISO"/> -->
 				<fo:instream-foreign-object content-height="18mm" fox:alt-text="Image Logo IEC">
 					<xsl:call-template name="insert_Image-ISO-Logo-SVG">
-						<xsl:with-param name="copyright_year" select="ancestor::mn:bibdata/mn:copyright/mn:from"/>
+						<xsl:with-param name="copyright_year" select="$copyright_year"/>
 					</xsl:call-template>
 				</fo:instream-foreign-object>
 			</xsl:when>
