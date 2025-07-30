@@ -344,6 +344,17 @@
 		<!-- Example: ISO/TC 46/SC 2 -->
 		<!-- ISO/SG SMART/SG TS/AG 1 -->
 		<xsl:variable name="approvalgroup" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:approvalgroup/@identifier)"/>
+		<xsl:variable name="contributor_authorizer_">
+			<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'authorizer' and mn:description[normalize-space(@language) = ''] = 'Technical committee']]"/>
+		</xsl:variable>
+		<xsl:variable name="contributor_authorizer" select="xalan:nodeset($contributor_authorizer_)"/>
+		<xsl:variable name="organization_abbreviation" select="normalize-space($contributor_authorizer/mn:contributor/mn:organization/mn:abbreviation)"/>
+		<xsl:variable name="approvalgroup">
+			<xsl:if test="$organization_abbreviation = 'ISO' or 
+				contains($organization_abbreviation, 'ISO/') or
+				contains($organization_abbreviation, '/ISO')"><xsl:value-of select="concat($organization_abbreviation, '/')"/></xsl:if>
+			<xsl:value-of select="normalize-space($contributor_authorizer/mn:contributor/mn:organization/mn:subdivision/mn:identifier[@type = 'full'])"/>
+		</xsl:variable>
 		<xsl:variable name="parts_by_slash">
 			<xsl:call-template name="split">
 				<xsl:with-param name="pText" select="$approvalgroup"/>
