@@ -689,23 +689,44 @@
 								<fo:table-body>
 									<fo:table-row height="4mm">
 										<fo:table-cell number-columns-spanned="2" border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
+											<xsl:variable name="contributor_author_">
+												<xsl:copy-of select="//mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author' and mn:description[normalize-space(@language) = ''] = 'Technical committee']]/node()"/>
+											</xsl:variable>
+											<xsl:variable name="contributor_author" select="xalan:nodeset($contributor_author_)"/>
+											<!-- https://github.com/metanorma/metanorma-iec/issues/440 -->
+											<xsl:variable name="subdivision_subcommittee_">
+												<xsl:copy-of select="$contributor_author/mn:organization/mn:subdivision[@type = 'Subcommittee']/node()"/>
+											</xsl:variable>
+											<xsl:variable name="subdivision_subcommittee" select="xalan:nodeset($subdivision_subcommittee_)"/>
+											
+											<xsl:variable name="subdivision_technical_committee_">
+												<xsl:copy-of select="$contributor_author/mn:organization/mn:subdivision[@type = 'Technical committee']/node()"/>
+											</xsl:variable>
+											<xsl:variable name="subdivision_technical_committee" select="xalan:nodeset($subdivision_technical_committee_)"/>
+											
 											<fo:block>
 												<!-- If //bibdata/ext/editorialgroup/subcommittee exists, use "IEC SC" + //bibdata/ext/editorialgroup/subcommittee/@number + //bibdata/ext/editorialgroup/subcommittee, 
 												else use "IEC TC" + //bibdata/ext/editorialgroup/technical-committee/@number + //bibdata/ext/editorialgroup/technical-committee -->
 												<xsl:choose>
-													<xsl:when test="//mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:subcommittee">
+													<!-- <xsl:when test="//mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:subcommittee"> -->
+													<xsl:when test="normalize-space($subdivision_subcommittee) != ''">
 														<fo:block font-size="6.5pt">
-															<fo:inline font-size="8pt">IEC SC <xsl:value-of select="//mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:subcommittee/@number"/> : </fo:inline>
+															<!-- <fo:inline font-size="8pt">IEC SC <xsl:value-of select="//mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:subcommittee/@number"/> : </fo:inline> -->
+															<fo:inline font-size="8pt"><xsl:value-of select="concat($contributor_author/mn:organization/mn:abbreviation, ' ', $subdivision_subcommittee/mn:identifier, ' : ')"/></fo:inline>
 															<xsl:call-template name="addLetterSpacingSmallCaps">
-																<xsl:with-param name="text" select="//mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:subcommittee"/>
+																<!-- <xsl:with-param name="text" select="//mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:subcommittee"/> -->
+																<xsl:with-param name="text" select="$subdivision_subcommittee/mn:name"/>
 															</xsl:call-template>
 														</fo:block>
 													</xsl:when>
-													<xsl:when test="//mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:technical-committee">
+													<!-- <xsl:when test="//mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:technical-committee"> -->
+													<xsl:when test="normalize-space($subdivision_technical_committee) != ''">
 														<fo:block font-size="6.5pt">
-															<fo:inline font-size="8pt">IEC TC <xsl:value-of select="//mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:technical-committee/@number"/> : </fo:inline>
+															<!-- <fo:inline font-size="8pt">IEC TC <xsl:value-of select="//mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:technical-committee/@number"/> : </fo:inline> -->
+															<fo:inline font-size="8pt"><xsl:value-of select="concat($contributor_author/mn:organization/mn:abbreviation, ' ', $subdivision_technical_committee/mn:identifier, ' : ')"/></fo:inline>
 															<xsl:call-template name="addLetterSpacingSmallCaps">
-																<xsl:with-param name="text" select="//mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:technical-committee"/>
+																<!-- <xsl:with-param name="text" select="//mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:technical-committee"/> -->
+																<xsl:with-param name="text" select="$subdivision_technical_committee/mn:name"/>
 															</xsl:call-template>
 														</fo:block>
 													</xsl:when>
