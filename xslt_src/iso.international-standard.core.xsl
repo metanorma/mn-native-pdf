@@ -340,7 +340,7 @@
 		</xsl:for-each>
 	</xsl:variable>
 	
-	<xsl:variable name="editorialgroup_">
+	<xsl:variable name="approvalgroup_">
 		<!-- Example: ISO/TC 46/SC 2 -->
 		<!-- ISO/SG SMART/SG TS/AG 1 -->
 		<xsl:variable name="approvalgroup" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:approvalgroup/@identifier)"/>
@@ -384,7 +384,7 @@
 			</xsl:choose>
 		</xsl:for-each>
 	</xsl:variable>
-	<xsl:variable name="editorialgroup" select="xalan:nodeset($editorialgroup_)" />
+	<xsl:variable name="approvalgroup" select="xalan:nodeset($approvalgroup_)" />
 	
 	<xsl:variable name="secretariat_">
 		<xsl:variable name="value" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:secretariat)"/>
@@ -2058,9 +2058,9 @@
 												<xsl:if test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or $stagename_abbreviation = 'DIS' or
 													$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or $stagename_abbreviation = 'FDIS' or
 													$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD'">
-													<xsl:if test="normalize-space($editorialgroup) != ''">
+													<xsl:if test="normalize-space($approvalgroup) != ''">
 														<fo:block margin-bottom="3mm">
-															<xsl:copy-of select="$editorialgroup"/>
+															<xsl:copy-of select="$approvalgroup"/>
 														</fo:block>
 													</xsl:if>
 													<xsl:if test="normalize-space($secretariat) != ''">
@@ -2359,7 +2359,7 @@
 													</fo:table-cell>
 													<fo:table-cell>
 														<fo:block margin-bottom="3mm">
-															<xsl:copy-of select="$editorialgroup"/>
+															<xsl:copy-of select="$approvalgroup"/>
 														</fo:block>
 													</fo:table-cell>
 													<fo:table-cell>
@@ -2600,7 +2600,7 @@
 																		<fo:table-row role="SKIP">
 																			<fo:table-cell role="SKIP">
 																				<fo:block>
-																					<xsl:copy-of select="$editorialgroup"/>
+																					<xsl:copy-of select="$approvalgroup"/>
 																				</fo:block>
 																			</fo:table-cell>
 																			<fo:table-cell role="SKIP">
@@ -2631,7 +2631,7 @@
 															<xsl:if test="$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or $stagename_abbreviation = 'FDIS'">
 																<fo:block-container border="0.5mm solid black" width="51mm" role="SKIP">
 																	<fo:block margin="2mm" role="SKIP">
-																			<fo:block margin-bottom="8pt"><xsl:copy-of select="$editorialgroup"/></fo:block>
+																			<fo:block margin-bottom="8pt"><xsl:copy-of select="$approvalgroup"/></fo:block>
 																			<fo:block margin-bottom="6pt"><xsl:copy-of select="$secretariat"/></fo:block>
 																			<fo:block margin-bottom="6pt">
 																				<!-- Voting begins on: -->
@@ -2872,10 +2872,10 @@
 								</xsl:choose>
 								
 								 
-								<xsl:if test="normalize-space($editorialgroup) != ''">
+								<xsl:if test="normalize-space($approvalgroup) != ''">
 									<!-- ISO/TC 34/SC 4/WG 3 -->
 									<fo:block margin-bottom="12pt">
-										<xsl:copy-of select="$editorialgroup"/>
+										<xsl:copy-of select="$approvalgroup"/>
 									</fo:block>
 								</xsl:if>
 								
