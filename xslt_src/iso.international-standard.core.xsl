@@ -3000,8 +3000,8 @@
 	<xsl:template name="insertLogoImages">
 		<xsl:param name="content-height"/>
 		<xsl:choose>
-			<xsl:when test="mn:metanorma/mn:bibdata/mn:contributor[mn:role/mn:description[not(@lang)] = 'Technical committee']/mn:organization">
-				<xsl:for-each select="mn:metanorma/mn:bibdata/mn:contributor[mn:role/mn:description[not(@lang)] = 'Technical committee']/mn:organization">
+			<xsl:when test="mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'Technical committee']/mn:organization">
+				<xsl:for-each select="mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'Technical committee']/mn:organization">
 				
 					<xsl:variable name="items">
 						<xsl:call-template name="split_abbreviation"/>
@@ -3097,8 +3097,8 @@
 	<xsl:template name="insertLogoImages2024">
 		<xsl:variable name="content-height">20</xsl:variable>
 		<xsl:choose>
-			<xsl:when test="mn:metanorma/mn:bibdata/mn:contributor[mn:role/mn:description[not(@lang)] = 'Technical committee']/mn:organization">
-				<xsl:for-each select="mn:metanorma/mn:bibdata/mn:contributor[mn:role/mn:description[not(@lang)] = 'Technical committee']/mn:organization">
+			<xsl:when test="mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'Technical committee']/mn:organization">
+				<xsl:for-each select="mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'Technical committee']/mn:organization">
 					
 					<xsl:variable name="items">
 						<xsl:call-template name="split_abbreviation"/>
