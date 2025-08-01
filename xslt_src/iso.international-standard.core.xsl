@@ -2268,10 +2268,14 @@
 											<xsl:if test="$stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM'">
 												<xsl:attribute name="font-size">7pt</xsl:attribute>
 											</xsl:if>
-											<!-- margin-top="-30mm"  -->
-											<fo:block> <!-- margin-top="-100mm" -->
+											<!-- <fo:block>
 												<xsl:call-template name="insertDraftComments"/>
-											</fo:block>
+											</fo:block> -->
+											<fo:block-container position="absolute" top="-47mm" width="52mm" height="100mm" role="SKIP">
+												<fo:block>
+													<xsl:call-template name="insertDraftComments"/>
+												</fo:block>
+											</fo:block-container>
 										</fo:table-cell>
 										<fo:table-cell role="SKIP">
 											<fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
