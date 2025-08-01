@@ -1916,10 +1916,18 @@
 															</xsl:choose>
 														</xsl:when>
 														<!-- <xsl:when test="$stage-abbreviation = 'FDAmd' or $stage-abbreviation = 'FDAM'"><xsl:value-of select="$doctype_uppercased"/></xsl:when> -->
-														<xsl:when test="$stagename-header-coverpage != ''">
+														<xsl:when test="$stagename-header-coverpage != '' or normalize-space($stagename_localized_coverpage) != ''">
 															<xsl:attribute name="margin-top">12pt</xsl:attribute>
 															
-															<xsl:value-of select="$stagename-header-coverpage"/>
+															<xsl:choose>
+																<xsl:when test="normalize-space($stagename_localized_coverpage) != ''">
+																	<!-- FINAL DRAFT<br/>International Standard-->
+																	<xsl:apply-templates select="xalan:nodeset($stagename_localized_coverpage)/node()"/>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:value-of select="$stagename-header-coverpage"/>
+																</xsl:otherwise>
+															</xsl:choose>
 															
 															<!-- if there is iteration number, then print it -->
 															<xsl:variable name="iteration" select="number(/mn:metanorma/mn:bibdata/mn:status/mn:iteration)"/>
@@ -1939,6 +1947,7 @@
 																<xsl:when test="$doctype = 'amendment'">
 																	<xsl:value-of select="$updates-document-type_str"/>
 																</xsl:when>
+																<xsl:when test="normalize-space($stagename_localized_coverpage) != ''"></xsl:when>
 																<xsl:otherwise>
 																	<xsl:value-of select="$doctype_localized"/>
 																</xsl:otherwise>
