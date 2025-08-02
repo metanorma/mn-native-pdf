@@ -1097,7 +1097,7 @@
 						</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:call-template name="insertFootnoteSeparator"/>
+					<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 					
 					<xsl:call-template name="insertHeaderDraftWatermark">
 						<xsl:with-param name="lang" select="$curr_lang"/>
@@ -1174,7 +1174,7 @@
 				
 				<xsl:if test="mn:preface/*[not(self::mn:note or self::mn:admonition)]">
 					<fo:page-sequence master-reference="document" force-page-count="no-force">
-						<xsl:call-template name="insertFootnoteSeparator"/>
+						<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 						
 						<xsl:variable name="header-title">
 							<xsl:choose>
@@ -1204,7 +1204,7 @@
 				</xsl:variable>
 				
 				<fo:page-sequence master-reference="document" force-page-count="no-force">
-					<xsl:call-template name="insertFootnoteSeparator"/>
+					<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 					
 					<xsl:variable name="title-toc">
 						<fo:inline>
@@ -2232,7 +2232,7 @@
 				<xsl:attribute name="master-reference">document-landscape</xsl:attribute>
 			</xsl:if>
 
-			<xsl:call-template name="insertFootnoteSeparator"/>
+			<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 			
 			<xsl:variable name="header-title">
 				<xsl:choose>
@@ -2289,7 +2289,7 @@
 	
 	<xsl:template  name="sections_appendix">
 		<fo:page-sequence master-reference="document" force-page-count="no-force">
-			<xsl:call-template name="insertFootnoteSeparator"/>
+			<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 			
 			<xsl:variable name="curr_lang" select="/mn:metanorma/mn:bibdata/mn:language[@current = 'true']"/>
 												
@@ -3778,16 +3778,6 @@
 		</xsl:choose>
 	</xsl:template>
 
-
-	<xsl:template name="insertFootnoteSeparator">
-		<fo:static-content flow-name="xsl-footnote-separator">
-			<fo:block>
-				<fo:leader leader-pattern="rule" leader-length="30%"/>
-			</fo:block>
-		</fo:static-content>
-	</xsl:template>
- 
-	 
 	<!-- =================== -->
 	<!-- Index processing -->
 	<!-- =================== -->
