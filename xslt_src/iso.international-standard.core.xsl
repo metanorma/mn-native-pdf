@@ -1282,7 +1282,7 @@
 								<xsl:with-param name="border_around_page" select="$border_around_page"/>
 								<xsl:with-param name="insert_header_first" select="normalize-space(position() = 1)"/>
 							</xsl:call-template>
-							<fo:flow flow-name="xsl-region-body">
+							<fo:flow flow-name="xsl-region-body" role="SKIP">
 							
 								
 								<!-- Information and documentation — Codes for transcription systems -->
