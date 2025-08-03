@@ -1116,7 +1116,7 @@
 										<xsl:with-param name="font-weight">normal</xsl:with-param>
 										<xsl:with-param name="is_footer">true</xsl:with-param>
 									</xsl:call-template>
-									<fo:flow flow-name="xsl-region-body" line-height="115%">
+									<fo:flow flow-name="xsl-region-body" line-height="115%" role="SKIP">
 									
 										<xsl:if test="position() = 1">
 									
