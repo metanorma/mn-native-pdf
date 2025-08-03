@@ -749,6 +749,9 @@
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="role">Sect</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:if test="*[1][@class='supertitle']">
 				<xsl:attribute name="space-before">36pt</xsl:attribute>
@@ -813,6 +816,9 @@
 		</xsl:choose>
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
+			<xsl:if test="$namespace = 'iso'">
+				<xsl:attribute name="role">Sect</xsl:attribute>
+			</xsl:if>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
 			<xsl:apply-templates />
@@ -888,6 +894,10 @@
 				
 				<fo:block id="{@id}">
 				
+					<xsl:if test="$namespace = 'iso'">
+						<xsl:attribute name="role">Sect</xsl:attribute>
+					</xsl:if>
+					
 					<xsl:call-template name="setBlockSpanAll"/>
 					
 					<xsl:call-template name="refine_annex_style"/>

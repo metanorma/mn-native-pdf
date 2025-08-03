@@ -914,11 +914,9 @@
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
 						<fo:page-sequence master-reference="document{$document-master-reference_addon}" initial-page-number="auto" force-page-count="no-force">
-							<fo:static-content flow-name="xsl-footnote-separator">
-								<fo:block>
-									<fo:leader leader-pattern="rule" leader-length="30%"/>
-								</fo:block>
-							</fo:static-content>
+							
+							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+							
 							<xsl:call-template name="insertHeaderFooter">
 								<xsl:with-param name="is_header">false</xsl:with-param>
 								<xsl:with-param name="insert_footer_last">false</xsl:with-param>
@@ -1108,7 +1106,7 @@
 										<xsl:attribute name="master-reference">preface-1972-1998</xsl:attribute>
 									</xsl:if>
 									<xsl:if test="$layoutVersion = '2024'">
-										<fo:static-content flow-name="xsl-footnote-separator">
+										<fo:static-content flow-name="xsl-footnote-separator" role="artifact">
 											<fo:block margin-bottom="6pt">
 												<fo:leader leader-pattern="rule" leader-length="51mm" rule-thickness="0.5pt"/>
 											</fo:block>
@@ -1118,7 +1116,7 @@
 										<xsl:with-param name="font-weight">normal</xsl:with-param>
 										<xsl:with-param name="is_footer">true</xsl:with-param>
 									</xsl:call-template>
-									<fo:flow flow-name="xsl-region-body" line-height="115%">
+									<fo:flow flow-name="xsl-region-body" line-height="115%" role="SKIP">
 									
 										<xsl:if test="position() = 1">
 									
@@ -1265,7 +1263,7 @@
 								<xsl:attribute name="initial-page-number">auto</xsl:attribute>
 								<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
 							</xsl:if>
-							<fo:static-content flow-name="xsl-footnote-separator">
+							<fo:static-content flow-name="xsl-footnote-separator" role="artifact">
 								<fo:block>
 									<xsl:if test="$layoutVersion = '2024'">
 										<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -1284,7 +1282,7 @@
 								<xsl:with-param name="border_around_page" select="$border_around_page"/>
 								<xsl:with-param name="insert_header_first" select="normalize-space(position() = 1)"/>
 							</xsl:call-template>
-							<fo:flow flow-name="xsl-region-body">
+							<fo:flow flow-name="xsl-region-body" role="SKIP">
 							
 								
 								<!-- Information and documentation — Codes for transcription systems -->

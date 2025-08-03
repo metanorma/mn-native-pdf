@@ -653,7 +653,7 @@
 											<xsl:attribute name="initial-page-number">1</xsl:attribute>
 										</xsl:if>
 										
-										<fo:static-content flow-name="xsl-footnote-separator">
+										<fo:static-content flow-name="xsl-footnote-separator" role="artifact">
 											<fo:block text-align="center" margin-bottom="6pt">
 												<fo:leader leader-pattern="rule" leader-length="80mm"/>
 											</fo:block>
@@ -830,13 +830,9 @@
 								</xsl:otherwise>
 							</xsl:choose>
 							
-							
-							<fo:static-content flow-name="xsl-footnote-separator">
-								<fo:block>
-									<fo:leader leader-pattern="rule" leader-length="15%"/>
-								</fo:block>
-							</fo:static-content>
-							
+							<xsl:call-template name="insertFootnoteSeparatorCommon">
+								<xsl:with-param name="leader_length">15%</xsl:with-param>
+							</xsl:call-template>
 							
 							<xsl:variable name="section_title">
 								<xsl:if test="$isCommentary = 'true'">
@@ -1617,7 +1613,7 @@
 		<xsl:param name="copyrightText"/>
 		<fo:page-sequence master-reference="document" force-page-count="no-force">
 		
-			<fo:static-content flow-name="xsl-footnote-separator">
+			<fo:static-content flow-name="xsl-footnote-separator" role="artifact">
 				<fo:block text-align="center" margin-bottom="6pt">
 					<fo:leader leader-pattern="rule" leader-length="80mm" rule-style="solid" rule-thickness="0.3pt"/>
 				</fo:block>
