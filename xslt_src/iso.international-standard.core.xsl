@@ -47,7 +47,13 @@
 		</xsl:if>
 	</xsl:variable>
 	<xsl:variable name="docidentifierISO" select="normalize-space($docidentifierISO_)"/>
-	<xsl:variable name="docidentifierISO_with_break" select="java:replaceAll(java:java.lang.String.new($docidentifierISO),'^([^\d]+) (\d)', concat('$1', $linebreak, '$2'))"/> <!-- add line break before 1st sequence 'space digit' -->
+	<xsl:variable name="docidentifierISO_with_break_" select="java:replaceAll(java:java.lang.String.new($docidentifierISO),'^([^\d]+) (\d)', concat('$1', $linebreak, '$2'))"/> <!-- add line break before 1st sequence 'space digit' -->
+	<xsl:variable name="docidentifierISO_with_break">
+		<xsl:choose>
+			<xsl:when test="contains($docidentifierISO_with_break_, ' ') or contains($docidentifierISO_with_break_, $linebreak)"><xsl:value-of select="$docidentifierISO_with_break_"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="java:replaceAll(java:java.lang.String.new($docidentifierISO_with_break_), '(\/)(\d{3,})', concat('$1', $zero_width_space, '$2'))"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 
 	<xsl:variable name="docidentifier_another_">
 		<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type != '' and @type != 'ISO' and not(starts-with(@type, 'iso-')) and @type != 'URN']">
