@@ -1109,9 +1109,11 @@
 	
 	<xsl:template name="insertDraftWatermark">
 		<xsl:param name="isDraft"/>
-		<xsl:if test="$isDraft = 'true' or normalize-space(//mn:metanorma/mn:bibdata/mn:version/mn:draft or
+		<!-- <xsl:if test="$isDraft = 'true' or normalize-space(//mn:metanorma/mn:bibdata/mn:version/mn:draft or
 		contains(//mn:metanorma/mn:bibdata/mn:status/mn:stage, 'draft') or
-		contains(//mn:metanorma/mn:bibdata/mn:status/mn:stage, 'projet')) = 'true'">
+		contains(//mn:metanorma/mn:bibdata/mn:status/mn:stage, 'projet')) = 'true'"> -->
+		<xsl:if test="$isDraft = 'true' or normalize-space(normalize-space(//mn:metanorma/mn:bibdata/mn:version/mn:draft) != '' or
+						normalize-space(//mn:metanorma/mn:metanorma-extension/mn:semantic-metadata/mn:stage-published) = 'false') = 'true'">
 			<!-- DRAFT -->
 			<xsl:variable name="draft_label">
 				<xsl:call-template name="getLocalizedString">
