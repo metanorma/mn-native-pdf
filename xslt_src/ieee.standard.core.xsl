@@ -85,12 +85,16 @@
 		</xsl:choose>
 	</xsl:variable>
 	
+	<!-- https://github.com/metanorma/metanorma-csa/issues/329 -->
+	<!-- if stage >= 60 -->
+	<xsl:variable name="stage_published" select="normalize-space((//mn:metanorma)[1]/mn:metanorma-extension/mn:semantic-metadata/mn:stage-published)"/>
+	
 	<xsl:variable name="trial_use" select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:trial-use[normalize-space(@language) = '']"/>
 	
 	<xsl:variable name="current_template">
 		<xsl:choose>
 			<xsl:when test="($doctype = 'standard' or $doctype = 'guide' or $doctype = 'recommended-practice') and $stage = 'draft'">draft</xsl:when>
-			<xsl:when test="($doctype = 'standard' or $doctype = 'guide' or $doctype = 'recommended-practice') and ($stage = 'published' or $stage = 'approved')">standard</xsl:when>
+			<xsl:when test="($doctype = 'standard' or $doctype = 'guide' or $doctype = 'recommended-practice') and ($stage = 'published' or $stage = 'approved' or $stage_published = 'true')">standard</xsl:when>
 			<xsl:when test="$doctype = 'whitepaper' and $subdoctype = 'icap'">icap-whitepaper</xsl:when>
 			<xsl:when test="$doctype = 'whitepaper' and $subdoctype = 'industry-connection-report'">industry-connection-report</xsl:when>
 			<xsl:otherwise><xsl:value-of select="$doctype"/></xsl:otherwise>
@@ -1305,7 +1309,7 @@
 							
 								</xsl:when> <!-- $stage = 'draft' -->
 								
-								<xsl:when test="$stage = 'published' or $stage = 'approved'">
+								<xsl:when test="$stage = 'published' or $stage = 'approved' or $stage_published = 'true'">
 								
 									<xsl:variable name="provisional-distance-between-starts">10</xsl:variable>
 									
@@ -1458,7 +1462,7 @@
 			<xsl:otherwise>
 				<fo:block xsl:use-attribute-sets="toc-title-style">
 					<xsl:if test="($current_template = 'standard' or $current_template = 'draft') and
-							($stage = 'published' or $stage = 'approved')">
+							($stage = 'published' or $stage = 'approved' or $stage_published = 'true')">
 						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 					</xsl:if>
 					<!-- Contents -->
@@ -3105,7 +3109,7 @@
 
 	
 	<xsl:template name="insertFootnoteSeparator">
-		<fo:static-content flow-name="xsl-footnote-separator">
+		<fo:static-content flow-name="xsl-footnote-separator" role="artifact">
 			<fo:block>
 				<fo:leader leader-pattern="rule" rule-thickness="0.5pt" leader-length="35%">
 					<xsl:if test="$current_template = 'whitepaper' or $current_template= 'icap-whitepaper' or $current_template = 'industry-connection-report'">
