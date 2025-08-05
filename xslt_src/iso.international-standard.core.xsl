@@ -228,6 +228,9 @@
 		<xsl:choose>
 			<!-- $stage-abbreviation = 'PRF'  -->
 			<xsl:when test="$stagename_abbreviation = 'PRF'"><xsl:value-of select="$doctype_localized"/></xsl:when>
+			<!-- https://github.com/metanorma/metanorma-taste/issues/22#issuecomment-3156059344 -->
+			<xsl:when test="$doctype_localized != '' and 
+					count(/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'author'][mn:organization/mn:abbreviation = 'ISO']) = 0"><xsl:value-of select="$doctype_localized"/></xsl:when>
 			<xsl:when test="$layoutVersion = '2024' and $stagename_localized != ''">
 				<xsl:value-of select="$stagename_localized"/>
 			</xsl:when>
