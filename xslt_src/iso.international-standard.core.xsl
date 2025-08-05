@@ -1992,7 +1992,8 @@
 														<xsl:value-of select="substring-after($docidentifierISO, ' ')"/>
 													</xsl:when>
 													<xsl:otherwise>
-														<xsl:value-of select="$docidentifierISO"/>
+														<!-- <xsl:value-of select="$docidentifierISO"/> -->
+														<xsl:value-of select="$docidentifierISO_with_break"/>
 													</xsl:otherwise>
 												</xsl:choose>
 											</fo:block>
