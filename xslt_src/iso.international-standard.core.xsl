@@ -1982,7 +1982,7 @@
 										</fo:table-cell>
 										<fo:table-cell number-columns-spanned="2" display-align="after" padding-left="6mm">
 											<fo:block font-size="19pt" font-weight="bold" line-height="1">
-												<xsl:if test="$stage_published = 'true' and $substage != 0">
+												<xsl:if test="($stage_published = 'true' or $stage &gt;= 60) and $substage != 0">
 													<xsl:attribute name="color"><xsl:value-of select="$color_secondary"/></xsl:attribute>
 												</xsl:if>
 												<xsl:choose>
