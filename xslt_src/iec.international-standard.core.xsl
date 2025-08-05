@@ -50,6 +50,9 @@
 	<xsl:variable name="substage" select="number(//mn:metanorma/mn:bibdata/mn:status/mn:substage)"/>	
 	<xsl:variable name="stagename" select="normalize-space(//mn:metanorma/mn:bibdata/mn:ext/mn:stagename)"/>
 	<xsl:variable name="abbreviation" select="normalize-space(//mn:metanorma/mn:bibdata/mn:status/mn:stage/@abbreviation)"/>
+	<!-- https://github.com/metanorma/metanorma-csa/issues/329 -->
+	<!-- if stage >= 60 -->
+	<xsl:variable name="stage_published" select="normalize-space(//mn:metanorma/mn:metanorma-extension/mn:semantic-metadata/mn:stage-published)"/>
 	
 	<xsl:variable name="stage-abbreviation">
 		<xsl:choose>
@@ -311,7 +314,7 @@
 
 	<xsl:template name="cover-page">
 		<!-- For 'Published' documents insert two cover pages -->
-		<xsl:if test="$stage &gt;= 60">
+		<xsl:if test="$stage_published = 'true'">
 		
 			<!-- 1st Cover Page -->
 			<fo:page-sequence master-reference="cover" force-page-count="no-force">
@@ -445,7 +448,7 @@
 		<xsl:variable name="lang_second" select="(//mn:metanorma)[2]/mn:bibdata/mn:language[@current = 'true']"/>
 		<!-- For 'Published' documents insert 3rd Cover Page 
 				OR insert first Cover Page for FDIS -->
-		<xsl:if test="$stage &gt;= 60 or $stage-abbreviation = 'FDIS'">
+		<xsl:if test="$stage_published = 'true' or $stage-abbreviation = 'FDIS'">
 			<fo:page-sequence master-reference="cover" force-page-count="no-force">
 				<fo:flow flow-name="xsl-region-body">
 					<xsl:call-template name="insertCoverPart1" />
@@ -1050,7 +1053,7 @@
 		<fo:block-container font-size="30pt" font-weight="bold" height="56mm" margin-left="7.5mm" line-height="115%">
 			<fo:block-container margin-left="0mm">
 				<fo:block-container height="25mm"  display-align="after">
-					<xsl:if test="$stage &gt;= 60">
+					<xsl:if test="$stage_published = 'true'">
 						<xsl:attribute name="width">100mm</xsl:attribute>
 					</xsl:if>
 					<fo:block color="{$color_blue}">
@@ -1058,7 +1061,7 @@
 							<xsl:when test="$stage-abbreviation = 'FDIS'">
 								<xsl:text>PRE-RELEASE VERSION (FDIS)</xsl:text>
 							</xsl:when>
-							<xsl:when test="$stage &gt;= 60">
+							<xsl:when test="$stage_published = 'true'">
 								<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new((//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:doctype[@language = $lang]))"/>
 								<xsl:value-of select="$doctype_uppercased"/>
 							</xsl:when>
@@ -1072,11 +1075,11 @@
 				
 				<xsl:if test="//mn:metanorma/mn:bibdata/mn:title[@language = $lang_second]">
 					<fo:block-container height="26mm" margin-top="10pt" display-align="after">
-						<xsl:if test="$stage &gt;= 60">
+						<xsl:if test="$stage_published = 'true'">
 							<xsl:attribute name="width">100mm</xsl:attribute>
 						</xsl:if>
 						<fo:block color="{$color_gray}">
-							<xsl:if test="$stage &gt;= 60">
+							<xsl:if test="$stage_published = 'true'">
 								<!-- <xsl:text>NORME INTERNATIONALE</xsl:text> -->
 								<xsl:value-of  select="java:toUpperCase(java:java.lang.String.new(//mn:metanorma/mn:bibdata/mn:ext/mn:doctype[@language = $lang_second]))"/>
 							</xsl:if>
@@ -2090,7 +2093,7 @@
 	</xsl:template>
 
 	<xsl:template name="back-page">
-		<xsl:if test="$stage &gt;= 60">
+		<xsl:if test="$stage_published = 'true'">
 			<fo:page-sequence master-reference="blank-page">
 				<fo:flow flow-name="xsl-region-body">
 					<fo:block>&#xA0;</fo:block>
