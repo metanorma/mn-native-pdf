@@ -2384,6 +2384,14 @@
 		</xsl:attribute>
 	</xsl:template>
  
+	<xsl:template name="getCharByCodePoint">
+		<xsl:param name="codepoint"/>
+		<xsl:param name="radix">16</xsl:param>
+		<xsl:variable name="codepointInt" select="java:java.lang.Integer.parseInt($codepoint,$radix)"/>
+		<xsl:variable name="chars" select="java:java.lang.Character.toChars($codepointInt)"/>
+		<xsl:value-of select="java:java.lang.String.new($chars)"/>
+	</xsl:template>
+ 
 	<xsl:template name="substring-after-last">	
 		<xsl:param name="value"/>
 		<xsl:param name="delimiter"/>
