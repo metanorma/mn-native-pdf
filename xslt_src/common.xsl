@@ -1893,6 +1893,13 @@
 			<xsl:with-param name="default" select="$text_align_default"/>
 		</xsl:call-template>
 		<xsl:call-template name="setKeepAttributes"/>
+		<xsl:if test="node()[1][self::mn:span][contains(@style, 'line-height')]">
+			<xsl:variable name="styles">
+				<xsl:apply-templates select="*[1]"/>
+			</xsl:variable>
+			<!-- move attribute line-height from inline to block -->
+			<xsl:attribute name="line-height"><xsl:value-of select="xalan:nodeset($styles)//*/@line-height"/></xsl:attribute>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template name="setKeepAttributes">
