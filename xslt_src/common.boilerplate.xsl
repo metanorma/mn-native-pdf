@@ -14,13 +14,34 @@
 
 	<!-- boilerplate sections styles -->
 	<xsl:attribute-set name="copyright-statement-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="line-height">1.1</xsl:attribute>
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="font-size">8pt</xsl:attribute>
 			<xsl:attribute name="line-height">125%</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- copyright-statement-style -->
 	
+	<xsl:template name="refine_copyright-statement-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1989'">
+				<xsl:attribute name="font-size">8pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="copyright-statement-title-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="margin-left">0.5mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">3mm</xsl:attribute>
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
@@ -33,9 +54,24 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- copyright-statement-title-style -->
 	
+	<xsl:template name="refine_copyright-statement-title-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1989'">
+					<xsl:attribute name="font-size">11pt</xsl:attribute>
+				</xsl:if>
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="margin-bottom">3.5mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="copyright-statement-p-style">
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="space-after">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="margin-left">0.5mm</xsl:attribute>
+			<xsl:attribute name="margin-right">0.5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -45,7 +81,38 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- copyright-statement-p-style -->
 
-		<xsl:attribute-set name="license-statement-style">
+	<xsl:template name="refine_copyright-statement-p-style">
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:if test="$document_type = 'PAS'">
+				<xsl:attribute name="space-after">2pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$doctype = 'flex-standard'">
+				<xsl:attribute name="space-after">6pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="ancestor::mn:boilerplate and contains(ancestor::mn:clause[1]/mn:fmt-title, 'Publication history')">
+				<xsl:attribute name="space-after">0pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'ogc-white-paper'">
+			<xsl:if test="@align">
+				<xsl:attribute name="text-align">
+					<xsl:value-of select="@align"/>
+				</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="following-sibling::mn:p">
+				<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="contains(@id, 'address') or contains(normalize-space(), 'Tel:') or contains(normalize-space(), 'Phone:')">
+				<xsl:attribute name="margin-left">4.5mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:attribute-set name="license-statement-style">
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
@@ -186,6 +253,8 @@
 	<!-- ================================= -->
 	<xsl:template match="mn:copyright-statement">
 		<fo:block xsl:use-attribute-sets="copyright-statement-style" role="SKIP">
+			<xsl:call-template name="refine_copyright-statement-style"/>
+			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template> <!-- copyright-statement -->
@@ -212,30 +281,10 @@
 		<xsl:choose>
 			<xsl:when test="$namespace = 'bsi' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 				<fo:block xsl:use-attribute-sets="copyright-statement-p-style">
-					
-					<xsl:if test="$namespace = 'bsi'">
-						<xsl:if test="$document_type = 'PAS'">
-							<xsl:attribute name="space-after">2pt</xsl:attribute>
-						</xsl:if>
-						<xsl:if test="$doctype = 'flex-standard'">
-							<xsl:attribute name="space-after">6pt</xsl:attribute>
-						</xsl:if>
-						<xsl:if test="ancestor::mn:boilerplate and contains(ancestor::mn:clause[1]/mn:fmt-title, 'Publication history')">
-							<xsl:attribute name="space-after">0pt</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					
-					<xsl:if test="$namespace = 'bsi' or $namespace = 'ogc-white-paper'">
-						<xsl:if test="@align">
-							<xsl:attribute name="text-align">
-								<xsl:value-of select="@align"/>
-							</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
+					<xsl:call-template name="refine_copyright-statement-p-style"/>
 					
 					<xsl:apply-templates />
 				</fo:block>
-				
 			</xsl:when>
 			<xsl:otherwise>
 				<!-- process in the template 'paragraph' -->
