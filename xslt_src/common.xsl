@@ -1025,6 +1025,7 @@
 	
 	<xsl:template match="mn:svgmap" />
 
+	<xsl:template match="mn:name[following-sibling::*[1][self::mn:fmt-name]]" />
 
 	<!-- for correct rendering combining chars, added in mode="update_xml_step2" -->
 	<xsl:template match="*[local-name() = 'lang_none']">
