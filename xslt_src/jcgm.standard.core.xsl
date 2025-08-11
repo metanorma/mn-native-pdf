@@ -1272,10 +1272,10 @@
 			
 			<fo:flow flow-name="xsl-region-body">
 				<fo:block id="{@id}" span="all">
-					<xsl:apply-templates select="mn:title"/>
+					<xsl:apply-templates select="mn:fmt-title"/>
 				</fo:block>
 				<fo:block role="Index">
-					<xsl:apply-templates select="*[not(self::mn:title)]"/>
+					<xsl:apply-templates select="*[not(self::mn:title or self::mn:fmt-title)]"/>
 				</fo:block>
 			</fo:flow>
 		</fo:page-sequence>
