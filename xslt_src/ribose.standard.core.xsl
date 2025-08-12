@@ -483,7 +483,8 @@
 												</xsl:call-template>
 											</fo:block>
 											<fo:block><xsl:value-of select="$docnumber_version"/></fo:block>
-											<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"/>
+											<!-- <xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"/> -->
+											<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Committee']/mn:name"/>
 											<fo:block>
 												<xsl:text>© </xsl:text>
 												<xsl:value-of select="$copyright_year"/>
@@ -696,7 +697,8 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="mn:bibdata/mn:ext/mn:editorialgroup/mn:committee">
+	<!-- <xsl:template match="mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"> -->
+	<xsl:template match="mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Committee']/mn:name">
 		<fo:block><xsl:apply-templates /></fo:block>
 	</xsl:template>
 
