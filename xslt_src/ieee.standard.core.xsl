@@ -438,9 +438,11 @@
 						</xsl:choose>
 					</xsl:variable>
 					
-					<xsl:variable name="society" select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:society"/> 
+					<!-- <xsl:variable name="society" select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:society"/>  -->
+					<xsl:variable name="society" select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'authorizer']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Society']/mn:name"/>
 					
-					<xsl:variable name="committee" select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"/>
+					<!-- <xsl:variable name="committee" select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"/> -->
+					<xsl:variable name="committee" select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'authorizer']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Committee']/mn:name"/>
 					
 					<xsl:variable name="approved_by">IEEE SA Standards Board</xsl:variable>
 					<xsl:variable name="approved_date">

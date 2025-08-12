@@ -1351,7 +1351,9 @@
 							
 							<fo:block>&#xA0;</fo:block>
 							<fo:block font-size="9pt">
-								<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/mn:variant[@language = $curr_lang]"/>
+								<!-- <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/mn:variant[@language = $curr_lang]"/> -->
+								<!-- <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee[@language = $curr_lang]"/> -->
+								<xsl:value-of select="//mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Committee']/mn:name[@language = $curr_lang]"/>
 							</fo:block>
 						</fo:block-container>
 						
@@ -1766,8 +1768,12 @@
 				
 				<fo:block-container absolute-position="fixed" left="12mm" top="242mm" height="42mm" width="140mm" display-align="after">
 					<fo:block font-size="12pt">
-						<fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/mn:variant[@language = 'fr']"/></fo:block>
-						<fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/mn:variant[@language = 'en']"/></fo:block>
+						<!-- <fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/mn:variant[@language = 'fr']"/></fo:block> -->
+						<!-- <fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee[@language = 'fr']"/></fo:block> -->
+						<fo:block><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Committee']/mn:name[@language = 'fr']"/></fo:block>
+						<!-- <fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/mn:variant[@language = 'en']"/></fo:block> -->
+						<!-- <fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee[@language = 'en']"/></fo:block> -->
+						<fo:block><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Committee']/mn:name[@language = 'en']"/></fo:block>
 						<fo:block>&#xA0;</fo:block>
 				
 						<fo:block>

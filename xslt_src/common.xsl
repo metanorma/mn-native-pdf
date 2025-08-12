@@ -1368,7 +1368,8 @@
 								<xsl:when test="$namespace = 'ieee'">
 									<rdf:Seq>
 										<rdf:li>
-											<xsl:value-of select="mn:ext/mn:editorialgroup/mn:committee"/>
+											<!-- <xsl:value-of select="mn:ext/mn:editorialgroup/mn:committee"/> -->
+											<xsl:value-of select="mn:contributor[mn:role[@type = 'authorizer']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Committee']/mn:name"/>
 										</rdf:li>
 									</rdf:Seq>
 								</xsl:when>

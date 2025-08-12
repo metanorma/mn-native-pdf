@@ -693,7 +693,7 @@
 									<fo:table-row height="4mm">
 										<fo:table-cell number-columns-spanned="2" border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
 											<xsl:variable name="contributor_author_">
-												<xsl:copy-of select="//mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author' and mn:description[normalize-space(@language) = ''] = 'Technical committee']]/node()"/>
+												<xsl:copy-of select="//mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author' and mn:description[normalize-space(@language) = ''] = 'committee']]/node()"/>
 											</xsl:variable>
 											<xsl:variable name="contributor_author" select="xalan:nodeset($contributor_author_)"/>
 											<!-- https://github.com/metanorma/metanorma-iec/issues/440 -->
@@ -746,7 +746,8 @@
 											</fo:block>
 											<fo:block font-size="9pt">
 												<xsl:call-template name="addLetterSpacing">
-													<xsl:with-param name="text" select="//mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:secretariat"/>
+													<!-- <xsl:with-param name="text" select="//mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:secretariat"/> -->
+													<xsl:with-param name="text" select="normalize-space(//mn:metanorma/mn:bibdata/mn:contributor[mn:role/mn:description = 'secretariat']/mn:organization/mn:subdivision)"/>
 												</xsl:call-template>
 											</fo:block>
 										</fo:table-cell>
@@ -1018,7 +1019,7 @@
 			<fo:inline font-size="8pt" padding-left="0.5mm" color="rgb(88, 88, 90)">
 				<xsl:choose>
 					<xsl:when test="count((//mn:metanorma)[1]/mn:bibdata/mn:copyright) = 1 and 
-					count((//mn:metanorma)[1]/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'Technical committee']) &lt;=1">®</xsl:when>
+					count((//mn:metanorma)[1]/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'committee']) &lt;=1">®</xsl:when>
 					<xsl:otherwise><xsl:attribute name="padding-left">1mm</xsl:attribute>&#xa0;</xsl:otherwise>
 				</xsl:choose>
 			</fo:inline>
@@ -1217,9 +1218,9 @@
 	<xsl:template name="outputLogo">
 		<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-IEC))}" width="18mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/> -->
 		<xsl:choose>
-			<xsl:when test="(//mn:metanorma)[1]/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'Technical committee']/mn:organization/mn:abbreviation">
+			<xsl:when test="(//mn:metanorma)[1]/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'committee']/mn:organization/mn:abbreviation">
 				<!-- https://github.com/metanorma/metanorma-iec/issues/190#issuecomment-3122029444 -->
-				<xsl:for-each select="(//mn:metanorma)[1]/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'Technical committee']/mn:organization/mn:abbreviation">
+				<xsl:for-each select="(//mn:metanorma)[1]/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'committee']/mn:organization/mn:abbreviation">
 					<xsl:variable name="copyright_year" select="ancestor::mn:bibdata/mn:copyright/mn:from"/>
 					<xsl:variable name="items">
 						<xsl:choose>

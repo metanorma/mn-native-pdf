@@ -315,9 +315,8 @@
 					<fo:block margin-bottom="12pt">
 						<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:name"/>
 						<xsl:text> TC </xsl:text>
-						<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:technical-committee"/>
-						<!-- <xsl:text> </xsl:text>
-						<xsl:value-of select="//mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author' and mn:description[normalize-space(@language) = ''] = 'Technical committee']]/mn:organization/mn:subdivision[@type = 'Technical committee']/mn:identifier"/> -->
+						<!-- <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:technical-committee"/> -->
+						<xsl:value-of select="//mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Technical committee']/mn:name"/>
 						<xsl:text> </xsl:text>
 					</fo:block>
 				</fo:block>
