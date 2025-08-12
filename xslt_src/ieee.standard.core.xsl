@@ -1667,9 +1667,7 @@
 			
 				<xsl:variable name="attributes_">
 					<attributes>
-						<xsl:if test="@align = 'center' and ancestor::mn:clause[@id = 'boilerplate-participants' or normalize-space(mn:fmt-title) = 'Participants'] and following-sibling::*[1][self::mn:p and @align = 'center']">
-							<xsl:attribute name="space-after">0</xsl:attribute>
-						</xsl:if>
+						
 						<xsl:call-template name="setTextAlignment">
 							<xsl:with-param name="default">justify</xsl:with-param>
 						</xsl:call-template>
@@ -1685,6 +1683,11 @@
 							<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 							<xsl:attribute name="space-after">6pt</xsl:attribute>
 						</xsl:if>
+						
+						<xsl:if test="@align = 'center' and ancestor::mn:clause[@id = 'boilerplate-participants' or normalize-space(mn:fmt-title) = 'Participants'] and following-sibling::*[1][self::mn:p and @align = 'center']">
+							<xsl:attribute name="space-after">0</xsl:attribute>
+						</xsl:if>
+						
 					</attributes>
 				</xsl:variable>
 			
@@ -1695,7 +1698,7 @@
 					<xsl:for-each select="$attributes/attributes/@*">
 						<xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute>
 					</xsl:for-each>
-					
+					<!-- <fo:block>debug current_template=<xsl:value-of select="$current_template"/></fo:block> -->
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>
