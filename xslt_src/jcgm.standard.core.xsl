@@ -94,8 +94,13 @@
 		</xsl:call-template>
 	</xsl:variable>
 	
-	<xsl:variable name="copyrightText" select="concat('© ', (//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym, ' ', (//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:from, ' — ', $all_rights_reserved)"/>
+	<xsl:variable name="committee_acronym" select="(//mn:metanorma)[1]/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Committee']/mn:identifier[not(@full)]"/>
+	
+	<xsl:variable name="copyright_year" select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:from"/>
+	<!-- <xsl:variable name="copyrightText" select="concat('© ', (//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym, ' ', (//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:from, ' — ', $all_rights_reserved)"/> -->
+	<xsl:variable name="copyrightText" select="concat('© ', $committee_acronym, ' ', $copyright_year, ' — ', $all_rights_reserved)"/>
   
+	<xsl:variable name="docnumber" select="(//mn:metanorma)[1]/mn:bibdata/mn:docnumber"/>
 	
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
@@ -395,9 +400,10 @@
 				<!-- Example © JCGM 2009 -->
 				<fo:block font-size="11pt">
 					<fo:inline font-family="Times New Roman" font-size="12pt"><xsl:text>© </xsl:text></fo:inline>
-					<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym"/>
+					<!-- <xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym"/> -->
+					<xsl:value-of select="$committee_acronym"/>
 					<xsl:text> </xsl:text>
-					<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:from"/>
+					<xsl:value-of select="$copyright_year"/>
 				</fo:block>
 			</fo:static-content>
 			<fo:flow flow-name="xsl-region-body">
@@ -405,11 +411,12 @@
 				<xsl:call-template name="insertDraftWatermark"/>
 				<fo:block-container font-weight="bold">
 					<fo:block font-size="16.5pt">
-						<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym"/>
+						<!-- <xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym"/> -->
+						<xsl:value-of select="$committee_acronym"/>
 						<xsl:text> </xsl:text>
-						<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:docnumber"/>
+						<xsl:value-of select="$docnumber"/>
 						<fo:inline font-weight="normal">:</fo:inline>
-						<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:from"/>
+						<xsl:value-of select="$copyright_year"/>
 					</fo:block>
 					<fo:block font-size="13pt" font-weight="normal" space-after="19.5mm">
 						<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@type = 'title-provenance']"/>
@@ -455,12 +462,14 @@
 					<fo:table-body>
 						<fo:table-row>
 							<fo:table-cell>
-								<fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"/></fo:block>
+								<!-- <fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"/></fo:block> -->
+								<fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Committee']/mn:name"/></fo:block>
 							</fo:table-cell>
 							<fo:table-cell line-height="140%">
-								<fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym"/></fo:block>
-								<fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:docnumber"/></fo:block>
-								<fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:from"/></fo:block>
+								<!-- <fo:block><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym"/></fo:block> -->
+								<fo:block><xsl:value-of select="$committee_acronym"/></fo:block>
+								<fo:block><xsl:value-of select="$docnumber"/></fo:block>
+								<fo:block><xsl:value-of select="$copyright_year"/></fo:block>
 							</fo:table-cell>
 						</fo:table-row>
 					</fo:table-body>
@@ -1045,11 +1054,12 @@
 
 	
 	<xsl:variable name="header_text">
-		<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym"/>
+		<!-- <xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee/@acronym"/>-->
+		<xsl:value-of select="$committee_acronym"/>
 		<xsl:text> </xsl:text>
-		<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:docnumber"/>
+		<xsl:value-of select="$docnumber"/>
 		<xsl:text>:</xsl:text>
-		<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:from"/>
+		<xsl:value-of select="$copyright_year"/>
 	</xsl:variable>
 	
 	<xsl:template name="insertHeaderFooter">
