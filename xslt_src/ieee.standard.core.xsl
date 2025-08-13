@@ -1581,8 +1581,10 @@
 				
 				<xsl:variable name="officemembers_count" select="count($officemembers/officemember)"/>
 				
-				<xsl:variable name="mod" select="$officemembers_count mod 3"/>
-				<xsl:variable name="floor" select="floor($officemembers_count div 3)"/>
+				<xsl:variable name="cols">3</xsl:variable>
+				
+				<xsl:variable name="mod" select="$officemembers_count mod $cols"/>
+				<xsl:variable name="floor" select="floor($officemembers_count div $cols)"/>
 				
 				<xsl:variable name="max">
 					<xsl:choose>
@@ -1591,10 +1593,40 @@
 					</xsl:choose>
 				</xsl:variable>
 				
-				<!-- <fo:block>officemembers_count=<xsl:value-of select="$officemembers_count"/></fo:block>
-				<fo:block>mod=<xsl:value-of select="$mod"/></fo:block>
+				<!-- <fo:block>DEBUG officemembers_count=<xsl:value-of select="$officemembers_count"/></fo:block> -->
+				<!-- <fo:block>mod=<xsl:value-of select="$mod"/></fo:block>
 				<fo:block>floor=<xsl:value-of select="$floor"/></fo:block>
 				<fo:block>max=<xsl:value-of select="$max"/></fo:block> -->
+				
+				<!-- From https://github.com/metanorma/metanorma-ieee/issues/533#issuecomment-3178212854:
+				Algorithm:
+					3 cases: 0 extra, all balanced; 1 extra, place in middle, 2 extra, place on both sides.
+
+					The number of rows in each column is "ceil(names/cols)".
+					The number of extras is calculated as "names mod cols"
+					In the 1 extra case, place an additional line break after the "floor(names/cols)"-th item.
+					In the 2 extra case, place an additional line break after the "ceil(names/cols) + floor(names/cols)"-th item
+				-->
+				
+				<xsl:variable name="number_in_each_column" select="ceiling($officemembers_count div $cols)"/>
+				<!-- <fo:block>DEBUG number_in_each_column=<xsl:value-of select="$number_in_each_column"/></fo:block> -->
+				<xsl:variable name="number_extras" select="$officemembers_count mod $cols"/>
+				<!-- <fo:block>DEBUG number_extras=<xsl:value-of select="$number_extras"/></fo:block> -->
+				
+				<xsl:variable name="officemembers_updated_">
+					<xsl:for-each select="$officemembers/officemember">
+						<xsl:copy-of select="."/>
+						<xsl:choose>
+							<xsl:when test="$number_extras = 1 and position() = $floor">
+								<officemember/>
+							</xsl:when>
+							<xsl:when test="$number_extras = 2 and position() = ($number_in_each_column + $floor)">
+								<officemember/>
+							</xsl:when>
+						</xsl:choose>
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:variable name="officemembers_updated" select="xalan:nodeset($officemembers_updated_)"/>
 				
 				<fo:block font-size="9pt">
 					<fo:block>&#xa0;</fo:block>
@@ -1603,7 +1635,7 @@
 						<fo:table-column column-width="proportional-column-width(55)"/>
 						<fo:table-column column-width="proportional-column-width(42)"/>
 						<fo:table-body>
-							<xsl:for-each select="$officemembers/officemember[position() &lt;= $max]">
+							<xsl:for-each select="$officemembers_updated/officemember[position() &lt;= $number_in_each_column]"> <!-- $max -->
 								<fo:table-row>
 									<fo:table-cell padding-right="3mm">
 										<fo:block>
@@ -1612,12 +1644,12 @@
 									</fo:table-cell>
 									<fo:table-cell padding-right="3mm">
 										<fo:block>
-											<xsl:apply-templates select="following-sibling::*[number($max)]/node()"/>
+											<xsl:apply-templates select="following-sibling::*[number($number_in_each_column)]/node()"/> <!-- $max -->
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
 										<fo:block>
-											<xsl:apply-templates select="following-sibling::*[number($max) * 2]/node()"/>
+											<xsl:apply-templates select="following-sibling::*[number($number_in_each_column) * 2]/node()"/> <!-- $max -->
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
