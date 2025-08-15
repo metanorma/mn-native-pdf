@@ -4846,6 +4846,8 @@
 			
 			<xsl:call-template name="sections_element_style"/>
 			
+			<xsl:call-template name="addTagElementT"/>
+			
 			<xsl:if test="$layoutVersion = '1951' and $revision_date_num &gt;= 19680101">
 				<xsl:attribute name="space-before">6pt</xsl:attribute>
 				<xsl:if test="self::mn:introduction">
