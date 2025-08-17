@@ -1789,7 +1789,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:copyright-statement//mn:p" priority="2">
-		<fo:block>
+		<fo:block xsl:use-attribute-sets="copyright-statement-p-style">
 			<xsl:call-template name="refine_copyright-statement-p-style"/>
 			
 			<xsl:apply-templates />
