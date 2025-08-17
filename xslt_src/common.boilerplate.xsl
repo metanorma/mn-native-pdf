@@ -102,6 +102,15 @@
 			</xsl:if>
 		</xsl:if>
 	
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:if test="following-sibling::mn:p">
+				<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="not(following-sibling::mn:p)">
+				<xsl:attribute name="margin-left">4mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="following-sibling::mn:p">
 				<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
