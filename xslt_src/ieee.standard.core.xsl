@@ -1476,13 +1476,17 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:boilerplate/mn:copyright-statement//mn:p" priority="2">
-		<fo:block margin-top="6pt" margin-bottom="6pt" text-align="justify">
+		<fo:block xsl:use-attribute-sets="copyright-statement-p-style">
+			<xsl:call-template name="refine_copyright-statement-p-style"/>
+			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="mn:boilerplate/mn:license-statement//mn:p" priority="2">
-		<fo:block margin-top="6pt" margin-bottom="6pt" text-align="justify">
+		<fo:block xsl:use-attribute-sets="license-statement-p-style">
+			<xsl:call-template name="refine_license-statement-p-style"/>
+			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>

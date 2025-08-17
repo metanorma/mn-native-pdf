@@ -252,7 +252,6 @@
 
 				<xsl:call-template name="cover-page"/>
 				
-				
 				<xsl:for-each select="//mn:metanorma">
 					<xsl:variable name="lang" select="mn:bibdata/mn:language[@current = 'true']"/>
 					<xsl:variable name="current_document">
@@ -313,6 +312,27 @@
 	</xsl:template> 
 
 	<xsl:template name="cover-page">
+	
+		<xsl:variable name="document1_boilerplate">
+			<xsl:copy-of select="(//mn:metanorma)[1]/mn:boilerplate"/>
+		</xsl:variable>				
+		<xsl:variable name="updated_document1_boilerplate_">
+			<xsl:for-each select="xalan:nodeset($document1_boilerplate)">
+				<xsl:call-template name="updateXML"/>
+			</xsl:for-each>
+		</xsl:variable>
+		<xsl:variable name="updated_document1_boilerplate" select="xalan:nodeset($updated_document1_boilerplate_)"/>
+		
+		<xsl:variable name="document2_boilerplate">
+			<xsl:copy-of select="(//mn:metanorma)[2]/mn:boilerplate"/>
+		</xsl:variable>				
+		<xsl:variable name="updated_document2_boilerplate_">
+			<xsl:for-each select="xalan:nodeset($document2_boilerplate)">
+				<xsl:call-template name="updateXML"/>
+			</xsl:for-each>
+		</xsl:variable>
+		<xsl:variable name="updated_document2_boilerplate" select="xalan:nodeset($updated_document2_boilerplate_)"/>
+	
 		<!-- For 'Published' documents insert two cover pages -->
 		<xsl:if test="$stage_published = 'true'">
 		
@@ -356,7 +376,7 @@
 													<fo:block margin-bottom="3pt">THIS PUBLICATION IS COPYRIGHT PROTECTED</fo:block>
 													<fo:block margin-bottom="10pt">
 														<!-- Example: Copyright © 2014 IEC, Geneva, Switzerland -->
-														<xsl:apply-templates select="(//mn:metanorma)[1]/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-year')]"/>
+														<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-year')]"/>
 													</fo:block>
 												</fo:table-cell>
 											</fo:table-row>
@@ -369,7 +389,7 @@
 	either IEC or IEC's member National Committee in the country of the requester. If you have any questions about IEC
 	copyright or have an enquiry about obtaining additional rights to this publication, please contact the address below or
 	your local IEC member National Committee for further information. -->
-										<xsl:apply-templates select="(//mn:metanorma)[1]/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-message')]"/>
+										<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-message')]"/>
 										</fo:block>
 										<!-- Droits de reproduction réservés. Sauf indication contraire, aucune partie de cette publication ne peut être reproduite
 	ni utilisée sous quelque forme que ce soit et par aucun procédé, électronique ou mécanique, y compris la photocopie
@@ -377,10 +397,10 @@
 	questions sur le copyright de l'IEC ou si vous désirez obtenir des droits supplémentaires sur cette publication, utilisez
 	les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pays de résidence. -->
 										<fo:block margin-bottom="8pt" text-align="justify">
-											<xsl:apply-templates select="(//mn:metanorma)[2]/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-message')]"/>
+											<xsl:apply-templates select="$updated_document2_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-message')]"/>
 										</fo:block>
 									
-										<xsl:variable name="telpos" select="count((//mn:metanorma)[1]/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
+										<xsl:variable name="telpos" select="count($updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
 										<fo:table table-layout="fixed" width="100%">
 											<fo:table-column column-width="59mm"/>
 											<fo:table-column column-width="90mm"/>
@@ -392,13 +412,13 @@
 																3, rue de Varembé
 																CH-1211 Geneva 20
 																Switzerland -->
-															<xsl:apply-templates select="(//mn:metanorma)[1]/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-name')]" mode="coverpage"/>
+															<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-name')]" mode="coverpage"/>
 															<xsl:choose>
 																<xsl:when test="$telpos != 0">
-																	<xsl:apply-templates select="(//mn:metanorma)[1]/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/node()[position() &lt; $telpos]" mode="coverpage"/>
+																	<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/node()[position() &lt; $telpos]" mode="coverpage"/>
 																</xsl:when>
 																<xsl:otherwise>
-																	<xsl:apply-templates select="(//mn:metanorma)[1]/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]" mode="coverpage"/>
+																	<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]" mode="coverpage"/>
 																</xsl:otherwise>
 															</xsl:choose>
 														</fo:block>
@@ -411,7 +431,7 @@
 															www.iec.ch -->
 															<xsl:choose>
 																<xsl:when test="$telpos != 0">
-																	<xsl:apply-templates select="(//mn:metanorma)[1]/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/node()[position() &gt; $telpos]" mode="coverpage"/>
+																	<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/node()[position() &gt; $telpos]" mode="coverpage"/>
 																</xsl:when>
 																<xsl:otherwise>&#xA0;</xsl:otherwise>
 															</xsl:choose>
@@ -427,7 +447,7 @@
 						</fo:block-container>
 					</fo:block>
 					
-					<xsl:apply-templates select="(//mn:metanorma)[1]/mn:boilerplate/mn:feedback-statement"/> <!-- //mn:clause[not(@id) or @id != 'boilerplate-cenelec-attention'] -->
+					<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:feedback-statement"/> <!-- //mn:clause[not(@id) or @id != 'boilerplate-cenelec-attention'] -->
 					<fo:block span="all" border-bottom="0.5pt solid black"/>
 					<!-- About the IEC
 					The International Electrotechnical Commission (IEC) is the leading global organization that prepares and publishes
@@ -437,8 +457,8 @@
 					latest edition, a corrigenda or an amendment might have been published.
 					...
 					-->
-					<xsl:if test="(//mn:metanorma)[2]/mn:boilerplate/mn:feedback-statement">
-						<xsl:apply-templates select="(//mn:metanorma)[2]/mn:boilerplate/mn:feedback-statement"/>
+					<xsl:if test="$updated_document2_boilerplate/mn:boilerplate/mn:feedback-statement">
+						<xsl:apply-templates select="$updated_document2_boilerplate/mn:boilerplate/mn:feedback-statement"/>
 						<fo:block span="all"/>
 					</xsl:if>
 					
@@ -584,7 +604,7 @@
 					<fo:block-container background-color="rgb(236, 232, 232)" padding="2mm" border="1.5pt solid white">
 						<fo:block font-size="8pt" margin-bottom="6pt">
 						
-							<xsl:apply-templates select="(//mn:metanorma)[1]/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[not(@id)]"/>
+							<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[not(@id)]"/>
 						
 						</fo:block>
 					</fo:block-container>
@@ -905,7 +925,7 @@
 													</xsl:call-template>
 												</fo:block>
 												
-												<xsl:apply-templates select="(//mn:metanorma)[1]/mn:boilerplate/mn:feedback-statement/mn:clause[@id = 'boilerplate-cenelec-attention']"/>
+												<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:feedback-statement/mn:clause[@id = 'boilerplate-cenelec-attention']"/>
 												
 											</fo:table-cell>
 											<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
@@ -932,7 +952,7 @@
 					
 					<fo:block-container font-size="8pt" background-color="rgb(236, 232, 232)" margin-top="5mm" padding="2mm" text-align="justify" border="1.5pt solid white">
 						<fo:block>
-							<xsl:apply-templates select="(//mn:metanorma)[1]/mn:boilerplate/mn:license-statement" mode="cover-page-internal"/>
+							<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:license-statement" mode="cover-page-internal"/>
 						</fo:block>
 					</fo:block-container>
 					
@@ -1769,13 +1789,9 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:copyright-statement//mn:p" priority="2">
-		<fo:block>
-			<xsl:if test="following-sibling::mn:p">
-				<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="not(following-sibling::mn:p)">
-				<xsl:attribute name="margin-left">4mm</xsl:attribute>
-			</xsl:if>
+		<fo:block xsl:use-attribute-sets="copyright-statement-p-style">
+			<xsl:call-template name="refine_copyright-statement-p-style"/>
+			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -2124,16 +2140,25 @@
 								Fax: + 41 22 919 03 00
 								info@iec.ch
 								www.iec.ch -->
-								<xsl:variable name="telpos" select="count((//mn:metanorma)[1]/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
+								<xsl:variable name="document1_boilerplate">
+									<xsl:copy-of select="(//mn:metanorma)[1]/mn:boilerplate"/>
+								</xsl:variable>				
+								<xsl:variable name="updated_document1_boilerplate_">
+									<xsl:for-each select="xalan:nodeset($document1_boilerplate)">
+										<xsl:call-template name="updateXML"/>
+									</xsl:for-each>
+								</xsl:variable>
+								<xsl:variable name="updated_document1_boilerplate" select="xalan:nodeset($updated_document1_boilerplate_)"/>
+								<xsl:variable name="telpos" select="count($updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
 								<xsl:choose>
 									<xsl:when test="$telpos != 0">
-										<xsl:apply-templates select="(//mn:metanorma)[1]/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/node()[position() &lt;= $telpos]" mode="coverpage"/>
-										<xsl:apply-templates select="(//mn:metanorma)[1]/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/node()[position() &gt;= $telpos]" mode="coverpage">
+										<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/node()[position() &lt;= $telpos]" mode="coverpage"/>
+										<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/node()[position() &gt;= $telpos]" mode="coverpage">
 											<xsl:with-param name="lastpage">true</xsl:with-param>
 										</xsl:apply-templates>
 									</xsl:when>
 									<xsl:otherwise>
-										<xsl:apply-templates select="(//mn:metanorma)[1]/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]" mode="coverpage"/>
+										<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]" mode="coverpage"/>
 									</xsl:otherwise>
 								</xsl:choose>
 							</fo:block>
