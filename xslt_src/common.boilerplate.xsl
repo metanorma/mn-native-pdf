@@ -119,6 +119,16 @@
 				<xsl:attribute name="margin-left">4.5mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:if test="not(preceding-sibling::mn:p)"> <!-- first para -->
+				<xsl:attribute name="text-align">center</xsl:attribute>
+				<xsl:attribute name="margin-top">6pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
+				<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
 	</xsl:template>
 
 	<xsl:attribute-set name="license-statement-style">
