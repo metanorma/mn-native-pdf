@@ -110,7 +110,13 @@
 				<xsl:attribute name="margin-left">4mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
-	
+		
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="following-sibling::mn:p">
 				<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
@@ -177,6 +183,11 @@
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 			<xsl:attribute name="line-height">135%</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="margin-left">1.5mm</xsl:attribute>
 			<xsl:attribute name="margin-right">1.5mm</xsl:attribute>
@@ -190,6 +201,10 @@
 			<xsl:attribute name="line-height">135%</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- license-statement-p-style -->
+
+	<xsl:template name="refine_license-statement-p-style">
+		
+	</xsl:template>
 
 	<xsl:attribute-set name="legal-statement-style">
 		<xsl:if test="$namespace = 'ogc'">
