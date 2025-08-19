@@ -57,6 +57,11 @@
 	</xsl:attribute-set> <!-- termexample-style -->
 
 	<xsl:template name="refine_termexample-style">
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:if test="preceding-sibling::*[1][self::mn:termnote]">
+				<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
@@ -416,7 +421,19 @@
 			<xsl:call-template name="setBlockSpanAll"/>
 			
 			<xsl:apply-templates select="mn:fmt-name" />
-			<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
+			
+			<xsl:choose>
+				<xsl:when test="$namespace = 'ieee'">
+					<fo:block-container margin-left="11mm">
+						<fo:block-container margin-left="0mm">
+							<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
+						</fo:block-container>
+					</fo:block-container>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
+				</xsl:otherwise>
+			</xsl:choose>
 		</fo:block>
 	</xsl:template>
 	
@@ -438,11 +455,7 @@
 			<xsl:when test="contains($element, 'block')">
 				<fo:block xsl:use-attribute-sets="example-p-style">
 				
-					<xsl:if test="$namespace = 'ieee'">
-						<xsl:if test="not(preceding-sibling::mn:p)">
-							<xsl:attribute name="margin-top">6pt</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
+					<xsl:call-template name="refine_example-p-style"/>
 						
 					<xsl:apply-templates/>
 				</fo:block>
