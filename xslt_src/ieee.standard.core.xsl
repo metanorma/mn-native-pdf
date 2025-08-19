@@ -617,7 +617,7 @@
 										<!-- Example: LAN/MAN Standards Committee -->
 										<xsl:value-of select="$committee"/> 
 										<xsl:value-of select="$linebreak"/>
-										<xsl:text>of the</xsl:text>
+										<fo:inline font-weight="normal">of the</fo:inline>
 										<xsl:value-of select="$linebreak"/>
 										<!-- Example: IEEE Computer Society -->
 										<xsl:text>IEEE </xsl:text><xsl:value-of select="$society"/> 
