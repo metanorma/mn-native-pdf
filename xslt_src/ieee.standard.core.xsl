@@ -2084,6 +2084,9 @@
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block>
 								<fo:basic-link internal-destination="{@id}">
+									<xsl:call-template name="setAltText">
+										<xsl:with-param name="value" select="@alt-text"/>
+									</xsl:call-template>
 									<xsl:value-of select="substring-before(.,'—')"/>
 								</fo:basic-link>
 							</fo:block>
