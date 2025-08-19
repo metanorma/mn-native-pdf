@@ -3510,7 +3510,7 @@
 						</fo:instream-foreign-object>
 					</fo:block>
 				</fo:block-container>
-				<fo:block-container position="absolute" left="191mm" top="-1mm">
+				<fo:block-container position="absolute" left="191mm" top="-1mm" id="__internal_layout__covepage_bluebox_{generate-id()}">
 					<fo:block font-size="1">
 						<fo:instream-foreign-object content-width="26mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes">
 							<xsl:copy-of select="$Image-Blue-Boxes-svg"/>
@@ -3607,7 +3607,7 @@
 		<fo:page-sequence master-reference="cover-and-back-page-industry-connection-report" force-page-count="no-force">
 			<fo:static-content flow-name="header" role="artifact">
 				
-				<fo:block-container position="absolute" left="65.5mm" top="0mm">
+				<fo:block-container position="absolute" left="65.5mm" top="0mm" id="__internal_layout__covepage_bluebox_{generate-id()}">
 					<fo:block font-size="1">
 						<fo:instream-foreign-object content-height="93.5mm" content-width="64.1mm"  fox:alt-text="Image Boxes">
 							<xsl:copy-of select="$Image-Blue-Boxes-svg"/>
@@ -3844,7 +3844,7 @@
 						</fo:instream-foreign-object>
 					</fo:block>
 				</fo:block-container>
-				<fo:block-container position="absolute" left="191mm" top="-1mm">
+				<fo:block-container position="absolute" left="191mm" top="-1mm" id="__internal_layout__backpage_bluebox_{generate-id()}">
 					<fo:block font-size="1">
 						<fo:instream-foreign-object content-width="26mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes">
 							<xsl:copy-of select="$Image-Blue-Boxes-svg"/>
