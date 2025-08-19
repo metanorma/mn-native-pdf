@@ -514,8 +514,8 @@
 					</xsl:call-template>
 					
 					<xsl:variable name="title_standard_coverpage_">
-						<xsl:choose>
-							<!-- title starts with lower-cased letter -->
+						<!-- <xsl:choose>
+							title starts with lower-cased letter
 							<xsl:when test="translate(substring($title_intro,1,1),$lower,'') = ''">
 								<fo:block font-size="18pt">
 									<xsl:value-of select="$title_prefix"/>
@@ -523,16 +523,22 @@
 								</fo:block>
 							</xsl:when>
 							<xsl:otherwise>
-								<!-- Example: IEEE Standard for -->
+								Example: IEEE Standard for
 								<fo:block font-size="18pt">
 								<xsl:value-of select="$title_prefix"/>
 							</fo:block>
 								<fo:block font-size="18pt" margin-left="6mm">
-									<!-- Example Local and Metropolitan Area Networks— -->
+									Example Local and Metropolitan Area Networks—
 									<xsl:copy-of select="$title_intro"/>
 								</fo:block>
 							</xsl:otherwise>
-						</xsl:choose>
+						</xsl:choose> -->
+
+						<fo:block font-size="18pt">
+							<xsl:value-of select="$title_prefix"/>
+							<xsl:copy-of select="$title_intro"/>
+						</fo:block>
+
 						<fo:block font-size="24pt" space-before="12pt">
 							<!-- Example: Port-Based Network Access Control -->
 							<xsl:copy-of select="$title_main"/>
@@ -595,9 +601,11 @@
 										<fo:block font-size="9pt"><xsl:value-of select="$history_text"/></fo:block>
 									</fo:block>
 									
-									<fo:block font-weight="bold" space-before="13mm">
-										<xsl:copy-of select="$title_standard_coverpage"/>
-									</fo:block>
+									<fo:block-container width="150mm">
+										<fo:block font-weight="bold" space-before="13mm">
+											<xsl:copy-of select="$title_standard_coverpage"/>
+										</fo:block>
+									</fo:block-container>
 									
 									<fo:block font-size="10pt" space-before="9mm" space-after="4pt">Developed by the</fo:block>
 									<fo:block font-size="11pt" font-weight="bold">
@@ -1221,7 +1229,7 @@
 					<xsl:with-param name="committee" select="$committee"/>
 					<xsl:with-param name="standard_number" select="$standard_number"/>
 					<xsl:with-param name="history" select="$history_text"/>
-					<xsl:with-param name="standard_title_prefix" select="$title_prefix"/>
+					<!-- <xsl:with-param name="standard_title_prefix" select="$title_prefix"/> -->
 					<xsl:with-param name="cutoff_date" select="$cutoff_date"/>
 					<xsl:with-param name="expiration_date" select="$expiration_date"/>
 				</xsl:call-template>
@@ -3476,7 +3484,7 @@
 		<xsl:param name="committee" />
 		<xsl:param name="standard_number" />
 		<xsl:param name="history" />
-		<xsl:param name="standard_title_prefix" />
+		<!-- <xsl:param name="standard_title_prefix" /> -->
 		<xsl:param name="cutoff_date" />
 		<xsl:param name="expiration_date" />
 		
@@ -3523,28 +3531,32 @@
 			</fo:static-content>
 		
 			<fo:flow flow-name="xsl-region-body" font-family="Calibri">
-				<fo:block-container height="81mm" display-align="center" font-weight="bold">
+				<fo:block-container height="81mm" width="150mm" display-align="center" font-weight="bold">
 				
-					<xsl:choose>
-						<!-- title starts with lower-cased letter -->
+					<!-- <xsl:choose>
+						title starts with lower-cased letter
 						<xsl:when test="translate(substring($title_intro,1,1),$lower,'') = ''">
 							<fo:block font-size="22pt">
-								<xsl:value-of select="$standard_title_prefix"/>
+								<xsl:value-of select="$title_prefix"/>
 								<xsl:copy-of select="$title_intro"/>
 							</fo:block>
 						</xsl:when>
-						
 						<xsl:otherwise>
-							<!-- Example: IEEE Standard for -->
+							Example: IEEE Standard for
 							<fo:block font-size="22pt" space-after="2pt">
-								<xsl:value-of select="$standard_title_prefix"/>
+								<xsl:value-of select="$title_prefix"/>
 							</fo:block>
 							<fo:block font-size="22pt" margin-left="3mm">
-								<!-- Example: Local and Metropolitan Area Networks— -->
+								Example: Local and Metropolitan Area Networks—
 								<xsl:copy-of select="$title_intro"/>
 							</fo:block>
 						</xsl:otherwise>
-					</xsl:choose>
+					</xsl:choose> -->
+					
+					<fo:block font-size="22pt">
+						<xsl:value-of select="$title_prefix"/>
+						<xsl:copy-of select="$title_intro"/>
+					</fo:block>
 					
 					
 					<fo:block font-size="25pt" space-before="32pt">
