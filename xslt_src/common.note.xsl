@@ -423,8 +423,8 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
-			<xsl:attribute name="margin-top">12pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>		
 		<xsl:if test="$namespace = 'iec'">
@@ -476,6 +476,14 @@
 					</xsl:if>
 				</xsl:if>
 				<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:if test="preceding-sibling::*[1][self::mn:fmt-definition]">
+				<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="not(following-sibling::*)">
+				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
