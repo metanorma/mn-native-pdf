@@ -356,11 +356,16 @@
 				
 					<xsl:variable name="approved_date_year" select="substring(normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'issued']),1,4)"/>
 					
+					<xsl:variable name="designation" select="/mn:metanorma/mn:bibdata/mn:docnumber"/>
+					
 					<!-- IEEE Std 802.1X™-2020 -->
-					<xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="$approved_date_year"/></xsl:variable>
+					<!-- <xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="$approved_date_year"/></xsl:variable> -->
+					<xsl:variable name="standard_number_" select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IEEE']"/>
+					<xsl:variable name="regex_tm" select="concat('(', $designation, ')', '(-\d{4})?')"/>
+					<xsl:variable name="standard_number" select="java:replaceAll(java:java.lang.String.new($standard_number_), $regex_tm,'$1™$2')"/>
+					
 					<!-- <xsl:value-of select="substring(/mn:metanorma/mn:bibdata/mn:date[@type = 'published'],1,4)"/> -->
 				
-					<xsl:variable name="designation" select="/mn:metanorma/mn:bibdata/mn:docnumber"/>
 					<xsl:variable name="draft_number" select="/mn:metanorma/mn:bibdata/mn:version/mn:draft"/>
 					<xsl:variable name="revision_month" select="/mn:metanorma/mn:bibdata/mn:version/mn:revision-date"/>
 					<xsl:variable name="draft_month">
