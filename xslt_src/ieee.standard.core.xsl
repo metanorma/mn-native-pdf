@@ -356,11 +356,16 @@
 				
 					<xsl:variable name="approved_date_year" select="substring(normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'issued']),1,4)"/>
 					
+					<xsl:variable name="designation" select="/mn:metanorma/mn:bibdata/mn:docnumber"/>
+					
 					<!-- IEEE Std 802.1X™-2020 -->
-					<xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="$approved_date_year"/></xsl:variable>
+					<!-- <xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="$approved_date_year"/></xsl:variable> -->
+					<xsl:variable name="standard_number_" select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IEEE']"/>
+					<xsl:variable name="regex_tm" select="concat('(', $designation, ')', '(-\d{4})?')"/>
+					<xsl:variable name="standard_number" select="java:replaceAll(java:java.lang.String.new($standard_number_), $regex_tm,'$1™$2')"/>
+					
 					<!-- <xsl:value-of select="substring(/mn:metanorma/mn:bibdata/mn:date[@type = 'published'],1,4)"/> -->
 				
-					<xsl:variable name="designation" select="/mn:metanorma/mn:bibdata/mn:docnumber"/>
 					<xsl:variable name="draft_number" select="/mn:metanorma/mn:bibdata/mn:version/mn:draft"/>
 					<xsl:variable name="revision_month" select="/mn:metanorma/mn:bibdata/mn:version/mn:revision-date"/>
 					<xsl:variable name="draft_month">
@@ -514,8 +519,8 @@
 					</xsl:call-template>
 					
 					<xsl:variable name="title_standard_coverpage_">
-						<xsl:choose>
-							<!-- title starts with lower-cased letter -->
+						<!-- <xsl:choose>
+							title starts with lower-cased letter
 							<xsl:when test="translate(substring($title_intro,1,1),$lower,'') = ''">
 								<fo:block font-size="18pt">
 									<xsl:value-of select="$title_prefix"/>
@@ -523,16 +528,22 @@
 								</fo:block>
 							</xsl:when>
 							<xsl:otherwise>
-								<!-- Example: IEEE Standard for -->
+								Example: IEEE Standard for
 								<fo:block font-size="18pt">
 								<xsl:value-of select="$title_prefix"/>
 							</fo:block>
 								<fo:block font-size="18pt" margin-left="6mm">
-									<!-- Example Local and Metropolitan Area Networks— -->
+									Example Local and Metropolitan Area Networks—
 									<xsl:copy-of select="$title_intro"/>
 								</fo:block>
 							</xsl:otherwise>
-						</xsl:choose>
+						</xsl:choose> -->
+
+						<fo:block font-size="18pt">
+							<xsl:value-of select="$title_prefix"/>
+							<xsl:copy-of select="$title_intro"/>
+						</fo:block>
+
 						<fo:block font-size="24pt" space-before="12pt">
 							<!-- Example: Port-Based Network Access Control -->
 							<xsl:copy-of select="$title_main"/>
@@ -595,16 +606,18 @@
 										<fo:block font-size="9pt"><xsl:value-of select="$history_text"/></fo:block>
 									</fo:block>
 									
-									<fo:block font-weight="bold" space-before="13mm">
-										<xsl:copy-of select="$title_standard_coverpage"/>
-									</fo:block>
+									<fo:block-container width="150mm">
+										<fo:block font-weight="bold" space-before="13mm">
+											<xsl:copy-of select="$title_standard_coverpage"/>
+										</fo:block>
+									</fo:block-container>
 									
 									<fo:block font-size="10pt" space-before="9mm" space-after="4pt">Developed by the</fo:block>
 									<fo:block font-size="11pt" font-weight="bold">
 										<!-- Example: LAN/MAN Standards Committee -->
 										<xsl:value-of select="$committee"/> 
 										<xsl:value-of select="$linebreak"/>
-										<xsl:text>of the</xsl:text>
+										<fo:inline font-weight="normal">of the</fo:inline>
 										<xsl:value-of select="$linebreak"/>
 										<!-- Example: IEEE Computer Society -->
 										<xsl:text>IEEE </xsl:text><xsl:value-of select="$society"/> 
@@ -1221,7 +1234,7 @@
 					<xsl:with-param name="committee" select="$committee"/>
 					<xsl:with-param name="standard_number" select="$standard_number"/>
 					<xsl:with-param name="history" select="$history_text"/>
-					<xsl:with-param name="standard_title_prefix" select="$title_prefix"/>
+					<!-- <xsl:with-param name="standard_title_prefix" select="$title_prefix"/> -->
 					<xsl:with-param name="cutoff_date" select="$cutoff_date"/>
 					<xsl:with-param name="expiration_date" select="$expiration_date"/>
 				</xsl:call-template>
@@ -2071,6 +2084,9 @@
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block>
 								<fo:basic-link internal-destination="{@id}">
+									<xsl:call-template name="setAltText">
+										<xsl:with-param name="value" select="@alt-text"/>
+									</xsl:call-template>
 									<xsl:value-of select="substring-before(.,'—')"/>
 								</fo:basic-link>
 							</fo:block>
@@ -3476,7 +3492,7 @@
 		<xsl:param name="committee" />
 		<xsl:param name="standard_number" />
 		<xsl:param name="history" />
-		<xsl:param name="standard_title_prefix" />
+		<!-- <xsl:param name="standard_title_prefix" /> -->
 		<xsl:param name="cutoff_date" />
 		<xsl:param name="expiration_date" />
 		
@@ -3497,7 +3513,7 @@
 						</fo:instream-foreign-object>
 					</fo:block>
 				</fo:block-container>
-				<fo:block-container position="absolute" left="191mm" top="-1mm">
+				<fo:block-container position="absolute" left="191mm" top="-1mm" id="__internal_layout__covepage_bluebox_{generate-id()}">
 					<fo:block font-size="1">
 						<fo:instream-foreign-object content-width="26mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes">
 							<xsl:copy-of select="$Image-Blue-Boxes-svg"/>
@@ -3523,28 +3539,32 @@
 			</fo:static-content>
 		
 			<fo:flow flow-name="xsl-region-body" font-family="Calibri">
-				<fo:block-container height="81mm" display-align="center" font-weight="bold">
+				<fo:block-container height="81mm" width="150mm" display-align="center" font-weight="bold">
 				
-					<xsl:choose>
-						<!-- title starts with lower-cased letter -->
+					<!-- <xsl:choose>
+						title starts with lower-cased letter
 						<xsl:when test="translate(substring($title_intro,1,1),$lower,'') = ''">
 							<fo:block font-size="22pt">
-								<xsl:value-of select="$standard_title_prefix"/>
+								<xsl:value-of select="$title_prefix"/>
 								<xsl:copy-of select="$title_intro"/>
 							</fo:block>
 						</xsl:when>
-						
 						<xsl:otherwise>
-							<!-- Example: IEEE Standard for -->
+							Example: IEEE Standard for
 							<fo:block font-size="22pt" space-after="2pt">
-								<xsl:value-of select="$standard_title_prefix"/>
+								<xsl:value-of select="$title_prefix"/>
 							</fo:block>
 							<fo:block font-size="22pt" margin-left="3mm">
-								<!-- Example: Local and Metropolitan Area Networks— -->
+								Example: Local and Metropolitan Area Networks—
 								<xsl:copy-of select="$title_intro"/>
 							</fo:block>
 						</xsl:otherwise>
-					</xsl:choose>
+					</xsl:choose> -->
+					
+					<fo:block font-size="22pt">
+						<xsl:value-of select="$title_prefix"/>
+						<xsl:copy-of select="$title_intro"/>
+					</fo:block>
 					
 					
 					<fo:block font-size="25pt" space-before="32pt">
@@ -3590,7 +3610,7 @@
 		<fo:page-sequence master-reference="cover-and-back-page-industry-connection-report" force-page-count="no-force">
 			<fo:static-content flow-name="header" role="artifact">
 				
-				<fo:block-container position="absolute" left="65.5mm" top="0mm">
+				<fo:block-container position="absolute" left="65.5mm" top="0mm" id="__internal_layout__covepage_bluebox_{generate-id()}">
 					<fo:block font-size="1">
 						<fo:instream-foreign-object content-height="93.5mm" content-width="64.1mm"  fox:alt-text="Image Boxes">
 							<xsl:copy-of select="$Image-Blue-Boxes-svg"/>
@@ -3827,7 +3847,7 @@
 						</fo:instream-foreign-object>
 					</fo:block>
 				</fo:block-container>
-				<fo:block-container position="absolute" left="191mm" top="-1mm">
+				<fo:block-container position="absolute" left="191mm" top="-1mm" id="__internal_layout__backpage_bluebox_{generate-id()}">
 					<fo:block font-size="1">
 						<fo:instream-foreign-object content-width="26mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Boxes">
 							<xsl:copy-of select="$Image-Blue-Boxes-svg"/>
