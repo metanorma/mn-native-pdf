@@ -2727,13 +2727,16 @@
 	</xsl:template>
 	
 	<!-- add blue box after first break in Annex title -->
-	<xsl:template match="mn:br[not(preceding-sibling::mn:br)][ancestor::mn:fmt-title[preceding-sibling::*[1][self::mn:annex]]]" priority="2">
+	<xsl:template match="mn:br[ancestor::mn:fmt-title[preceding-sibling::*[1][self::mn:annex]]]" priority="2">
 		<xsl:choose>
 			<xsl:when test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') ">
-				<xsl:call-template name="addBlueBox"/>
+				<xsl:if test="not(preceding-sibling::mn:br)">
+					<xsl:call-template name="addBlueBox"/>
+				</xsl:if>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="$linebreak"/>
+				<!-- <xsl:value-of select="$linebreak"/> -->
+				<fo:block font-size="1pt" margin-top="3mm">&#xa0;</fo:block>
 			</xsl:otherwise>
 			
 		</xsl:choose>
