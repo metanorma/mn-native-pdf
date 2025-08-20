@@ -37,7 +37,7 @@
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
-			<xsl:attribute name="provisional-distance-between-starts">8mm</xsl:attribute>
+			<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
@@ -105,6 +105,30 @@
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:if test="ancestor::mn:ul or ancestor::mn:ol">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:if test="parent::mn:admonition[@type = 'commentary']">
+				<xsl:attribute name="margin-left">7mm</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="preceding-sibling::*[1][self::mn:p]">
+				<!-- <xsl:attribute name="margin-top">6pt</xsl:attribute> -->
+				<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="ancestor::mn:note or ancestor::mn:termnote">
+				<xsl:attribute name="provisional-distance-between-starts">4mm</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:variable name="processing_instruction_type" select="normalize-space(preceding-sibling::*[1]/processing-instruction('list-type'))"/>
+			<xsl:if test="self::mn:ul and normalize-space($processing_instruction_type) = 'simple'">
+				<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
+				<xsl:attribute name="line-height">1.3</xsl:attribute>
+				<xsl:attribute name="margin-left">6.2mm</xsl:attribute>
+				<xsl:attribute name="provisional-distance-between-starts">6.5mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
@@ -645,6 +669,17 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:choose>
+					<xsl:when test="$namespace = 'ieee'">
+						<fo:block-container margin-left="4mm">
+							<fo:block-container margin-left="0mm">
+								<fo:block role="SKIP">
+									<xsl:apply-templates select="." mode="list">
+										<xsl:with-param name="indent" select="$indent"/>
+									</xsl:apply-templates>
+								</fo:block>
+							</fo:block-container>
+						</fo:block-container>
+					</xsl:when>
 					<xsl:when test="$namespace = 'iso'">
 						<xsl:choose>
 							<xsl:when test="$layoutVersion = '1951' and self::mn:ul">

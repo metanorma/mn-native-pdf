@@ -873,16 +873,22 @@
 									<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:abstract" mode="flatxml"/>
 								</item>
 							
-								<xsl:for-each select="/*/mn:sections/*"> <!-- each section starts with a new page -->
+								<xsl:for-each select="/*/mn:sections/*[not(contains(@class, 'zzSTDTitle'))]"> <!-- each section starts with a new page -->
 									<item>
+										<xsl:if test="position() = 1">
+											<xsl:copy-of select="ancestor::mn:sections/*[contains(@class, 'zzSTDTitle')]"/> <!-- put title on the 1st page -->
+										</xsl:if>
 										<xsl:apply-templates select="." mode="flatxml"/>
 									</item>
 								</xsl:for-each>
 							</xsl:when> <!-- $current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report' -->
 							
 							<xsl:when test="$current_template = 'standard'">
-								<xsl:for-each select="/*/mn:sections/*"> <!-- each section starts with a new page -->
+								<xsl:for-each select="/*/mn:sections/*[not(contains(@class, 'zzSTDTitle'))]"> <!-- each section starts with a new page -->
 									<item>
+										<xsl:if test="position() = 1">
+											<xsl:copy-of select="ancestor::mn:sections/*[contains(@class, 'zzSTDTitle')]"/> <!-- put title on the 1st page -->
+										</xsl:if>
 										<xsl:apply-templates select="." mode="flatxml"/>
 									</item>
 								</xsl:for-each>
@@ -912,6 +918,12 @@
 						</item>
 						
 					</xsl:variable>
+					
+					<xsl:if test="$debug = 'true'">
+						<redirect:write file="page_items.xml">
+							<xsl:copy-of select="$structured_xml_"/>
+						</redirect:write>
+					</xsl:if>
 					
 					<!-- page break before each section -->
 					<xsl:variable name="structured_xml">
@@ -1906,19 +1918,22 @@
 
 	<xsl:template match="mn:p[@class = 'zzSTDTitle1']" priority="4">
 		<xsl:choose>
-			<xsl:when test="$current_template = 'draft'">
-				<fo:block font-family="Arial" font-size="23pt" font-weight="bold" margin-top="70pt" margin-bottom="48pt">
-					<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
-						<xsl:attribute name="font-size">24pt</xsl:attribute>
-					</xsl:if>
-					<xsl:apply-templates />
-				</fo:block>
+			<xsl:when test="$current_template = 'draft' or $current_template = 'standard'">
+				<fo:block-container width="140mm" role="SKIP">
+					<fo:block font-family="Arial" font-size="23pt" font-weight="bold" margin-top="84pt" margin-bottom="40pt" line-height="1.1">
+						<xsl:if test="(contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != '') or
+									$current_template = 'standard'">
+							<xsl:attribute name="font-size">24pt</xsl:attribute>
+						</xsl:if>
+						<xsl:apply-templates />
+					</fo:block>
+				</fo:block-container>
 			</xsl:when>
-			<xsl:when test="$current_template = 'standard'">
+			<!-- <xsl:when test="$current_template = 'standard'">
 				<fo:block font-family="Arial" font-weight="bold" margin-top="13mm" space-after="12pt">
 					<xsl:apply-templates />
 				</fo:block>
-			</xsl:when>
+			</xsl:when> -->
 			<xsl:otherwise> <!-- $current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report' -->
 			
 				<fo:block font-family="Arial Black" font-size="20pt" margin-top="18pt">
@@ -2712,13 +2727,16 @@
 	</xsl:template>
 	
 	<!-- add blue box after first break in Annex title -->
-	<xsl:template match="mn:br[not(preceding-sibling::mn:br)][ancestor::mn:fmt-title[preceding-sibling::*[1][self::mn:annex]]]" priority="2">
+	<xsl:template match="mn:br[ancestor::mn:fmt-title[preceding-sibling::*[1][self::mn:annex]]]" priority="2">
 		<xsl:choose>
 			<xsl:when test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') ">
-				<xsl:call-template name="addBlueBox"/>
+				<xsl:if test="not(preceding-sibling::mn:br)">
+					<xsl:call-template name="addBlueBox"/>
+				</xsl:if>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="$linebreak"/>
+				<!-- <xsl:value-of select="$linebreak"/> -->
+				<fo:block font-size="1pt" margin-top="3mm">&#xa0;</fo:block>
 			</xsl:otherwise>
 			
 		</xsl:choose>
@@ -2927,27 +2945,7 @@
 	<xsl:template match="mn:ul | mn:ol" mode="list" priority="2">
 		<fo:list-block xsl:use-attribute-sets="list-style">
 			
-			<xsl:if test="parent::mn:admonition[@type = 'commentary']">
-				<xsl:attribute name="margin-left">7mm</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="preceding-sibling::*[1][self::mn:p]">
-				<xsl:attribute name="margin-top">6pt</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:if test="ancestor::mn:note or ancestor::mn:termnote">
-				<xsl:attribute name="provisional-distance-between-starts">4mm</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:variable name="processing_instruction_type" select="normalize-space(preceding-sibling::*[1]/processing-instruction('list-type'))"/>
-			<xsl:if test="self::mn:ul and normalize-space($processing_instruction_type) = 'simple'">
-				<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
-				<xsl:attribute name="line-height">1.3</xsl:attribute>
-				<xsl:attribute name="margin-left">6.2mm</xsl:attribute>
-				<xsl:attribute name="provisional-distance-between-starts">6.5mm</xsl:attribute>
-			</xsl:if>
+			<xsl:call-template name="refine_list-style"/>
 			
 			<xsl:apply-templates select="node()[not(self::mn:note)]" />
 		</fo:list-block>
@@ -3524,7 +3522,7 @@
 		
 			<fo:static-content flow-name="right-region" role="artifact">
 				<fo:block-container font-family="Montserrat ExtraBold" font-weight="normal" reference-orientation="90" font-size="45.9pt" text-align="right">
-					<fo:block margin-right="-6mm" margin-top="-2mm">
+					<fo:block margin-right="-4mm" margin-top="-2mm">
 						<fo:instream-foreign-object content-width="2.5mm" content-height="11.9mm" scaling="non-uniform"  fox:alt-text="Image Box">
 							<xsl:call-template name="insertImageBoxSVG">
 								<xsl:with-param name="color">rgb(38,172,226)</xsl:with-param>
@@ -3858,7 +3856,7 @@
 		
 			<fo:flow flow-name="xsl-region-body" font-family="Calibri">
 			
-				<fo:block font-family="Montserrat ExtraBold" font-size="32pt" font-weight="normal" margin-top="44mm" line-height="0.9">
+				<fo:block font-family="Montserrat ExtraBold" font-size="32pt" font-weight="normal" margin-top="42mm" line-height="0.9">
 					<fo:block>RAISING THE</fo:block>
 					<fo:block>WORLD’S</fo:block>
 					<fo:block>STANDARDS</fo:block>
