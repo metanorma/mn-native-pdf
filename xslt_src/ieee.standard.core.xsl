@@ -873,16 +873,22 @@
 									<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:abstract" mode="flatxml"/>
 								</item>
 							
-								<xsl:for-each select="/*/mn:sections/*"> <!-- each section starts with a new page -->
+								<xsl:for-each select="/*/mn:sections/*[not(contains(@class, 'zzSTDTitle'))]"> <!-- each section starts with a new page -->
 									<item>
+										<xsl:if test="position() = 1">
+											<xsl:copy-of select="ancestor::mn:sections/*[contains(@class, 'zzSTDTitle')]"/> <!-- put title on the 1st page -->
+										</xsl:if>
 										<xsl:apply-templates select="." mode="flatxml"/>
 									</item>
 								</xsl:for-each>
 							</xsl:when> <!-- $current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report' -->
 							
 							<xsl:when test="$current_template = 'standard'">
-								<xsl:for-each select="/*/mn:sections/*"> <!-- each section starts with a new page -->
+								<xsl:for-each select="/*/mn:sections/*[not(contains(@class, 'zzSTDTitle'))]"> <!-- each section starts with a new page -->
 									<item>
+										<xsl:if test="position() = 1">
+											<xsl:copy-of select="ancestor::mn:sections/*[contains(@class, 'zzSTDTitle')]"/> <!-- put title on the 1st page -->
+										</xsl:if>
 										<xsl:apply-templates select="." mode="flatxml"/>
 									</item>
 								</xsl:for-each>
@@ -912,6 +918,12 @@
 						</item>
 						
 					</xsl:variable>
+					
+					<xsl:if test="$debug = 'true'">
+						<redirect:write file="page_items.xml">
+							<xsl:copy-of select="$structured_xml_"/>
+						</redirect:write>
+					</xsl:if>
 					
 					<!-- page break before each section -->
 					<xsl:variable name="structured_xml">
@@ -1906,19 +1918,22 @@
 
 	<xsl:template match="mn:p[@class = 'zzSTDTitle1']" priority="4">
 		<xsl:choose>
-			<xsl:when test="$current_template = 'draft'">
-				<fo:block font-family="Arial" font-size="23pt" font-weight="bold" margin-top="70pt" margin-bottom="48pt">
-					<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
-						<xsl:attribute name="font-size">24pt</xsl:attribute>
-					</xsl:if>
-					<xsl:apply-templates />
-				</fo:block>
+			<xsl:when test="$current_template = 'draft' or $current_template = 'standard'">
+				<fo:block-container width="140mm" role="SKIP">
+					<fo:block font-family="Arial" font-size="23pt" font-weight="bold" margin-top="84pt" margin-bottom="40pt" line-height="1.1">
+						<xsl:if test="(contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != '') or
+									$current_template = 'standard'">
+							<xsl:attribute name="font-size">24pt</xsl:attribute>
+						</xsl:if>
+						<xsl:apply-templates />
+					</fo:block>
+				</fo:block-container>
 			</xsl:when>
-			<xsl:when test="$current_template = 'standard'">
+			<!-- <xsl:when test="$current_template = 'standard'">
 				<fo:block font-family="Arial" font-weight="bold" margin-top="13mm" space-after="12pt">
 					<xsl:apply-templates />
 				</fo:block>
-			</xsl:when>
+			</xsl:when> -->
 			<xsl:otherwise> <!-- $current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report' -->
 			
 				<fo:block font-family="Arial Black" font-size="20pt" margin-top="18pt">
