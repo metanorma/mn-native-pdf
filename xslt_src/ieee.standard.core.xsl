@@ -2942,27 +2942,7 @@
 	<xsl:template match="mn:ul | mn:ol" mode="list" priority="2">
 		<fo:list-block xsl:use-attribute-sets="list-style">
 			
-			<xsl:if test="parent::mn:admonition[@type = 'commentary']">
-				<xsl:attribute name="margin-left">7mm</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="preceding-sibling::*[1][self::mn:p]">
-				<xsl:attribute name="margin-top">6pt</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:if test="ancestor::mn:note or ancestor::mn:termnote">
-				<xsl:attribute name="provisional-distance-between-starts">4mm</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:variable name="processing_instruction_type" select="normalize-space(preceding-sibling::*[1]/processing-instruction('list-type'))"/>
-			<xsl:if test="self::mn:ul and normalize-space($processing_instruction_type) = 'simple'">
-				<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
-				<xsl:attribute name="line-height">1.3</xsl:attribute>
-				<xsl:attribute name="margin-left">6.2mm</xsl:attribute>
-				<xsl:attribute name="provisional-distance-between-starts">6.5mm</xsl:attribute>
-			</xsl:if>
+			<xsl:call-template name="refine_list-style"/>
 			
 			<xsl:apply-templates select="node()[not(self::mn:note)]" />
 		</fo:list-block>
