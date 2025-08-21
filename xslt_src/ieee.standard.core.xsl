@@ -248,6 +248,14 @@
 				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 			</fo:simple-page-master>
 			
+			<fo:simple-page-master master-name="document-draft-two-columns" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="2" column-gap="10mm"/>
+				<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			
 			<!-- landscape -->
 			<fo:simple-page-master master-name="document-draft-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 				<fo:region-body margin-top="{$marginLeftRight1}mm" margin-bottom="{$marginLeftRight2}mm" margin-left="{$marginBottom}mm" margin-right="{$marginTop}mm"/>
@@ -671,7 +679,13 @@
 								</fo:flow>
 							</fo:page-sequence>
 							
-							<fo:page-sequence master-reference="document-draft" force-page-count="no-force">
+							
+							<!-- Example:
+								Important Notices and Disclaimers Concerning IEEE Standards Documents
+								IEEE Standards documents are made available for use subject to important notices and legal disclaimers. These notices and disclaimers, or a reference to this page (https://standards.ieee.org/ipr/disclaimers.html), appear in all standards and may be found under the heading “Important Notices and Disclaimers Concerning IEEE Standards Documents.”
+								...
+							-->
+							<fo:page-sequence master-reference="document-draft-two-columns" force-page-count="no-force">
 								<xsl:call-template name="insertFootnoteSeparator"/>
 								<xsl:call-template name="insertHeaderFooter">
 									<xsl:with-param name="document_id" select="$document_id"/>
@@ -683,14 +697,12 @@
 								</xsl:call-template>
 								
 								<fo:flow flow-name="xsl-region-body">
-									<fo:block>
-										<!-- Example:
-										Important Notices and Disclaimers Concerning IEEE Standards Documents
-										IEEE Standards documents are made available for use subject to important notices and legal disclaimers. These notices and disclaimers, or a reference to this page (https://standards.ieee.org/ipr/disclaimers.html), appear in all standards and may be found under the heading “Important Notices and Disclaimers Concerning IEEE Standards Documents.”
-										...
-										-->
-										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
-									</fo:block>
+								
+									<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
+									
+									<xsl:if test="not(/mn:metanorma/mn:boilerplate/mn:legal-statement/*)">
+										<fo:block>&#xa0;</fo:block>
+									</xsl:if>
 								</fo:flow>
 							</fo:page-sequence>
 						</xsl:when> <!-- $current_template = 'standard' -->
@@ -1570,13 +1582,17 @@
 	
 	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause[@id = 'boilerplate-participants' or normalize-space(mn:fmt-title) = 'Participants']" priority="2">
 		<fo:block break-after="page"/>
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
-		</fo:block>
+		<!-- <fo:block id="{@id}" font-size="1pt" span="all">&#xa0;</fo:block> -->
+		<xsl:apply-templates />
 	</xsl:template>
 	
 	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause[@id = 'boilerplate-participants' or normalize-space(mn:fmt-title) = 'Participants']/mn:clause" priority="2">
-		<fo:block id="{@id}" space-before="12pt">
+		<fo:block id="{@id}" space-before="12pt" font-size="1pt" span="all" keep-with-next="always">&#xa0;</fo:block>
+		<xsl:apply-templates />
+	</xsl:template>
+	
+	<xsl:template match="mn:boilerplate/mn:legal-statement/mn:clause[not(@id = 'boilerplate-participants' or normalize-space(mn:fmt-title) = 'Participants')]" priority="2">
+		<fo:block id="{@id}" span="all">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -1586,7 +1602,8 @@
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
-		<fo:block font-family="Arial" font-weight="bold" margin-bottom="12pt" space-before="18pt" keep-with-next="always" keep-together.within-column="always" role="H{$level}">
+		<fo:block font-family="Arial" font-weight="bold" margin-bottom="12pt" space-before="18pt" keep-with-next="always" keep-together.within-column="always" role="H{$level}" span="all">
+			<xsl:copy-of select="parent::mn:clause[@id = 'boilerplate-participants' or normalize-space(mn:fmt-title) = 'Participants']/@id"/>
 			<xsl:attribute name="font-size">
 				<xsl:choose>
 					<xsl:when test="$level = '1'">12pt</xsl:when>
@@ -1605,12 +1622,15 @@
 	
 	<xsl:template match="mn:boilerplate/mn:legal-statement//mn:p" priority="2">
 		<xsl:choose>
-			<xsl:when test="@type = 'officemember' and not(preceding-sibling::*[1][self::mn:p][@type = 'officemember'])"> <!-- special case -->
+			<xsl:when test="(@type = 'officemember' and not(preceding-sibling::*[1][self::mn:p][@type = 'officemember'])) or
+			(@type = 'officeorgmember' and not(preceding-sibling::*[1][self::mn:p][@type = 'officeorgmember']))"> <!-- special case -->
+			
+				<xsl:variable name="type" select="@type"/>
 			
 				<xsl:variable name="officemembers_">
 					<officemember><xsl:copy-of select="node()"/></officemember>
 					<xsl:variable name="pos_curr" select="count(preceding-sibling::*) + 1"/>
-					<xsl:variable name="pos_end_" select="count(following-sibling::*[not(@type = 'officemember')][1]/preceding-sibling::*)"/>
+					<xsl:variable name="pos_end_" select="count(following-sibling::*[not(@type = $type)][1]/preceding-sibling::*)"/>
 					<xsl:variable name="pos_end">
 						<xsl:choose>
 							<xsl:when test="$pos_end_ = 0">9999</xsl:when>
@@ -1626,98 +1646,137 @@
 				
 				<xsl:variable name="officemembers_count" select="count($officemembers/officemember)"/>
 				
-				<xsl:variable name="cols">3</xsl:variable>
+				<xsl:variable name="cols"><xsl:choose><xsl:when test="$type = 'officemember'">3</xsl:when><xsl:otherwise>2</xsl:otherwise></xsl:choose></xsl:variable>
 				
 				<xsl:variable name="mod" select="$officemembers_count mod $cols"/>
 				<xsl:variable name="floor" select="floor($officemembers_count div $cols)"/>
 				
 				<xsl:variable name="max">
 					<xsl:choose>
-						<xsl:when test="$mod = 0"><xsl:value-of select="$officemembers_count div 3"/></xsl:when>
+						<xsl:when test="$mod = 0"><xsl:value-of select="$officemembers_count div $cols"/></xsl:when>
 						<xsl:otherwise><xsl:value-of select="$floor + 1"/></xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
 				
-				<!-- <fo:block>DEBUG officemembers_count=<xsl:value-of select="$officemembers_count"/></fo:block> -->
-				<!-- <fo:block>mod=<xsl:value-of select="$mod"/></fo:block>
-				<fo:block>floor=<xsl:value-of select="$floor"/></fo:block>
-				<fo:block>max=<xsl:value-of select="$max"/></fo:block> -->
-				
-				<!-- From https://github.com/metanorma/metanorma-ieee/issues/533#issuecomment-3178212854:
-				Algorithm:
-					3 cases: 0 extra, all balanced; 1 extra, place in middle, 2 extra, place on both sides.
+				<xsl:choose>
+					<xsl:when test="$type = 'officemember'">
+						<!-- 3-column table -->
+						
+						<!-- <fo:block>DEBUG officemembers_count=<xsl:value-of select="$officemembers_count"/></fo:block> -->
+						<!-- <fo:block>mod=<xsl:value-of select="$mod"/></fo:block>
+						<fo:block>floor=<xsl:value-of select="$floor"/></fo:block>
+						<fo:block>max=<xsl:value-of select="$max"/></fo:block> -->
+						
+						<!-- From https://github.com/metanorma/metanorma-ieee/issues/533#issuecomment-3178212854:
+						Algorithm:
+							3 cases: 0 extra, all balanced; 1 extra, place in middle, 2 extra, place on both sides.
 
-					The number of rows in each column is "ceil(names/cols)".
-					The number of extras is calculated as "names mod cols"
-					In the 1 extra case, place an additional line break after the "floor(names/cols)"-th item.
-					In the 2 extra case, place an additional line break after the "ceil(names/cols) + floor(names/cols)"-th item
-				-->
-				
-				<xsl:variable name="number_in_each_column" select="ceiling($officemembers_count div $cols)"/>
-				<!-- <fo:block>DEBUG number_in_each_column=<xsl:value-of select="$number_in_each_column"/></fo:block> -->
-				<xsl:variable name="number_extras" select="$officemembers_count mod $cols"/>
-				<!-- <fo:block>DEBUG number_extras=<xsl:value-of select="$number_extras"/></fo:block> -->
-				
-				<xsl:variable name="officemembers_updated_">
-					<xsl:for-each select="$officemembers/officemember">
-						<xsl:copy-of select="."/>
-						<xsl:choose>
-							<xsl:when test="$number_extras = 1 and position() = $floor">
-								<officemember/>
-							</xsl:when>
-							<xsl:when test="$number_extras = 2 and position() = ($number_in_each_column + $floor)">
-								<officemember/>
-							</xsl:when>
-						</xsl:choose>
-					</xsl:for-each>
-				</xsl:variable>
-				<xsl:variable name="officemembers_updated" select="xalan:nodeset($officemembers_updated_)"/>
-				
-				<fo:block font-size="9pt">
-					<fo:block>&#xa0;</fo:block>
-					<fo:table width="100%" table-layout="fixed">
-						<fo:table-column column-width="proportional-column-width(55)"/>
-						<fo:table-column column-width="proportional-column-width(55)"/>
-						<fo:table-column column-width="proportional-column-width(42)"/>
-						<fo:table-body>
-							<xsl:for-each select="$officemembers_updated/officemember[position() &lt;= $number_in_each_column]"> <!-- $max -->
-								<fo:table-row>
-									<fo:table-cell padding-right="3mm">
-										<fo:block>
-											<xsl:apply-templates/>
-										</fo:block>
-									</fo:table-cell>
-									<fo:table-cell padding-right="3mm">
-										<fo:block>
-											<xsl:apply-templates select="following-sibling::*[number($number_in_each_column)]/node()"/> <!-- $max -->
-										</fo:block>
-									</fo:table-cell>
-									<fo:table-cell>
-										<fo:block>
-											<xsl:apply-templates select="following-sibling::*[number($number_in_each_column) * 2]/node()"/> <!-- $max -->
-										</fo:block>
-									</fo:table-cell>
-								</fo:table-row>
+							The number of rows in each column is "ceil(names/cols)".
+							The number of extras is calculated as "names mod cols"
+							In the 1 extra case, place an additional line break after the "floor(names/cols)"-th item.
+							In the 2 extra case, place an additional line break after the "ceil(names/cols) + floor(names/cols)"-th item
+						-->
+						
+						<xsl:variable name="number_in_each_column" select="ceiling($officemembers_count div $cols)"/>
+						<!-- <fo:block>DEBUG number_in_each_column=<xsl:value-of select="$number_in_each_column"/></fo:block> -->
+						<xsl:variable name="number_extras" select="$officemembers_count mod $cols"/>
+						<!-- <fo:block>DEBUG number_extras=<xsl:value-of select="$number_extras"/></fo:block> -->
+						
+						<xsl:variable name="officemembers_updated_">
+							<xsl:for-each select="$officemembers/officemember">
+								<xsl:copy-of select="."/>
+								<xsl:choose>
+									<xsl:when test="$number_extras = 1 and position() = $floor">
+										<officemember/>
+									</xsl:when>
+									<xsl:when test="$number_extras = 2 and position() = ($number_in_each_column + $floor)">
+										<officemember/>
+									</xsl:when>
+								</xsl:choose>
 							</xsl:for-each>
-						</fo:table-body>
-					</fo:table>
-				</fo:block>
+						</xsl:variable>
+						<xsl:variable name="officemembers_updated" select="xalan:nodeset($officemembers_updated_)"/>
+						
+						<fo:block font-size="9pt" span="all">
+							<fo:block>&#xa0;</fo:block>
+							<fo:table width="100%" table-layout="fixed">
+								<fo:table-column column-width="proportional-column-width(55)"/>
+								<fo:table-column column-width="proportional-column-width(55)"/>
+								<fo:table-column column-width="proportional-column-width(42)"/>
+								<fo:table-body>
+									<xsl:for-each select="$officemembers_updated/officemember[position() &lt;= $number_in_each_column]"> <!-- $max -->
+										<fo:table-row>
+											<fo:table-cell padding-right="3mm">
+												<fo:block>
+													<xsl:apply-templates/>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell padding-right="3mm">
+												<fo:block>
+													<xsl:apply-templates select="following-sibling::*[number($number_in_each_column)]/node()"/> <!-- $max -->
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell>
+												<fo:block>
+													<xsl:apply-templates select="following-sibling::*[number($number_in_each_column) * 2]/node()"/> <!-- $max -->
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</xsl:for-each>
+								</fo:table-body>
+							</fo:table>
+						</fo:block>
+					</xsl:when>
+					<xsl:otherwise> <!-- $type = 'officeorgmember' -->
+						<!-- 2-column table -->
+						<fo:block span="all">&#xa0;</fo:block>
+						<fo:block font-size="9pt" margin-right="10mm">
+							<xsl:for-each select="$officemembers/officemember">
+								<fo:block margin-left="4mm" text-indent="-4mm">
+									<xsl:apply-templates/>
+								</fo:block>
+							</xsl:for-each>
+							<!-- <fo:table width="100%" table-layout="fixed">
+								<fo:table-column column-width="proportional-column-width(1)"/>
+								<fo:table-column column-width="proportional-column-width(1)"/>
+								<fo:table-body>
+									<xsl:for-each select="$officemembers/officemember[position() &lt;= $max]">
+										<fo:table-row>
+											<fo:table-cell padding-right="3mm">
+												<fo:block margin-left="4mm" text-indent="-4mm">
+													<xsl:apply-templates/>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell padding-right="3mm">
+												<fo:block margin-left="4mm" text-indent="-4mm">
+													<xsl:apply-templates select="following-sibling::*[number($max)]/node()"/>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</xsl:for-each>
+								</fo:table-body>
+							</fo:table> -->
+						</fo:block>
+						<fo:block span="all">&#xa0;</fo:block>
+					</xsl:otherwise>
+				</xsl:choose>
 				
-				<xsl:if test="following-sibling::*[1][not(@type = 'officemember' or @type = 'emeritus_sign')]">
-					<fo:block font-size="10pt" space-after="12pt" keep-with-previous="always">&#xa0;</fo:block>
+				<xsl:if test="following-sibling::*[1][not(@type = 'officemember' or @type = 'officeorgmember' or @type = 'emeritus_sign')]">
+					<fo:block font-size="10pt" space-after="12pt" keep-with-previous="always" span="all">&#xa0;</fo:block>
 				</xsl:if>
-			</xsl:when> <!-- @type = 'officemember' -->
+			</xsl:when> <!-- @type = 'officemember' or @type = 'officeorgmember' -->
 			
 			<xsl:when test="@type = 'officemember' and preceding-sibling::*[1][self::mn:p][@type = 'officemember']"><!-- skip --></xsl:when>
+			<xsl:when test="@type = 'officeorgmember' and preceding-sibling::*[1][self::mn:p][@type = 'officeorgmember']"><!-- skip --></xsl:when>
 			
 			<xsl:when test="@type = 'emeritus_sign'">
-				<fo:block font-size="9pt" margin-left="9.4mm" space-before="6pt" space-after="12pt" keep-with-previous="always">
+				<fo:block font-size="9pt" margin-left="9.4mm" space-before="6pt" space-after="12pt" keep-with-previous="always" span="all">
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:when>
 			
 			<xsl:when test="@type = 'officeorgrepmemberhdr'">
-				<fo:block text-align-last="justify" space-after="12pt">
+				<fo:block text-align-last="justify" space-after="12pt" span="all">
 					<!-- before tab - left aligned text -->
 					<xsl:apply-templates select="mn:tab[1]/preceding-sibling::node()"/>
 					<fo:inline keep-together.within-line="always">
@@ -1729,7 +1788,7 @@
 			</xsl:when>
 			
 			<xsl:when test="@type = 'officeorgrepmember'">
-				<fo:block text-align-last="justify" space-after="6pt" font-size="9pt">
+				<fo:block text-align-last="justify" space-after="6pt" font-size="9pt" span="all">
 					<!-- before tab - left aligned text -->
 					<xsl:apply-templates select="mn:tab[1]/preceding-sibling::node()"/>
 					<fo:inline keep-together.within-line="always">
@@ -1770,7 +1829,7 @@
 			
 				<xsl:variable name="attributes" select="xalan:nodeset($attributes_)"/>
 				
-				<fo:block space-after="12pt">
+				<fo:block space-after="12pt" span="all">
 					
 					<xsl:for-each select="$attributes/attributes/@*">
 						<xsl:attribute name="{local-name()}"><xsl:value-of select="."/></xsl:attribute>
