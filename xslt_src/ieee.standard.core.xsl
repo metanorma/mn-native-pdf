@@ -546,7 +546,7 @@
 							</xsl:otherwise>
 						</xsl:choose> -->
 
-						<fo:block font-size="18pt">
+						<fo:block font-size="23pt"> <!-- 18pt -->
 							<xsl:value-of select="$title_prefix"/>
 							<xsl:copy-of select="$title_intro"/>
 						</fo:block>
@@ -613,14 +613,14 @@
 										<fo:block font-size="9pt"><xsl:value-of select="$history_text"/></fo:block>
 									</fo:block>
 									
-									<fo:block-container width="150mm">
+									<fo:block-container width="135mm">
 										<fo:block font-weight="bold" space-before="13mm">
 											<xsl:copy-of select="$title_standard_coverpage"/>
 										</fo:block>
 									</fo:block-container>
 									
 									<fo:block font-size="10pt" space-before="9mm" space-after="4pt">Developed by the</fo:block>
-									<fo:block font-size="11pt" font-weight="bold">
+									<fo:block font-size="11pt" font-weight="bold" margin-top="4mm">
 										<!-- Example: LAN/MAN Standards Committee -->
 										<xsl:value-of select="$committee"/> 
 										<xsl:value-of select="$linebreak"/>
@@ -633,7 +633,7 @@
 
 									<fo:block font-size="10pt" space-before="8mm" space-after="4pt">Approved <xsl:value-of select="$approved_date"/></fo:block>
 									<!-- Example: IEEE SA Standards Board -->
-									<fo:block font-size="11pt" font-weight="bold"><xsl:value-of select="$approved_by"/></fo:block>
+									<fo:block font-size="11pt" font-weight="bold" margin-top="4mm"><xsl:value-of select="$approved_by"/></fo:block>
 
 									<fo:block break-after="page"/>
 							
