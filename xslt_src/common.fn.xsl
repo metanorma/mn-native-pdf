@@ -75,7 +75,7 @@
 					<xsl:attribute name="padding-left">0.5mm</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="preceding-sibling::*[1][self::mn:fn]">,&#xa0;</xsl:if>
+			<!-- <xsl:if test="preceding-sibling::*[1][self::mn:fn]">,&#xa0;</xsl:if> -->
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'jcgm'">
 			<xsl:if test="ancestor::*[local-name()='table']">
@@ -88,6 +88,8 @@
 				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<!-- https://github.com/metanorma/metanorma-ieee/issues/595 -->
+		<xsl:if test="preceding-sibling::node()[normalize-space() != ''][1][self::mn:fn]">,<xsl:if test="$namespace = 'bsi'">&#xa0;</xsl:if></xsl:if>
 	</xsl:template> <!-- refine_fn-reference-style -->
 	
 	<xsl:attribute-set name="fn-style">
@@ -556,18 +558,19 @@
 					<xsl:copy-of select="."/>
 				</xsl:for-each>
 			
-				<xsl:if test="following-sibling::node()[normalize-space() != ''][1][self::mn:fn]">
+				<!-- https://github.com/metanorma/metanorma-ieee/issues/595 -->
+				<!-- <xsl:if test="following-sibling::node()[normalize-space() != ''][1][self::mn:fn]">
 					<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
-				</xsl:if>
+				</xsl:if> -->
 			
 				<xsl:if test="$namespace = 'bsi'">
 					<xsl:if test="$document_type = 'PAS'">
 						<xsl:attribute name="font-size">5pt</xsl:attribute>
 					</xsl:if>
-					<xsl:if test="following-sibling::*[1][self::mn:fn]">
+					<!-- <xsl:if test="following-sibling::*[1][self::mn:fn]">
 						<xsl:attribute name="padding-right">0mm</xsl:attribute>
 					</xsl:if>
-					<xsl:if test="preceding-sibling::*[1][self::mn:fn]">,</xsl:if>
+					<xsl:if test="preceding-sibling::*[1][self::mn:fn]">,</xsl:if> -->
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'iso'">
@@ -575,6 +578,8 @@
 						<xsl:attribute name="font-size">70%</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
+				
+				<xsl:if test="preceding-sibling::node()[normalize-space() != ''][1][self::mn:fn]">,</xsl:if>
 				
 				<xsl:call-template name="insert_basic_link">
 					<xsl:with-param name="element">
