@@ -132,6 +132,8 @@
 	
 	<xsl:variable name="line-height">1.8</xsl:variable>
 	
+	<xsl:variable name="page_break_between_sections" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:page-break-between-sections)"/>
+	
 	<xsl:template name="layout-master-set">
 		<fo:layout-master-set>
 		
@@ -884,14 +886,23 @@
 							</xsl:when> <!-- $current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report' -->
 							
 							<xsl:when test="$current_template = 'standard'">
-								<xsl:for-each select="/*/mn:sections/*[not(contains(@class, 'zzSTDTitle'))]"> <!-- each section starts with a new page -->
-									<item>
-										<xsl:if test="position() = 1">
-											<xsl:copy-of select="ancestor::mn:sections/*[contains(@class, 'zzSTDTitle')]"/> <!-- put title on the 1st page -->
-										</xsl:if>
-										<xsl:apply-templates select="." mode="flatxml"/>
-									</item>
-								</xsl:for-each>
+								<xsl:choose>
+									<xsl:when test="$page_break_between_sections = 'true'">
+										<xsl:for-each select="/*/mn:sections/*[not(contains(@class, 'zzSTDTitle'))]"> <!-- each section starts with a new page -->
+											<item>
+												<xsl:if test="position() = 1">
+													<xsl:copy-of select="ancestor::mn:sections/*[contains(@class, 'zzSTDTitle')]"/> <!-- put title on the 1st page -->
+												</xsl:if>
+												<xsl:apply-templates select="." mode="flatxml"/>
+											</item>
+										</xsl:for-each>
+									</xsl:when>
+									<xsl:otherwise>
+										<item>
+											<xsl:apply-templates select="/*/mn:sections/*" mode="flatxml"/>
+										</item>
+									</xsl:otherwise>
+								</xsl:choose>
 							</xsl:when> <!-- $current_template = 'standard' -->
 							
 							<xsl:otherwise>
