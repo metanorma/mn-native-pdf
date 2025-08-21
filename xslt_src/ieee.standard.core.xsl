@@ -262,16 +262,21 @@
 			<!-- ======================= -->
 			<!-- Standard document pages -->
 			<!-- ======================= -->
-			<fo:simple-page-master master-name="document-standard-first" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="document-standard-first-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
 				<fo:region-before region-name="header_empty" extent="{$marginTop}mm"/>
 				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
 				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
 			</fo:simple-page-master>
+			<fo:page-sequence-master master-name="document-standard-first">
+				<fo:repeatable-page-master-alternatives>
+					<fo:conditional-page-master-reference page-position="first" master-reference="document-standard-first-page"/>
+					<fo:conditional-page-master-reference page-position="any" master-reference="document-draft"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
 			<fo:page-sequence-master master-name="document-standard">
 				<fo:repeatable-page-master-alternatives>
-					<fo:conditional-page-master-reference page-position="first" master-reference="document-standard-first"/>
 					<fo:conditional-page-master-reference page-position="any" master-reference="document-draft"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
@@ -976,7 +981,7 @@
 							</xsl:if>
 						
 							<xsl:if test="$current_template = 'standard'">
-								<xsl:attribute name="master-reference">document-standard</xsl:attribute>
+								<xsl:attribute name="master-reference">document-standard<xsl:if test="position() = 1">-first</xsl:if></xsl:attribute>
 								<xsl:if test="@orientation = 'landscape'">
 									<xsl:attribute name="master-reference">document-standard<xsl:value-of select="@orientation"/></xsl:attribute>
 								</xsl:if>
