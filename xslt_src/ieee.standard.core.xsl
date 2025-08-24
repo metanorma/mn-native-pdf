@@ -555,7 +555,7 @@
 						</xsl:choose> -->
 
 						<fo:block font-size="23pt"> <!-- 18pt -->
-							<xsl:value-of select="$title_prefix"/>
+							<!-- <xsl:value-of select="$title_prefix"/> -->
 							<xsl:copy-of select="$title_intro"/>
 						</fo:block>
 
@@ -1178,7 +1178,7 @@
 									<xsl:text>™/D</xsl:text>
 									<xsl:value-of select="$draft_number"/>
 									<xsl:value-of select="$linebreak"/>
-									<xsl:copy-of select="$title_prefix"/>
+									<!-- <xsl:copy-of select="$title_prefix"/> -->
 									<xsl:copy-of select="$title"/>
 									
 									<!-- <xsl:copy-of select="$draft_title_part"/> -->
@@ -3285,7 +3285,7 @@
 					<xsl:value-of select="$document_id"/>
 				</fo:block>
 				<fo:block>
-					<xsl:copy-of select="$title_prefix"/>
+					<!-- <xsl:copy-of select="$title_prefix"/> -->
 					<xsl:copy-of select="$title"/>
 				</fo:block>
 			 
@@ -3635,7 +3635,7 @@
 					</xsl:choose> -->
 					
 					<fo:block font-size="22pt">
-						<xsl:value-of select="$title_prefix"/>
+						<!-- <xsl:value-of select="$title_prefix"/> -->
 						<xsl:copy-of select="$title_intro"/>
 					</fo:block>
 					
