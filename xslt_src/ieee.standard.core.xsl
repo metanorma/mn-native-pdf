@@ -555,7 +555,7 @@
 						</xsl:choose> -->
 
 						<fo:block font-size="23pt"> <!-- 18pt -->
-							<xsl:value-of select="$title_prefix"/>
+							<!-- <xsl:value-of select="$title_prefix"/> -->
 							<xsl:copy-of select="$title_intro"/>
 						</fo:block>
 
@@ -1178,7 +1178,7 @@
 									<xsl:text>™/D</xsl:text>
 									<xsl:value-of select="$draft_number"/>
 									<xsl:value-of select="$linebreak"/>
-									<xsl:copy-of select="$title_prefix"/>
+									<!-- <xsl:copy-of select="$title_prefix"/> -->
 									<xsl:copy-of select="$title"/>
 									
 									<!-- <xsl:copy-of select="$draft_title_part"/> -->
@@ -3285,7 +3285,7 @@
 					<xsl:value-of select="$document_id"/>
 				</fo:block>
 				<fo:block>
-					<xsl:copy-of select="$title_prefix"/>
+					<!-- <xsl:copy-of select="$title_prefix"/> -->
 					<xsl:copy-of select="$title"/>
 				</fo:block>
 			 
@@ -3597,7 +3597,7 @@
 		
 			<fo:static-content flow-name="right-region" role="artifact">
 				<fo:block-container font-family="Montserrat ExtraBold" font-weight="normal" reference-orientation="90" font-size="45.9pt" text-align="right">
-					<fo:block margin-right="-4mm" margin-top="-2mm">
+					<fo:block margin-right="-4mm" margin-top="0mm">
 						<fo:instream-foreign-object content-width="2.5mm" content-height="11.9mm" scaling="non-uniform"  fox:alt-text="Image Box">
 							<xsl:call-template name="insertImageBoxSVG">
 								<xsl:with-param name="color">rgb(38,172,226)</xsl:with-param>
@@ -3635,7 +3635,7 @@
 					</xsl:choose> -->
 					
 					<fo:block font-size="22pt">
-						<xsl:value-of select="$title_prefix"/>
+						<!-- <xsl:value-of select="$title_prefix"/> -->
 						<xsl:copy-of select="$title_intro"/>
 					</fo:block>
 					
