@@ -3597,7 +3597,7 @@
 		
 			<fo:static-content flow-name="right-region" role="artifact">
 				<fo:block-container font-family="Montserrat ExtraBold" font-weight="normal" reference-orientation="90" font-size="45.9pt" text-align="right">
-					<fo:block margin-right="-4mm" margin-top="-2mm">
+					<fo:block margin-right="-4mm" margin-top="0mm">
 						<fo:instream-foreign-object content-width="2.5mm" content-height="11.9mm" scaling="non-uniform"  fox:alt-text="Image Box">
 							<xsl:call-template name="insertImageBoxSVG">
 								<xsl:with-param name="color">rgb(38,172,226)</xsl:with-param>
