@@ -3655,6 +3655,44 @@
 					<!-- LAN/MAN Standards Committee -->
 					<fo:block font-size="12pt"><xsl:value-of select="$committee"/></fo:block>
 					
+					<xsl:variable name="coverpage_statement" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:coverpage-statement)"/>
+					<xsl:if test="$coverpage_statement != '' or /mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']]/mn:organization/mn:logo">
+						<fo:block font-size="12pt">
+							<fo:block>&#xa0;</fo:block>
+							<fo:table width="168mm" table-layout="fixed">
+								<fo:table-column column-width="100mm"/>
+								<fo:table-column column-width="68mm"/>
+								<fo:table-body>
+									<fo:table-row>
+										<fo:table-cell>
+											<fo:block><xsl:value-of select="$coverpage_statement"/></fo:block>
+										</fo:table-cell>
+										<fo:table-cell text-align="center">
+											<fo:block>
+												<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']]/mn:organization">
+													<fo:block>
+														<xsl:variable name="logo_image">
+															<xsl:for-each select="mn:logo/mn:image"> <!-- set context to logo/image -->
+																<xsl:element name="logo" namespace="{$namespace_full}">
+																	<xsl:element name="image" namespace="{$namespace_full}">
+																		<xsl:copy-of select="@*"/>
+																		<xsl:attribute name="width">32mm</xsl:attribute>
+																		<xsl:copy-of select="node()"/>
+																	</xsl:element>
+																</xsl:element>
+															</xsl:for-each>
+														</xsl:variable>
+														<xsl:apply-templates select="xalan:nodeset($logo_image)//mn:logo/mn:image"/>
+													</fo:block>
+												</xsl:for-each>
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+								</fo:table-body>
+							</fo:table>
+						</fo:block>
+					</xsl:if>
+					
 					<xsl:if test="normalize-space($cutoff_date) != ''">
 						<fo:block>&#xa0;</fo:block>
 						<fo:block font-size="12pt">
