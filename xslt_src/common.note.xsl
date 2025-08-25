@@ -174,8 +174,11 @@
 			<xsl:if test="$doctype = 'amendment' and parent::mn:quote">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="ancestor::mn:references">
-				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+			<xsl:if test="ancestor::mn:bibliography">
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+				<xsl:if test="following-sibling::*[1][self::mn:bibitem or self::mn:note]">
+					<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 		</xsl:if>
 		
@@ -410,7 +413,7 @@
 	
 	<xsl:template name="refine_note-p-style">
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:if test="ancestor::mn:references">
+			<xsl:if test="ancestor::mn:bibliography">
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>			
 			</xsl:if>
 		</xsl:if>
