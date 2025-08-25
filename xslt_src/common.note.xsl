@@ -174,6 +174,12 @@
 			<xsl:if test="$doctype = 'amendment' and parent::mn:quote">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="ancestor::mn:bibliography">
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+				<xsl:if test="following-sibling::*[1][self::mn:bibitem or self::mn:note]">
+					<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'jcgm'">
@@ -404,6 +410,14 @@
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_note-p-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="ancestor::mn:bibliography">
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>			
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:attribute-set name="termnote-style">
 		<xsl:if test="$namespace = 'bipm'">
@@ -735,11 +749,13 @@
 		<xsl:choose>
 			<xsl:when test="$num = 1"> <!-- display first NOTE's paragraph in the same line with label NOTE -->
 				<fo:inline xsl:use-attribute-sets="note-p-style" role="SKIP">
+					<xsl:call-template name="refine_note-p-style"/>
 					<xsl:apply-templates />
 				</fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block xsl:use-attribute-sets="note-p-style" role="SKIP">
+					<xsl:call-template name="refine_note-p-style"/>
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>
