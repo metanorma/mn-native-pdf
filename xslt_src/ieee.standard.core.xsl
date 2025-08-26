@@ -153,7 +153,7 @@
 			
 			<!-- IEEE standard cover page -->
 			<fo:simple-page-master master-name="cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-				<fo:region-body margin-top="62mm" margin-bottom="25mm" margin-left="21.2mm" margin-right="25mm"/>
+				<fo:region-body margin-top="52mm" margin-bottom="25mm" margin-left="21.2mm" margin-right="25mm"/> <!-- margin-top="62mm" -->
 				<fo:region-before region-name="header" extent="62mm" precedence="true"/>
 				<fo:region-after region-name="footer" extent="25mm"/>
 				<fo:region-start region-name="left-region" extent="21.2mm"/>
@@ -402,16 +402,10 @@
 						<xsl:if test="/mn:metanorma/mn:bibdata/mn:title[@language = 'intro' or @language = 'intro-en' or @language = 'en'] and /mn:metanorma/mn:bibdata/mn:title[@language = 'main' or @language = 'main-en']">—</xsl:if> -->
 					</xsl:variable>
 					
-					<xsl:variable name="title_main">
-						<!-- Example: Port-Based Network Access Control -->
-						<!-- <xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = 'main' or @language = 'main-en']/node()"/> -->
-					</xsl:variable>
-					
 					<xsl:variable name="title">
 						<xsl:choose>
 							<xsl:when test="$current_template = 'standard'">
 								<xsl:copy-of select="$title_intro"/>
-								<xsl:copy-of select="$title_main"/>
 							</xsl:when>
 							<xsl:otherwise>
 								<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[1]/node()"/>
@@ -541,7 +535,6 @@
 						<xsl:with-param name="approved_date" select="$approved_date"/>
 						<xsl:with-param name="approved_by" select="$approved_by"/>
 						<xsl:with-param name="title_intro" select="$title_intro"/>
-						<xsl:with-param name="title_main" select="$title_main"/>
 						<xsl:with-param name="standard_number" select="$standard_number"/>
 						<xsl:with-param name="history_text" select="$history_text"/>
 					</xsl:call-template>
@@ -572,10 +565,6 @@
 							<xsl:copy-of select="$title_intro"/>
 						</fo:block>
 
-						<fo:block font-size="24pt" space-before="12pt">
-							<!-- Example: Port-Based Network Access Control -->
-							<xsl:copy-of select="$title_main"/>
-						</fo:block>
 					</xsl:variable>
 					<xsl:variable name="title_standard_coverpage" select="xalan:nodeset($title_standard_coverpage_)"/>
 					
@@ -1161,7 +1150,6 @@
 		<xsl:param name="approved_date"/>
 		<xsl:param name="approved_by"/>
 		<xsl:param name="title_intro"/>
-		<xsl:param name="title_main"/>
 		<xsl:param name="standard_number"/>
 		<xsl:param name="history_text"/>
 		
@@ -1333,7 +1321,6 @@
 			<xsl:when test="$current_template = 'standard'">
 				<xsl:call-template name="insertCoverPage_Standard">
 					<xsl:with-param name="title_intro" select="$title_intro"/>
-					<xsl:with-param name="title_main" select="$title_main"/>
 					<xsl:with-param name="society" select="$society"/>
 					<xsl:with-param name="committee" select="$committee"/>
 					<xsl:with-param name="enabler" select="$enabler"/>
@@ -3625,7 +3612,6 @@
 	<!-- =============================== -->
 	<xsl:template name="insertCoverPage_Standard">
 		<xsl:param name="title_intro" />
-		<xsl:param name="title_main" />
 		<xsl:param name="society" />
 		<xsl:param name="committee" />
 		<xsl:param name="enabler" />
@@ -3678,7 +3664,7 @@
 			</fo:static-content>
 		
 			<fo:flow flow-name="xsl-region-body" font-family="Calibri">
-				<fo:block-container height="81mm" width="150mm" display-align="center" font-weight="bold">
+				<fo:block-container height="100mm" width="150mm" font-weight="bold"> <!-- height="81mm" display-align="center"  -->
 				
 					<!-- <xsl:choose>
 						title starts with lower-cased letter
@@ -3700,24 +3686,19 @@
 						</xsl:otherwise>
 					</xsl:choose> -->
 					
-					<fo:block font-size="22pt">
+					<fo:block font-size="25pt"> <!-- 22pt -->
 						<!-- <xsl:value-of select="$title_prefix"/> -->
 						<xsl:copy-of select="$title_intro"/>
 					</fo:block>
 					
-					
-					<fo:block font-size="25pt" space-before="32pt">
-						<!-- Example: Port-Based Network Access Control -->
-						<xsl:copy-of select="$title_main"/>
-					</fo:block>
 				</fo:block-container>
 				
-				<fo:block-container>
+				<fo:block font-size="16pt">
+					<!-- Example: IEEE Computer Society -->
+					<xsl:value-of select="$society"/> 
+				</fo:block>
 				
-					<fo:block font-size="16pt">
-						<!-- Example: IEEE Computer Society -->
-						<xsl:value-of select="$society"/> 
-					</fo:block>
+				<fo:block-container height="56mm" display-align="after">
 					
 					<fo:block font-size="12pt" space-before="13mm">
 						<xsl:if test="$committee != ''">
@@ -3801,9 +3782,11 @@
 						</fo:block>
 					</xsl:if>
 					
-					<fo:block font-size="12pt" font-weight="bold" space-before="40mm"><xsl:value-of select="$standard_number"/></fo:block>
+				</fo:block-container>
+				
+				<fo:block-container position="absolute" left="0mm" top="168mm">
+					<fo:block font-size="12pt" font-weight="bold"><xsl:value-of select="$standard_number"/></fo:block>
 					<fo:block font-size="10pt"><xsl:value-of select="$history"/></fo:block>
-					
 				</fo:block-container>
 			</fo:flow>
 		</fo:page-sequence>
