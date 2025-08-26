@@ -614,33 +614,30 @@
 									<xsl:with-param name="doctype" select="$doctype"/>
 									<xsl:with-param name="copyright_year" select="$copyright_year"/>
 									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
-									<xsl:with-param name="hideHeader">true</xsl:with-param>
+									<!-- <xsl:with-param name="hideHeader">true</xsl:with-param> -->
+									<xsl:with-param name="hideFooter">true</xsl:with-param>
 								</xsl:call-template>
 								
 								<fo:flow flow-name="xsl-region-body">
-									<fo:block text-align="right" margin-top="2mm">
+									<fo:block text-align="right" margin-top="-11.5mm" id="__internal_layout__titlepage_{generate-id()}"> <!-- margin-top="2mm" -->
 										<fo:block font-size="12pt" font-weight="bold"><xsl:value-of select="$standard_number"/></fo:block>
 										<fo:block font-size="9pt"><xsl:value-of select="$history_text"/></fo:block>
 									</fo:block>
 									
-									<fo:block-container width="135mm">
-										<fo:block font-weight="bold" space-before="13mm">
+									<fo:block-container width="105%"> <!-- width="135mm" -->
+										<fo:block font-weight="bold" space-before="25.5mm" line-height="1.15"> <!--  space-before="13mm" -->
 											<xsl:copy-of select="$title_standard_coverpage"/>
 										</fo:block>
 									</fo:block-container>
 									
-									
 									<xsl:if test="$committee != ''">
-										<fo:block font-size="10pt" space-before="9mm" space-after="4pt"><xsl:value-of select="$developed_by"/></fo:block>
+										<fo:block font-size="10pt" space-before="11mm" space-after="4pt"><xsl:value-of select="$developed_by"/></fo:block>
 										<fo:block font-size="11pt" font-weight="bold" margin-top="4mm">
 											<!-- Example: LAN/MAN Standards Committee -->
-											<xsl:value-of select="$committee"/> 
-											<xsl:value-of select="$linebreak"/>
-											<fo:inline font-weight="normal">of the</fo:inline>
-											<xsl:value-of select="$linebreak"/>
+											<fo:block line-height="1.12"><xsl:value-of select="$committee"/></fo:block>
+											<fo:block font-weight="normal" font-size="10pt">of the</fo:block>
 											<!-- Example: IEEE Computer Society -->
-											<xsl:value-of select="$society"/> 
-											<xsl:value-of select="$linebreak"/>
+											<fo:block><xsl:value-of select="$society"/></fo:block>
 										</fo:block>
 									</xsl:if>
 									
@@ -650,16 +647,11 @@
 											<!-- Sponsored by the
 												LAN/MAN Standards Committee -->
 											<xsl:for-each select="$enabler/mn:subdivision">
-												<xsl:value-of select="mn:subdivision/mn:name"/>
-												<xsl:value-of select="$linebreak"/>
-												<fo:inline font-weight="normal">of the</fo:inline>
-												<xsl:value-of select="$linebreak"/>
-												<xsl:value-of select="../mn:abbreviation"/><xsl:text>&#xa0;</xsl:text>
-												<xsl:value-of select="mn:name"/>
+												<fo:block line-height="1.12"><xsl:value-of select="mn:subdivision/mn:name"/></fo:block>
+												<fo:block font-weight="normal" font-size="10pt">of the</fo:block>
+												<fo:block><xsl:value-of select="concat(../mn:abbreviation, ' ', mn:name)"/></fo:block>
 												<xsl:if test="position() != last()">
-													<xsl:value-of select="$linebreak"/>
-													<fo:inline font-weight="normal">and the</fo:inline>
-													<xsl:value-of select="$linebreak"/>
+													<fo:block font-weight="normal" font-size="10pt">and the</fo:block>
 												</xsl:if>
 											</xsl:for-each>
 										</fo:block>
