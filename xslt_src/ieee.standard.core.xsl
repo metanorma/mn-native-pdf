@@ -385,7 +385,7 @@
 					
 					<!-- <xsl:value-of select="substring(/mn:metanorma/mn:bibdata/mn:date[@type = 'published'],1,4)"/> -->
 				
-					<xsl:variable name="draft_number" select="/mn:metanorma/mn:bibdata/mn:version/mn:draft"/>
+					<!-- <xsl:variable name="draft_number" select="/mn:metanorma/mn:bibdata/mn:version/mn:draft"/> -->
 					<xsl:variable name="revision_month" select="/mn:metanorma/mn:bibdata/mn:version/mn:revision-date"/>
 					<xsl:variable name="draft_month">
 						<xsl:call-template name="getMonthLocalizedByNum">
@@ -399,6 +399,8 @@
 						<!-- Example: IEEE Standard Example Local and Metropolitan Area Networks -->
 						<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en' and @type = 'main']/node()"/>
 					</xsl:variable>
+					
+					<xsl:variable name="docidentifier_draft" select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IEEE-draft']"/>
 					
 					<xsl:variable name="title">
 						<xsl:choose>
@@ -432,16 +434,18 @@
 						</xsl:if>
 					</xsl:variable>
 					
+					<!-- for page header -->
 					<xsl:variable name="document_id">
 						<xsl:choose>
 							<xsl:when test="$current_template = 'draft'">
 								<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
 									<xsl:text>IEEE </xsl:text>
 								</xsl:if>
-								<xsl:text>P</xsl:text>
+								<!-- <xsl:text>P</xsl:text>
 								<xsl:value-of select="$designation"/>
 								<xsl:text>/D</xsl:text>
-								<xsl:value-of select="$draft_number"/>
+								<xsl:value-of select="$draft_number"/> -->
+								<xsl:value-of select="$docidentifier_draft"/>
 								<xsl:text>, </xsl:text>
 								<xsl:value-of select="$draft_month"/>
 								<xsl:text> </xsl:text>
@@ -522,12 +526,13 @@
 					<xsl:call-template name="cover-page">
 						<xsl:with-param name="num" select="$num"/>
 						<xsl:with-param name="document_id" select="$document_id"/>
+						<xsl:with-param name="docidentifier_draft" select="$docidentifier_draft"/>
 						<xsl:with-param name="title" select="$title"/>
 						<xsl:with-param name="society" select="$society"/>
 						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 						<xsl:with-param name="copyright_year" select="$copyright_year"/>
 						<xsl:with-param name="designation" select="$designation"/>
-						<xsl:with-param name="draft_number" select="$draft_number"/>
+						<!-- <xsl:with-param name="draft_number" select="$draft_number"/> -->
 						<xsl:with-param name="committee" select="$committee"/>
 						<xsl:with-param name="enabler" select="$enabler"/>
 						<xsl:with-param name="approved_date" select="$approved_date"/>
@@ -1129,12 +1134,13 @@
 	<xsl:template name="cover-page">
 		<xsl:param name="num"/>
 		<xsl:param name="document_id"/>
+		<xsl:param name="docidentifier_draft"/>
 		<xsl:param name="title"/>
 		<xsl:param name="society"/>
 		<xsl:param name="copyright_holder"/>
 		<xsl:param name="copyright_year"/>
 		<xsl:param name="designation"/>
-		<xsl:param name="draft_number"/>
+		<!-- <xsl:param name="draft_number"/> -->
 		<xsl:param name="committee"/>
 		<xsl:param name="enabler"/>
 		<xsl:param name="approved_date"/>
@@ -1189,10 +1195,15 @@
 									<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
 										<xsl:attribute name="font-size">24pt</xsl:attribute>
 									</xsl:if>
-									<xsl:text>P</xsl:text>
+									<!-- <xsl:text>P</xsl:text>
 									<xsl:value-of select="$designation"/>
 									<xsl:text>™/D</xsl:text>
-									<xsl:value-of select="$draft_number"/>
+									<xsl:value-of select="$draft_number"/> -->
+									
+									<!-- add tm after number, i.e. from P2830/D1 to P2830™/D1 -->
+									<xsl:variable name="regex_tm" select="concat('(', $designation, ')', '(-\/)?')"/>
+									<xsl:value-of select="java:replaceAll(java:java.lang.String.new($docidentifier_draft), $regex_tm,'$1™$2')"/>
+									
 									<xsl:value-of select="$linebreak"/>
 									<!-- <xsl:copy-of select="$title_prefix"/> -->
 									<xsl:copy-of select="$title"/>
