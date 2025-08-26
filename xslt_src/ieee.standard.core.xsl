@@ -134,6 +134,9 @@
 	
 	<xsl:variable name="page_break_between_sections" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:page-break-between-sections)"/>
 	
+	<xsl:variable name="developed_by">Developed by the</xsl:variable>
+	<xsl:variable name="sponsored_by">Sponsored by the</xsl:variable>
+	
 	<xsl:template name="layout-master-set">
 		<fo:layout-master-set>
 		
@@ -459,10 +462,19 @@
 					</xsl:variable>
 					
 					<!-- <xsl:variable name="society" select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:society"/>  -->
-					<xsl:variable name="society" select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'authorizer']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Society']/mn:name"/>
+					<xsl:variable name="society">
+						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'authorizer']/mn:description = 'committee'][1]/mn:organization">
+							<xsl:value-of select="normalize-space(concat(mn:abbreviation, ' ', mn:subdivision[@type = 'Society']/mn:name))"/>
+						</xsl:for-each>
+					</xsl:variable>
 					
 					<!-- <xsl:variable name="committee" select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"/> -->
-					<xsl:variable name="committee" select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'authorizer']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Committee']/mn:name"/>
+					<xsl:variable name="committee" select="normalize-space(/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'authorizer']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Committee']/mn:name)"/>
+					
+					<xsl:variable name="enabler_">
+						<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'enabler']]/mn:organization/node()"/>
+					</xsl:variable>
+					<xsl:variable name="enabler" select="xalan:nodeset($enabler_)"/>
 					
 					<xsl:variable name="approved_by">IEEE SA Standards Board</xsl:variable>
 					<xsl:variable name="approved_date">
@@ -525,6 +537,7 @@
 						<xsl:with-param name="designation" select="$designation"/>
 						<xsl:with-param name="draft_number" select="$draft_number"/>
 						<xsl:with-param name="committee" select="$committee"/>
+						<xsl:with-param name="enabler" select="$enabler"/>
 						<xsl:with-param name="approved_date" select="$approved_date"/>
 						<xsl:with-param name="approved_by" select="$approved_by"/>
 						<xsl:with-param name="title_intro" select="$title_intro"/>
@@ -627,17 +640,41 @@
 										</fo:block>
 									</fo:block-container>
 									
-									<fo:block font-size="10pt" space-before="9mm" space-after="4pt">Developed by the</fo:block>
-									<fo:block font-size="11pt" font-weight="bold" margin-top="4mm">
-										<!-- Example: LAN/MAN Standards Committee -->
-										<xsl:value-of select="$committee"/> 
-										<xsl:value-of select="$linebreak"/>
-										<fo:inline font-weight="normal">of the</fo:inline>
-										<xsl:value-of select="$linebreak"/>
-										<!-- Example: IEEE Computer Society -->
-										<xsl:text>IEEE </xsl:text><xsl:value-of select="$society"/> 
-										<xsl:value-of select="$linebreak"/>
-									</fo:block>
+									
+									<xsl:if test="$committee != ''">
+										<fo:block font-size="10pt" space-before="9mm" space-after="4pt"><xsl:value-of select="$developed_by"/></fo:block>
+										<fo:block font-size="11pt" font-weight="bold" margin-top="4mm">
+											<!-- Example: LAN/MAN Standards Committee -->
+											<xsl:value-of select="$committee"/> 
+											<xsl:value-of select="$linebreak"/>
+											<fo:inline font-weight="normal">of the</fo:inline>
+											<xsl:value-of select="$linebreak"/>
+											<!-- Example: IEEE Computer Society -->
+											<xsl:value-of select="$society"/> 
+											<xsl:value-of select="$linebreak"/>
+										</fo:block>
+									</xsl:if>
+									
+									<xsl:if test="normalize-space($enabler) != ''">
+										<fo:block font-size="10pt" space-before="9mm" space-after="4pt"><xsl:value-of select="$sponsored_by"/></fo:block>
+										<fo:block font-size="11pt" font-weight="bold" margin-top="4mm">
+											<!-- Sponsored by the
+												LAN/MAN Standards Committee -->
+											<xsl:for-each select="$enabler/mn:subdivision">
+												<xsl:value-of select="mn:subdivision/mn:name"/>
+												<xsl:value-of select="$linebreak"/>
+												<fo:inline font-weight="normal">of the</fo:inline>
+												<xsl:value-of select="$linebreak"/>
+												<xsl:value-of select="../mn:abbreviation"/><xsl:text>&#xa0;</xsl:text>
+												<xsl:value-of select="mn:name"/>
+												<xsl:if test="position() != last()">
+													<xsl:value-of select="$linebreak"/>
+													<fo:inline font-weight="normal">and the</fo:inline>
+													<xsl:value-of select="$linebreak"/>
+												</xsl:if>
+											</xsl:for-each>
+										</fo:block>
+									</xsl:if>
 
 									<fo:block font-size="10pt" space-before="8mm" space-after="4pt">Approved <xsl:value-of select="$approved_date"/></fo:block>
 									<!-- Example: IEEE SA Standards Board -->
@@ -1120,6 +1157,7 @@
 		<xsl:param name="designation"/>
 		<xsl:param name="draft_number"/>
 		<xsl:param name="committee"/>
+		<xsl:param name="enabler"/>
 		<xsl:param name="approved_date"/>
 		<xsl:param name="approved_by"/>
 		<xsl:param name="title_intro"/>
@@ -1183,19 +1221,45 @@
 									
 									<!-- <xsl:copy-of select="$draft_title_part"/> -->
 								</fo:block>
-								<fo:block>Developed by the</fo:block>
-								<fo:block>&#xa0;</fo:block>
-								<fo:block font-size="11pt" font-weight="bold">
-									<!-- <Committee Name> -->
-									<xsl:value-of select="$committee"/> 
-								</fo:block>
-								<fo:block>of the</fo:block>
-								<fo:block font-size="11pt" font-weight="bold">
-									 <!-- IEEE <Society Name> -->
-									<xsl:text>IEEE </xsl:text><xsl:value-of select="$society"/>
-								</fo:block>
-								<fo:block>&#xa0;</fo:block>
-								<fo:block>&#xa0;</fo:block>
+								
+								<xsl:if test="$committee != ''">
+									<fo:block><xsl:value-of select="$developed_by"/></fo:block>
+									<fo:block>&#xa0;</fo:block>
+									<fo:block font-size="11pt" font-weight="bold">
+										<!-- <Committee Name> -->
+										<xsl:value-of select="$committee"/> 
+									</fo:block>
+									<fo:block>of the</fo:block>
+									<fo:block font-size="11pt" font-weight="bold">
+										 <!-- IEEE <Society Name> -->
+										<xsl:value-of select="$society"/>
+									</fo:block>
+									<fo:block>&#xa0;</fo:block>
+									<fo:block>&#xa0;</fo:block>
+								</xsl:if>
+								
+								<xsl:if test="normalize-space($enabler) != ''">
+									<!-- Sponsored by the
+									LAN/MAN Standards Committee -->
+									<fo:block><xsl:value-of select="$sponsored_by"/></fo:block>
+									<fo:block>&#xa0;</fo:block>
+									<xsl:for-each select="$enabler/mn:subdivision">
+										<fo:block font-size="11pt" font-weight="bold">
+											<xsl:value-of select="mn:subdivision/mn:name"/>
+										</fo:block>
+										<fo:block>of the</fo:block>
+										<fo:block font-size="11pt" font-weight="bold">
+											<xsl:value-of select="../mn:abbreviation"/><xsl:text>&#xa0;</xsl:text>
+											<xsl:value-of select="mn:name"/>
+										</fo:block>
+										<xsl:if test="position() != last()">
+											<fo:block>and the</fo:block>
+										</xsl:if>
+									</xsl:for-each>
+									<fo:block>&#xa0;</fo:block>
+									<fo:block>&#xa0;</fo:block>
+								</xsl:if>
+								
 								<fo:block>
 									<!-- Approved <Date Approved> -->
 									<xsl:text>Approved </xsl:text>
@@ -1272,6 +1336,7 @@
 					<xsl:with-param name="title_main" select="$title_main"/>
 					<xsl:with-param name="society" select="$society"/>
 					<xsl:with-param name="committee" select="$committee"/>
+					<xsl:with-param name="enabler" select="$enabler"/>
 					<xsl:with-param name="standard_number" select="$standard_number"/>
 					<xsl:with-param name="history" select="$history_text"/>
 					<!-- <xsl:with-param name="standard_title_prefix" select="$title_prefix"/> -->
@@ -3563,6 +3628,7 @@
 		<xsl:param name="title_main" />
 		<xsl:param name="society" />
 		<xsl:param name="committee" />
+		<xsl:param name="enabler" />
 		<xsl:param name="standard_number" />
 		<xsl:param name="history" />
 		<!-- <xsl:param name="standard_title_prefix" /> -->
@@ -3647,13 +3713,40 @@
 				</fo:block-container>
 				
 				<fo:block-container>
+				
 					<fo:block font-size="16pt">
 						<!-- Example: IEEE Computer Society -->
-						<xsl:text>IEEE </xsl:text><xsl:value-of select="$society"/> 
+						<xsl:value-of select="$society"/> 
 					</fo:block>
-					<fo:block font-size="12pt" space-before="13mm">Developed by the</fo:block>
-					<!-- LAN/MAN Standards Committee -->
-					<fo:block font-size="12pt"><xsl:value-of select="$committee"/></fo:block>
+					
+					<fo:block font-size="12pt" space-before="13mm">
+						<xsl:if test="$committee != ''">
+							<fo:block>
+								<!-- Developed by the
+									LAN/MAN Standards Committee -->
+								<xsl:value-of select="$developed_by"/>
+								<xsl:value-of select="$linebreak"/>
+								<xsl:value-of select="$committee"/>
+							</fo:block>
+						</xsl:if>
+						<xsl:if test="normalize-space($enabler) != ''">
+							<fo:block>&#xa0;</fo:block>
+							<fo:block>
+								<!-- Sponsored by the
+									LAN/MAN Standards Committee -->
+								<xsl:value-of select="$sponsored_by"/>
+								<xsl:value-of select="$linebreak"/>
+								<xsl:for-each select="$enabler/mn:subdivision/mn:subdivision/mn:name">
+									<xsl:value-of select="."/>
+									<xsl:if test="position() != last()">
+										<xsl:value-of select="$linebreak"/>
+										<xsl:text>and the</xsl:text>
+										<xsl:value-of select="$linebreak"/>
+									</xsl:if>
+								</xsl:for-each>
+							</fo:block>
+						</xsl:if>
+					</fo:block>
 					
 					<xsl:variable name="coverpage_statement" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:coverpage-statement)"/>
 					<xsl:if test="$coverpage_statement != '' or /mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']]/mn:organization/mn:logo">
