@@ -113,6 +113,13 @@
 				<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
 				<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
 			</fo:simple-page-master>
+			<fo:simple-page-master master-name="blankpage-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm"/>
+				<fo:region-before region-name="header-blank" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
+			</fo:simple-page-master>
 			<!-- Preface pages -->
 			<fo:page-sequence-master master-name="preface">
 				<fo:repeatable-page-master-alternatives>
@@ -124,7 +131,7 @@
 			</fo:page-sequence-master>
 			<fo:page-sequence-master master-name="preface-landscape">
 				<fo:repeatable-page-master-alternatives>
-					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
+					<fo:conditional-page-master-reference master-reference="blankpage-landscape" blank-or-not-blank="blank"/>
 					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
 					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
 				</fo:repeatable-page-master-alternatives>
@@ -146,7 +153,7 @@
 			</fo:page-sequence-master>
 			<fo:page-sequence-master master-name="document-landscape">
 				<fo:repeatable-page-master-alternatives>
-					<fo:conditional-page-master-reference master-reference="blankpage" blank-or-not-blank="blank"/>
+					<fo:conditional-page-master-reference master-reference="blankpage-landscape" blank-or-not-blank="blank"/>
 					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
 					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
 				</fo:repeatable-page-master-alternatives>
@@ -285,6 +292,7 @@
 									<xsl:with-param name="edition" select="$edition"/>
 									<xsl:with-param name="month_year" select="$month_year"/>
 									<xsl:with-param name="font-weight">normal</xsl:with-param>
+									<xsl:with-param name="orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:with-param>
 								</xsl:call-template>
 								<fo:flow flow-name="xsl-region-body">
 									
@@ -335,6 +343,7 @@
 									<xsl:with-param name="edition" select="$edition"/>
 									<xsl:with-param name="month_year" select="$month_year"/>
 									<xsl:with-param name="font-weight">normal</xsl:with-param>
+									<xsl:with-param name="orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:with-param>
 								</xsl:call-template>
 								<fo:flow flow-name="xsl-region-body">
 									
@@ -369,6 +378,7 @@
 									<xsl:with-param name="docidentifier" select="$docidentifier"/>
 									<xsl:with-param name="edition" select="$edition"/>
 									<xsl:with-param name="month_year" select="$month_year"/>
+									<xsl:with-param name="orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:with-param>
 								</xsl:call-template>
 								<fo:flow flow-name="xsl-region-body">
 									<fo:block-container>
@@ -1141,6 +1151,7 @@
 		<xsl:param name="edition"/>
 		<xsl:param name="month_year"/>
 		<xsl:param name="font-weight" select="'bold'"/>
+		<xsl:param name="orientation"/>
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container height="100%" font-size="8pt">
 				<fo:block padding-top="12.5mm">
@@ -1179,6 +1190,7 @@
 		</fo:static-content>
 		<xsl:call-template name="insertHeaderBlank">
 			<xsl:with-param name="title_header" select="$title_header"/>
+			<xsl:with-param name="orientation" select="$orientation"/>
 		</xsl:call-template>
 		<xsl:call-template name="insertFooter">
 			<xsl:with-param name="docidentifier" select="$docidentifier"/>
@@ -1188,6 +1200,7 @@
 	</xsl:template>
 	<xsl:template name="insertHeaderBlank">
 		<xsl:param name="title_header"/>
+		<xsl:param name="orientation"/>
 		<fo:static-content flow-name="header-blank" role="artifact">
 			<fo:block-container height="100%" font-size="8pt">
 				<fo:block padding-top="12.5mm">
@@ -1206,6 +1219,10 @@
 				</fo:block>
 			</fo:block-container>
 			<fo:block-container position="absolute" left="40.5mm" top="130mm" height="4mm" width="79mm" border="0.75pt solid black" text-align="center" display-align="center" line-height="100%">
+				<xsl:if test="$orientation = '-landscape'">
+					<xsl:attribute name="left">84mm</xsl:attribute>
+					<xsl:attribute name="top">87mm</xsl:attribute>
+				</xsl:if>
 				<fo:block>Page intentionally left blank</fo:block>
 			</fo:block-container>
 		</fo:static-content>
