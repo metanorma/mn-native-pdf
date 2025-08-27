@@ -20,42 +20,47 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="title-en"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en']/node()"/></xsl:variable>
-	<xsl:variable name="title-main_"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'main']/node()"/></xsl:variable>
-	<xsl:variable name="title-main"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-main']/node()"/></xsl:variable>
-	<xsl:variable name="title-appendix"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-appendix']/node()"/></xsl:variable>
-	<xsl:variable name="title-annex"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-annex']/node()"/></xsl:variable>
-	<xsl:variable name="title-part"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-part']/node()"/></xsl:variable>
-	<xsl:variable name="title-supplement"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-supplement']/node()"/></xsl:variable>
-	<xsl:variable name="title_header">
-		<xsl:copy-of select="$title-main_"/>
-		<xsl:if test="normalize-space($title-main_) = ''"><xsl:copy-of select="$title-en"/></xsl:if>
-	</xsl:variable>
-	
-  <xsl:variable name="docidentifier_parent" select="normalize-space(/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IHO-parent-document'])"/>
-	<xsl:variable name="docidentifier">
-		<xsl:value-of select="$docidentifier_parent"/>
-		<xsl:if test="$docidentifier_parent = ''"><xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IHO']"/></xsl:if>
-  </xsl:variable>
-	<xsl:variable name="copyrightText" select="concat('© International Hydrographic Association ', /mn:metanorma/mn:bibdata/mn:copyright/mn:from ,' – All rights reserved')"/>
-	<xsl:variable name="edition">
-		<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:edition[normalize-space(@language) = '']"/>
-	</xsl:variable>
-	<xsl:variable name="month_year">
-		<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']"/>
-	</xsl:variable>
-
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
 		<item id="term-script" display="false">3.2</item>
 	-->
 	<xsl:variable name="contents_">
-		<mnx:contents>
-			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
-			<xsl:call-template name="processMainSectionsDefault_Contents"/>
+		<xsl:variable name="bundle" select="count(//mn:metanorma) &gt; 1"/>
+		<xsl:for-each select="//mn:metanorma">
+			<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
+			<xsl:variable name="docidentifier"><xsl:value-of select="mn:bibdata/mn:docidentifier[@type = 'IHO']"/></xsl:variable>
+			<xsl:variable name="docnumber_">
+				<xsl:choose>
+					<xsl:when test="ancestor::*[local-name() = 'doc-container'] and 
+					(preceding::mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IHO'] = $docidentifier or
+					 following::mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IHO'] = $docidentifier)">
+						<xsl:variable name="doc_container_id" select="ancestor::*[local-name() = 'doc-container']/@id"/>
+						<xsl:value-of select="ancestor::*[local-name() = 'metanorma-collection']//*[local-name() = 'entry'][@target = $doc_container_id]/*[local-name() = 'identifier']"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$docidentifier"/>
+						<xsl:if test="normalize-space($docidentifier) = ''">
+							<xsl:value-of select="mn:bibdata/mn:docidentifier[1]"/>
+						</xsl:if>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:variable name="docnumber" select="normalize-space($docnumber_)"/>
+			<xsl:variable name="current_document">
+				<xsl:copy-of select="."/>
+			</xsl:variable>
 			
-			<xsl:call-template name="processTablesFigures_Contents"/>
-		</mnx:contents>
+			<xsl:for-each select="xalan:nodeset($current_document)"> <!-- <xsl:for-each select="."> -->
+				<mnx:doc num="{$num}" firstpage_id="firstpage_id_{$num}" title-part="{$docnumber}" bundle="{$bundle}"> <!-- 'bundle' means several different documents (not language versions) in one xml -->
+					<mnx:contents>
+						<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
+						<xsl:call-template name="processMainSectionsDefault_Contents"/>
+						
+						<xsl:call-template name="processTablesFigures_Contents"/>
+					</mnx:contents>
+				</mnx:doc>
+			</xsl:for-each>
+		</xsl:for-each>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
@@ -180,158 +185,214 @@
 				</redirect:write>
 			</xsl:if>
 			
-			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
-			
-				<xsl:call-template name="cover-page"/>
-			
-				<xsl:choose>
-					<xsl:when test="/mn:metanorma/mn:boilerplate/*[not(self::mn:feedback-statement)]">
-						<fo:page-sequence master-reference="preface" format="i" force-page-count="no-force">
-							<xsl:call-template name="insertHeaderFooter">
-								<xsl:with-param name="font-weight">normal</xsl:with-param>
-							</xsl:call-template>
-							<fo:flow flow-name="xsl-region-body">
-								<fo:block-container margin-left="-1.5mm" margin-right="-1mm">
-									<fo:block-container margin-left="0mm" margin-right="0mm" border="0.5pt solid black" >
-										<fo:block-container margin-top="6.5mm" margin-left="7.5mm" margin-right="8.5mm" margin-bottom="7.5mm">
-											<fo:block-container margin="0">
-												<fo:block text-align="justify">
-													<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/*[not(self::mn:feedback-statement)]"/>
-												</fo:block>
-											</fo:block-container>
-										</fo:block-container>
-									</fo:block-container>
-								</fo:block-container>
-							</fo:flow>
-						</fo:page-sequence>
-					</xsl:when>
-					<xsl:otherwise>
-						<!-- https://github.com/metanorma/metanorma-iho/issues/293:
-							If the publication has no copyright boxed note (normally on page ii of the publication), page ii should be "Page intentionally left blank". -->
-						<fo:page-sequence master-reference="blankpage" format="i" force-page-count="no-force">
-							<xsl:call-template name="insertHeaderFooterBlank"/>
-							<fo:flow flow-name="xsl-region-body">
-								<fo:block/>
-							</fo:flow>
-						</fo:page-sequence>
-					</xsl:otherwise>
-				</xsl:choose>
-			
-				<xsl:variable name="updated_xml_with_pages">
-					<xsl:call-template name="processPrefaceAndMainSectionsIHO_items"/>
+			<!-- <xsl:for-each select="xalan:nodeset($updated_xml)/*"> -->
+			<xsl:for-each select="xalan:nodeset($updated_xml)//mn:metanorma">
+				<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
+				
+				<xsl:variable name="current_document">
+					<xsl:copy-of select="."/>
 				</xsl:variable>
 				
-				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
+				<xsl:for-each select="xalan:nodeset($current_document)">
+			
+					<xsl:variable name="title-en"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en']/node()"/></xsl:variable>
+					<xsl:variable name="title-main_"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'main']/node()"/></xsl:variable>
 					
-					<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
-		
-						<!-- Preface Pages -->
-						<fo:page-sequence master-reference="preface" format="i" force-page-count="end-on-even">
-							
-							<xsl:attribute name="master-reference">
-								<xsl:text>preface</xsl:text>
-								<xsl:call-template name="getPageSequenceOrientation"/>
-							</xsl:attribute>
-						
-							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
-							<xsl:call-template name="insertHeaderFooter">
-								<xsl:with-param name="font-weight">normal</xsl:with-param>
-							</xsl:call-template>
-							<fo:flow flow-name="xsl-region-body">
-								
-								
-								<!-- <xsl:if test="position() = 1">
+					<xsl:variable name="title_header">
+						<xsl:copy-of select="$title-main_"/>
+						<xsl:if test="normalize-space($title-main_) = ''"><xsl:copy-of select="$title-en"/></xsl:if>
+					</xsl:variable>
+			
+					<xsl:variable name="docidentifier_parent" select="normalize-space(/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IHO-parent-document'])"/>
+					<xsl:variable name="docidentifier">
+						<xsl:value-of select="$docidentifier_parent"/>
+						<xsl:if test="$docidentifier_parent = ''"><xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IHO']"/></xsl:if>
+					</xsl:variable>
+					
+					<xsl:variable name="copyrightText" select="concat('© International Hydrographic Association ', /mn:metanorma/mn:bibdata/mn:copyright/mn:from ,' – All rights reserved')"/>
+					<xsl:variable name="edition"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:edition[normalize-space(@language) = '']"/></xsl:variable>
+					<xsl:variable name="month_year"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']"/></xsl:variable>
+					
+					<xsl:call-template name="cover-page">
+						<xsl:with-param name="num" select="$num"/>
+						<xsl:with-param name="docidentifier" select="$docidentifier"/>
+						<xsl:with-param name="edition" select="$edition"/>
+						<xsl:with-param name="month_year" select="$month_year"/>
+					</xsl:call-template>
+				
+					<xsl:choose>
+						<xsl:when test="/mn:metanorma/mn:boilerplate/*[not(self::mn:feedback-statement)]">
+							<fo:page-sequence master-reference="preface" format="i" force-page-count="no-force">
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="title_header" select="$title_header"/>
+									<xsl:with-param name="docidentifier" select="$docidentifier"/>
+									<xsl:with-param name="edition" select="$edition"/>
+									<xsl:with-param name="month_year" select="$month_year"/>
+									<xsl:with-param name="font-weight">normal</xsl:with-param>
+								</xsl:call-template>
+								<fo:flow flow-name="xsl-region-body">
 									<fo:block-container margin-left="-1.5mm" margin-right="-1mm">
 										<fo:block-container margin-left="0mm" margin-right="0mm" border="0.5pt solid black" >
 											<fo:block-container margin-top="6.5mm" margin-left="7.5mm" margin-right="8.5mm" margin-bottom="7.5mm">
 												<fo:block-container margin="0">
 													<fo:block text-align="justify">
-														<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/*[local-name() != 'feedback-statement']"/>
+														<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/*[not(self::mn:feedback-statement)]"/>
 													</fo:block>
 												</fo:block-container>
 											</fo:block-container>
 										</fo:block-container>
 									</fo:block-container>
-									<fo:block break-after="page"/>
-								</xsl:if> -->
-								
-								<!-- Contents, Document History, ... except Foreword and Introduction -->
-								<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
-								<xsl:apply-templates select="*[not(self::mn:foreword) and not(self::mn:introduction)]"/>
-								
-							</fo:flow>
-						</fo:page-sequence>
-						<!-- End Preface Pages -->
-						<!-- =========================== -->
-						<!-- =========================== -->
-					</xsl:for-each>
+								</fo:flow>
+							</fo:page-sequence>
+						</xsl:when>
+						<xsl:otherwise>
+							<!-- https://github.com/metanorma/metanorma-iho/issues/293:
+								If the publication has no copyright boxed note (normally on page ii of the publication), page ii should be "Page intentionally left blank". -->
+							<fo:page-sequence master-reference="blankpage" format="i" force-page-count="no-force">
+								<xsl:call-template name="insertHeaderFooterBlank">
+									<xsl:with-param name="title_header" select="$title_header"/>
+									<xsl:with-param name="docidentifier" select="$docidentifier"/>
+									<xsl:with-param name="edition" select="$edition"/>
+									<xsl:with-param name="month_year" select="$month_year"/>
+								</xsl:call-template>
+								<fo:flow flow-name="xsl-region-body">
+									<fo:block/>
+								</fo:flow>
+							</fo:page-sequence>
+						</xsl:otherwise>
+					</xsl:choose>
+				
+					<xsl:variable name="updated_xml_with_pages">
+						<xsl:call-template name="processPrefaceAndMainSectionsIHO_items"/>
+					</xsl:variable>
 					
-					
-					<xsl:for-each select=".//mn:page_sequence[mn:foreword or mn:introduction][parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
-		
-						<!-- Preface Pages -->
-						<fo:page-sequence master-reference="preface" format="i" force-page-count="end-on-even">
-							
-							<xsl:attribute name="master-reference">
-								<xsl:text>preface</xsl:text>
-								<xsl:call-template name="getPageSequenceOrientation"/>
-							</xsl:attribute>
+					<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
 						
-							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
-							<xsl:call-template name="insertHeaderFooter">
-								<xsl:with-param name="font-weight">normal</xsl:with-param>
-							</xsl:call-template>
-							<fo:flow flow-name="xsl-region-body">
+						<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
+			
+							<!-- Preface Pages -->
+							<fo:page-sequence master-reference="preface" format="i" force-page-count="end-on-even">
 								
-								<!-- Foreword, Introduction -->
-								<xsl:apply-templates select="*[self::mn:foreword or self::mn:introduction]"/>
-								
-							</fo:flow>
-						</fo:page-sequence>
-						<!-- End Preface Pages -->
-						<!-- =========================== -->
-						<!-- =========================== -->
-					</xsl:for-each>
-					
-				
-				
-					<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
-				
-						<fo:page-sequence master-reference="document" format="1" force-page-count="end-on-even">
+								<xsl:attribute name="master-reference">
+									<xsl:text>preface</xsl:text>
+									<xsl:call-template name="getPageSequenceOrientation"/>
+								</xsl:attribute>
+							
+								<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="title_header" select="$title_header"/>
+									<xsl:with-param name="docidentifier" select="$docidentifier"/>
+									<xsl:with-param name="edition" select="$edition"/>
+									<xsl:with-param name="month_year" select="$month_year"/>
+									<xsl:with-param name="font-weight">normal</xsl:with-param>
+								</xsl:call-template>
+								<fo:flow flow-name="xsl-region-body">
+									
+									
+									<!-- <xsl:if test="position() = 1">
+										<fo:block-container margin-left="-1.5mm" margin-right="-1mm">
+											<fo:block-container margin-left="0mm" margin-right="0mm" border="0.5pt solid black" >
+												<fo:block-container margin-top="6.5mm" margin-left="7.5mm" margin-right="8.5mm" margin-bottom="7.5mm">
+													<fo:block-container margin="0">
+														<fo:block text-align="justify">
+															<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/*[local-name() != 'feedback-statement']"/>
+														</fo:block>
+													</fo:block-container>
+												</fo:block-container>
+											</fo:block-container>
+										</fo:block-container>
+										<fo:block break-after="page"/>
+									</xsl:if> -->
+									
+									<!-- Contents, Document History, ... except Foreword and Introduction -->
+									<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
+									<xsl:apply-templates select="*[not(self::mn:foreword) and not(self::mn:introduction)]">
+										<xsl:with-param name="num" select="$num"/>
+									</xsl:apply-templates>
+									
+								</fo:flow>
+							</fo:page-sequence>
+							<!-- End Preface Pages -->
+							<!-- =========================== -->
+							<!-- =========================== -->
+						</xsl:for-each>
 						
-							<xsl:attribute name="master-reference">
-								<xsl:text>document</xsl:text>
-								<xsl:call-template name="getPageSequenceOrientation"/>
-							</xsl:attribute>
+						
+						<xsl:for-each select=".//mn:page_sequence[mn:foreword or mn:introduction][parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
+			
+							<!-- Preface Pages -->
+							<fo:page-sequence master-reference="preface" format="i" force-page-count="end-on-even">
+								
+								<xsl:attribute name="master-reference">
+									<xsl:text>preface</xsl:text>
+									<xsl:call-template name="getPageSequenceOrientation"/>
+								</xsl:attribute>
 							
-							<xsl:if test="position() = 1">
-								<xsl:attribute name="initial-page-number">1</xsl:attribute>
-							</xsl:if>
+								<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="title_header" select="$title_header"/>
+									<xsl:with-param name="docidentifier" select="$docidentifier"/>
+									<xsl:with-param name="edition" select="$edition"/>
+									<xsl:with-param name="month_year" select="$month_year"/>
+									<xsl:with-param name="font-weight">normal</xsl:with-param>
+								</xsl:call-template>
+								<fo:flow flow-name="xsl-region-body">
+									
+									<!-- Foreword, Introduction -->
+									<xsl:apply-templates select="*[self::mn:foreword or self::mn:introduction]"/>
+									
+								</fo:flow>
+							</fo:page-sequence>
+							<!-- End Preface Pages -->
+							<!-- =========================== -->
+							<!-- =========================== -->
+						</xsl:for-each>
+						
+					
+					
+						<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
+					
+							<fo:page-sequence master-reference="document" format="1" force-page-count="end-on-even">
 							
-							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
-							<xsl:call-template name="insertHeaderFooter"/>
-							<fo:flow flow-name="xsl-region-body">
-								<fo:block-container>
-									
-									<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1"><xsl:value-of select="$title-en"/></fo:block> -->
-									
-									<!-- <xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" /> -->
-									<!-- Normative references  -->
-									<!-- <xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" /> -->
-									<!-- Terms and definitions -->
-									<!-- <xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='terms']" />
-									<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='definitions']" />
-									<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name() != 'terms' and local-name() != 'definitions' and not(@type='scope')]" /> -->
-									
-									<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
-									
-									<xsl:apply-templates />
-									
-									<xsl:if test="$table_if = 'true'"><fo:block/></xsl:if>
-								</fo:block-container>
-							</fo:flow>
-						</fo:page-sequence>
-				<!-- </xsl:if> -->
+								<xsl:attribute name="master-reference">
+									<xsl:text>document</xsl:text>
+									<xsl:call-template name="getPageSequenceOrientation"/>
+								</xsl:attribute>
+								
+								<xsl:if test="position() = 1">
+									<xsl:attribute name="initial-page-number">1</xsl:attribute>
+								</xsl:if>
+								
+								<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="title_header" select="$title_header"/>
+									<xsl:with-param name="docidentifier" select="$docidentifier"/>
+									<xsl:with-param name="edition" select="$edition"/>
+									<xsl:with-param name="month_year" select="$month_year"/>
+								</xsl:call-template>
+								<fo:flow flow-name="xsl-region-body">
+									<fo:block-container>
+										
+										<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1"><xsl:value-of select="$title-en"/></fo:block> -->
+										
+										<!-- <xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='clause'][@type='scope']" /> -->
+										<!-- Normative references  -->
+										<!-- <xsl:apply-templates select="/*/*[local-name()='bibliography']/*[local-name()='references'][@normative='true']" /> -->
+										<!-- Terms and definitions -->
+										<!-- <xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='terms']" />
+										<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name()='definitions']" />
+										<xsl:apply-templates select="/*/*[local-name()='sections']/*[local-name() != 'terms' and local-name() != 'definitions' and not(@type='scope')]" /> -->
+										
+										<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
+										
+										<xsl:apply-templates />
+										
+										<xsl:if test="$table_if = 'true'"><fo:block/></xsl:if>
+									</fo:block-container>
+								</fo:flow>
+							</fo:page-sequence>
+					<!-- </xsl:if> -->
+						</xsl:for-each>
 					</xsl:for-each>
 				</xsl:for-each>
 					
@@ -383,10 +444,30 @@
 	</xsl:template>
 	
 	<xsl:template name="cover-page">
+		<xsl:param name="num"/>
+		<xsl:param name="docidentifier"/>
+		<xsl:param name="edition"/>
+		<xsl:param name="month_year"/>
+		
+		<xsl:variable name="title-en"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en']/node()"/></xsl:variable>
+		<xsl:variable name="title-main_"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'main']/node()"/></xsl:variable>
+		<xsl:variable name="title-main"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-main']/node()"/></xsl:variable>
+		<xsl:variable name="title-appendix"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-appendix']/node()"/></xsl:variable>
+		<xsl:variable name="title-annex"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-annex']/node()"/></xsl:variable>
+		<xsl:variable name="title-part"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-part']/node()"/></xsl:variable>
+		<xsl:variable name="title-supplement"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-supplement']/node()"/></xsl:variable>
+		
 		<!-- =========================== -->
 		<!-- Cover Page -->
 		<fo:page-sequence master-reference="cover-page">				
 			<fo:flow flow-name="xsl-region-body">
+			
+				<fo:block-container absolute-position="fixed" top="1mm">
+					<xsl:if test="$num = 1">
+						<xsl:attribute name="id">firstpage_id_0</xsl:attribute>
+					</xsl:if>
+					<fo:block id="firstpage_id_{$num}">&#xa0;</fo:block>
+				</fo:block-container>
 			
 				<xsl:variable name="isCoverPageImage" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image']/mn:value/mn:image and 1 = 1)"/>
 			
@@ -398,7 +479,7 @@
 					</xsl:when>
 					<xsl:otherwise>
 					
-						<fo:block-container position="absolute" left="14.25mm" top="12mm" id="__internal_layout__coverpage_{generate-id()}">
+						<fo:block-container position="absolute" left="14.25mm" top="12mm" id="__internal_layout__coverpage_{$num}_{generate-id()}">
 							<fo:table table-layout="fixed" width="181.1mm">
 									<fo:table-column column-width="26mm"/>
 									<fo:table-column column-width="19.4mm"/> 
@@ -611,9 +692,10 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" name="toc" priority="4">
+		<xsl:param name="num"/>
 		<!-- Table of Contents -->
 		<fo:block>
-			
+		
 			<xsl:apply-templates />
 			
 			<xsl:if test="$debug = 'true'">
@@ -626,7 +708,7 @@
 			
 				<fo:block role="TOC" xsl:use-attribute-sets="toc-style">
 				
-					<xsl:for-each select="$contents//mnx:item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
+					<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->							
 						<fo:block role="TOCI">
 							<fo:list-block xsl:use-attribute-sets="toc-item-block-style">
 								
@@ -634,7 +716,7 @@
 								
 								<fo:list-item>
 									<fo:list-item-label end-indent="label-end()">
-										<fo:block id="__internal_layout__toc_sectionnum_{generate-id()}">
+										<fo:block id="__internal_layout__toc_sectionnum_{$num}_{generate-id()}">
 											<xsl:if test="@section != '' and not(@type = 'annex')"> <!-- output below   -->
 												<xsl:value-of select="@section"/>
 											</xsl:if>
@@ -790,7 +872,7 @@
 		<fo:inline><xsl:copy-of select="@id"/><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="/mn:metanorma/mn:bibdata/mn:edition">
+	<xsl:template match="mn:metanorma/mn:bibdata/mn:edition">
 		<xsl:call-template name="capitalize">
 			<xsl:with-param name="str">
 				<xsl:call-template name="getLocalizedString">
@@ -802,7 +884,7 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 	
-	<xsl:template match="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']">
+	<xsl:template match="mn:metanorma/mn:bibdata/mn:date[@type = 'published']">
 		<xsl:call-template name="convertDate">
 			<xsl:with-param name="date" select="."/>
 			<xsl:with-param name="format" select="'short'"/>
@@ -990,6 +1072,8 @@
 				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 			</xsl:if>
 			
+			<xsl:copy-of select="@id"/>
+			
 			<xsl:apply-templates>
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 			</xsl:apply-templates>
@@ -1052,6 +1136,10 @@
 
 
 	<xsl:template name="insertHeaderFooter">
+		<xsl:param name="title_header"/>
+		<xsl:param name="docidentifier"/>
+		<xsl:param name="edition"/>
+		<xsl:param name="month_year"/>
 		<xsl:param name="font-weight" select="'bold'"/>
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container height="100%" font-size="8pt">
@@ -1089,10 +1177,17 @@
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		<xsl:call-template name="insertHeaderBlank"/>
-		<xsl:call-template name="insertFooter"/>
+		<xsl:call-template name="insertHeaderBlank">
+			<xsl:with-param name="title_header" select="$title_header"/>
+		</xsl:call-template>
+		<xsl:call-template name="insertFooter">
+			<xsl:with-param name="docidentifier" select="$docidentifier"/>
+			<xsl:with-param name="edition" select="$edition"/>
+			<xsl:with-param name="month_year" select="$month_year"/>
+		</xsl:call-template>
 	</xsl:template>
 	<xsl:template name="insertHeaderBlank">
+		<xsl:param name="title_header"/>
 		<fo:static-content flow-name="header-blank" role="artifact">
 			<fo:block-container height="100%" font-size="8pt">
 				<fo:block padding-top="12.5mm">
@@ -1116,6 +1211,9 @@
 		</fo:static-content>
 	</xsl:template>
 	<xsl:template name="insertFooter">
+		<xsl:param name="docidentifier"/>
+		<xsl:param name="edition"/>
+		<xsl:param name="month_year"/>
 		<fo:static-content flow-name="footer" role="artifact">
 			<fo:block-container height="100%" display-align="after">
 				<fo:block padding-bottom="12.5mm" font-size="8pt" text-align-last="justify">
@@ -1133,8 +1231,18 @@
 		</fo:static-content>
 	</xsl:template>
 	<xsl:template name="insertHeaderFooterBlank">
-		<xsl:call-template name="insertHeaderBlank"/>
-		<xsl:call-template name="insertFooter"/>
+		<xsl:param name="title_header"/>
+		<xsl:param name="docidentifier"/>
+		<xsl:param name="edition"/>
+		<xsl:param name="month_year"/>
+		<xsl:call-template name="insertHeaderBlank">
+			<xsl:with-param name="title_header" select="$title_header"/>
+		</xsl:call-template>
+		<xsl:call-template name="insertFooter">
+			<xsl:with-param name="docidentifier" select="$docidentifier"/>
+			<xsl:with-param name="edition" select="$edition"/>
+			<xsl:with-param name="month_year" select="$month_year"/>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<xsl:variable name="Image-IHO-SVG">
