@@ -1078,6 +1078,10 @@
 				<xsl:attribute name="space-after">0pt</xsl:attribute>
 			</xsl:if>
 			
+			<xsl:if test="ancestor::mn:li and ancestor::mn:table">
+				<xsl:attribute name="space-after">0pt</xsl:attribute>
+			</xsl:if>
+			
 			<xsl:if test=".//mn:fn">
 				<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 			</xsl:if>

@@ -214,6 +214,11 @@
 				<xsl:attribute name="space-after">2pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:if test="ancestor::mn:table">
+				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template> <!-- refine_list-item-style -->
 	
 	<xsl:attribute-set name="list-item-label-style">
