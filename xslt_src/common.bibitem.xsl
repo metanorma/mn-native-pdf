@@ -852,7 +852,7 @@
 	</xsl:template> <!-- references[not(@normative='true')]/bibitem -->
 	
 	<!-- bibitem's notes will be processing in 'processBibitemFollowingNotes' -->
-	<xsl:template match="mn:references[not(@normative='true')]/mn:note" priority="2"/>
+	<xsl:template match="mn:references/mn:note" priority="2"/> <!-- [not(@normative='true')] -->
 	
 	<xsl:template name="insertListItem_Bibitem">
 		<xsl:choose>
@@ -1030,7 +1030,11 @@
 				<xsl:apply-templates select="mn:formattedref"/>
 				
 				<xsl:choose>
-					<xsl:when test="$namespace = 'iso'"></xsl:when>
+					<xsl:when test="$namespace = 'iso'">
+						<xsl:if test="ancestor::mn:references[@normative = 'true']">
+							<xsl:call-template name="processBibitemFollowingNotes"/>
+						</xsl:if>
+					</xsl:when>
 					<xsl:otherwise>
 						<xsl:call-template name="processBibitemFollowingNotes"/>
 					</xsl:otherwise>
