@@ -198,6 +198,12 @@
 			</xsl:if>
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:if test="contains(translate(@style, ' ', ''), 'border:none')">
+				<xsl:attribute name="font-size">inherit</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="not(mn:fmt-name)">
 				<xsl:attribute name="margin-top">12pt</xsl:attribute>
@@ -1345,6 +1351,12 @@
 				<xsl:attribute name="padding-top">0mm</xsl:attribute>
 				<xsl:attribute name="padding-right">0mm</xsl:attribute>
 				<xsl:attribute name="border">none</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:if test="contains(translate(ancestor::mn:table/@style, ' ', ''), 'border:none')">
+				<xsl:attribute name="padding-left">0mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		
