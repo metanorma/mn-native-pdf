@@ -258,11 +258,28 @@
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="line-height">125%</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			 <xsl:attribute name="font-family">Arial</xsl:attribute>
+			 <xsl:attribute name="font-size">7pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="font-size">8pt</xsl:attribute>
 			<xsl:attribute name="line-height">125%</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- feedback-statement-style -->
+	
+	<xsl:template name="refine_feedback-statement-style">
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
+				<xsl:attribute name="font-family">Calibri Light</xsl:attribute>
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+				<xsl:attribute name="line-height">1.2</xsl:attribute>
+			</xsl:if>
+			<!-- <xsl:if test="$current_template = 'standard'">
+				<xsl:attribute name="font-size">8pt</xsl:attribute>
+			</xsl:if> -->
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:attribute-set name="feedback-statement-title-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -273,6 +290,9 @@
 	
 	<xsl:attribute-set name="feedback-statement-p-style">
 		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
@@ -463,6 +483,7 @@
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iec' or $namespace = 'ogc'">
 				<fo:block xsl:use-attribute-sets="feedback-statement-p-style">
+					<!-- <xsl:copy-of select="@id"/> -->
 					<xsl:apply-templates/>
 				</fo:block>	
 			</xsl:when>

@@ -1601,18 +1601,10 @@
 		<fo:block>
 			<fo:footnote>
 				<fo:inline></fo:inline>
-				<fo:footnote-body font-family="Arial" font-size="7pt">
+				<fo:footnote-body xsl:use-attribute-sets="feedback-statement-style">
 				
-					<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
-						<xsl:attribute name="font-family">Calibri Light</xsl:attribute>
-						<xsl:attribute name="font-size">9pt</xsl:attribute>
-						<xsl:attribute name="line-height">1.2</xsl:attribute>
-					</xsl:if>
+					<xsl:call-template name="refine_feedback-statement-style"/>
 					
-					<xsl:if test="$current_template = 'standard'">
-						<xsl:attribute name="font-size">8pt</xsl:attribute>
-					</xsl:if>
-				
 					<fo:block>
 						<fo:inline font-size="1pt" id="footnote_footer_{generate-id()}"><xsl:value-of select="$hair_space"/></fo:inline>
 						<xsl:apply-templates />
@@ -1623,7 +1615,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:boilerplate/mn:feedback-statement//mn:p" priority="2">
-		<fo:block margin-bottom="6pt">
+		<fo:block xsl:use-attribute-sets="feedback-statement-p-style">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
