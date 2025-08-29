@@ -25,6 +25,12 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:template name="refine_dl-block-style">
+		<xsl:if test="@key = 'true' and ancestor::mn:figure">
+			<xsl:attribute name="keep-together.within-column">always</xsl:attribute>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="dt-row-style">
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="min-height">8.5mm</xsl:attribute>
@@ -33,6 +39,14 @@
 			<xsl:attribute name="min-height">7mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_dt-row-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:if test="not(following-sibling::mn:dt) or ancestor::mn:sourcecode"> <!-- last item -->
+				<xsl:attribute name="min-height">3mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:attribute-set name="dt-cell-style">
 		<xsl:if test="$namespace = 'ogc'">
@@ -166,6 +180,16 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- dl-name-style -->
 	
+	<xsl:template name="refine_dl-name-style">
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="ancestor::mn:tfoot and ../@key = 'true'">
+				<xsl:attribute name="margin-left">-<xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
+				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="dd-cell-style">
 		<xsl:attribute name="padding-left">2mm</xsl:attribute>
 		<xsl:if test="$namespace = 'ogc'">
@@ -249,10 +273,8 @@
 		<!-- <dl><xsl:copy-of select="."/></dl> -->
 		<fo:block-container xsl:use-attribute-sets="dl-block-style" role="SKIP">
 		
-			<xsl:if test="@key = 'true' and ancestor::mn:figure">
-				<xsl:attribute name="keep-together.within-column">always</xsl:attribute>
-			</xsl:if>
-		
+			<xsl:call-template name="refine_dl-block-style"/>
+			
 			<xsl:call-template name="setBlockSpanAll"/>
 		
 			<xsl:choose>
@@ -770,13 +792,7 @@
 		<xsl:if test="$process = 'true'">
 			<fo:block xsl:use-attribute-sets="dl-name-style">
 			
-				<xsl:if test="$namespace = 'plateau'">
-					<xsl:if test="ancestor::mn:tfoot and ../@key = 'true'">
-						<xsl:attribute name="margin-left">-<xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
-						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
-						<xsl:attribute name="font-weight">bold</xsl:attribute>
-					</xsl:if>
-				</xsl:if>
+				<xsl:call-template name="refine_dl-name-style"/>
 				
 				<xsl:apply-templates />
 			</fo:block>
@@ -997,11 +1013,8 @@
 		<xsl:param name="split_keep-within-line"/>
 		
 		<fo:table-row xsl:use-attribute-sets="dt-row-style">
-			<xsl:if test="$namespace = 'ogc'">
-				<xsl:if test="not(following-sibling::mn:dt) or ancestor::mn:sourcecode"> <!-- last item -->
-					<xsl:attribute name="min-height">3mm</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
+			<xsl:call-template name="refine_dt-row-style"/>
+			
 			<xsl:call-template name="insert_dt_cell">
 				<xsl:with-param name="key_iso" select="$key_iso"/>
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
