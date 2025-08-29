@@ -216,6 +216,15 @@
 	
 	<xsl:attribute-set name="legal-statement-title-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="font-family">Arial</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="space-before">18pt</xsl:attribute>
+			<xsl:attribute name="keep-together.within-column">always</xsl:attribute>
+			<xsl:attribute name="span">all</xsl:attribute>
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -246,6 +255,21 @@
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- legal-statement-title-style -->
+	
+	<xsl:template name="refine_legal-statement-title-style">
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:variable name="level">
+				<xsl:call-template name="getLevel"/>
+			</xsl:variable>
+			<xsl:if test="$level = '1'">
+				<xsl:attribute name="font-size">12pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
+				<xsl:attribute name="font-family">Arial Black</xsl:attribute>
+				<xsl:attribute name="font-size">13pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:attribute-set name="legal-statement-p-style">
 		<xsl:if test="$namespace = 'ogc-white-paper'">

@@ -13,6 +13,14 @@
 											version="1.0">
 	
 	<xsl:attribute-set name="references-non-normative-title-style">
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="font-size">16pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">36pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="font-size">16pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>

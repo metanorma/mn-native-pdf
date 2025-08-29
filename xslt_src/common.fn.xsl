@@ -12,6 +12,22 @@
 											extension-element-prefixes="redirect"
 											version="1.0">
 	
+	<xsl:attribute-set name="footnote-separator-leader-style">
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="leader-pattern">rule</xsl:attribute>
+			<xsl:attribute name="rule-thickness">0.5pt</xsl:attribute>
+			<xsl:attribute name="leader-length">35%</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_footnote-separator-leader-style">
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:if test="$current_template = 'whitepaper' or $current_template= 'icap-whitepaper' or $current_template = 'industry-connection-report'">
+				<xsl:attribute name="rule-thickness">1pt</xsl:attribute>
+				<xsl:attribute name="leader-length">51mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:attribute-set name="fn-reference-style">
 		<xsl:attribute name="font-size">80%</xsl:attribute>
