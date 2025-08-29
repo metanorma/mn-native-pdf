@@ -33,6 +33,9 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:template name="refine_appendix-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="appendix-example-style">
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'm3d' or $namespace = 'gb' or $namespace = 'csd' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>			
@@ -50,6 +53,9 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:template name="refine_appendix-example-style">
+	</xsl:template>
+	
 	
 	<!-- ======================== -->
 	<!-- Appendix processing -->
@@ -57,6 +63,7 @@
 	<xsl:template match="mn:appendix">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-style">
+			<xsl:call-template name="refine_appendix-style"/>
 			<xsl:apply-templates select="mn:fmt-title" />
 		</fo:block>
 		<xsl:apply-templates select="node()[not(self::mn:fmt-title)]"/>
@@ -75,6 +82,7 @@
 	<xsl:template match="mn:appendix//mn:example" priority="2">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="appendix-example-style">			
+			<xsl:call-template name="refine_appendix-example-style"/>
 			<xsl:apply-templates select="mn:fmt-name" />
 		</fo:block>
 		<xsl:apply-templates select="node()[not(self::mn:fmt-name)]"/>
