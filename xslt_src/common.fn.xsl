@@ -546,11 +546,7 @@
 					<xsl:choose>
 						<xsl:when test="ancestor::mn:bibitem">
 							<fn_styles xsl:use-attribute-sets="bibitem-note-fn-style">
-								<xsl:if test="$namespace = 'jis'">
-									<xsl:if test="not($vertical_layout = 'true')">
-										<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
-									</xsl:if>
-								</xsl:if>
+								<xsl:call-template name="refine_bibitem-note-fn-style"/>
 							</fn_styles>
 						</xsl:when>
 						<xsl:otherwise>
