@@ -148,6 +148,9 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- license-statement-style -->
 	
+	<xsl:template name="refine_license-statement-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="license-statement-title-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
@@ -177,6 +180,9 @@
 			<xsl:attribute name="margin-top">4pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- license-statement-title-style -->
+	
+	<xsl:template name="refine_license-statement-title-style">
+	</xsl:template>
 	
 	<xsl:attribute-set name="license-statement-p-style">
 		<xsl:if test="$namespace = 'bipm'">
@@ -213,6 +219,9 @@
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 		</xsl:if>
 	</xsl:attribute-set> <!-- legal-statement-style -->
+	
+	<xsl:template name="refine_legal-statement-style">
+	</xsl:template>
 	
 	<xsl:attribute-set name="legal-statement-title-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -277,6 +286,14 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- legal-statement-p-style -->
 	
+	<xsl:template name="refine_legal-statement-p-style">
+		<xsl:if test="@align">
+			<xsl:attribute name="text-align">
+				<xsl:value-of select="@align"/>
+			</xsl:attribute>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="feedback-statement-style">
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -312,6 +329,10 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- feedback-statement-title-style -->
 	
+	<xsl:template name="refine_feedback-statement-title-style">
+	
+	</xsl:template>
+	
 	<xsl:attribute-set name="feedback-statement-p-style">
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -323,6 +344,9 @@
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- feedback-statement-p-style -->
+
+	<xsl:template name="refine_feedback-statement-p-style">
+	</xsl:template>
 
 	<!-- End boilerplate sections styles -->
 
@@ -373,6 +397,7 @@
 	
 	<xsl:template match="mn:license-statement">
 		<fo:block xsl:use-attribute-sets="license-statement-style">
+			<xsl:call-template name="refine_license-statement-style"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template> <!-- license-statement -->
@@ -384,6 +409,7 @@
 					<xsl:call-template name="getLevel"/>
 				</xsl:variable>
 				<fo:block role="H{$level}" xsl:use-attribute-sets="license-statement-title-style">
+					<xsl:call-template name="refine_license-statement-title-style"/>
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:when>
@@ -426,6 +452,7 @@
 	<xsl:template match="mn:legal-statement">
 		<xsl:param name="isLegacy">false</xsl:param>
 		<fo:block xsl:use-attribute-sets="legal-statement-style">
+			<xsl:call-template name="refine_legal-statement-style"/>
 			<xsl:if test="$namespace = 'ogc'">
 				<xsl:if test="$isLegacy = 'true'">
 					<xsl:attribute name="font-size">9pt</xsl:attribute>
@@ -460,12 +487,7 @@
 			<xsl:when test="$namespace = 'ogc-white-paper'">
 				<!-- csa -->
 				<fo:block xsl:use-attribute-sets="legal-statement-p-style">
-					
-					<xsl:if test="@align">
-						<xsl:attribute name="text-align">
-							<xsl:value-of select="@align"/>
-						</xsl:attribute>
-					</xsl:if>
+					<xsl:call-template name="refine_legal-statement-p-style"/>
 					
 					<xsl:apply-templates />
 				</fo:block>
@@ -492,6 +514,7 @@
 					<xsl:call-template name="getLevel"/>
 				</xsl:variable>
 				<fo:block role="H{$level}" xsl:use-attribute-sets="feedback-statement-title-style">
+					<xsl:call-template name="refine_feedback-statement-title-style"/>
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:when>
@@ -507,6 +530,7 @@
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iec' or $namespace = 'ogc'">
 				<fo:block xsl:use-attribute-sets="feedback-statement-p-style">
+					<xsl:call-template name="refine_feedback-statement-p-style"/>
 					<!-- <xsl:copy-of select="@id"/> -->
 					<xsl:apply-templates/>
 				</fo:block>	
