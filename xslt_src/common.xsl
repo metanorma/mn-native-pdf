@@ -311,6 +311,8 @@
 
 	<xsl:include href="./common.ruby.xsl"/>
 	
+	<xsl:include href="./common.annex.xsl"/>
+	
 	<xsl:template name="processPrefaceSectionsDefault">
 		<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition)]">
 			<xsl:sort select="@displayorder" data-type="number"/>
