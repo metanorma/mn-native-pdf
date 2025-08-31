@@ -17,6 +17,9 @@
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_permission-style">
+	</xsl:template>
 
 	<xsl:attribute-set name="permission-name-style">
 		<xsl:if test="$namespace = 'iho'">
@@ -33,12 +36,18 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_permission-name-style">
+	</xsl:template>
 
 	<xsl:attribute-set name="permission-label-style">
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_permission-label-style">
+	</xsl:template>
 
 	<xsl:attribute-set name="requirement-style">
 		<xsl:if test="$namespace = 'iso'">
@@ -49,6 +58,9 @@
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_requirement-style">
+	</xsl:template>
 
 	<xsl:attribute-set name="requirement-name-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -70,12 +82,23 @@
 			<xsl:attribute name="background-color">rgb(165,165,165)</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_requirement-name-style">
+		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+			<xsl:if test="../@type = 'class'">
+				<xsl:attribute name="background-color">white</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 
 	<xsl:attribute-set name="requirement-label-style">
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_requirement-label-style">
+	</xsl:template>
 
 	<xsl:attribute-set name="subject-style">
 	</xsl:attribute-set>
@@ -113,6 +136,9 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:template name="refine_recommendation-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="recommendation-name-style">
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -133,18 +159,25 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:template name="refine_recommendation-name-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="recommendation-label-style">
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:template name="refine_recommendation-label-style">
+	</xsl:template>
+	
 	<!-- ========== -->
 	<!-- permission -->	
 	<!-- ========== -->		
 	<xsl:template match="mn:permission">
 		<xsl:call-template name="setNamedDestination"/>
-		<fo:block id="{@id}" xsl:use-attribute-sets="permission-style">			
+		<fo:block id="{@id}" xsl:use-attribute-sets="permission-style">
+			<xsl:call-template name="refine_permission-style"/>
 			<xsl:apply-templates select="mn:fmt-name" />
 			<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 		</fo:block>
@@ -156,12 +189,14 @@
 			
 				<xsl:when test="$namespace = 'iho'">
 					<fo:inline xsl:use-attribute-sets="permission-name-style">
+						<xsl:call-template name="refine_permission-name-style"/>
 						<xsl:apply-templates /><xsl:text>:</xsl:text>
 					</fo:inline>
 				</xsl:when>
 				
 				<xsl:otherwise>
 					<fo:block xsl:use-attribute-sets="permission-name-style">
+						<xsl:call-template name="refine_permission-name-style"/>
 						<xsl:apply-templates />
 						<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 							<xsl:text>:</xsl:text>
@@ -174,6 +209,7 @@
 	
 	<xsl:template match="mn:permission/mn:label">
 		<fo:block xsl:use-attribute-sets="permission-label-style">
+			<xsl:call-template name="refine_permission-label-style"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -186,6 +222,7 @@
 	<xsl:template match="mn:requirement">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="requirement-style">			
+			<xsl:call-template name="refine_requirement-style"/>
 			<xsl:apply-templates select="mn:fmt-name" />
 			<xsl:apply-templates select="mn:label" />
 			<xsl:apply-templates select="@obligation"/>
@@ -200,6 +237,7 @@
 			
 				<xsl:when test="$namespace = 'iho'">
 					<fo:inline xsl:use-attribute-sets="requirement-name-style">
+						<xsl:call-template name="refine_requirement-name-style"/>
 						<xsl:apply-templates /><xsl:text>:</xsl:text>
 					</fo:inline>
 				</xsl:when>
@@ -207,11 +245,7 @@
 				<xsl:otherwise>
 		
 					<fo:block xsl:use-attribute-sets="requirement-name-style">
-						<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-							<xsl:if test="../@type = 'class'">
-								<xsl:attribute name="background-color">white</xsl:attribute>
-							</xsl:if>
-						</xsl:if>
+						<xsl:call-template name="refine_requirement-name-style"/>
 						<xsl:apply-templates />
 						<xsl:if test="$namespace = 'iso' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 							<xsl:text>:</xsl:text>
@@ -225,6 +259,7 @@
 	
 	<xsl:template match="mn:requirement/mn:label">
 		<fo:block xsl:use-attribute-sets="requirement-label-style">
+			<xsl:call-template name="refine_requirement-label-style"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -250,6 +285,7 @@
 	<xsl:template match="mn:recommendation">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="recommendation-style">
+			<xsl:call-template name="refine_recommendation-style"/>
 			<xsl:apply-templates select="mn:fmt-name" />
 			<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 		</fo:block>
@@ -261,6 +297,7 @@
 			
 				<xsl:when test="$namespace = 'iho'">
 					<fo:inline xsl:use-attribute-sets="recommendation-name-style">
+						<xsl:call-template name="refine_recommendation-name-style"/>
 						<xsl:apply-templates /><xsl:text>:</xsl:text>
 					</fo:inline>
 				</xsl:when>
@@ -268,6 +305,7 @@
 				<xsl:otherwise>
 				
 					<fo:block xsl:use-attribute-sets="recommendation-name-style">
+						<xsl:call-template name="refine_recommendation-name-style"/>
 						<xsl:apply-templates />
 						<xsl:if test="$namespace = 'nist-sp'">
 							<xsl:text>:</xsl:text>
@@ -281,6 +319,7 @@
 	
 	<xsl:template match="mn:recommendation/mn:label">
 		<fo:block xsl:use-attribute-sets="recommendation-label-style">
+			<xsl:call-template name="refine_recommendation-label-style"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
