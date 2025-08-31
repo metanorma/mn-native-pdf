@@ -24,6 +24,14 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- term-style -->
 	
+	<xsl:template name="refine_term-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="parent::mn:term and not(preceding-sibling::mn:term)">
+				<xsl:attribute name="space-before">12pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="term-name-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -36,7 +44,15 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- term-name-style -->
 	
-		<xsl:attribute-set name="preferred-block-style">
+	<xsl:template name="refine_term-name-style">
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:attribute-set name="preferred-block-style">
 		<xsl:if test="$namespace = 'csd'">
 			<xsl:attribute name="line-height">1.1</xsl:attribute>
 		</xsl:if>
@@ -56,6 +72,20 @@
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 		</xsl:if>
 	</xsl:attribute-set> <!-- preferred-block-style -->
+	
+	<xsl:template name="refine_preferred-block-style">
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:if test="preceding-sibling::*[1][self::mn:fmt-preferred]">
+				<xsl:attribute name="space-before">1pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="$vertical_layout = 'true'">
+				<xsl:attribute name="letter-spacing">1mm</xsl:attribute>
+				<xsl:attribute name="margin-left">-6mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 
 	<xsl:attribute-set name="preferred-term-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -73,12 +103,29 @@
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- preferred-term-style -->
+	
+	<xsl:template name="refine_preferred-term-style">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'rsd'">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+				<xsl:attribute name="color">black</xsl:attribute>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:if test="mn:strong">
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+				</xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 
 	<xsl:attribute-set name="domain-style">
 		<xsl:if test="$namespace = 'gb'">
 			<xsl:attribute name="padding-left">7.4mm</xsl:attribute>
 		</xsl:if>		
 	</xsl:attribute-set> <!-- domain-style -->
+	
+	<xsl:template name="refine_domain-style">
+	</xsl:template>
 
 	<xsl:attribute-set name="admitted-style">
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
@@ -92,6 +139,9 @@
 			<xsl:attribute name="color">black</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- admitted-style -->
+	
+	<xsl:template name="refine_admitted-style">
+	</xsl:template>
 
 	<xsl:attribute-set name="deprecates-style">
 		<xsl:if test="$namespace = 'iec'">
@@ -105,8 +155,14 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- deprecates-style -->
 	
+	<xsl:template name="refine_deprecates-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="related-block-style" use-attribute-sets="preferred-block-style">
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_related-block-style">
+	</xsl:template>
 
 	<xsl:attribute-set name="definition-style">
 		<xsl:if test="$namespace = 'csa' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
@@ -129,6 +185,9 @@
 			<xsl:attribute name="space-after">2pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- definition-style -->
+	
+	<xsl:template name="refine_definition-style">
+	</xsl:template>
 	
 	<xsl:attribute-set name="termsource-style">
 		<xsl:if test="$namespace = 'bsi'">
@@ -185,6 +244,9 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- termsource-text-style -->
 	
+	<xsl:template name="refine_termsource-text-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="origin-style">
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="color">rgb(33, 94, 159)</xsl:attribute>
@@ -199,6 +261,9 @@
 		<xsl:if test="$namespace = 'rsd'">
 		</xsl:if>
 	</xsl:attribute-set> <!-- origin-style -->
+	
+	<xsl:template name="refine_origin-style">
+	</xsl:template>
 	
 	<!-- ====== -->
 	<!-- term      -->	
@@ -215,6 +280,7 @@
 	<xsl:template match="mn:term">
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="term-style">
+			<xsl:call-template name="refine_term-style"/>
 
 			<xsl:if test="$namespace = 'gb'">
 				<fo:block font-family="SimHei" font-size="11pt" keep-with-next="always" margin-top="10pt" margin-bottom="8pt" line-height="1.1">
@@ -230,11 +296,6 @@
 				<xsl:apply-templates select="mn:fmt-name" />
 			</xsl:if>
 			
-			<xsl:if test="parent::mn:term and not(preceding-sibling::mn:term)">
-				<xsl:if test="$namespace = 'iso'">
-					<xsl:attribute name="space-before">12pt</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
 			<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 		</fo:block>
 	</xsl:template>
@@ -316,6 +377,7 @@
 	<!-- text SOURCE: -->
 	<xsl:template match="mn:fmt-termsource/mn:strong[1][following-sibling::*[1][self::mn:fmt-origin]]/text()">
 		<fo:inline xsl:use-attribute-sets="termsource-text-style">
+			<xsl:call-template name="refine_termsource-text-style"/>
 			<xsl:value-of select="."/>
 		</fo:inline>
 	</xsl:template>
@@ -328,6 +390,7 @@
 						<xsl:attribute name="fox:alt-text"><xsl:value-of select="@bibitemid"/></xsl:attribute>
 					</xsl:if>
 					<fo:inline xsl:use-attribute-sets="origin-style">
+						<xsl:call-template name="refine_origin-style"/>
 						<xsl:apply-templates/>
 					</fo:inline>
 				</fo:basic-link>
@@ -399,27 +462,12 @@
 		</xsl:variable>
 		<fo:block font-size="{normalize-space($font-size)}" role="H{$levelTerm}" xsl:use-attribute-sets="preferred-block-style">
 		
-			<xsl:if test="$namespace = 'iec'">
-				<xsl:if test="preceding-sibling::*[1][self::mn:fmt-preferred]">
-					<xsl:attribute name="space-before">1pt</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
-			
-			<xsl:if test="$namespace = 'jis'">
-				<xsl:if test="$vertical_layout = 'true'">
-					<xsl:attribute name="letter-spacing">1mm</xsl:attribute>
-					<xsl:attribute name="margin-left">-6mm</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
+			<xsl:call-template name="refine_preferred-block-style"/>
 			
 			<xsl:if test="parent::mn:term and not(preceding-sibling::mn:fmt-preferred)"> <!-- if first preffered in term, then display term's name -->
 				
 				<fo:block xsl:use-attribute-sets="term-name-style" role="SKIP">
-					<xsl:if test="$namespace = 'jis'">
-						<xsl:if test="not($vertical_layout = 'true')">
-							<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
+					<xsl:call-template name="refine_term-name-style"/>
 					
 					<xsl:for-each select="ancestor::mn:term[1]/mn:fmt-name"><!-- change context -->
 						<xsl:call-template name="setIDforNamedDestination"/>
@@ -430,7 +478,7 @@
 			</xsl:if>
 			
 			<fo:block xsl:use-attribute-sets="preferred-term-style" role="SKIP">
-				<xsl:call-template name="setStyle_preferred"/>
+				<xsl:call-template name="refine_preferred-term-style"/>
 				
 				<xsl:if test="$namespace = 'jis'">
 					<xsl:if test="$vertical_layout = 'true'">
@@ -462,28 +510,16 @@
 	
 	<xsl:template match="mn:fmt-admitted">
 		<fo:block xsl:use-attribute-sets="admitted-style">
+			<xsl:call-template name="refine_admitted-style"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="mn:fmt-deprecates">
 		<fo:block xsl:use-attribute-sets="deprecates-style">
+			<xsl:call-template name="refine_deprecates-style"/>
 			<xsl:apply-templates />
 		</fo:block>
-	</xsl:template>
-
-	<xsl:template name="setStyle_preferred">
-		<xsl:choose>
-			<xsl:when test="$namespace = 'rsd'">
-				<xsl:attribute name="font-weight">normal</xsl:attribute>
-				<xsl:attribute name="color">black</xsl:attribute>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:if test="mn:strong">
-					<xsl:attribute name="font-weight">normal</xsl:attribute>
-				</xsl:if>
-			</xsl:otherwise>
-		</xsl:choose>
 	</xsl:template>
 	
 	<!-- regarding ISO 10241-1:2011,  If there is more than one preferred term, each preferred term follows the previous one on a new line. -->
@@ -495,6 +531,7 @@
 	
 	<xsl:template match="mn:fmt-related">
 		<fo:block role="SKIP" xsl:use-attribute-sets="related-block-style">
+			<xsl:call-template name="refine_related-block-style"/>
 			<xsl:apply-templates/>
 		</fo:block>
 	</xsl:template>
@@ -509,6 +546,7 @@
 	<!-- ========== -->
 	<xsl:template match="mn:fmt-definition">
 		<fo:block xsl:use-attribute-sets="definition-style" role="SKIP">
+			<xsl:call-template name="refine_definition-style"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>

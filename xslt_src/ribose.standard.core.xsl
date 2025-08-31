@@ -1029,7 +1029,7 @@
 				</fo:inline>
 			</xsl:if>
 			
-			<fo:inline padding-right="4mm"><xsl:if test="self::mn:fmt-preferred"><xsl:call-template name="setStyle_preferred"/></xsl:if><xsl:apply-templates /></fo:inline>
+			<fo:inline padding-right="4mm"><xsl:if test="self::mn:fmt-preferred"><xsl:call-template name="refine_preferred-term-style"/></xsl:if><xsl:apply-templates /></fo:inline>
 			
 			<xsl:variable name="term_kind">
 				<xsl:choose>

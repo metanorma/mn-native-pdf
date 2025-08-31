@@ -877,7 +877,7 @@
 				<xsl:apply-templates select="preceding-sibling::mn:term_name[1]" mode="presentation"/>				
 			</fo:block>
 			<fo:block xsl:use-attribute-sets="preferred-term-style">
-				<xsl:call-template name="setStyle_preferred"/>
+				<xsl:call-template name="refine_preferred-term-style"/>
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:block>
@@ -894,6 +894,7 @@
 	
 	<xsl:template match="mn:domain[not(parent::mn:term)]" priority="2">
 		<fo:block xsl:use-attribute-sets="domain-style">
+			<xsl:call-template name="refine_domain-style"/>
 			<fo:inline>
 				<xsl:text>&lt;</xsl:text>
 				<xsl:apply-templates/>
