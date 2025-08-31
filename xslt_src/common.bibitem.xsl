@@ -12,6 +12,30 @@
 											extension-element-prefixes="redirect"
 											version="1.0">
 	
+	<xsl:attribute-set name="references-non-normative-title-style">
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="font-size">16pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">36pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-size">16pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">36pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_references-non-normative-title-style">
+		
+	</xsl:template>
+	
 	<!-- bibitem in Normative References (references/@normative="true") -->
 	<xsl:attribute-set name="bibitem-normative-style">
 		<xsl:if test="$namespace = 'bipm'">
@@ -106,6 +130,14 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- bibitem-normative-style -->
 	
+	<xsl:template name="refine_bibitem-normative-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<!-- bibitem in Normative References (references/@normative="true"), renders as list -->
 	<xsl:attribute-set name="bibitem-normative-list-style">
 		<xsl:attribute name="provisional-distance-between-starts">12mm</xsl:attribute>
@@ -149,6 +181,24 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- bibitem-normative-list-style -->
 	
+	<xsl:template name="refine_bibitem-normative-list-style">
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:variable name="docidentifier">
+				<xsl:apply-templates select="mn:biblio-tag">
+					<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:variable>
+			<xsl:attribute name="provisional-distance-between-starts">
+				<xsl:choose>
+					<xsl:when test="string-length($docidentifier) = 0">0mm</xsl:when>
+					<xsl:when test="string-length($docidentifier) &gt; 19">46.5mm</xsl:when>
+					<xsl:when test="string-length($docidentifier) &gt; 10">37mm</xsl:when>
+					<xsl:otherwise>24.5mm</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="bibitem-non-normative-style">
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -166,6 +216,9 @@
 			<xsl:attribute name="text-indent">-12mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- bibitem-non-normative-style -->
+	
+	<xsl:template name="refine_bibitem-non-normative-style">
+	</xsl:template>
 	
 	<!-- bibitem in bibliography section (references/@normative="false"), renders as list -->
 	<xsl:attribute-set name="bibitem-non-normative-list-style">
@@ -219,6 +272,19 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- bibitem-non-normative-list-style -->
 	
+	<xsl:template name="refine_bibitem-non-normative-list-style">
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:variable name="bibitem_label">
+				<xsl:apply-templates select="mn:biblio-tag">
+					<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:variable>
+			<xsl:if test="string-length(normalize-space($bibitem_label)) &gt; 5">
+				<xsl:attribute name="provisional-distance-between-starts">12mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="bibitem-non-normative-list-item-style">
 		<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
@@ -256,6 +322,14 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:template name="refine_bibitem-non-normative-list-item-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<!-- bibitem in bibliography section (references/@normative="false"), list body -->
 	<xsl:attribute-set name="bibitem-normative-list-body-style">
 		<xsl:if test="$namespace = 'gb'">
@@ -270,6 +344,9 @@
 			<xsl:attribute name="text-indent">-14mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_bibitem-normative-list-body-style">
+	</xsl:template>
 	
 	<xsl:attribute-set name="bibitem-non-normative-list-body-style">
 		<xsl:if test="$namespace = 'gb'">
@@ -287,6 +364,9 @@
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- bibitem-non-normative-list-body-style -->
+	
+	<xsl:template name="refine_bibitem-non-normative-list-body-style">
+	</xsl:template>
 	
 	<!-- footnote reference number for bibitem, in the text  -->
 	<xsl:attribute-set name="bibitem-note-fn-style">
@@ -363,6 +443,14 @@
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- bibitem-note-fn-style -->
+	
+	<xsl:template name="refine_bibitem-note-fn-style">
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 	
 	<!-- footnote number on the page bottom -->
 	<xsl:attribute-set name="bibitem-note-fn-number-style">
@@ -489,7 +577,6 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- bibitem-note-fn-body-style -->
 	
-	
 	<xsl:attribute-set name="references-non-normative-style">
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="line-height">120%</xsl:attribute>
@@ -502,6 +589,8 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- references-non-normative-style -->
 	
+	<xsl:template name="refine_references-non-normative-style">
+	</xsl:template>
 	
 		<!-- ======================= -->
 	<!-- Bibliography rendering -->
@@ -577,6 +666,7 @@
 		<xsl:apply-templates select="mn:fmt-title[@columns = 1]"/>
 		
 		<fo:block xsl:use-attribute-sets="references-non-normative-style">
+			<xsl:call-template name="refine_references-non-normative-style"/>
 			<xsl:apply-templates select="node()[not(self::mn:fmt-title and @columns = 1)]" />
 			
 			<xsl:if test="$namespace = 'jis'">
@@ -617,23 +707,14 @@
 			<xsl:when test="$namespace = 'iho' or $namespace = 'nist-cswp'">
 				<xsl:call-template name="setNamedDestination"/>
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-normative-list-style">
+				
+					<xsl:call-template name="refine_bibitem-normative-list-style"/>
 					
 					<xsl:variable name="docidentifier">
 						<xsl:apply-templates select="mn:biblio-tag">
 							<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
 						</xsl:apply-templates>
 					</xsl:variable>
-					
-					<xsl:if test="$namespace = 'iho'">
-						<xsl:attribute name="provisional-distance-between-starts">
-							<xsl:choose>
-								<xsl:when test="string-length($docidentifier) = 0">0mm</xsl:when>
-								<xsl:when test="string-length($docidentifier) &gt; 19">46.5mm</xsl:when>
-								<xsl:when test="string-length($docidentifier) &gt; 10">37mm</xsl:when>
-								<xsl:otherwise>24.5mm</xsl:otherwise>
-							</xsl:choose>
-						</xsl:attribute>
-					</xsl:if>
 					
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
@@ -645,6 +726,7 @@
 						</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()">
 							<fo:block xsl:use-attribute-sets="bibitem-normative-list-body-style">
+								<xsl:call-template name="refine_bibitem-normative-list-body-style"/>
 								<xsl:call-template name="processBibitem">
 									<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 								</xsl:call-template>
@@ -659,6 +741,7 @@
 				<fo:block-container margin-left="6mm" role="SKIP">
 					<fo:block-container margin-left="0mm" role="SKIP">
 						<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-normative-style">
+							<xsl:call-template name="refine_bibitem-normative-style"/>
 							<xsl:call-template name="processBibitem"/>
 						</fo:block>
 					</fo:block-container>
@@ -671,6 +754,7 @@
 					<xsl:otherwise>
 						<xsl:call-template name="setNamedDestination"/>
 						<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-normative-style">
+							<xsl:call-template name="refine_bibitem-normative-style"/>
 							<xsl:call-template name="processBibitem"/>
 						</fo:block>
 					</xsl:otherwise>
@@ -680,11 +764,8 @@
 			<xsl:otherwise>
 				<xsl:call-template name="setNamedDestination"/>
 				<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-normative-style">
-					<xsl:if test="$namespace = 'iso'">
-						<xsl:if test="$layoutVersion = '2024'">
-							<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
+					<xsl:call-template name="refine_bibitem-normative-style"/>
+					
 					<xsl:call-template name="processBibitem"/>
 				</fo:block>
 			</xsl:otherwise>
@@ -701,6 +782,7 @@
 		</xsl:variable>
 		<xsl:if test="normalize-space($list_items) != ''">
 			<fo:list-block xsl:use-attribute-sets="bibitem-non-normative-list-style">
+				<xsl:call-template name="refine_bibitem-non-normative-list-style"/>
 				<xsl:copy-of select="$list_items"/>
 			</fo:list-block>
 		</xsl:if>
@@ -715,6 +797,7 @@
 				<!-- start BIPM bibitem processing -->
 				<xsl:call-template name="setNamedDestination"/>
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-style">
+					<xsl:call-template name="refine_bibitem-non-normative-list-style"/>
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block>
@@ -741,6 +824,7 @@
 				<!-- start CSA bibitem processing -->
 				<xsl:call-template name="setNamedDestination"/>
 				<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-style">
+					<xsl:call-template name="refine_bibitem-non-normative-style"/>
 					<xsl:apply-templates select="mn:biblio-tag"/>
 					<xsl:apply-templates select="mn:formattedref"/>
 					<!-- <xsl:call-template name="processBibliographyNote"/> -->
@@ -759,6 +843,7 @@
 					<xsl:otherwise>
 						<xsl:call-template name="setNamedDestination"/>
 						<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-style">
+							<xsl:call-template name="refine_bibitem-non-normative-style"/>
 							<xsl:call-template name="processBibitem"/>
 						</fo:block>
 					</xsl:otherwise>
@@ -768,6 +853,7 @@
 			<xsl:when test="$namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'">
 				<xsl:call-template name="setNamedDestination"/>
 				<fo:block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-style">
+					<xsl:call-template name="refine_bibitem-non-normative-style"/>
 					<xsl:call-template name="processBibitem"/>
 				</fo:block>
 			</xsl:when>
@@ -775,6 +861,7 @@
 			<xsl:when test="$namespace = 'rsd'">
 				<xsl:call-template name="setNamedDestination"/>
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-style">
+					<xsl:call-template name="refine_bibitem-non-normative-list-style"/>
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block>
@@ -812,16 +899,8 @@
 				<!-- Example: [1] ISO 9:1995, Information and documentation – Transliteration of Cyrillic characters into Latin characters – Slavic and non-Slavic languages -->	
 				<xsl:call-template name="setNamedDestination"/>
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-style">
-					<xsl:if test="$namespace = 'ieee'">
-						<xsl:variable name="bibitem_label">
-							<xsl:apply-templates select="mn:biblio-tag">
-								<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
-							</xsl:apply-templates>
-						</xsl:variable>
-						<xsl:if test="string-length(normalize-space($bibitem_label)) &gt; 5">
-							<xsl:attribute name="provisional-distance-between-starts">12mm</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
+					<xsl:call-template name="refine_bibitem-non-normative-list-style"/>
+					
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block role="SKIP">
@@ -839,6 +918,7 @@
 						</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()">
 							<fo:block xsl:use-attribute-sets="bibitem-non-normative-list-body-style" role="SKIP">
+								<xsl:call-template name="refine_bibitem-non-normative-list-body-style"/>
 								<xsl:call-template name="processBibitem">
 									<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 								</xsl:call-template>
@@ -860,11 +940,8 @@
 			<xsl:otherwise>
 				<xsl:call-template name="setNamedDestination"/>
 				<fo:list-item id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-item-style">
-					<xsl:if test="$namespace = 'iso'">
-						<xsl:if test="$layoutVersion = '2024'">
-							<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
+					<xsl:call-template name="refine_bibitem-non-normative-list-item-style"/>
+					
 					<fo:list-item-label end-indent="label-end()">
 						<fo:block role="SKIP">
 							<fo:inline role="SKIP">
@@ -876,6 +953,7 @@
 					</fo:list-item-label>
 					<fo:list-item-body start-indent="body-start()">
 						<fo:block xsl:use-attribute-sets="bibitem-non-normative-list-body-style"> <!-- role="SKIP" -->
+							<xsl:call-template name="refine_bibitem-non-normative-list-body-style"/>
 							<xsl:call-template name="processBibitem">
 								<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 							</xsl:call-template>

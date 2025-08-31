@@ -51,7 +51,7 @@
 			<xsl:attribute name="margin-left">0mm</xsl:attribute>
 			<xsl:attribute name="margin-right">0mm</xsl:attribute>
 		</xsl:if>
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- quote-style -->
 	
 	<xsl:template name="refine_quote-style">
 		<xsl:if test="$namespace = 'iso'">
@@ -85,6 +85,9 @@
 			<xsl:attribute name="margin-right">12mm</xsl:attribute>			 
 		</xsl:if>		
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_quote-source-style">
+	</xsl:template>
 	
 	<!-- ====== -->
 	<!-- quote -->	
@@ -124,6 +127,7 @@
 				</fo:block-container>
 				<xsl:if test="mn:author or mn:fmt-source or mn:attribution">
 					<fo:block xsl:use-attribute-sets="quote-source-style">
+						<xsl:call-template name="refine_quote-source-style"/>
 						<!-- — ISO, ISO 7301:2011, Clause 1 -->
 						<xsl:apply-templates select="mn:author"/>
 						<xsl:apply-templates select="mn:fmt-source"/>

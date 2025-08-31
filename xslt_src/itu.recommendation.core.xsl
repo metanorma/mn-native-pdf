@@ -2419,7 +2419,7 @@
 				<xsl:apply-templates select="ancestor::mn:term[1]/mn:fmt-name" />
 			</fo:inline>
 			<fo:inline font-weight="bold">
-				<xsl:call-template name="setStyle_preferred"/>
+				<xsl:call-template name="refine_preferred-term-style"/>
 				<xsl:apply-templates />
 			</fo:inline>
 			<xsl:if test="../mn:fmt-termsource">

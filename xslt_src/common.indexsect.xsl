@@ -45,7 +45,10 @@
 			<xsl:attribute name="span">all</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- indexsect-title-style -->
+	
+	<xsl:template name="refine_indexsect-title-style">
+	</xsl:template>
 	
 	<xsl:attribute-set name="indexsect-clause-title-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -73,7 +76,10 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-left">25mm</xsl:attribute>
 		</xsl:if>
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- indexsect-clause-title-style -->
+	
+	<xsl:template name="refine_indexsect-clause-title-style">
+	</xsl:template>
 	<!-- End Index section styles -->
 	
 	<!-- =================== -->
@@ -268,6 +274,7 @@
 
 	<xsl:template match="mn:indexsect/mn:fmt-title | mn:indexsect/mn:title" priority="4">
 		<fo:block xsl:use-attribute-sets="indexsect-title-style">
+			<xsl:call-template name="refine_indexsect-title-style"/>
 			<!-- Index -->
 			<xsl:apply-templates />
 		</fo:block>
@@ -276,6 +283,7 @@
 	<xsl:template match="mn:indexsect/mn:clause/mn:fmt-title | mn:indexsect/mn:clause/mn:title" priority="4">
 		<!-- Letter A, B, C, ... -->
 		<fo:block xsl:use-attribute-sets="indexsect-clause-title-style">
+			<xsl:call-template name="refine_indexsect-clause-title-style"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>

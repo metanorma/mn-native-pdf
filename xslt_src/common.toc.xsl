@@ -489,6 +489,9 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- END: toc-leader-style -->
 	
+	<xsl:template name="refine_toc-leader-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="toc-pagenumber-style">
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="font-family">Arial</xsl:attribute>
@@ -499,6 +502,9 @@
 			<xsl:attribute name="padding-left">2mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_toc-pagenumber-style">
+	</xsl:template>
 	
 	<!-- List of Figures, Tables -->
 	<xsl:attribute-set name="toc-listof-title-style">
@@ -589,6 +595,9 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:template name="refine_toc-listof-item-block-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="toc-listof-item-style">
 		<xsl:attribute name="role">TOCI</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
@@ -657,6 +666,8 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:template name="refine_toc-listof-item-style">
+	</xsl:template>
 	
 	<xsl:template name="processPrefaceSectionsDefault_Contents">
 		<xsl:variable name="nodes_preface_">

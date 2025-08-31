@@ -38,6 +38,14 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- formula-style -->
 	
+	<xsl:template name="refine_formula-style">
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:if test="not(ancestor::mn:note)">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="formula-stem-block-style">
 		<xsl:attribute name="text-align">center</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi'">
@@ -198,11 +206,7 @@
 	<xsl:template match="mn:formula[mn:fmt-name]/mn:fmt-stem">
 		<fo:block xsl:use-attribute-sets="formula-style">
 		
-			<xsl:if test="$namespace = 'gb'">
-				<xsl:if test="not(ancestor::mn:note)">
-					<xsl:attribute name="font-size">11pt</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
+			<xsl:call-template name="refine_formula-style"/>
 		
 			<fo:table table-layout="fixed" width="100%">
 				<fo:table-column column-width="95%"/>

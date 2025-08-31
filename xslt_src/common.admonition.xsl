@@ -114,6 +114,10 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- admonition-style -->
 	
+	
+	<xsl:template name="refine_admonition-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="admonition-container-style">
 		<xsl:attribute name="margin-left">0mm</xsl:attribute>
 		<xsl:attribute name="margin-right">0mm</xsl:attribute>
@@ -175,6 +179,8 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- admonition-container-style -->
 	
+	<xsl:template name="refine_admonition-container-style">
+	</xsl:template>
 	
 	<xsl:attribute-set name="admonition-name-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -266,6 +272,9 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- admonition-name-style -->
 	
+	<xsl:template name="refine_admonition-name-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="admonition-p-style">
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="font-style">italic</xsl:attribute>
@@ -306,6 +315,16 @@
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- admonition-p-style -->
+	
+	<xsl:template name="refine_admonition-p-style">
+		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:variable name="num"><xsl:number/></xsl:variable>
+			<xsl:if test="$num &lt; count(ancestor::mn:admonition//mn:p)">
+				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<!-- end admonition -->
 	
 	<!-- ================ -->
@@ -319,6 +338,8 @@
 		
 		<xsl:if test="$namespace = 'unece'"> <!-- display name before box -->
 			<fo:block xsl:use-attribute-sets="admonition-name-style">
+				<xsl:call-template name="refine_admonition-name-style"/>
+			
 				<xsl:call-template name="displayAdmonitionName"/>
 			</fo:block>
 		</xsl:if>
@@ -329,6 +350,7 @@
 				<xsl:choose>
 					<xsl:when test="$document_type = 'PAS' or @type = 'commentary'">
 						<fo:block xsl:use-attribute-sets="admonition-style">
+							<xsl:call-template name="refine_admonition-style"/>
 							
 							<xsl:call-template name="setBlockSpanAll"/>
 							
@@ -345,6 +367,8 @@
 							</xsl:if>
 							
 							<fo:block xsl:use-attribute-sets="admonition-name-style">
+								<xsl:call-template name="refine_admonition-name-style"/>
+							
 								<xsl:call-template name="displayAdmonitionName"/>
 							</fo:block>
 							
@@ -355,6 +379,8 @@
 						<xsl:call-template name="setNamedDestination"/>
 						<fo:block-container id="{@id}" xsl:use-attribute-sets="admonition-style" role="SKIP">
 						
+							<xsl:call-template name="refine_admonition-style"/>
+						
 							<xsl:call-template name="setBlockSpanAll"/>
 						
 							<xsl:if test="@type = 'caution' or @type = 'warning'">
@@ -362,9 +388,13 @@
 							</xsl:if>
 							<xsl:attribute name="margin-right">5mm</xsl:attribute>
 							<fo:block-container xsl:use-attribute-sets="admonition-container-style" role="SKIP">
+							
+								<xsl:call-template name="refine_admonition-container-style"/>
+							
 								<fo:block></fo:block>
 								<xsl:if test="mn:fmt-name">
 									<fo:block xsl:use-attribute-sets="admonition-name-style">
+										<xsl:call-template name="refine_admonition-name-style"/>
 										<xsl:call-template name="displayAdmonitionName"/>
 									</fo:block>
 								</xsl:if>
@@ -377,6 +407,8 @@
 			
 			<xsl:when test="$namespace = 'csd' or $namespace = 'iso' or $namespace = 'jcgm'">
 				<fo:block xsl:use-attribute-sets="admonition-style">
+				
+					<xsl:call-template name="refine_admonition-style"/>
 				
 					<xsl:call-template name="setBlockSpanAll"/>
 					
@@ -411,6 +443,7 @@
 			
 			<xsl:when test="$namespace = 'gb'">
 				<fo:block xsl:use-attribute-sets="admonition-name-style">
+					<xsl:call-template name="refine_admonition-name-style"/>
 					<xsl:call-template name="displayAdmonitionName"/>
 				</fo:block>
 				<xsl:apply-templates select="node()[not(self::mn:name)]" />
@@ -419,6 +452,8 @@
 			<xsl:otherwise> <!-- text in the box -->
 				<xsl:call-template name="setNamedDestination"/>
 				<fo:block-container id="{@id}" xsl:use-attribute-sets="admonition-style">
+				
+					<xsl:call-template name="refine_admonition-style"/>
 					
 					<xsl:call-template name="setBlockSpanAll"/>
 					
@@ -449,6 +484,7 @@
 					
 					<xsl:if test="$namespace = 'unece-rec'">
 						<fo:block xsl:use-attribute-sets="admonition-name-style">
+							<xsl:call-template name="refine_admonition-name-style"/>
 							<xsl:call-template name="displayAdmonitionName"/>
 						</fo:block>
 					</xsl:if>
@@ -458,7 +494,11 @@
 					
 						<xsl:when test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
 							<fo:block xsl:use-attribute-sets="admonition-container-style">
+							
+								<xsl:call-template name="refine_admonition-container-style"/>
+								
 								<fo:block xsl:use-attribute-sets="admonition-name-style">
+									<xsl:call-template name="refine_admonition-name-style"/>
 									<xsl:call-template name="displayAdmonitionName"/>
 								</fo:block>
 								<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
@@ -467,6 +507,8 @@
 						
 						<xsl:otherwise>
 							<fo:block-container xsl:use-attribute-sets="admonition-container-style" role="SKIP">
+							
+								<xsl:call-template name="refine_admonition-container-style"/>
 							
 								<xsl:if test="$namespace = 'ieee'">
 									<xsl:if test="@type = 'editorial' or not(@type)">
@@ -482,9 +524,11 @@
 								
 									<xsl:when test="$namespace = 'bipm' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
 										<fo:block xsl:use-attribute-sets="admonition-name-style">
+											<xsl:call-template name="refine_admonition-name-style"/>
 											<xsl:call-template name="displayAdmonitionName"/>
 										</fo:block>
 										<fo:block xsl:use-attribute-sets="admonition-p-style">
+											<xsl:call-template name="refine_admonition-p-style"/>
 											<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 										</fo:block>
 									</xsl:when>
@@ -503,6 +547,7 @@
 									<xsl:when test="$namespace = 'ieee'">
 										<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
 											<fo:block xsl:use-attribute-sets="admonition-p-style">
+												<xsl:call-template name="refine_admonition-p-style"/>
 												<fo:inline>
 													<xsl:call-template name="displayAdmonitionName">
 														<xsl:with-param name="sep">: </xsl:with-param>
@@ -581,6 +626,7 @@
 			</xsl:when>
 			<xsl:when test="$namespace = 'gb'">
 				<fo:block xsl:use-attribute-sets="admonition-p-style">
+					<xsl:call-template name="refine_admonition-p-style"/>
 					<xsl:call-template name="paragraph"/>
 				</fo:block>
 			</xsl:when>
@@ -591,6 +637,7 @@
 					</xsl:when>
 					<xsl:otherwise>
 						<fo:block xsl:use-attribute-sets="admonition-p-style">
+							<xsl:call-template name="refine_admonition-p-style"/>
 							<xsl:apply-templates />
 						</fo:block>
 					</xsl:otherwise>
@@ -598,14 +645,8 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block xsl:use-attribute-sets="admonition-p-style">
+					<xsl:call-template name="refine_admonition-p-style"/>
 				
-					<xsl:if test="$namespace = 'nist-sp'">
-						<xsl:variable name="num"><xsl:number/></xsl:variable>
-						<xsl:if test="$num &lt; count(ancestor::mn:admonition//mn:p)">
-							<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>

@@ -921,15 +921,21 @@
 	<!-- title      -->
 	<!-- ====== -->
 	
-	<xsl:template match="mn:annex/mn:fmt-title">
-		<fo:block font-size="12pt" font-weight="bold" text-align="center" margin-bottom="12pt" keep-with-next="always" role="H1">			
+	<xsl:template match="mn:annex/mn:fmt-title" name="annex_title">
+		<fo:block xsl:use-attribute-sets="annex-title-style">
+		
+			<xsl:call-template name="refine_annex-title-style"/>
+			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][mn:variant-title][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
 	</xsl:template>
 		
 	<xsl:template match="mn:bibliography/mn:references[not(@normative='true')]/mn:fmt-title">
-		<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always" role="H1">
+		<fo:block xsl:use-attribute-sets="references-non-normative-title-style">
+		
+			<xsl:call-template name="refine_references-non-normative-title-style"/>
+		
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>

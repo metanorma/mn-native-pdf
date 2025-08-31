@@ -224,6 +224,8 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- example-body-style -->
 
+	<xsl:template name="refine_example-body-style">
+	</xsl:template>
 
 	<xsl:attribute-set name="example-name-style">
 		<xsl:if test="$namespace = 'csa'">			
@@ -585,6 +587,7 @@
 								</fo:block>
 								
 								<fo:block-container xsl:use-attribute-sets="example-body-style" role="SKIP">
+									<xsl:call-template name="refine_example-body-style"/>
 									<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
 										<xsl:variable name="example_body">
 											<xsl:apply-templates select="node()[not(self::mn:fmt-name)]">
@@ -655,6 +658,7 @@
 								<xsl:if test="*[not(self::mn:fmt-name)][position() &gt; 1]">
 									<!-- display further elements in blocks -->
 									<fo:block-container xsl:use-attribute-sets="example-body-style" role="SKIP">
+										<xsl:call-template name="refine_example-body-style"/>
 										<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
 											<xsl:apply-templates select="*[not(self::mn:fmt-name)][position() &gt; 1]">
 												<xsl:with-param name="fo_element" select="'block'"/>

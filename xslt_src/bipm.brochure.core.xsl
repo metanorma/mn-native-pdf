@@ -3167,7 +3167,7 @@
 
 	<xsl:template match="mn:fmt-preferred" priority="2">		
 		<fo:block font-weight="bold" keep-with-next="always" space-before="8pt" margin-bottom="6pt">
-			<xsl:call-template name="setStyle_preferred"/>
+			<xsl:call-template name="refine_preferred-term-style"/>
 			<xsl:if test="ancestor::mn:term[1]/mn:fmt-name">
 				<xsl:variable name="level">
 					<xsl:call-template name="getLevelTermName"/>

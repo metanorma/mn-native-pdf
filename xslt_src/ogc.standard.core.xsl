@@ -1589,7 +1589,7 @@
 	
 	<!-- first preferred displays on the same line as term/name -->
 	<xsl:template match="mn:fmt-preferred[not(preceding-sibling::mn:fmt-preferred)]" mode="term_name" priority="2">
-		<fo:inline font-size="18pt" padding-right="3mm"><xsl:call-template name="setStyle_preferred"/><xsl:apply-templates /></fo:inline>		
+		<fo:inline font-size="18pt" padding-right="3mm"><xsl:call-template name="refine_preferred-term-style"/><xsl:apply-templates /></fo:inline>		
 		<fo:inline padding-right="2mm">&#xA0;</fo:inline>
 	</xsl:template>
 	

@@ -1647,19 +1647,10 @@
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
-		<fo:block font-family="Arial" font-weight="bold" margin-bottom="12pt" space-before="18pt" keep-with-next="always" keep-together.within-column="always" role="H{$level}" span="all">
+		<fo:block xsl:use-attribute-sets="legal-statement-title-style" role="H{$level}">
 			<xsl:copy-of select="parent::mn:clause[@id = 'boilerplate-participants' or normalize-space(mn:fmt-title) = 'Participants']/@id"/>
-			<xsl:attribute name="font-size">
-				<xsl:choose>
-					<xsl:when test="$level = '1'">12pt</xsl:when>
-					<xsl:otherwise>11pt</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
 			
-			<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
-				<xsl:attribute name="font-family">Arial Black</xsl:attribute>
-				<xsl:attribute name="font-size">13pt</xsl:attribute>
-			</xsl:if>
+			<xsl:call-template name="refine_legal-statement-title-style"/>
 			
 			<xsl:apply-templates />
 		</fo:block>
@@ -2040,11 +2031,10 @@
 		<xsl:choose>
 			<xsl:when test="$current_template = 'draft' or $current_template = 'standard'">
 				<fo:block-container width="140mm" role="SKIP">
-					<fo:block font-family="Arial" font-size="23pt" font-weight="bold" margin-top="84pt" margin-bottom="40pt" line-height="1.1">
-						<xsl:if test="(contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != '') or
-									$current_template = 'standard'">
-							<xsl:attribute name="font-size">24pt</xsl:attribute>
-						</xsl:if>
+					<fo:block xsl:use-attribute-sets="p-zzSTDTitle1-style">
+						
+						<xsl:call-template name="refine_p-zzSTDTitle1-style"/>
+						
 						<xsl:apply-templates />
 					</fo:block>
 				</fo:block-container>
@@ -2601,9 +2591,12 @@
 	
 	<!-- Bibliography -->
 	<xsl:template match="mn:references[not(@normative='true')]/mn:fmt-title">
-		<fo:block font-size="16pt" font-weight="bold" margin-top="6pt" margin-bottom="36pt" keep-with-next="always" role="H1">
-				<xsl:apply-templates />
-			</fo:block>
+		<fo:block xsl:use-attribute-sets="references-non-normative-title-style">
+			
+			<xsl:call-template name="refine_references-non-normative-title-style"/>
+		
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 	
 	
@@ -2929,13 +2922,6 @@
 	</xsl:template>
 	<xsl:template match="mn:term/mn:fmt-termsource" priority="2">
 		<xsl:call-template name="termsource"/>
-	</xsl:template>
-	
-	
-	<xsl:template name="titleAmendment">
-		<fo:block font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always">
-			<xsl:apply-templates />
-		</fo:block>
 	</xsl:template>
 	
 	<!-- ====== -->
@@ -3290,11 +3276,10 @@
 	<xsl:template name="insertFootnoteSeparator">
 		<fo:static-content flow-name="xsl-footnote-separator" role="artifact">
 			<fo:block>
-				<fo:leader leader-pattern="rule" rule-thickness="0.5pt" leader-length="35%">
-					<xsl:if test="$current_template = 'whitepaper' or $current_template= 'icap-whitepaper' or $current_template = 'industry-connection-report'">
-						<xsl:attribute name="rule-thickness">1pt</xsl:attribute>
-						<xsl:attribute name="leader-length">51mm</xsl:attribute>
-					</xsl:if>
+				<fo:leader xsl:use-attribute-sets="footnote-separator-leader-style">
+				
+					<xsl:call-template name="refine_footnote-separator-leader-style"/>
+				
 				</fo:leader>
 			</fo:block>
 		</fo:static-content>

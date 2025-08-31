@@ -17,6 +17,30 @@
 			<xsl:attribute name="space-after">12pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_sourcecode-container-style">
+		<xsl:if test="not(ancestor::mn:li) or ancestor::mn:example">
+			<xsl:attribute name="margin-left">0mm</xsl:attribute>
+		</xsl:if>
+		
+		<xsl:if test="ancestor::mn:example">
+			<xsl:attribute name="margin-right">0mm</xsl:attribute>
+		</xsl:if>
+		
+		<xsl:copy-of select="@id"/>
+		
+		<xsl:if test="parent::mn:note">
+			<xsl:attribute name="margin-left">
+				<xsl:choose>
+					<xsl:when test="not(ancestor::mn:table)"><xsl:value-of select="$note-body-indent"/></xsl:when>
+					<xsl:otherwise><xsl:value-of select="$note-body-indent-table"/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:if test="$namespace = 'gb'">
+				<xsl:attribute name="margin-left">0mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 
 	<xsl:attribute-set name="sourcecode-style">
 		<xsl:attribute name="white-space">pre</xsl:attribute>
@@ -142,6 +166,9 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- sourcecode-name-style -->
+	
+	<xsl:template name="refine_sourcecode-name-style">
+	</xsl:template>
 
 	<xsl:template name="add-zero-spaces-equal">
 		<xsl:param name="text" select="."/>
@@ -261,27 +288,8 @@
 			<xsl:otherwise>
 				<fo:block-container xsl:use-attribute-sets="sourcecode-container-style" role="SKIP">
 				
-					<xsl:if test="not(ancestor::mn:li) or ancestor::mn:example">
-						<xsl:attribute name="margin-left">0mm</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="ancestor::mn:example">
-						<xsl:attribute name="margin-right">0mm</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:copy-of select="@id"/>
-					
-					<xsl:if test="parent::mn:note">
-						<xsl:attribute name="margin-left">
-							<xsl:choose>
-								<xsl:when test="not(ancestor::mn:table)"><xsl:value-of select="$note-body-indent"/></xsl:when>
-								<xsl:otherwise><xsl:value-of select="$note-body-indent-table"/></xsl:otherwise>
-							</xsl:choose>
-						</xsl:attribute>
-						<xsl:if test="$namespace = 'gb'">
-							<xsl:attribute name="margin-left">0mm</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
+					<xsl:call-template name="refine_sourcecode-container-style"/>
+
 					<fo:block-container margin-left="0mm" role="SKIP">
 				
 						<xsl:if test="$namespace = 'rsd'">
@@ -631,11 +639,10 @@
 	
 	<!-- end mode="syntax_highlight" -->
 	
-	
-	
 	<xsl:template match="mn:sourcecode/mn:fmt-name">
 		<xsl:if test="normalize-space() != ''">		
-			<fo:block xsl:use-attribute-sets="sourcecode-name-style">				
+			<fo:block xsl:use-attribute-sets="sourcecode-name-style">
+				<xsl:call-template name="refine_sourcecode-name-style"/>
 				<xsl:apply-templates/>
 			</fo:block>
 		</xsl:if>

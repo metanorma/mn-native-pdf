@@ -30,7 +30,21 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 		</xsl:if>
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- xref-style -->
+	
+	<xsl:template name="refine_xref-style">
+		<xsl:if test="string-length(normalize-space()) &lt; 30 and not(contains(normalize-space(), 'http://')) and not(contains(normalize-space(), 'https://')) and not(ancestor::*[self::mn:table or self::mn:dl])">
+			<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="parent::mn:add">
+			<xsl:call-template name="append_add-style"/>
+		</xsl:if>
+	</xsl:template> <!-- refine_xref-style -->
 
 	<xsl:template match="mn:fmt-xref">
 		<xsl:call-template name="insert_basic_link">
@@ -39,17 +53,8 @@
 					<xsl:call-template name="getAltText"/>
 				</xsl:variable>
 				<fo:basic-link internal-destination="{@target}" fox:alt-text="{$alt_text}" xsl:use-attribute-sets="xref-style">
-					<xsl:if test="string-length(normalize-space()) &lt; 30 and not(contains(normalize-space(), 'http://')) and not(contains(normalize-space(), 'https://')) and not(ancestor::*[self::mn:table or self::mn:dl])">
-						<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="$namespace = 'jis'">
-						<xsl:if test="not($vertical_layout = 'true')">
-							<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					<xsl:if test="parent::mn:add">
-						<xsl:call-template name="append_add-style"/>
-					</xsl:if>
+					<xsl:call-template name="refine_xref-style"/>
+					
 					<xsl:apply-templates />
 				</fo:basic-link>
 			</xsl:with-param>
