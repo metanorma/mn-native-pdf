@@ -74,7 +74,10 @@
 		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 		</xsl:if>
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- pre-style -->
+	
+	<xsl:template name="refine_pre-style">
+	</xsl:template>
 	
 	<xsl:attribute-set name="tt-style">
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd'">
@@ -88,6 +91,58 @@
 			<xsl:attribute name="font-family">Fira Code, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 		</xsl:if>
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_tt-style">
+		<xsl:variable name="_font-size">
+			<xsl:if test="$namespace = 'csa'">10</xsl:if>
+			<xsl:if test="$namespace = 'csd'">10</xsl:if>
+			<xsl:if test="$namespace = 'gb'">10</xsl:if>
+			<xsl:if test="$namespace = 'iec'">10</xsl:if>
+			<xsl:if test="$namespace = 'iho'">9.5</xsl:if>
+			<xsl:if test="$namespace = 'iso'">9</xsl:if> <!-- inherit -->
+			<xsl:if test="$namespace = 'bsi'">10</xsl:if>
+			<xsl:if test="$namespace = 'jcgm'">10</xsl:if>
+			<xsl:if test="$namespace = 'itu'"></xsl:if>
+			<xsl:if test="$namespace = 'm3d'">
+				<xsl:choose>
+					<xsl:when test="not(ancestor::mn:note)">10</xsl:when>
+					<xsl:otherwise>11</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'mpfd'"></xsl:if>
+			<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'"></xsl:if>
+			<xsl:if test="$namespace = 'ogc'">
+				<xsl:choose>
+					<xsl:when test="ancestor::mn:table">8.5</xsl:when>
+					<xsl:otherwise>9.5</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'ogc-white-paper'">
+				<xsl:choose>
+					<xsl:when test="ancestor::mn:table">8.5</xsl:when>
+					<xsl:otherwise>9.5</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'rsd'">
+				<xsl:choose>
+					<xsl:when test="ancestor::mn:table">inherit</xsl:when>
+					<xsl:otherwise>95%</xsl:otherwise> <!-- 110% -->
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'"></xsl:if>		
+		</xsl:variable>
+		<xsl:variable name="font-size" select="normalize-space($_font-size)"/>		
+		<xsl:if test="$font-size != ''">
+			<xsl:attribute name="font-size">
+				<xsl:choose>
+					<xsl:when test="$font-size = 'inherit'"><xsl:value-of select="$font-size"/></xsl:when>
+					<xsl:when test="contains($font-size, '%')"><xsl:value-of select="$font-size"/></xsl:when>
+					<xsl:when test="ancestor::mn:note or ancestor::mn:example"><xsl:value-of select="$font-size * 0.91"/>pt</xsl:when>
+					<xsl:otherwise><xsl:value-of select="$font-size"/>pt</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:variable name="color-added-text">
 		<xsl:text>rgb(0, 255, 0)</xsl:text>
@@ -107,10 +162,15 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_add-style">
+	</xsl:template>
   
 	<xsl:variable name="add-style">
-			<add-style xsl:use-attribute-sets="add-style"/>
-		</xsl:variable>
+		<add-style xsl:use-attribute-sets="add-style">
+			<xsl:call-template name="refine_add-style"/>
+		</add-style>
+	</xsl:variable>
 	<xsl:template name="append_add-style">
 		<xsl:copy-of select="xalan:nodeset($add-style)/add-style/@*"/>
 	</xsl:template>
@@ -123,42 +183,13 @@
 		<xsl:attribute name="text-decoration">line-through</xsl:attribute>
 	</xsl:attribute-set>
 	
-	<xsl:template match="mn:br">
-		<xsl:value-of select="$linebreak"/>
-	</xsl:template>
-	
-		<xsl:template match="mn:em">
-		<fo:inline font-style="italic">
-			<xsl:call-template name="refine_italic_style"/>
-			<xsl:apply-templates />
-		</fo:inline>
+	<xsl:template name="refine_del-style">
 	</xsl:template>
 
-	<xsl:template name="refine_italic_style">
-		<xsl:if test="$namespace = 'iso'">
-			<xsl:if test="ancestor::*[local-name() = 'item']">
-				<xsl:attribute name="role">SKIP</xsl:attribute>
-			</xsl:if>
-		</xsl:if>
-		<xsl:if test="$namespace = 'itu'">
-			<xsl:if test="$lang = 'ar'"> <!-- to prevent rendering `###` due the missing Arabic glyphs in the italic font (Times New Roman) -->
-				<xsl:attribute name="font-style">normal</xsl:attribute>
-			</xsl:if>
-		</xsl:if>
-	</xsl:template>
+	<xsl:attribute-set name="strong-style">
+		<xsl:attribute name="font-weight">bold</xsl:attribute>
+	</xsl:attribute-set>
 
-	<xsl:template match="mn:strong | *[local-name()='b']">
-		<xsl:param name="split_keep-within-line"/>
-		<fo:inline font-weight="bold">
-		
-			<xsl:call-template name="refine_strong_style"/>
-			
-			<xsl:apply-templates>
-				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
-			</xsl:apply-templates>
-		</fo:inline>
-	</xsl:template>
-	
 	<xsl:template name="refine_strong_style">
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="ancestor::*[local-name() = 'item']">
@@ -179,6 +210,82 @@
 		<xsl:if test="ancestor::*['preferred']">
 			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
+	</xsl:template> <!-- refine_strong_style -->
+
+	<xsl:attribute-set name="em-style">
+		<xsl:attribute name="font-style">italic</xsl:attribute>
+	</xsl:attribute-set>
+
+	<xsl:template name="refine_em_style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="ancestor::*[local-name() = 'item']">
+				<xsl:attribute name="role">SKIP</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:if test="$lang = 'ar'"> <!-- to prevent rendering `###` due the missing Arabic glyphs in the italic font (Times New Roman) -->
+				<xsl:attribute name="font-style">normal</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template> <!-- refine_em_style -->
+	
+	<xsl:attribute-set name="sup-style">
+		<xsl:attribute name="font-size">80%</xsl:attribute>
+		<xsl:attribute name="vertical-align">super</xsl:attribute>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_sup-style">
+	</xsl:template>
+
+	<xsl:attribute-set name="sub-style">
+		<xsl:attribute name="font-size">80%</xsl:attribute>
+		<xsl:attribute name="vertical-align">sub</xsl:attribute>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_sub-style">
+	</xsl:template>
+	
+	<xsl:attribute-set name="underline-style">
+		<xsl:attribute name="text-decoration">underline</xsl:attribute>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_underline-style">
+	</xsl:template>
+	
+	<xsl:attribute-set name="hi-style">
+		<xsl:attribute name="background-color">yellow</xsl:attribute>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_hi-style">
+	</xsl:template>
+	
+	<xsl:attribute-set name="strike-style">
+		<xsl:attribute name="text-decoration">line-through</xsl:attribute>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_strike-style">
+	</xsl:template>
+	
+	<xsl:template match="mn:br">
+		<xsl:value-of select="$linebreak"/>
+	</xsl:template>
+	
+	<xsl:template match="mn:em">
+		<fo:inline xsl:use-attribute-sets="em-style">
+			<xsl:call-template name="refine_em_style"/>
+			<xsl:apply-templates />
+		</fo:inline>
+	</xsl:template>
+
+	<xsl:template match="mn:strong | *[local-name()='b']">
+		<xsl:param name="split_keep-within-line"/>
+		<fo:inline xsl:use-attribute-sets="strong-style">
+			<xsl:call-template name="refine_strong_style"/>
+			
+			<xsl:apply-templates>
+				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
+			</xsl:apply-templates>
+		</fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="*[local-name()='padding']">
@@ -186,69 +293,22 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:sup">
-		<fo:inline font-size="80%" vertical-align="super">
+		<fo:inline xsl:use-attribute-sets="sup-style">
+			<xsl:call-template name="refine_sup-style"/>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
-	
+
 	<xsl:template match="mn:sub">
-		<fo:inline font-size="80%" vertical-align="sub">
+		<fo:inline xsl:use-attribute-sets="sub-style">
+			<xsl:call-template name="refine_sub-style"/>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="mn:tt">
 		<fo:inline xsl:use-attribute-sets="tt-style">
-		
-			<xsl:variable name="_font-size">
-				<xsl:if test="$namespace = 'csa'">10</xsl:if>
-				<xsl:if test="$namespace = 'csd'">10</xsl:if>
-				<xsl:if test="$namespace = 'gb'">10</xsl:if>
-				<xsl:if test="$namespace = 'iec'">10</xsl:if>
-				<xsl:if test="$namespace = 'iho'">9.5</xsl:if>
-				<xsl:if test="$namespace = 'iso'">9</xsl:if> <!-- inherit -->
-				<xsl:if test="$namespace = 'bsi'">10</xsl:if>
-				<xsl:if test="$namespace = 'jcgm'">10</xsl:if>
-				<xsl:if test="$namespace = 'itu'"></xsl:if>
-				<xsl:if test="$namespace = 'm3d'">
-					<xsl:choose>
-						<xsl:when test="not(ancestor::mn:note)">10</xsl:when>
-						<xsl:otherwise>11</xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
-				<xsl:if test="$namespace = 'mpfd'"></xsl:if>
-				<xsl:if test="$namespace = 'nist-cswp'  or $namespace = 'nist-sp'"></xsl:if>
-				<xsl:if test="$namespace = 'ogc'">
-					<xsl:choose>
-						<xsl:when test="ancestor::mn:table">8.5</xsl:when>
-						<xsl:otherwise>9.5</xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
-				<xsl:if test="$namespace = 'ogc-white-paper'">
-					<xsl:choose>
-						<xsl:when test="ancestor::mn:table">8.5</xsl:when>
-						<xsl:otherwise>9.5</xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
-				<xsl:if test="$namespace = 'rsd'">
-					<xsl:choose>
-						<xsl:when test="ancestor::mn:table">inherit</xsl:when>
-						<xsl:otherwise>95%</xsl:otherwise> <!-- 110% -->
-					</xsl:choose>
-				</xsl:if>
-				<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'"></xsl:if>		
-			</xsl:variable>
-			<xsl:variable name="font-size" select="normalize-space($_font-size)"/>		
-			<xsl:if test="$font-size != ''">
-				<xsl:attribute name="font-size">
-					<xsl:choose>
-						<xsl:when test="$font-size = 'inherit'"><xsl:value-of select="$font-size"/></xsl:when>
-						<xsl:when test="contains($font-size, '%')"><xsl:value-of select="$font-size"/></xsl:when>
-						<xsl:when test="ancestor::mn:note or ancestor::mn:example"><xsl:value-of select="$font-size * 0.91"/>pt</xsl:when>
-						<xsl:otherwise><xsl:value-of select="$font-size"/>pt</xsl:otherwise>
-					</xsl:choose>
-				</xsl:attribute>
-			</xsl:if>
+			<xsl:call-template name="refine_tt-style"/>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template> <!-- tt -->
@@ -266,9 +326,9 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	
 	<xsl:template match="mn:underline">
-		<fo:inline text-decoration="underline">
+		<fo:inline xsl:use-attribute-sets="underline-style">
+			<xsl:call-template name="refine_underline-style"/>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
@@ -431,6 +491,7 @@
 	
 	<xsl:template match="mn:del">
 		<fo:inline xsl:use-attribute-sets="del-style">
+			<xsl:call-template name="refine_del-style"/>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
@@ -440,7 +501,8 @@
 	
 	<!-- highlight text -->
 	<xsl:template match="mn:hi | mn:span[@class = 'fmt-hi']" priority="3">
-		<fo:inline background-color="yellow">
+		<fo:inline xsl:use-attribute-sets="hi-style">
+			<xsl:call-template name="refine_hi-style"/>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
@@ -536,7 +598,8 @@
   </xsl:template>
 	
 	<xsl:template match="mn:strike">
-		<fo:inline text-decoration="line-through">
+		<fo:inline xsl:use-attribute-sets="strike-style">
+			<xsl:call-template name="refine_strike-style"/>
 			<xsl:apply-templates />
 		</fo:inline>
 	</xsl:template>
@@ -633,6 +696,7 @@
 	
 	<xsl:template match="mn:pre" name="pre">
 		<fo:block xsl:use-attribute-sets="pre-style">
+			<xsl:call-template name="refine_pre-style"/>
 			<xsl:copy-of select="@id"/>
 			<xsl:choose>
 			
