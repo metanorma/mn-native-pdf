@@ -17,23 +17,56 @@
 	<!-- Ruby text (CJK languages) rendering -->
 	<!-- ===================================== -->
 	<!-- ===================================== -->
+	
+	<xsl:attribute-set name="ruby-style">
+		<xsl:attribute name="text-indent">0mm</xsl:attribute>
+		<xsl:attribute name="last-line-end-indent">0mm</xsl:attribute>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_ruby-style">
+		<xsl:if test="not(ancestor::mn:ruby)">
+			<xsl:attribute name="alignment-baseline">central</xsl:attribute>
+		</xsl:if>
+		<xsl:variable name="rt_text" select="mn:rt"/>
+		<xsl:variable name="rb_text" select=".//mn:rb[not(mn:ruby)]"/>
+		<!-- Example: width="2em"  -->
+		<xsl:variable name="text_rt_width" select="java:org.metanorma.fop.Util.getStringWidthByFontSize($rt_text, $font_main, 6)"/>
+		<xsl:variable name="text_rb_width" select="java:org.metanorma.fop.Util.getStringWidthByFontSize($rb_text, $font_main, 10)"/>
+		<xsl:variable name="text_width">
+			<xsl:choose>
+				<xsl:when test="$text_rt_width &gt;= $text_rb_width"><xsl:value-of select="$text_rt_width"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="$text_rb_width"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:attribute name="width"><xsl:value-of select="$text_width div 10"/>em</xsl:attribute>
+	</xsl:template> <!-- refine_ruby-style -->
+	
+	<xsl:attribute-set name="rb-style">
+		<xsl:attribute name="line-height">1em</xsl:attribute>
+		<xsl:attribute name="text-align">center</xsl:attribute>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_rb-style">
+	</xsl:template>
+	
+	<xsl:attribute-set name="rt-style">
+		<xsl:attribute name="font-size">0.5em</xsl:attribute>
+		<xsl:attribute name="text-align">center</xsl:attribute>
+		<xsl:attribute name="line-height">1.2em</xsl:attribute>
+		<xsl:attribute name="space-before">-1.4em</xsl:attribute>
+		<xsl:attribute name="space-before.conditionality">retain</xsl:attribute>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_rt-style">
+		<xsl:if test="ancestor::mn:ruby[last()]//mn:ruby or
+				ancestor::mn:rb">
+			<xsl:attribute name="space-before">0em</xsl:attribute>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:template match="mn:ruby">
-		<fo:inline-container text-indent="0mm" last-line-end-indent="0mm">
-			<xsl:if test="not(ancestor::mn:ruby)">
-				<xsl:attribute name="alignment-baseline">central</xsl:attribute>
-			</xsl:if>
-			<xsl:variable name="rt_text" select="mn:rt"/>
-			<xsl:variable name="rb_text" select=".//mn:rb[not(mn:ruby)]"/>
-			<!-- Example: width="2em"  -->
-			<xsl:variable name="text_rt_width" select="java:org.metanorma.fop.Util.getStringWidthByFontSize($rt_text, $font_main, 6)"/>
-			<xsl:variable name="text_rb_width" select="java:org.metanorma.fop.Util.getStringWidthByFontSize($rb_text, $font_main, 10)"/>
-			<xsl:variable name="text_width">
-				<xsl:choose>
-					<xsl:when test="$text_rt_width &gt;= $text_rb_width"><xsl:value-of select="$text_rt_width"/></xsl:when>
-					<xsl:otherwise><xsl:value-of select="$text_rb_width"/></xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			<xsl:attribute name="width"><xsl:value-of select="$text_width div 10"/>em</xsl:attribute>
+		<fo:inline-container xsl:use-attribute-sets="ruby-style">
+			<xsl:call-template name="refine_ruby-style"/>
 			
 			<xsl:choose>
 				<xsl:when test="ancestor::mn:ruby">
@@ -51,18 +84,14 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:rb">
-		<fo:block line-height="1em" text-align="center"><xsl:apply-templates /></fo:block>
+		<fo:block xsl:use-attribute-sets="rb-style"><xsl:call-template name="refine_rb-style"/><xsl:apply-templates /></fo:block>
 	</xsl:template>
 	
 	<xsl:template match="mn:rt">
-		<fo:block font-size="0.5em" text-align="center" line-height="1.2em" space-before="-1.4em" space-before.conditionality="retain"> <!--  -->
-			<xsl:if test="ancestor::mn:ruby[last()]//mn:ruby or
-					ancestor::mn:rb">
-				<xsl:attribute name="space-before">0em</xsl:attribute>
-			</xsl:if>
+		<fo:block xsl:use-attribute-sets="rt-style"> <!--  -->
+			<xsl:call-template name="refine_rt-style"/>
 			<xsl:apply-templates />
 		</fo:block>
-		
 	</xsl:template>
 	
 	<!-- ===================================== -->
