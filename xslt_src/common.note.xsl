@@ -110,7 +110,7 @@
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>			
 		</xsl:if>
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- note-style -->
 	
 	<xsl:template name="refine_note-style">
 		<xsl:if test="$namespace = 'bipm'">
@@ -207,7 +207,7 @@
 				<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
-	</xsl:template>
+	</xsl:template> <!-- refine_note-style -->
 	
 	<xsl:variable name="note-body-indent">10mm</xsl:variable>
 	<xsl:variable name="note-body-indent-table">5mm</xsl:variable>
@@ -258,7 +258,7 @@
 			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 			<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 		</xsl:if>
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- note-name-style -->
 	
 	<xsl:template name="refine_note-name-style">
 		<xsl:if test="$namespace = 'bsi'">
@@ -409,7 +409,7 @@
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- note-p-style -->
 	
 	<xsl:template name="refine_note-p-style">
 		<xsl:if test="$namespace = 'iso'">
@@ -472,7 +472,7 @@
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- termnote-style -->
 
 	<xsl:template name="refine_termnote-style">
 		<xsl:if test="$namespace = 'bsi'">
@@ -528,7 +528,7 @@
 			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 			<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 		</xsl:if>
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- termnote-name-style -->
 
 	<xsl:template name="refine_termnote-name-style">
 		<xsl:if test="$namespace = 'bsi'">
@@ -559,6 +559,8 @@
 		</xsl:if>
 	</xsl:attribute-set>
 	
+	<xsl:template name="refine_termnote-p-style">
+	</xsl:template>
 
 	<!-- ====== -->
 	<!-- note      -->
@@ -879,11 +881,13 @@
 		<xsl:choose>
 			<xsl:when test="$num = 1"> <!-- first paragraph renders in the same line as titlenote name -->
 				<fo:inline xsl:use-attribute-sets="termnote-p-style">
+					<xsl:call-template name="refine_termnote-p-style"/>
 					<xsl:apply-templates />
 				</fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
-				<fo:block xsl:use-attribute-sets="termnote-p-style">						
+				<fo:block xsl:use-attribute-sets="termnote-p-style">
+					<xsl:call-template name="refine_termnote-p-style"/>
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>
