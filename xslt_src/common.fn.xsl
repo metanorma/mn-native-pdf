@@ -77,8 +77,7 @@
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 			<xsl:attribute name="font-style">italic</xsl:attribute>
 		</xsl:if>
-		
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- fn-reference-style -->
 	
 	<xsl:template name="refine_fn-reference-style">
 		<xsl:if test="$namespace = 'bsi'">
@@ -111,6 +110,9 @@
 	<xsl:attribute-set name="fn-style">
 		<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
 	</xsl:attribute-set>
+	
+	<xsl:template name="refine_fn-style">
+	</xsl:template>
 	
 	<xsl:attribute-set name="fn-num-style">
 		<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
@@ -192,7 +194,20 @@
 			<xsl:attribute name="font-size">55%</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- fn-num-style -->
+	
+	<xsl:template name="refine_fn-num-style">
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="not($vertical_layout = 'true')">
+				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$vertical_layout = 'true'">
+				<xsl:attribute name="vertical-align">baseline</xsl:attribute>
+				<xsl:attribute name="font-size">80%</xsl:attribute>
+				<xsl:attribute name="baseline-shift">20%</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:attribute-set name="fn-body-style">
 		<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -301,7 +316,7 @@
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="line-height">125%</xsl:attribute>
 		</xsl:if>
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- fn-body-style" -->
 	
 	<xsl:template name="refine_fn-body-style">
 		<xsl:if test="$namespace = 'bsi'">
@@ -551,16 +566,7 @@
 						</xsl:when>
 						<xsl:otherwise>
 							<fn_styles xsl:use-attribute-sets="fn-num-style">
-								<xsl:if test="$namespace = 'jis'">
-									<xsl:if test="not($vertical_layout = 'true')">
-										<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
-									</xsl:if>
-									<xsl:if test="$vertical_layout = 'true'">
-										<xsl:attribute name="vertical-align">baseline</xsl:attribute>
-										<xsl:attribute name="font-size">80%</xsl:attribute>
-										<xsl:attribute name="baseline-shift">20%</xsl:attribute>
-									</xsl:if>
-								</xsl:if>
+								<xsl:call-template name="refine_fn-num-style"/>
 							</fn_styles>
 						</xsl:otherwise>
 					</xsl:choose>
@@ -631,6 +637,7 @@
 			<xsl:when test="$p_fn//fn[@gen_id = $gen_id] or normalize-space(@skip_footnote_body) = 'false' or $footnote_body_from_table = 'true'">
 			
 				<fo:footnote xsl:use-attribute-sets="fn-style" role="SKIP">
+					<xsl:call-template name="refine_fn-style"/>
 					<xsl:copy-of select="$footnote_inline"/>
 					<fo:footnote-body role="Note">
 						<xsl:if test="$namespace = 'bsi'">
