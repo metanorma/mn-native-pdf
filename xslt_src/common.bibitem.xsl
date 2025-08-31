@@ -28,7 +28,7 @@
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">36pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			<xsl:attribute name="role=">H1</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
