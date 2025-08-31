@@ -199,6 +199,9 @@
 		</xsl:if>
 	</xsl:attribute-set> <!-- list-name-style -->
 	
+	<xsl:template name="refine_list-name-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="list-item-style">
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
@@ -888,6 +891,7 @@
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
 			<fo:block xsl:use-attribute-sets="list-name-style">
+				<xsl:call-template name="refine_list-name-style"/>
 				<xsl:apply-templates />
 			</fo:block>
 		</xsl:if>
