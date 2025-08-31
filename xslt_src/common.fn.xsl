@@ -29,6 +29,20 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:attribute-set name="fn-container-body-style">
+		<xsl:attribute name="text-indent">0</xsl:attribute>
+		<xsl:attribute name="start-indent">0</xsl:attribute>
+		<xsl:if test="$namespace = 'nist-cswp'">
+			<xsl:attribute name="margin-left">3mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece'">
+			<xsl:attribute name="margin-left">-8mm</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_fn-container-body-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="fn-reference-style">
 		<xsl:attribute name="font-size">80%</xsl:attribute>
 		<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
@@ -647,6 +661,7 @@
 						</xsl:if>
 						
 						<fo:block-container xsl:use-attribute-sets="fn-container-body-style" role="SKIP">
+							<xsl:call-template name="refine_fn-container-body-style"/>
 							
 							<xsl:variable name="fn_block">
 								<xsl:call-template name="refine_fn-body-style"/>

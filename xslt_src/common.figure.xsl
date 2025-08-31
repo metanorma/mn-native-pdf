@@ -444,6 +444,67 @@
 	<xsl:template name="refine_figure-pseudocode-p-style">
 	</xsl:template>
 	
+	<xsl:attribute-set name="figure-fn-number-style">
+		<xsl:attribute name="padding-right">5mm</xsl:attribute>
+	</xsl:attribute-set> <!-- figure-fn-number-style -->
+	
+	<xsl:template name="refine_figure-fn-number-style">
+	</xsl:template>
+	
+	<xsl:attribute-set name="figure-fmt-fn-label-style">
+		<xsl:attribute name="font-size">80%</xsl:attribute>
+		<xsl:attribute name="vertical-align">super</xsl:attribute>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+			<xsl:attribute name="font-size">5.5pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="baseline-shift">65%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'm3d'">
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-size">60%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- figure-fmt-fn-label-style -->
+	
+	<xsl:template name="refine_figure-fmt-fn-label-style">
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:if test="$document_type = 'PAS'">
+				<xsl:attribute name="font-size">4.5pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:attribute-set name="figure-fn-body-style">
+		<xsl:attribute name="text-align">justify</xsl:attribute>
+		<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="margin-top">5pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_figure-fn-body-style">
+		<xsl:variable name="key_iso">
+			<xsl:if test="$namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">true</xsl:if>
+		</xsl:variable>
+		<xsl:if test="normalize-space($key_iso) = 'true'">
+			<xsl:choose>
+				<xsl:when test="$namespace = 'iec'"></xsl:when>
+				<xsl:otherwise>
+					<xsl:attribute name="margin-bottom">0</xsl:attribute>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="margin-left">5mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">0</xsl:attribute>
+		</xsl:if>
+	</xsl:template>
+	
 	<!-- ============================ -->
 	<!-- figure's footnotes rendering -->
 	<!-- ============================ -->
@@ -576,18 +637,8 @@
 									</fo:table-cell>
 									<fo:table-cell>
 										<fo:block xsl:use-attribute-sets="figure-fn-body-style">
-											<xsl:if test="normalize-space($key_iso) = 'true'">
-												<xsl:choose>
-													<xsl:when test="$namespace = 'iec'"></xsl:when>
-													<xsl:otherwise>
-														<xsl:attribute name="margin-bottom">0</xsl:attribute>
-													</xsl:otherwise>
-												</xsl:choose>
-											</xsl:if>
-											<xsl:if test="$namespace = 'plateau'">
-												<xsl:attribute name="margin-left">5mm</xsl:attribute>
-												<xsl:attribute name="margin-bottom">0</xsl:attribute>
-											</xsl:if>
+											<xsl:call-template name="refine_figure-fn-body-style"/>
+											
 											<!-- <xsl:copy-of select="./node()"/> -->
 											<xsl:apply-templates />
 										</fo:block>
@@ -605,6 +656,7 @@
 		<xsl:param name="process">false</xsl:param>
 		<xsl:if test="$process = 'true'">
 			<fo:inline xsl:use-attribute-sets="figure-fn-number-style" role="SKIP">
+				<xsl:call-template name="refine_figure-fn-number-style"/>
 				<xsl:attribute name="padding-right">0mm</xsl:attribute>
 				
 				<!-- tab is padding-right -->
@@ -648,6 +700,7 @@
 			</xsl:if>
 		</xsl:if>
 		<fo:inline xsl:use-attribute-sets="figure-fn-number-style figure-fmt-fn-label-style"> <!-- id="{@id}"  -->
+			<xsl:call-template name="refine_figure-fn-number-style"/>
 			<!-- <xsl:value-of select="@reference"/> -->
 			<xsl:apply-templates/>
 		</fo:inline>
