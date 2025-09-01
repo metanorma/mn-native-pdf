@@ -827,7 +827,6 @@
 					<xsl:call-template name="refine_bibitem-non-normative-style"/>
 					<xsl:apply-templates select="mn:biblio-tag"/>
 					<xsl:apply-templates select="mn:formattedref"/>
-					<!-- <xsl:call-template name="processBibliographyNote"/> -->
 				</fo:block>
 				<xsl:call-template name="processBibitemFollowingNotes"/>
 				<!-- END CSA bibitem processing -->
@@ -876,7 +875,6 @@
 									<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 								</xsl:apply-templates>
 								<xsl:apply-templates select="mn:formattedref"/>
-								<!-- <xsl:call-template name="processBibliographyNote"/> -->
 							</fo:block>
 							<xsl:call-template name="processBibitemFollowingNotes"/>
 						</fo:list-item-body>
@@ -1121,20 +1119,14 @@
 			</xsl:otherwise>
 			
 		</xsl:choose>
-		
-		<!-- <xsl:call-template name="processBibliographyNote"/> -->
 	</xsl:template> <!-- processBibitem (bibitem) -->
 	
-	<xsl:template name="processBibliographyNote">
-		<xsl:if test="self::mn:note">
-			<xsl:call-template name="note"/>
-		</xsl:if>
-	</xsl:template>
-	
+
 	<xsl:template name="processBibitemFollowingNotes">
 		<!-- current context is bibitem element -->
 		<xsl:variable name="bibitem_id" select="@id"/>
-		<xsl:for-each select="following-sibling::mn:note[preceding-sibling::mn:bibitem[1][@id = $bibitem_id]]">
+		<xsl:for-each select="following-sibling::mn:note[preceding-sibling::mn:bibitem[1][@id = $bibitem_id] and 
+			preceding-sibling::*[1][self::mn:note or self::mn:bibitem]]">
 			<xsl:call-template name="note"/>
 		</xsl:for-each>
 	</xsl:template>
