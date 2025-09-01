@@ -333,14 +333,12 @@
 	</xsl:attribute-set> <!-- fn-body-style" -->
 	
 	<xsl:template name="refine_fn-body-style">
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
-				<xsl:attribute name="start-indent">0mm</xsl:attribute>
-				<xsl:attribute name="text-indent">0mm</xsl:attribute>
-				<xsl:attribute name="margin-top">6pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">-7mm</xsl:attribute>
-			</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
+			<xsl:attribute name="start-indent">0mm</xsl:attribute>
+			<xsl:attribute name="text-indent">0mm</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">-7mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">

@@ -73,6 +73,7 @@
 		<xsl:choose>
 			<xsl:when test="$namespace = 'bipm'">31.7</xsl:when>
 			<xsl:when test="$namespace = 'bsi'">15</xsl:when>
+			<xsl:when test="$namespace = 'pas'">25</xsl:when>
 			<xsl:when test="$namespace = 'csa'">25</xsl:when>
 			<xsl:when test="$namespace = 'csd'">19</xsl:when>
 			<xsl:when test="$namespace = 'gb'">25</xsl:when>
@@ -118,6 +119,7 @@
 		<xsl:choose>
 			<xsl:when test="$namespace = 'bipm'">40</xsl:when>
 			<xsl:when test="$namespace = 'bsi'">22</xsl:when>
+			<xsl:when test="$namespace = 'pas'">14</xsl:when>
 			<xsl:when test="$namespace = 'csa'">25</xsl:when>
 			<xsl:when test="$namespace = 'csd'">19</xsl:when>
 			<xsl:when test="$namespace = 'gb'">20</xsl:when>
@@ -162,6 +164,7 @@
 		<xsl:choose>
 			<xsl:when test="$namespace = 'bipm'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'bsi'">27</xsl:when>
+			<xsl:when test="$namespace = 'pas'">29.5</xsl:when>
 			<xsl:when test="$namespace = 'csa'">25</xsl:when>
 			<xsl:when test="$namespace = 'csd'">20.2</xsl:when>
 			<xsl:when test="$namespace = 'gb'">35</xsl:when>
@@ -205,6 +208,7 @@
 		<xsl:choose>
 			<xsl:when test="$namespace = 'bipm'">22</xsl:when>
 			<xsl:when test="$namespace = 'bsi'">22</xsl:when>
+			<xsl:when test="$namespace = 'pas'">23</xsl:when>
 			<xsl:when test="$namespace = 'csa'">21</xsl:when>
 			<xsl:when test="$namespace = 'csd'">20.3</xsl:when>
 			<xsl:when test="$namespace = 'gb'">20</xsl:when>

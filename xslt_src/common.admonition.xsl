@@ -345,7 +345,7 @@
 		</xsl:if>
 		
 		<xsl:choose>
-			<xsl:when test="$namespace = 'bsi'">
+			<xsl:when test="$namespace = 'bsi' or $namespace = 'pas'">
 			
 				<xsl:choose>
 					<xsl:when test="$document_type = 'PAS' or @type = 'commentary'">
@@ -354,7 +354,8 @@
 							
 							<xsl:call-template name="setBlockSpanAll"/>
 							
-							<xsl:if test="$document_type = 'PAS'">
+							<!-- <xsl:if test="$document_type = 'PAS'"> -->
+							<xsl:if test="$namespace = 'pas'">
 								<xsl:if test="@type = 'commentary'">
 									<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 								</xsl:if>

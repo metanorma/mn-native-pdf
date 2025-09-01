@@ -243,13 +243,11 @@
 
 	
 	<xsl:template name="refine_list-item-label-style">
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS' and not(ancestor::*[self::mn:note or self::mn:termnote])">
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:if test="not(ancestor::*[self::mn:note or self::mn:termnote])">
 				<xsl:attribute name="color"><xsl:value-of select="$color_list_label_PAS"/></xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="id">__internal_layout__li_<xsl:value-of select="generate-id()"/>_<xsl:value-of select="ancestor::*[@id][1]/@id"/></xsl:attribute>
-			</xsl:if>
+			<xsl:attribute name="id">__internal_layout__li_<xsl:value-of select="generate-id()"/>_<xsl:value-of select="ancestor::*[@id][1]/@id"/></xsl:attribute>
 		</xsl:if>
 	
 		<xsl:if test="$namespace = 'ieee'">
