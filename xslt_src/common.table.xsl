@@ -16,7 +16,7 @@
 	<!-- Table styles -->
 	<!-- ========================== -->
 	<xsl:variable name="table-border_">
-		<xsl:if test="$namespace = 'bsi'">0.5pt solid black</xsl:if>
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">0.5pt solid black</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">1pt solid black</xsl:if>
 		<xsl:if test="$namespace = 'iho'">0.5pt solid black</xsl:if>
 		<xsl:if test="$namespace = 'iso'">1pt solid black</xsl:if>
@@ -39,7 +39,7 @@
 			<xsl:attribute name="space-after">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
@@ -143,13 +143,17 @@
 			</xsl:if>
 		</xsl:if>
 	
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:if test="starts-with(@id, 'boxed-text')">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$document_type != 'PAS' and mn:fmt-name">
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:if test=" mn:fmt-name">
 				<xsl:attribute name="margin-top">-14pt</xsl:attribute>
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:if test="not(mn:tbody) and mn:thead">
 				<xsl:attribute name="margin-top">4pt</xsl:attribute>
 			</xsl:if>
@@ -157,27 +161,29 @@
 				<xsl:attribute name="margin-top">0pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="font-size">9pt</xsl:attribute>
-				<!-- two-columns table without name renders in column (not spanned) -->
-				<xsl:choose>
-					<xsl:when test="count(mn:colgroup/mn:col) = 2 and not(mn:fmt-name) and not(mn:thead)">
-						<xsl:attribute name="font-size">inherit</xsl:attribute>
-					</xsl:when>
-					<xsl:when test="@width = 'text-width'"><!-- renders in column, not spanned --></xsl:when>
-					<xsl:otherwise>
-						<xsl:attribute name="span">all</xsl:attribute>
-					</xsl:otherwise>
-				</xsl:choose>
-				<xsl:attribute name="margin-top">12pt</xsl:attribute>
-				<xsl:attribute name="space-before">12pt</xsl:attribute>
-				<xsl:attribute name="space-after">12pt</xsl:attribute>
-				<xsl:if test="not(mn:fmt-name) and (ancestor::mn:clause[@type = 'corrigenda'] or contains(ancestor::mn:clause[1]/mn:fmt-title, 'Amendments/corrigenda'))">
-					<xsl:attribute name="margin-top">2pt</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
-			<xsl:if test="$document_type != 'PAS' and not(following-sibling::*[2][@depth = '1']) and not (ancestor::mn:preface and (ancestor::mn:clause[@type = 'corrigenda'] or contains(ancestor::mn:clause[1]/mn:fmt-title, 'Amendments/corrigenda')))">
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:if test="not(following-sibling::*[2][@depth = '1']) and not (ancestor::mn:preface and (ancestor::mn:clause[@type = 'corrigenda'] or contains(ancestor::mn:clause[1]/mn:fmt-title, 'Amendments/corrigenda')))">
 				<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+			<!-- two-columns table without name renders in column (not spanned) -->
+			<xsl:choose>
+				<xsl:when test="count(mn:colgroup/mn:col) = 2 and not(mn:fmt-name) and not(mn:thead)">
+					<xsl:attribute name="font-size">inherit</xsl:attribute>
+				</xsl:when>
+				<xsl:when test="@width = 'text-width'"><!-- renders in column, not spanned --></xsl:when>
+				<xsl:otherwise>
+					<xsl:attribute name="span">all</xsl:attribute>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="space-before">12pt</xsl:attribute>
+			<xsl:attribute name="space-after">12pt</xsl:attribute>
+			<xsl:if test="not(mn:fmt-name) and (ancestor::mn:clause[@type = 'corrigenda'] or contains(ancestor::mn:clause[1]/mn:fmt-title, 'Amendments/corrigenda'))">
+				<xsl:attribute name="margin-top">2pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	
@@ -256,7 +262,7 @@
 		<xsl:if test="$namespace = 'bipm'">
 		
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="border">none</xsl:attribute>
 			<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
@@ -339,8 +345,8 @@
 			</xsl:if>
 		</xsl:if>
 		
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type != 'PAS'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
+			<xsl:if test="$namespace = 'bsi'">
 				<xsl:attribute name="border-bottom">2.5pt solid black</xsl:attribute>
 			</xsl:if>
 			<xsl:if test=".//*[local-name() = 'tr'][1]/*[local-name() = 'td'][normalize-space() = 'Key'] or
@@ -354,7 +360,7 @@
 				<xsl:if test="normalize-space(*[local-name() = 'tbody']) = ''">
 					<xsl:attribute name="border-bottom">none</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="$document_type != 'PAS'">
+				<xsl:if test="$namespace != 'bsi'">
 					<xsl:attribute name="border">none</xsl:attribute>
 					<xsl:attribute name="border-top">none</xsl:attribute>
 					<xsl:attribute name="border-bottom">none</xsl:attribute>
@@ -364,7 +370,7 @@
 				<xsl:attribute name="border">0pt solid black</xsl:attribute>
 				<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$document_type = 'PAS'">
+			<xsl:if test="$namespace = 'pas'">
 				<xsl:if test="ancestor::mn:preface and ancestor::mn:clause[@type = 'logos']">
 					<xsl:attribute name="border-bottom">none</xsl:attribute>
 				</xsl:if>
@@ -435,7 +441,7 @@
 	<xsl:attribute-set name="table-name-style">
 		<xsl:attribute name="role">Caption</xsl:attribute>
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="font-style">italic</xsl:attribute>
@@ -563,13 +569,13 @@
 		<xsl:if test="$continued = 'true'">
 			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:if test="$continued != 'true'">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
 		
-			<xsl:if test="$document_type = 'PAS'">
+			<xsl:if test="$namespace = 'pas'">
 				<xsl:attribute name="margin-left">0.5mm</xsl:attribute>
 				<xsl:attribute name="font-size">11pt</xsl:attribute>
 				<xsl:attribute name="font-style">normal</xsl:attribute>
@@ -647,7 +653,7 @@
 	
 	<xsl:attribute-set name="table-header-row-style" use-attribute-sets="table-row-style">
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
@@ -691,10 +697,10 @@
 	
 	<xsl:template name="refine_table-header-row-style">
 		
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:call-template name="setBorderUnderRow" />
 		
-			<xsl:if test="$document_type = 'PAS'">
+			<xsl:if test="$namespace = 'pas'">
 				<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 				<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
 			</xsl:if>
@@ -764,7 +770,7 @@
 	</xsl:template> <!-- refine_table-header-row-style -->
 	
 	<xsl:attribute-set name="table-footer-row-style" use-attribute-sets="table-row-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<!-- <xsl:attribute name="border-left"><xsl:value-of select="$table-border"/></xsl:attribute>
 			<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute> -->
@@ -794,12 +800,10 @@
 	</xsl:attribute-set>
 	
 	<xsl:template name="refine_table-footer-row-style">
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="font-size">inherit</xsl:attribute>
-				<xsl:attribute name="border-left"><xsl:value-of select="$table-border"/></xsl:attribute>
-				<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute>
-			</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="font-size">inherit</xsl:attribute>
+			<xsl:attribute name="border-left"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
 	</xsl:template> <!-- refine_table-footer-row-style -->
 
@@ -810,9 +814,9 @@
 
 	<xsl:template name="refine_table-body-row-style">
 		
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:call-template name="setBorderUnderRow" />
-			<xsl:if test="position() = 1 and $document_type != 'PAS' and not(ancestor::mn:table[1]/*[local-name() = 'thead'])">
+			<xsl:if test="position() = 1 and $namespace = 'bsi' and not(ancestor::mn:table[1]/*[local-name() = 'thead'])">
 				<!-- set border for 1st row if thead is missing -->
 				<xsl:attribute name="border-top">2.5pt solid black</xsl:attribute>
 			</xsl:if>
@@ -899,7 +903,7 @@
 			<xsl:attribute name="height">8mm</xsl:attribute>
 			<xsl:attribute name="padding-top">2mm</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="padding-top">1mm</xsl:attribute>
 		</xsl:if>
@@ -1009,11 +1013,11 @@
 			<xsl:if test="ancestor::mn:preface or ancestor::mn:boilerplate">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 				<xsl:attribute name="text-align">left</xsl:attribute>
-				<xsl:if test="$document_type != 'PAS'">
+				<xsl:if test="$namespace = 'bsi'">
 					<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="ancestor::mn:clause[@type = 'corrigenda' or contains(mn:fmt-title, 'Amendments/corrigenda')]">
-					<xsl:if test="$document_type != 'PAS'">
+					<xsl:if test="$namespace = 'bsi'">
 						<xsl:attribute name="border-top">none</xsl:attribute>
 						<xsl:attribute name="border-bottom">solid black 1pt</xsl:attribute>
 					</xsl:if>
@@ -1137,13 +1141,11 @@
 		
 		<xsl:call-template name="setTableCellAttributes"/>
 		
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:if test="ancestor::mn:clause[@type = 'corrigenda' or contains(mn:fmt-title, 'Amendments/corrigenda')] and ancestor::mn:thead">
-					<xsl:attribute name="display-align">center</xsl:attribute>
-					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					<xsl:attribute name="padding-left">3mm</xsl:attribute>
-				</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:if test="ancestor::mn:clause[@type = 'corrigenda' or contains(mn:fmt-title, 'Amendments/corrigenda')] and ancestor::mn:thead">
+				<xsl:attribute name="display-align">center</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<xsl:attribute name="padding-left">3mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_table-header-cell-style -->
@@ -1156,7 +1158,7 @@
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="border">solid 0pt white</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
@@ -1245,13 +1247,20 @@
 			</xsl:if>
 		</xsl:if>
 		
-		<xsl:if test="$namespace = 'pas'">
-			<xsl:attribute name="padding-left">1.5mm</xsl:attribute>
-			<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
-			<xsl:attribute name="padding-top">1mm</xsl:attribute>
-			<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
-		</xsl:if>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
+			<xsl:if test="$document_type != 'PAS'">
+				<!-- <xsl:attribute name="border">none</xsl:attribute>
+				<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
+				<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute> -->
+			</xsl:if>
+
+			<xsl:if test="$namespace = 'pas'">
+				<xsl:attribute name="padding-left">1.5mm</xsl:attribute>
+				<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
+				<xsl:attribute name="padding-top">1mm</xsl:attribute>
+				<xsl:attribute name="padding-bottom">1mm</xsl:attribute>
+			</xsl:if>
+
 			<xsl:if test="not(ancestor::mn:preface) and ancestor::mn:table/*[local-name() = 'thead'] and not(ancestor::*[local-name() = 'tr']/preceding-sibling::*[local-name() = 'tr'])">
 				<!-- first row in table body, and if exists header -->
 				<xsl:attribute name="border-top">0pt solid black</xsl:attribute>
@@ -1278,39 +1287,35 @@
 					<xsl:attribute name="padding-right">0mm</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-					
+			
 			<xsl:if test="(ancestor::mn:preface and ancestor::mn:clause[@type = 'corrigenda']) or
 			(ancestor::mn:copyright-statement and contains(ancestor::mn:clause[1]/mn:fmt-title, 'Amendments/corrigenda'))">
 				<xsl:if test="normalize-space(parent::*[local-name() = 'tr']) = ''">
 					<xsl:attribute name="border">none</xsl:attribute>
-					<xsl:if test="$document_type != 'PAS'">
+					<xsl:if test="$namespace = 'bsi'">
 						<xsl:attribute name="border-top">none</xsl:attribute>
 						<xsl:attribute name="border-bottom">none</xsl:attribute>
 					</xsl:if>
 				</xsl:if>
-			</xsl:if>
-		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="(ancestor::mn:preface and ancestor::mn:clause[@type = 'corrigenda']) or
-			(ancestor::mn:copyright-statement and contains(ancestor::mn:clause[1]/mn:fmt-title, 'Amendments/corrigenda'))">
-				<xsl:attribute name="border">none</xsl:attribute>
-				<xsl:attribute name="border-top">none</xsl:attribute>
-				<xsl:attribute name="border-bottom">none</xsl:attribute>
-				<xsl:attribute name="padding-top">1mm</xsl:attribute>
-			</xsl:if>
-		</xsl:if>
-		<xsl:if test="$namespace = 'pas'">
-			<xsl:if test="(ancestor::mn:preface and ancestor::mn:clause[@type = 'corrigenda']) or
-			(ancestor::mn:copyright-statement and contains(ancestor::mn:clause[1]/mn:fmt-title, 'Amendments/corrigenda'))">
-				<!-- if left column -->
-				<xsl:if test="not(preceding-sibling::*)">
-					<xsl:attribute name="background-color"><xsl:value-of select="$color_secondary_shade_3_PAS"/></xsl:attribute>
+				<xsl:if test="$namespace = 'bsi'">
+					<xsl:attribute name="border">none</xsl:attribute>
+					<xsl:if test="$namespace = 'bsi'">
+						<xsl:attribute name="border-top">none</xsl:attribute>
+						<xsl:attribute name="border-bottom">none</xsl:attribute>
+					</xsl:if>
+					<xsl:attribute name="padding-top">1mm</xsl:attribute>
 				</xsl:if>
-				<xsl:attribute name="border-right">none</xsl:attribute>
-				<xsl:attribute name="border-left">none</xsl:attribute>
+				
+				<xsl:if test="$namespace = 'pas'">
+					<!-- if left column -->
+					<xsl:if test="not(preceding-sibling::*)">
+						<xsl:attribute name="background-color"><xsl:value-of select="$color_secondary_shade_3_PAS"/></xsl:attribute>
+					</xsl:if>
+					<xsl:attribute name="border-right">none</xsl:attribute>
+					<xsl:attribute name="border-left">none</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
-		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
+			
 			<xsl:if test="starts-with(ancestor::mn:table/@id, 'boxed-text')">
 				<xsl:attribute name="padding-left">2mm</xsl:attribute>
 				<xsl:attribute name="padding-right">2mm</xsl:attribute>
@@ -1321,18 +1326,19 @@
 			<xsl:if test="ancestor::mn:tfoot">
 				<xsl:attribute name="border">solid black 0</xsl:attribute>
 			</xsl:if>
-		</xsl:if>
-		<xsl:if test="$namespace = 'pas'">
-			<xsl:attribute name="border">0.75pt solid <xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
-			<!-- two-columns table without name renders without borders -->
-			<xsl:if test="ancestor::mn:table[count(mn:colgroup/mn:col) = 2 and not(mn:fmt-name) and not(*[local-name() = 'thead'])]">
-				<xsl:attribute name="border">none</xsl:attribute>
+			
+			<xsl:if test="$namespace = 'pas'">
+				<xsl:attribute name="border">0.75pt solid <xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
+				<!-- two-columns table without name renders without borders -->
+				<xsl:if test="ancestor::mn:table[count(mn:colgroup/mn:col) = 2 and not(mn:fmt-name) and not(*[local-name() = 'thead'])]">
+					<xsl:attribute name="border">none</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
-		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
+			
 			<xsl:if test="ancestor::mn:preface and ancestor::mn:clause[@type = 'logos']">
 				<xsl:attribute name="border">none</xsl:attribute>
 			</xsl:if>
+			<!-- bsi pas -->
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'gb'">
@@ -1433,7 +1439,7 @@
 			<xsl:attribute name="border">solid black 0pt</xsl:attribute>
 		</xsl:if>
 		
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="border"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
@@ -1473,14 +1479,12 @@
 	
 	<xsl:template name="refine_table-footer-cell-style">
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type != 'PAS'">
-				<xsl:attribute name="border">none</xsl:attribute>
-				<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
-				<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="border">0.75pt solid <xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
-			</xsl:if>
+			<xsl:attribute name="border">none</xsl:attribute>
+			<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
+			<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="border">0.75pt solid <xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$layoutVersion = '2024'">
@@ -1508,7 +1512,7 @@
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 			<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="font-style">italic</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -1560,11 +1564,9 @@
 				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="font-size">inherit</xsl:attribute>
-				<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
-			</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="font-size">inherit</xsl:attribute>
+			<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
@@ -1579,7 +1581,7 @@
 			<xsl:attribute name="margin-left">6.5mm</xsl:attribute>
 			<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
@@ -1665,7 +1667,7 @@
 		<xsl:if test="$namespace = 'csd'">
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
 			<!--<xsl:attribute name="font-size">6pt</xsl:attribute> -->
 			<xsl:attribute name="font-size">5.5pt</xsl:attribute>
@@ -1719,11 +1721,9 @@
 	</xsl:attribute-set> <!-- table-fmt-fn-label-style -->
 	
 	<xsl:template name="refine_table-fmt-fn-label-style">
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS'">
-				<!-- <xsl:attribute name="font-size">80%</xsl:attribute> -->
-				<xsl:attribute name="font-size">4.5pt</xsl:attribute>
-			</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<!-- <xsl:attribute name="font-size">80%</xsl:attribute> -->
+			<xsl:attribute name="font-size">4.5pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$layoutVersion = '2024'">
@@ -1805,9 +1805,7 @@
 			<!-- $namespace = 'iso' or  -->
 			<xsl:choose>
 				<xsl:when test="$namespace = 'bsi'">
-					<xsl:if test="$document_type != 'PAS'">
-						<xsl:apply-templates select="mn:fmt-name" />
-					</xsl:if>
+					<xsl:apply-templates select="mn:fmt-name" />
 				</xsl:when>
 				<xsl:when test="$namespace = 'ieee' or $namespace = 'jcgm'"></xsl:when> <!-- table name will be rendered in table-header --> <!--  or $namespace = 'iso'  -->
 				<xsl:when test="$namespace = 'ogc-white-paper'"></xsl:when> <!-- table's title will be rendered after table -->
@@ -1817,7 +1815,7 @@
 			</xsl:choose>
 			
 			<xsl:choose>
-				<xsl:when test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'rsd'"></xsl:when>
+				<xsl:when test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'csa' or $namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'rsd'"></xsl:when>
 				<xsl:otherwise>
 					<xsl:call-template name="table_name_fn_display"/>
 				</xsl:otherwise>
@@ -1874,10 +1872,8 @@
 				</xsl:call-template>
 			
 				<!-- display table's name before table for PAS inside block-container (2-columnn layout) -->
-				<xsl:if test="$namespace = 'bsi'">
-					<xsl:if test="$document_type = 'PAS'">
-						<xsl:apply-templates select="mn:fmt-name" />
-					</xsl:if>
+				<xsl:if test="$namespace = 'pas'">
+					<xsl:apply-templates select="mn:fmt-name" />
 				</xsl:if>
 				
 				<xsl:variable name="table_width_default">100%</xsl:variable>
@@ -2055,14 +2051,12 @@
 					</fo:block>
 				</xsl:if>
 				
-				<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="$namespace = 'pas'">
 					<!-- clear 'table_number' and 'table_continued' to fix Apache FOP issue: https://github.com/metanorma/metanorma-bsi/issues/381 -->
-					<xsl:if test="$document_type = 'PAS'">
-						<fo:block font-size="0">
-							<fo:marker marker-class-name="table_number"/>
-							<fo:marker marker-class-name="table_continued"/>
-						</fo:block>
-					</xsl:if>
+					<fo:block font-size="0">
+						<fo:marker marker-class-name="table_number"/>
+						<fo:marker marker-class-name="table_continued"/>
+					</fo:block>
 				</xsl:if>
 				
 			</fo:block-container>
@@ -2075,7 +2069,7 @@
 			<xsl:when test="@width and @width != 'full-page-width' and @width != 'text-width'">
 	
 				<!-- centered table when table name is centered (see table-name-style) -->
-				<xsl:if test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or 
+				<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'gb' or 
 								$namespace = 'iec' or $namespace = 'iho' or  $namespace = 'iso' or $namespace = 'itu' or 
 								$namespace = 'jcgm' or $namespace = 'jis' 
 								$namespace = 'm3d' or $namespace = 'mpfd' or 
@@ -2243,12 +2237,12 @@
 							</xsl:otherwise>
 						</xsl:choose>
 						
-						<xsl:if test="$namespace = 'bsi'">
+						<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 							<xsl:if test="not(ancestor::mn:table/@class = 'corrigenda') and 
 							not(contains(ancestor::mn:clause[1]/mn:fmt-title, 'Amendments/corrigenda'))">
 								<xsl:if test="$continued = 'true'">
 									<fo:inline font-weight="bold" font-style="normal" role="SKIP">
-										<xsl:if test="$document_type = 'PAS'">
+										<xsl:if test="$namespace = 'pas'">
 											<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 										</xsl:if>
 										<fo:retrieve-table-marker retrieve-class-name="table_number"/>
@@ -2275,7 +2269,7 @@
 						
 					</fo:block>
 					
-					<!-- <xsl:if test="$namespace = 'bsi' or $namespace = 'iec' or $namespace = 'iso'"> -->
+					<!-- <xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iec' or $namespace = 'iso'"> -->
 					<xsl:if test="$continued = 'true'">
 					
 						<!-- to prevent the error 'THead element may contain only TR elements' -->
@@ -2689,7 +2683,7 @@
 					<xsl:with-param name="cols-count" select="$cols-count"/>
 				</xsl:call-template>				
 			</xsl:if>
-			<xsl:if test="$namespace = 'bsi'">
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 				<xsl:if test="ancestor::mn:table/mn:fmt-name">
 					<xsl:call-template name="table-header-title">
 						<xsl:with-param name="cols-count" select="$cols-count"/>
@@ -2770,7 +2764,7 @@
 	</xsl:template> <!-- table-header-title -->
 	
 	<xsl:template name="refine_table-header-title-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="border-bottom">none</xsl:attribute>
 			<xsl:attribute name="border-left">none</xsl:attribute>
 			<xsl:attribute name="border-right">none</xsl:attribute>
@@ -2822,7 +2816,7 @@
 		<xsl:variable name="isNoteOrFnExist" select="../mn:note[not(@type = 'units')] or ../mn:example or ../mn:dl or ..//mn:fn[not(parent::mn:fmt-name)] or ../mn:fmt-source or ../mn:p"/>
 		
 		<xsl:variable name="isNoteOrFnExistShowAfterTable">
-			<xsl:if test="$namespace = 'bsi'">
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 				 <xsl:value-of select="../mn:note[not(@type = 'units')] or ../mn:fmt-source or ../mn:dl or ..//mn:fn"/>
 			</xsl:if>
 		</xsl:variable>
@@ -2940,15 +2934,13 @@
 								
 								<xsl:if test="$namespace = 'bsi'">
 									<!-- for BSI (not PAS) display Notes before footnotes -->
-									<xsl:if test="$document_type != 'PAS'">
-										<xsl:apply-templates select="../mn:dl" />
-										<xsl:apply-templates select="../mn:note[not(@type = 'units')]" />
-										<xsl:apply-templates select="../mn:fmt-source" />
-									</xsl:if>
+									<xsl:apply-templates select="../mn:dl" />
+									<xsl:apply-templates select="../mn:note[not(@type = 'units')]" />
+									<xsl:apply-templates select="../mn:fmt-source" />
 								</xsl:if>
 								
 								<xsl:choose>
-									<xsl:when test="$namespace = 'gb' or $namespace = 'bsi'"><!-- except gb and bsi  --></xsl:when>
+									<xsl:when test="$namespace = 'gb' or $namespace = 'bsi' or $namespace = 'pas'"><!-- except gb and bsi  --></xsl:when>
 									<xsl:when test="$namespace = 'jis'">
 										<xsl:apply-templates select="../*[self::mn:p or self::mn:dl or (self::mn:note and not(@type = 'units')) or self::mn:example or self::mn:fmt-source]" />
 									</xsl:when>
@@ -2974,16 +2966,14 @@
 								
 								<xsl:variable name="isDisplayRowSeparator">
 									<xsl:if test="$namespace = 'iec'">true</xsl:if>
-									<xsl:if test="$namespace = 'bsi'">
-										<xsl:if test="$document_type != 'PAS'">true</xsl:if>
-									</xsl:if>
+									<xsl:if test="$namespace = 'bsi'">true</xsl:if>
 								</xsl:variable>
 								
 								<!-- horizontal row separator -->
 								<xsl:if test="normalize-space($isDisplayRowSeparator) = 'true'">
 									<xsl:if test="(../mn:note[not(@type = 'units')] or ../mn:example) and normalize-space($table_fn_block) != ''">
 										<fo:block-container border-top="0.5pt solid black" padding-left="1mm" padding-right="1mm">
-											<xsl:if test="$namespace = 'bsi'">
+											<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 												<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 											</xsl:if>
 											<xsl:call-template name="setBordersTableArray"/>
@@ -3003,13 +2993,11 @@
 									</xsl:otherwise>
 								</xsl:choose>
 								
-								<xsl:if test="$namespace = 'bsi'">
+								<xsl:if test="$namespace = 'pas'">
 									<!-- for PAS display Notes after footnotes -->
-									<xsl:if test="$document_type = 'PAS'">
-										<xsl:apply-templates select="../mn:dl" />
-										<xsl:apply-templates select="../mn:note[not(@type = 'units')]" />
-										<xsl:apply-templates select="../mn:fmt-source" />
-									</xsl:if>
+									<xsl:apply-templates select="../mn:dl" />
+									<xsl:apply-templates select="../mn:note[not(@type = 'units')]" />
+									<xsl:apply-templates select="../mn:fmt-source" />
 								</xsl:if>
 								
 							</fo:table-cell>
@@ -3049,7 +3037,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<!-- if there isn't 'thead' and there is a table's title -->
 			<xsl:if test="not(ancestor::mn:table/mn:thead) and ancestor::mn:table/mn:fmt-name">
 				<fo:table-header>
@@ -3072,7 +3060,7 @@
 		</xsl:call-template>
 		
 		<fo:table-body>
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">				
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'">				
 				<xsl:variable name="title_continued_">
 					<xsl:call-template name="getLocalizedString">
 						<xsl:with-param name="key">continued</xsl:with-param>
@@ -3082,12 +3070,8 @@
 				<xsl:variable name="title_continued_in_parenthesis" select="concat('(',$title_continued_,')')"/>
 				<xsl:variable name="title_continued">
 					<xsl:if test="$namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iso' or $namespace = 'jcgm'"><xsl:value-of select="$title_continued_in_parenthesis"/></xsl:if>
-					<xsl:if test="$namespace = 'bsi'">
-						<xsl:choose>
-							<xsl:when test="$document_type = 'PAS'">— <xsl:value-of select="$title_continued_"/></xsl:when>
-							<xsl:otherwise><xsl:value-of select="$title_continued_in_parenthesis"/></xsl:otherwise>
-						</xsl:choose>
-					</xsl:if>
+					<xsl:if test="$namespace = 'bsi'"><xsl:value-of select="$title_continued_in_parenthesis"/></xsl:if>
+					<xsl:if test="$namespace = 'pas'">— <xsl:value-of select="$title_continued_"/></xsl:if>
 				</xsl:variable>
 				
 				<xsl:variable name="title_start" select="ancestor::mn:table[1]/mn:fmt-name/node()[1][self::text()]"/>
@@ -3096,7 +3080,7 @@
 				<fo:table-row height="0" keep-with-next.within-page="always" role="SKIP">
 					<fo:table-cell role="SKIP">
 					
-						<xsl:if test="$namespace = 'bsi' or $namespace = 'iec' or $namespace = 'iso'">
+						<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iec' or $namespace = 'iso'">
 							<fo:marker marker-class-name="table_number" />
 							<fo:marker marker-class-name="table_continued" />
 						</xsl:if>
@@ -3110,7 +3094,7 @@
 				</fo:table-row>
 				<fo:table-row height="0" keep-with-next.within-page="always" role="SKIP">
 					<fo:table-cell role="SKIP">
-						<xsl:if test="$namespace = 'bsi'">
+						<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 							<fo:marker marker-class-name="table_number"><xsl:value-of select="$table_number"/></fo:marker>
 						</xsl:if>
 						<xsl:if test="$namespace = 'iec' or $namespace = 'iso'">
@@ -3263,14 +3247,14 @@
 			 </xsl:if>
 		</xsl:if>
 	
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:if test="(ancestor::mn:preface and ancestor::mn:clause[@type = 'corrigenda'] and normalize-space() = '') or
 			(ancestor::mn:copyright-statement and contains(ancestor::mn:clause[1]/mn:fmt-title, 'Amendments/corrigenda') and normalize-space() = '')">
 				<xsl:attribute name="min-height">0mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="min-height">6mm</xsl:attribute>
-			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="min-height">6mm</xsl:attribute>
 		</xsl:if>
 
 		<xsl:if test="$namespace = 'itu'">
@@ -3589,9 +3573,9 @@
 		<xsl:for-each select="..//mn:fmt-footnote-container/mn:fmt-fn-body">
 			
 				<xsl:choose>
-					<xsl:when test="$namespace = 'bsi'">
+					<xsl:when test="$namespace = 'bsi' or $namespace = 'pas'">
 						<fo:list-block id="{@id}" xsl:use-attribute-sets="table-fn-style" provisional-distance-between-starts="4mm">
-							<xsl:if test="$document_type = 'PAS'">
+							<xsl:if test="$namespace = 'pas'">
 								<xsl:attribute name="font-size">inherit</xsl:attribute>
 							</xsl:if>
 							<fo:list-item>
@@ -3748,9 +3732,9 @@
 			</xsl:if>
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:attribute name="padding-right">0mm</xsl:attribute>
-				<xsl:if test="$document_type = 'PAS'">
-					<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
-				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$namespace = 'pas'">
+				<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$namespace = 'itu'">
 				<xsl:attribute name="padding-right">3mm</xsl:attribute>

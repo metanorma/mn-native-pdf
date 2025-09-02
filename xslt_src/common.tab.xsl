@@ -49,12 +49,6 @@
 			</xsl:if>
 			<xsl:if test="$namespace = 'bsi'">
 				<xsl:choose>
-					<xsl:when test="$document_type = 'PAS'">
-						<xsl:choose>
-							<xsl:when test="$depth = 1">1.5</xsl:when>
-							<xsl:otherwise>1</xsl:otherwise>
-						</xsl:choose>
-					</xsl:when>
 					<xsl:when test="$doctype = 'expert-commentary'">1</xsl:when>
 					<xsl:otherwise>
 						<xsl:choose>
@@ -63,6 +57,12 @@
 							<xsl:otherwise>4</xsl:otherwise>
 						</xsl:choose>
 					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+			<xsl:if test="$namespace = 'pas'">
+				<xsl:choose>
+					<xsl:when test="$depth = 1">1.5</xsl:when>
+					<xsl:otherwise>1</xsl:otherwise>
 				</xsl:choose>
 			</xsl:if>
 			<xsl:if test="$namespace = 'ieee'">1</xsl:if>
@@ -187,7 +187,7 @@
 	<xsl:template match="mn:termnote/mn:fmt-name/mn:tab" priority="2"/>
 	
 	<xsl:template match="mn:note/mn:fmt-name/mn:tab" mode="tab">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">

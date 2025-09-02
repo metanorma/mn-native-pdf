@@ -19,7 +19,7 @@
 	<xsl:attribute-set name="pre-style">
 		<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>
 		<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
@@ -83,7 +83,7 @@
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd'">
 			<xsl:attribute name="font-family"><xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'm3d' or 
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'm3d' or 
 										 $namespace = 'ogc-white-paper' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 		</xsl:if>
@@ -100,7 +100,7 @@
 			<xsl:if test="$namespace = 'iec'">10</xsl:if>
 			<xsl:if test="$namespace = 'iho'">9.5</xsl:if>
 			<xsl:if test="$namespace = 'iso'">9</xsl:if> <!-- inherit -->
-			<xsl:if test="$namespace = 'bsi'">10</xsl:if>
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">10</xsl:if>
 			<xsl:if test="$namespace = 'jcgm'">10</xsl:if>
 			<xsl:if test="$namespace = 'itu'"></xsl:if>
 			<xsl:if test="$namespace = 'm3d'">
@@ -149,7 +149,7 @@
 	</xsl:variable>
 	<xsl:attribute-set name="add-style">
 		<xsl:choose>
-			<xsl:when test="$namespace = 'bsi'">
+			<xsl:when test="$namespace = 'bsi' or $namespace = 'pas'">
 				<xsl:attribute name="font-style">italic</xsl:attribute>
 			</xsl:when>
 			<xsl:otherwise>

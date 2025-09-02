@@ -37,7 +37,7 @@
 	<xsl:template name="refine_eref-style">
 		<xsl:variable name="citeas" select="java:replaceAll(java:java.lang.String.new(@citeas),'^\[?(.+?)\]?$','$1')"/> <!-- remove leading and trailing brackets -->
 		<xsl:variable name="text" select="normalize-space()"/>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:if test="not($ids/id = current()/@bibitemid) or $document_type = 'PAS' or not(contains($citeas, $text))"> <!-- if reference can't be resolved or PAS document -->
 				<xsl:attribute name="color">inherit</xsl:attribute>
 				<xsl:attribute name="text-decoration">none</xsl:attribute>

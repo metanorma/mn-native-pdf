@@ -44,7 +44,7 @@
 			<xsl:attribute name="text-indent">-25mm</xsl:attribute>
 			<xsl:attribute name="line-height">115%</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
@@ -200,7 +200,7 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="bibitem-non-normative-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
@@ -227,7 +227,7 @@
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="provisional-distance-between-starts">13mm</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="provisional-distance-between-starts">10mm</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="line-height">1.4</xsl:attribute>
@@ -289,7 +289,7 @@
 		<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
@@ -375,7 +375,7 @@
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-size">6pt</xsl:attribute>
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
 		</xsl:if>
@@ -459,7 +459,7 @@
 			<xsl:attribute name="font-size">60%</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="alignment-baseline">hanging</xsl:attribute>
 			<xsl:attribute name="padding-right">3mm</xsl:attribute>
 		</xsl:if>
@@ -532,7 +532,7 @@
 		<xsl:attribute name="font-size">10pt</xsl:attribute>
 		<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		<xsl:attribute name="start-indent">0pt</xsl:attribute>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
@@ -639,7 +639,7 @@
 	<xsl:template match="mn:references">
 		<xsl:if test="not(ancestor::mn:annex)">
 			<xsl:choose>
-				<xsl:when test="$namespace = 'bsi' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'"></xsl:when>
+				<xsl:when test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'unece' or $namespace = 'unece-rec'"></xsl:when>
 				<xsl:when test="$namespace = 'jis'">
 					<xsl:choose>
 						<xsl:when test="following-sibling::mn:references or preceding-sibling::mn:references"></xsl:when>
@@ -1093,7 +1093,7 @@
 					<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
 				</xsl:if>
 				
-				<xsl:if test="$namespace = 'bsi' or $namespace = 'jcgm'">
+				<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'jcgm'">
 					<!-- move opening ace-tag before number -->
 					<xsl:apply-templates select="mn:formattedref/node()[1][self::mn:add and contains(., '_start')]">
 						<xsl:with-param name="skip">false</xsl:with-param>

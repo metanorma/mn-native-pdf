@@ -31,7 +31,7 @@
 			<xsl:attribute name="margin-right">16mm</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
@@ -121,7 +121,7 @@
 	<xsl:attribute-set name="admonition-container-style">
 		<xsl:attribute name="margin-left">0mm</xsl:attribute>
 		<xsl:attribute name="margin-right">0mm</xsl:attribute>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="padding">0.5mm</xsl:attribute>
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 		</xsl:if>
@@ -198,7 +198,7 @@
 			<xsl:attribute name="font-style">italic</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
@@ -622,7 +622,7 @@
 	
 	<xsl:template match="mn:admonition/mn:p">
 		<xsl:choose>
-			<xsl:when test="$namespace = 'bsi' or $namespace = 'csa' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'm3d' or $namespace = 'mpfd'"> <!-- processing for admonition/p found in the template for 'p' -->
+			<xsl:when test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'csa' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'm3d' or $namespace = 'mpfd'"> <!-- processing for admonition/p found in the template for 'p' -->
 				<xsl:call-template name="paragraph"/>
 			</xsl:when>
 			<xsl:when test="$namespace = 'gb'">

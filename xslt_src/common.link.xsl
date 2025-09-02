@@ -13,7 +13,7 @@
 											version="1.0">
 	
 	<xsl:attribute-set name="link-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="color">rgb(58,88,168)</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>
@@ -36,7 +36,7 @@
 	</xsl:attribute-set>
 
 	<xsl:template name="refine_link-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'pas'">
 			<xsl:if test="$doctype = 'flex-standard' and ancestor::mn:copyright-statement">
 				<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 			</xsl:if>

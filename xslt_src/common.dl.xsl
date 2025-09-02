@@ -131,8 +131,6 @@
 	<xsl:attribute-set name="dl-name-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-		<xsl:if test="$namespace = 'bsi'">
-		</xsl:if>	
 		<xsl:if test="$namespace = 'itu' or $namespace = 'csd' or $namespace = 'm3d'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
@@ -293,10 +291,8 @@
 				</xsl:otherwise>
 			</xsl:choose>
 			
-			<xsl:if test="$namespace = 'bsi'">
-				<xsl:if test="$document_type != 'PAS'">
-					<xsl:attribute name="font-size">9pt</xsl:attribute>
-				</xsl:if>
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'plateau'">
@@ -347,7 +343,7 @@
 				<xsl:variable name="parent" select="local-name(..)"/>
 				
 				<xsl:variable name="key_iso">
-					<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">
+					<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">
 						<xsl:if test="$parent = 'figure' or $parent = 'formula' or ../@key = 'true'">true</xsl:if>
 					</xsl:if> <!-- and  (not(../@class) or ../@class !='pseudocode') -->
 				</xsl:variable>
@@ -385,7 +381,7 @@
 							</xsl:when>
 							<xsl:otherwise>
 								<fo:block margin-bottom="12pt" text-align="left">
-									<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'jcgm'">
+									<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso' or $namespace = 'iec' or $namespace = 'jcgm'">
 										<xsl:attribute name="margin-bottom">0</xsl:attribute>
 									</xsl:if>
 									<!-- <xsl:variable name="title-where">
@@ -425,7 +421,7 @@
 						<xsl:if test="not(preceding-sibling::*[1][self::mn:p and @keep-with-next])"> <!-- for old Presentation XML -->
 						
 							<xsl:choose>
-								<xsl:when test="$namespace = 'bsi'"></xsl:when><!-- https://github.com/metanorma/isodoc/issues/607, see template<xsl:template
+								<xsl:when test="$namespace = 'bsi' or $namespace = 'pas'"></xsl:when><!-- https://github.com/metanorma/isodoc/issues/607, see template<xsl:template
 								match="mn:figure/mn:p[preceding-sibling::mn:p[@keep-with-next = 'true']][node()[1][self::mn:sup]]" priority="5"> -->
 								<xsl:otherwise>						
 									<fo:block font-weight="bold" text-align="left" margin-bottom="12pt" keep-with-next="always">
@@ -485,10 +481,10 @@
 											<xsl:attribute name="font-size">8pt</xsl:attribute>
 										</xsl:if>
 										<xsl:if test="$namespace = 'bsi'">
-											<xsl:if test="$document_type != 'PAS'">
-												<xsl:attribute name="font-size">9pt</xsl:attribute>
-											</xsl:if>
-											<xsl:if test="$document_type = 'PAS' and parent::mn:figure">
+											<xsl:attribute name="font-size">9pt</xsl:attribute>
+										</xsl:if>
+										<xsl:if test="$namespace = 'pas'">
+											<xsl:if test="parent::mn:figure">
 												<xsl:attribute name="font-size">9pt</xsl:attribute>
 											</xsl:if>
 										</xsl:if>
@@ -709,9 +705,10 @@
 	<xsl:template name="refine_dl_formula_where_style">
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
-			<xsl:if test="$document_type != 'PAS'">
-				<xsl:attribute name="font-size">10pt</xsl:attribute>
-			</xsl:if>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
@@ -736,16 +733,16 @@
 			</xsl:if>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:if test="$parent = 'formula'">
 				<xsl:attribute name="margin-left">4mm</xsl:attribute>
 			</xsl:if>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
-			<xsl:if test="$document_type != 'PAS'">
-				<xsl:attribute name="line-height">1.4</xsl:attribute>
-				<xsl:if test="@key = 'true'">
-					<xsl:attribute name="margin-top">2pt</xsl:attribute>
-				</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="line-height">1.4</xsl:attribute>
+			<xsl:if test="@key = 'true'">
+				<xsl:attribute name="margin-top">2pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
@@ -766,7 +763,7 @@
 	<xsl:template name="refine_multicomponent_block_style">
 		<xsl:variable name="parent" select="local-name(..)"/>
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type != 'PAS' and $parent = 'formula'">
+			<xsl:if test="$parent = 'formula'">
 				<xsl:attribute name="margin-left">-1mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>

@@ -87,7 +87,7 @@
 	<!-- don't remove and rename this variable, it's using in mn2pdf tool -->
 	<xsl:variable name="isApplyAutolayoutAlgorithm_">
 		<xsl:choose>
-			<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
+			<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'pas' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'm3d' or $namespace = 'mpfd' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd' or $namespace = 'unece' or $namespace = 'unece-rec'">true</xsl:when>
 			<!-- <xsl:when test="$namespace = 'plateau'">skip</xsl:when> -->
 			<xsl:otherwise>false</xsl:otherwise>
 		</xsl:choose>
@@ -156,7 +156,7 @@
 		<title-toc lang="zh">目次</title-toc>
 		
 		<title-part lang="en">
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso'">
 				<xsl:text>Part #:</xsl:text>
 			</xsl:if>
 			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
@@ -164,7 +164,7 @@
 			</xsl:if>
 		</title-part>
 		<title-part lang="fr">
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso'">
 				<xsl:text>Partie #:</xsl:text>
 			</xsl:if>
 			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
@@ -747,7 +747,7 @@
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:variable name="pos"><xsl:number count="*"/></xsl:variable>
 			<xsl:if test="$pos &gt;= 2">
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
@@ -874,7 +874,7 @@
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu' or $namespace = 'jcgm'">

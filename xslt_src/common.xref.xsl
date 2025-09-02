@@ -13,7 +13,7 @@
 											version="1.0">
 	
 	<xsl:attribute-set name="xref-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="color">rgb(58,88,168)</xsl:attribute>
 			<xsl:attribute name="text-decoration">underline</xsl:attribute>
 		</xsl:if>

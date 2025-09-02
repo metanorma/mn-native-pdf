@@ -173,7 +173,7 @@
 			<xsl:attribute name="margin-left">19mm</xsl:attribute>
 			<xsl:attribute name="text-indent">-19mm</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">			
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="font-style">italic</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -312,18 +312,20 @@
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:if test="count(ancestor::mn:figure) &gt; 1">
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
-				<xsl:if test="$document_type != 'PAS'">
-					<!-- for sub-figures -->
-					<xsl:attribute name="font-style">normal</xsl:attribute>
-					<xsl:attribute name="font-size">9pt</xsl:attribute>
-					<xsl:attribute name="space-before">2pt</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="margin-left">0mm</xsl:attribute>
-				<xsl:attribute name="font-size">11pt</xsl:attribute>
 				<xsl:attribute name="font-style">normal</xsl:attribute>
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+				<xsl:attribute name="space-before">2pt</xsl:attribute>
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:if test="count(ancestor::mn:figure) &gt; 1">
+				<xsl:attribute name="margin-left">0mm</xsl:attribute>
+			</xsl:if>
+			<xsl:attribute name="margin-left">0mm</xsl:attribute>
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="font-style">normal</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:if test="../@width = 'full-page-width' or ../mn:figure/@width = 'full-page-width'">
 				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 			</xsl:if>
@@ -380,7 +382,7 @@
 	</xsl:attribute-set> <!-- image-style -->
 
 	<xsl:template name="refine_image-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:if test="ancestor::mn:table">
 				<xsl:attribute name="text-align">inherit</xsl:attribute>
 			</xsl:if>
@@ -402,7 +404,7 @@
 		<xsl:attribute name="width">100%</xsl:attribute>
 		<xsl:attribute name="content-height">100%</xsl:attribute>
 		<xsl:attribute name="scaling">uniform</xsl:attribute>			
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'gb' or $namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or 
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'gb' or $namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or 
 									$namespace = 'm3d' or $namespace = 'plateau' or $namespace = 'unece'">
 			<xsl:attribute name="content-width">scale-to-fit</xsl:attribute>
 		</xsl:if>
@@ -454,7 +456,7 @@
 	<xsl:attribute-set name="figure-fmt-fn-label-style">
 		<xsl:attribute name="font-size">80%</xsl:attribute>
 		<xsl:attribute name="vertical-align">super</xsl:attribute>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
 			<xsl:attribute name="font-size">5.5pt</xsl:attribute>
 		</xsl:if>
@@ -471,10 +473,8 @@
 	</xsl:attribute-set> <!-- figure-fmt-fn-label-style -->
 	
 	<xsl:template name="refine_figure-fmt-fn-label-style">
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="font-size">4.5pt</xsl:attribute>
-			</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="font-size">4.5pt</xsl:attribute>
 		</xsl:if>
 	</xsl:template>
 	
@@ -691,7 +691,7 @@
 	<xsl:template match="mn:figure/mn:dl[@key = 'true']/mn:dt/
 				mn:p[count(node()[normalize-space() != '']) = 1]/mn:sup" priority="3">
 		<xsl:variable name="key_iso">
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">true</xsl:if>
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">true</xsl:if>
 		</xsl:variable>
 		<xsl:if test="normalize-space($key_iso) = 'true'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
@@ -719,7 +719,7 @@
 	</xsl:template>
 	
 	<xsl:template name="refine_figure_key_style">
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">0</xsl:attribute>
 		</xsl:if>
@@ -754,7 +754,7 @@
 				<xsl:with-param name="isDeleted" select="$isDeleted"/>
 			</xsl:call-template>
 			
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'rsd'"> <!-- show figure's name BEFORE image -->
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'rsd'"> <!-- show figure's name BEFORE image -->
 				<xsl:apply-templates select="mn:fmt-name" />
 			</xsl:if>
 			
@@ -789,7 +789,7 @@
 			</xsl:if>
 			
 			<xsl:choose>
-				<xsl:when test="$namespace = 'bsi' or $namespace = 'rsd'"></xsl:when>
+				<xsl:when test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'rsd'"></xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates select="mn:fmt-name" /> <!-- show figure's name AFTER image -->
 				</xsl:otherwise>
@@ -1109,13 +1109,8 @@
 			<xsl:choose>
 				<xsl:when test="$namespace = 'bsi'">
 					<xsl:choose>
-						<xsl:when test="$document_type = 'PAS'"><xsl:value-of select="$width_effective - number($indent_left)"/></xsl:when>
-						<xsl:otherwise><!-- BSI -->
-							<xsl:choose>
-								<xsl:when test="../@width = 'full-page-width'"><xsl:value-of select="$width_effective - $image_border_padding * 2"/></xsl:when>
-								<xsl:otherwise><xsl:value-of select="$width_effective - number($indent_left) - $body_margin_left - $image_border_padding * 2"/></xsl:otherwise>
-							</xsl:choose>
-						</xsl:otherwise>
+						<xsl:when test="../@width = 'full-page-width'"><xsl:value-of select="$width_effective - $image_border_padding * 2"/></xsl:when>
+						<xsl:otherwise><xsl:value-of select="$width_effective - number($indent_left) - $body_margin_left - $image_border_padding * 2"/></xsl:otherwise>
 					</xsl:choose>
 				</xsl:when>
 				<xsl:otherwise>
