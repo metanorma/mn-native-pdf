@@ -26,6 +26,11 @@
 			<xsl:attribute name="font-family-generic">Serif</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="font-family"><xsl:value-of select="$font_name_frutiger"/>, Times New Roman, Cambria Math, Source Han Sans</xsl:attribute>
+			<xsl:attribute name="font-family-generic">Serif</xsl:attribute>
+			<xsl:attribute name="font-size">9pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="font-family">Azo Sans, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
 			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>

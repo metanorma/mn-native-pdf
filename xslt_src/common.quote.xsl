@@ -19,7 +19,7 @@
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="margin-left">13mm</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iso' or $namespace = 'm3d'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'csd' or $namespace = 'gb' or $namespace = 'iso' or $namespace = 'm3d'">
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">

@@ -14,7 +14,7 @@
 	
 
 	<xsl:attribute-set name="list-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="provisional-distance-between-starts">7mm</xsl:attribute>
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 			<xsl:attribute name="line-height">1.4</xsl:attribute>
@@ -152,7 +152,7 @@
 	
 	<xsl:attribute-set name="list-name-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 		</xsl:if>	
 		<xsl:if test="$namespace = 'itu' or $namespace = 'csd' or $namespace = 'm3d'">
@@ -212,10 +212,8 @@
 	</xsl:attribute-set>
 	
 	<xsl:template name="refine_list-item-style">
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="space-after">2pt</xsl:attribute>
-			</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="space-after">2pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:if test="ancestor::mn:table">
@@ -243,13 +241,11 @@
 
 	
 	<xsl:template name="refine_list-item-label-style">
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS' and not(ancestor::*[self::mn:note or self::mn:termnote])">
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:if test="not(ancestor::*[self::mn:note or self::mn:termnote])">
 				<xsl:attribute name="color"><xsl:value-of select="$color_list_label_PAS"/></xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="id">__internal_layout__li_<xsl:value-of select="generate-id()"/>_<xsl:value-of select="ancestor::*[@id][1]/@id"/></xsl:attribute>
-			</xsl:if>
+			<xsl:attribute name="id">__internal_layout__li_<xsl:value-of select="generate-id()"/>_<xsl:value-of select="ancestor::*[@id][1]/@id"/></xsl:attribute>
 		</xsl:if>
 	
 		<xsl:if test="$namespace = 'ieee'">
@@ -287,7 +283,7 @@
 	</xsl:attribute-set>
 	
 	<xsl:template name="refine_list-item-body-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:if test="*[last()][self::mn:note]">
 				<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 			</xsl:if>
@@ -315,12 +311,10 @@
 				<label level="3" font-size="75%">o</label> <!-- white circle -->
 			</xsl:when>
 			<xsl:when test="$namespace = 'bsi'">
-				<label>
-					<xsl:choose>
-						<xsl:when test="$document_type = 'PAS'">•</xsl:when> <!-- bullet -->
-						<xsl:otherwise>•</xsl:otherwise> <!-- &#x2014; em dash -->
-					</xsl:choose>
-				</label>
+				<label>•</label> <!-- &#x2014; em dash -->
+			</xsl:when>
+			<xsl:when test="$namespace = 'pas'">
+				<label>•</label>  <!-- bullet -->
 			</xsl:when>
 			<xsl:when test="$namespace = 'csa'">
 				<label level="1">•</label>
@@ -784,13 +778,14 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="margin-left">12mm</xsl:attribute>
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:if test="ancestor::*[self::mn:termnote or self::mn:note]">
-					<xsl:attribute name="margin-left">2mm</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="parent::*[self::mn:termnote or self::mn:note]">
-					<xsl:attribute name="margin-left">0mm</xsl:attribute>
-				</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="margin-left">12mm</xsl:attribute>
+			<xsl:if test="ancestor::*[self::mn:termnote or self::mn:note]">
+				<xsl:attribute name="margin-left">2mm</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="parent::*[self::mn:termnote or self::mn:note]">
+				<xsl:attribute name="margin-left">0mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_list_container_style -->

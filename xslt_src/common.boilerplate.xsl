@@ -69,6 +69,9 @@
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="space-after">6pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="space-after">2pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="margin-left">0.5mm</xsl:attribute>
 			<xsl:attribute name="margin-right">0.5mm</xsl:attribute>
@@ -83,9 +86,11 @@
 
 	<xsl:template name="refine_copyright-statement-p-style">
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="space-after">2pt</xsl:attribute>
+			<xsl:if test="ancestor::mn:boilerplate and contains(ancestor::mn:clause[1]/mn:fmt-title, 'Publication history')">
+				<xsl:attribute name="space-after">0pt</xsl:attribute>
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
 			<xsl:if test="$doctype = 'flex-standard'">
 				<xsl:attribute name="space-after">6pt</xsl:attribute>
 			</xsl:if>
@@ -94,7 +99,7 @@
 			</xsl:if>
 		</xsl:if>
 		
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'ogc-white-paper'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'ogc-white-paper'">
 			<xsl:if test="@align">
 				<xsl:attribute name="text-align">
 					<xsl:value-of select="@align"/>
@@ -381,7 +386,7 @@
 	<xsl:template match="mn:copyright-statement//mn:p">
 		
 		<xsl:choose>
-			<xsl:when test="$namespace = 'bsi' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
+			<xsl:when test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 				<fo:block xsl:use-attribute-sets="copyright-statement-p-style">
 					<xsl:call-template name="refine_copyright-statement-p-style"/>
 					

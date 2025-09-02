@@ -13,7 +13,7 @@
 											version="1.0">
 	
 	<xsl:attribute-set name="term-style">
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
@@ -190,7 +190,7 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="termsource-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="text-align">right</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
@@ -221,12 +221,10 @@
 	</xsl:attribute-set> <!-- termsource-style -->
 	
 	<xsl:template name="refine_termsource-style">
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="text-align">left</xsl:attribute>
-				<xsl:attribute name="space-before">12pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-			</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:attribute name="space-before">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:if test="ancestor::mn:table">

@@ -48,7 +48,7 @@
 	
 	<xsl:attribute-set name="formula-stem-block-style">
 		<xsl:attribute name="text-align">center</xsl:attribute>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="text-align">left</xsl:attribute>
 			<xsl:attribute name="margin-left">5mm</xsl:attribute>
 		</xsl:if>
@@ -133,7 +133,7 @@
 
 	<xsl:attribute-set name="mathml-style">
 		<xsl:attribute name="font-family">STIX Two Math</xsl:attribute>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'm3d'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'm3d'">
 			<xsl:attribute name="font-family">Cambria Math</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
@@ -450,7 +450,7 @@
 			</xsl:if>
 		</xsl:if>
 		
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso'">
 			<xsl:if test="count(ancestor::mn:table) &gt; 1">
 				<xsl:attribute name="width">95%</xsl:attribute>
 				<xsl:attribute name="content-height">100%</xsl:attribute>

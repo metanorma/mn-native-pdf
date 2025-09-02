@@ -46,7 +46,7 @@
 		<xsl:attribute name="white-space">pre</xsl:attribute>
 		<xsl:attribute name="wrap-option">wrap</xsl:attribute>
 		<xsl:attribute name="role">Code</xsl:attribute>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
@@ -225,7 +225,7 @@
 				<xsl:if test="$namespace = 'iec'">9</xsl:if>
 				<xsl:if test="$namespace = 'iho'">9.5</xsl:if>
 				<xsl:if test="$namespace = 'iso'">9</xsl:if><!-- inherit -->
-				<xsl:if test="$namespace = 'bsi'">9</xsl:if>
+				<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">9</xsl:if>
 				<xsl:if test="$namespace = 'jcgm'">9</xsl:if>
 				<xsl:if test="$namespace = 'itu'">10</xsl:if>
 				<xsl:if test="$namespace = 'm3d'"></xsl:if>		

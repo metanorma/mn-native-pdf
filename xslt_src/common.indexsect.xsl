@@ -21,7 +21,7 @@
 			<xsl:attribute name="margin-bottom">84pt</xsl:attribute>
 			<xsl:attribute name="margin-left">-18mm</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-size">18pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
@@ -57,7 +57,7 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-bottom">3pt</xsl:attribute>
@@ -304,7 +304,7 @@
 	<xsl:template match="mn:indexsect//mn:li" priority="4">
 		<xsl:variable name="level" select="count(ancestor::mn:ul)" />
 		<fo:block start-indent="{5 * $level}mm" text-indent="-5mm">
-			<xsl:if test="$namespace = 'bsi'">
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 				<xsl:if test="count(ancestor::mn:ul) = 1">
 					<xsl:variable name="prev_first_char" select="java:toLowerCase(java:java.lang.String.new(substring(normalize-space(preceding-sibling::mn:li[1]), 1, 1)))"/>
 					<xsl:variable name="curr_first_char" select="java:toLowerCase(java:java.lang.String.new(substring(normalize-space(), 1, 1)))"/>

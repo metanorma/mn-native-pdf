@@ -13,7 +13,7 @@
 											version="1.0">
 	
 	<xsl:attribute-set name="termexample-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
@@ -80,7 +80,7 @@
 			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 			<xsl:attribute name="font-family">SimHei</xsl:attribute>			
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="padding-right">5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
@@ -115,7 +115,7 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="example-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
@@ -239,7 +239,7 @@
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'jcgm'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'jcgm'">
 			<xsl:attribute name="padding-right">5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb' or $namespace = 'iso'">
@@ -342,7 +342,7 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="example-p-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
@@ -364,7 +364,7 @@
 			<xsl:attribute name="margin-left">12.7mm</xsl:attribute> -->
 			<xsl:attribute name="space-before">2pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'iso'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso'">
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
@@ -450,7 +450,7 @@
 	
 	<xsl:template match="mn:termexample/mn:p">
 		<xsl:variable name="element">inline
-			<xsl:if test="$namespace = 'bsi'">block</xsl:if>
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">block</xsl:if>
 			<xsl:if test="$namespace = 'ieee'">block</xsl:if>
 		</xsl:variable>		
 		<xsl:choose>			
@@ -550,7 +550,7 @@
 					<xsl:variable name="fo_element">
 						<xsl:if test=".//mn:table or .//mn:dl or *[not(self::mn:fmt-name)][1][self::mn:sourcecode]">block</xsl:if> 
 						<xsl:choose>			
-							<xsl:when test="$namespace = 'bsi' or 
+							<xsl:when test="$namespace = 'bsi' or $namespace = 'pas' or 
 																$namespace = 'iho' or 
 																$namespace = 'jcgm' or 
 																$namespace = 'm3d' or

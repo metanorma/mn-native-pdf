@@ -13,7 +13,7 @@
 											version="1.0">
 	
 	<xsl:attribute-set name="note-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="font-style">italic</xsl:attribute>
 			<xsl:attribute name="space-before">5pt</xsl:attribute>
@@ -121,33 +121,31 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="font-size">inherit</xsl:attribute>
-				<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
-				<xsl:attribute name="line-height">1.3</xsl:attribute>
-				<xsl:attribute name="margin-right">0mm</xsl:attribute>
-				<xsl:if test="following-sibling::*[1][self::mn:clause or self::mn:term]">
-					<xsl:attribute name="space-after">12pt</xsl:attribute>
-					<xsl:if test="following-sibling::*[2][self::mn:fmt-title]/@depth = 2">
-						<xsl:attribute name="space-after">24pt</xsl:attribute>
-					</xsl:if>
-				</xsl:if>
-				<!-- note inside p or ul or ul : p/note ul/note ol/note -->
-				<xsl:if test="parent::*[self::mn:p or self::mn:ul or self::mn:ol] and not(following-sibling::*)">
-					<xsl:if test="../following-sibling::*[1][self::mn:clause or self::mn:term]">
-						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-						<xsl:if test="../following-sibling::*[2][self::mn:fmt-title]/@depth = 2">
-							<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-				</xsl:if>
-				<!-- if 1st note -->
-				<xsl:if test="parent::mn:figure and preceding-sibling::*[1][self::mn:image]">
-					<xsl:attribute name="space-before">0pt</xsl:attribute>
+			<xsl:attribute name="text-align">justify</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="font-size">inherit</xsl:attribute>
+			<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
+			<xsl:attribute name="line-height">1.3</xsl:attribute>
+			<xsl:attribute name="margin-right">0mm</xsl:attribute>
+			<xsl:if test="following-sibling::*[1][self::mn:clause or self::mn:term]">
+				<xsl:attribute name="space-after">12pt</xsl:attribute>
+				<xsl:if test="following-sibling::*[2][self::mn:fmt-title]/@depth = 2">
+					<xsl:attribute name="space-after">24pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="$document_type != 'PAS'">
-				<xsl:attribute name="text-align">justify</xsl:attribute>
+			<!-- note inside p or ul or ul : p/note ul/note ol/note -->
+			<xsl:if test="parent::*[self::mn:p or self::mn:ul or self::mn:ol] and not(following-sibling::*)">
+				<xsl:if test="../following-sibling::*[1][self::mn:clause or self::mn:term]">
+					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+					<xsl:if test="../following-sibling::*[2][self::mn:fmt-title]/@depth = 2">
+						<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+			</xsl:if>
+			<!-- if 1st note -->
+			<xsl:if test="parent::mn:figure and preceding-sibling::*[1][self::mn:image]">
+				<xsl:attribute name="space-before">0pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 		
@@ -213,7 +211,7 @@
 	<xsl:variable name="note-body-indent-table">5mm</xsl:variable>
 	
 	<xsl:attribute-set name="note-name-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
@@ -261,19 +259,19 @@
 	</xsl:attribute-set> <!-- note-name-style -->
 	
 	<xsl:template name="refine_note-name-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:variable name="name" select="normalize-space(mn:fmt-name)" />
 			<!-- if NOTE without number -->
 			<xsl:if test="translate(substring($name, string-length($name)), '0123456789', '') != ''">
 				<xsl:attribute name="padding-right">3.5mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="padding-right">1mm</xsl:attribute>
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
-			</xsl:if>
 			<xsl:if test="@type = 'assessed-capability'">
 				<xsl:attribute name="padding-right">1mm</xsl:attribute>
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="padding-right">1mm</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:variable name="note_name" select="mn:fmt-name"/>
@@ -335,11 +333,9 @@
 			</xsl:if>
 		</xsl:if>
 		
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="padding-right">1mm</xsl:attribute>
-				<!-- <xsl:attribute name="font-style">italic</xsl:attribute> -->
-			</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="padding-right">1mm</xsl:attribute>
+			<!-- <xsl:attribute name="font-style">italic</xsl:attribute> -->
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'plateau'">
@@ -377,7 +373,7 @@
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>			
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'iso' or $namespace = 'jcgm'">			
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso' or $namespace = 'jcgm'">			
 			<xsl:attribute name="margin-top">8pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>			
 		</xsl:if>
@@ -424,7 +420,7 @@
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="font-style">italic</xsl:attribute>
 			<xsl:attribute name="space-before">5pt</xsl:attribute>
@@ -475,22 +471,20 @@
 	</xsl:attribute-set> <!-- termnote-style -->
 
 	<xsl:template name="refine_termnote-style">
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="space-before">0pt</xsl:attribute>
-				<xsl:if test="not(following-sibling::*)">
-					<xsl:attribute name="space-after">24pt</xsl:attribute>
-					<xsl:variable name="level">
-						<xsl:for-each select="ancestor::mn:term/mn:fmt-name">
-							<xsl:call-template name="getLevelTermName"/>
-						</xsl:for-each>
-					</xsl:variable>
-					<xsl:if test="$level &gt; 2">
-						<xsl:attribute name="space-after">16pt</xsl:attribute>
-					</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="space-before">0pt</xsl:attribute>
+			<xsl:if test="not(following-sibling::*)">
+				<xsl:attribute name="space-after">24pt</xsl:attribute>
+				<xsl:variable name="level">
+					<xsl:for-each select="ancestor::mn:term/mn:fmt-name">
+						<xsl:call-template name="getLevelTermName"/>
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:if test="$level &gt; 2">
+					<xsl:attribute name="space-after">16pt</xsl:attribute>
 				</xsl:if>
-				<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 			</xsl:if>
+			<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:if test="preceding-sibling::*[1][self::mn:fmt-definition]">
@@ -511,7 +505,7 @@
 	</xsl:template> <!-- refine_termnote-style -->
 
 	<xsl:attribute-set name="termnote-name-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
@@ -531,17 +525,17 @@
 	</xsl:attribute-set> <!-- termnote-name-style -->
 
 	<xsl:template name="refine_termnote-name-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
 			<xsl:variable name="name" select="normalize-space(mn:fmt-name)" />
 			<!-- if NOTE without number -->
 			<xsl:if test="translate(substring($name, string-length($name)), '0123456789', '') != ''">
 				<xsl:attribute name="padding-right">3.5mm</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="padding-right">1mm</xsl:attribute>
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
-			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="padding-right">1mm</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:if test="not($vertical_layout = 'true')">
@@ -776,7 +770,7 @@
 			<fo:inline xsl:use-attribute-sets="termnote-name-style">
 			
 				<xsl:choose>
-					<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd'"></xsl:when>
+					<xsl:when test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'pas' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'nist-sp' or $namespace = 'nist-cswp' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd'"></xsl:when>
 					<xsl:otherwise>
 						<xsl:if test="not(mn:fmt-name/following-sibling::node()[1][self::text()][normalize-space()=''])">
 							<xsl:attribute name="padding-right">1mm</xsl:attribute>

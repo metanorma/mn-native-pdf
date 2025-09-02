@@ -94,17 +94,23 @@
 	</xsl:attribute-set> <!-- fn-reference-style -->
 	
 	<xsl:template name="refine_fn-reference-style">
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:if test="ancestor::*[local-name()='table'] or ancestor::*[local-name()='table']">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 				<xsl:attribute name="baseline-shift">25%</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:if test="ancestor::*[local-name()='table'] or ancestor::*[local-name()='table']">
 				<xsl:attribute name="font-size">5.5pt</xsl:attribute>
-				<xsl:if test="$document_type = 'PAS'">
-					<xsl:attribute name="font-size">4.5pt</xsl:attribute>
-					<xsl:attribute name="padding-left">0.5mm</xsl:attribute>
-				</xsl:if>
 			</xsl:if>
 			<!-- <xsl:if test="preceding-sibling::*[1][self::mn:fn]">,&#xa0;</xsl:if> -->
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:if test="ancestor::*[local-name()='table'] or ancestor::*[local-name()='table']">
+				<xsl:attribute name="font-size">4.5pt</xsl:attribute>
+				<xsl:attribute name="padding-left">0.5mm</xsl:attribute>
+			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso' or $namespace = 'iec' or $namespace = 'jcgm'">
 			<xsl:if test="ancestor::*[local-name()='table']">
@@ -118,7 +124,7 @@
 			</xsl:if>
 		</xsl:if>
 		<!-- https://github.com/metanorma/metanorma-ieee/issues/595 -->
-		<xsl:if test="preceding-sibling::node()[normalize-space() != ''][1][self::mn:fn]">,<xsl:if test="$namespace = 'bsi'">&#xa0;</xsl:if></xsl:if>
+		<xsl:if test="preceding-sibling::node()[normalize-space() != ''][1][self::mn:fn]">,<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">&#xa0;</xsl:if></xsl:if>
 	</xsl:template> <!-- refine_fn-reference-style -->
 	
 	<xsl:attribute-set name="fn-style">
@@ -134,7 +140,7 @@
 			<xsl:attribute name="font-size">65%</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-size">6pt</xsl:attribute>
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
 		</xsl:if>
@@ -234,7 +240,7 @@
 			<xsl:attribute name="line-height">124%</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="color">black</xsl:attribute>
 			<xsl:attribute name="font-size">8pt</xsl:attribute>
 			<xsl:attribute name="start-indent">5mm</xsl:attribute>
@@ -333,14 +339,12 @@
 	</xsl:attribute-set> <!-- fn-body-style" -->
 	
 	<xsl:template name="refine_fn-body-style">
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
-				<xsl:attribute name="start-indent">0mm</xsl:attribute>
-				<xsl:attribute name="text-indent">0mm</xsl:attribute>
-				<xsl:attribute name="margin-top">6pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">-7mm</xsl:attribute>
-			</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
+			<xsl:attribute name="start-indent">0mm</xsl:attribute>
+			<xsl:attribute name="text-indent">0mm</xsl:attribute>
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">-7mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
@@ -382,7 +386,7 @@
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi'">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="padding-right">3mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
@@ -468,12 +472,10 @@
 	</xsl:attribute-set> <!-- fn-body-num-style -->
 	
 	<xsl:template name="refine_fn-body-num-style">
-		<xsl:if test="$namespace = 'bsi'">
-			<xsl:if test="$document_type = 'PAS'">
-				<xsl:attribute name="font-size">5pt</xsl:attribute>
-				<xsl:attribute name="baseline-shift">35%</xsl:attribute>
-				<xsl:attribute name="padding-right">1mm</xsl:attribute>
-			</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="font-size">5pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">35%</xsl:attribute>
+			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
@@ -559,11 +561,7 @@
 					<xsl:value-of select="$current_fn_number"/>
 				</xsl:otherwise>
 			</xsl:choose>
-			<xsl:if test="$namespace = 'bsi'">
-				<xsl:if test="$document_type = 'PAS'">
-					<xsl:text>)</xsl:text>
-				</xsl:if>
-			</xsl:if>
+			<xsl:if test="$namespace = 'pas'"><xsl:text>)</xsl:text></xsl:if>
 		</xsl:variable>
 		
 		<xsl:variable name="ref_id" select="@target"/>
@@ -595,10 +593,8 @@
 					<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
 				</xsl:if> -->
 			
-				<xsl:if test="$namespace = 'bsi'">
-					<xsl:if test="$document_type = 'PAS'">
-						<xsl:attribute name="font-size">5pt</xsl:attribute>
-					</xsl:if>
+				<xsl:if test="$namespace = 'pas'">
+					<xsl:attribute name="font-size">5pt</xsl:attribute>
 					<!-- <xsl:if test="following-sibling::*[1][self::mn:fn]">
 						<xsl:attribute name="padding-right">0mm</xsl:attribute>
 					</xsl:if>
@@ -654,10 +650,8 @@
 					<xsl:call-template name="refine_fn-style"/>
 					<xsl:copy-of select="$footnote_inline"/>
 					<fo:footnote-body role="Note">
-						<xsl:if test="$namespace = 'bsi'">
-							<xsl:if test="$document_type = 'PAS'">
-								<fo:block role="SKIP">&#xa0;</fo:block>
-							</xsl:if>
+						<xsl:if test="$namespace = 'pas'">
+							<fo:block role="SKIP">&#xa0;</fo:block>
 						</xsl:if>
 						
 						<fo:block-container xsl:use-attribute-sets="fn-container-body-style" role="SKIP">
