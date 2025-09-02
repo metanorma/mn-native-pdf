@@ -709,8 +709,10 @@
 					<xsl:attribute name="border-top">2.5pt solid black</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="position() = last() and $document_type = 'PAS'">
-				<xsl:attribute name="border-bottom">none</xsl:attribute>
+			<xsl:if test="$namespace = 'pas'">
+				<xsl:if test="position() = last()">
+					<xsl:attribute name="border-bottom">none</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="border-top">solid black 0pt</xsl:attribute>
@@ -1009,7 +1011,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
-			<xsl:if test="$document_type != 'PAS'">
+			<xsl:if test="$namespace = 'bsi'">
 				<!-- <xsl:attribute name="border">none</xsl:attribute>
 				<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 				<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute> -->
@@ -1252,7 +1254,7 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
-			<xsl:if test="$document_type != 'PAS'">
+			<xsl:if test="$namespace = 'bsi'">
 				<!-- <xsl:attribute name="border">none</xsl:attribute>
 				<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 				<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute> -->

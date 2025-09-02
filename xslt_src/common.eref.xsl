@@ -38,10 +38,14 @@
 		<xsl:variable name="citeas" select="java:replaceAll(java:java.lang.String.new(@citeas),'^\[?(.+?)\]?$','$1')"/> <!-- remove leading and trailing brackets -->
 		<xsl:variable name="text" select="normalize-space()"/>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
-			<xsl:if test="not($ids/id = current()/@bibitemid) or $document_type = 'PAS' or not(contains($citeas, $text))"> <!-- if reference can't be resolved or PAS document -->
+			<xsl:if test="not($ids/id = current()/@bibitemid) or not(contains($citeas, $text))"> <!-- if reference can't be resolved or PAS document -->
 				<xsl:attribute name="color">inherit</xsl:attribute>
 				<xsl:attribute name="text-decoration">none</xsl:attribute>
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="color">inherit</xsl:attribute>
+			<xsl:attribute name="text-decoration">none</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
