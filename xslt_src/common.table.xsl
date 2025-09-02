@@ -704,8 +704,10 @@
 				<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 				<xsl:attribute name="border-bottom"><xsl:value-of select="$table-border"/></xsl:attribute>
 			</xsl:if>
-			<xsl:if test="position() = 1 and $document_type != 'PAS'">
-				<xsl:attribute name="border-top">2.5pt solid black</xsl:attribute>
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="position() = 1">
+					<xsl:attribute name="border-top">2.5pt solid black</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="position() = last() and $document_type = 'PAS'">
 				<xsl:attribute name="border-bottom">none</xsl:attribute>
@@ -816,9 +818,11 @@
 		
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:call-template name="setBorderUnderRow" />
-			<xsl:if test="position() = 1 and $namespace = 'bsi' and not(ancestor::mn:table[1]/*[local-name() = 'thead'])">
-				<!-- set border for 1st row if thead is missing -->
-				<xsl:attribute name="border-top">2.5pt solid black</xsl:attribute>
+			<xsl:if test="$namespace = 'bsi'">
+				<xsl:if test="position() = 1 and not(ancestor::mn:table[1]/*[local-name() = 'thead'])">
+					<!-- set border for 1st row if thead is missing -->
+					<xsl:attribute name="border-top">2.5pt solid black</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			
 			<xsl:if test="ancestor::mn:preface or ancestor::mn:boilerplate">
@@ -1807,6 +1811,7 @@
 				<xsl:when test="$namespace = 'bsi'">
 					<xsl:apply-templates select="mn:fmt-name" />
 				</xsl:when>
+				<xsl:when test="$namespace = 'pas'"></xsl:when>
 				<xsl:when test="$namespace = 'ieee' or $namespace = 'jcgm'"></xsl:when> <!-- table name will be rendered in table-header --> <!--  or $namespace = 'iso'  -->
 				<xsl:when test="$namespace = 'ogc-white-paper'"></xsl:when> <!-- table's title will be rendered after table -->
 				<xsl:otherwise>

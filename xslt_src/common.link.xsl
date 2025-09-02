@@ -37,11 +37,6 @@
 
 	<xsl:template name="refine_link-style">
 		<xsl:if test="$namespace = 'pas'">
-			<xsl:if test="$doctype = 'flex-standard' and ancestor::mn:copyright-statement">
-				<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
-			</xsl:if>
-		</xsl:if>
-		<xsl:if test="$namespace = 'pas'">
 			<xsl:attribute name="color">inherit</xsl:attribute>
 			<xsl:attribute name="text-decoration">none</xsl:attribute>
 			<xsl:if test="$doctype = 'flex-standard' and ancestor::mn:copyright-statement">
