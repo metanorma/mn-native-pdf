@@ -30,6 +30,15 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="margin-left">-15mm</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+			<xsl:attribute name="font-size">22pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
+			<xsl:attribute name="color">black</xsl:attribute>
+			<xsl:attribute name="line-height">125%</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 	
 	<xsl:template name="refine_references-non-normative-title-style">

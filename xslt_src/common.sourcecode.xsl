@@ -150,6 +150,18 @@
 		</xsl:if>
 	</xsl:template> <!-- refine_sourcecode-style -->
 
+	<xsl:attribute-set name="sourcecode-number-style">
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="font-style">normal</xsl:attribute>
+			<xsl:attribute name="color">black</xsl:attribute>
+			<xsl:attribute name="text-transform">uppercase</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_sourcecode-number-style">
+	</xsl:template>
+
 	<xsl:attribute-set name="sourcecode-name-style">
 		<xsl:attribute name="font-size">11pt</xsl:attribute>
 		<xsl:attribute name="font-weight">bold</xsl:attribute>

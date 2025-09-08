@@ -312,6 +312,11 @@
 			<xsl:attribute name="font-size">8pt</xsl:attribute>
 			<xsl:attribute name="line-height">125%</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="border">1pt solid black</xsl:attribute>
+			<xsl:attribute name="padding">1mm</xsl:attribute>
+			<xsl:attribute name="padding-left">2mm</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set> <!-- feedback-statement-style -->
 	
 	<xsl:template name="refine_feedback-statement-style">

@@ -52,6 +52,36 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:attribute-set name="preferred-style">
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="color">black</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- preferred-style -->
+	
+	<xsl:template name="refine_preferred-style">
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:variable name="level">
+				<xsl:call-template name="getLevel"/>
+			</xsl:variable>
+			<xsl:variable name="font-size">
+				<xsl:choose>
+					<xsl:when test="$level &gt;= 2">13pt</xsl:when>
+					<xsl:otherwise>12pt</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:variable name="levelTerm">
+				<xsl:call-template name="getLevelTermName"/>
+			</xsl:variable>
+			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
+			<xsl:attribute name="role">H<xsl:value-of select="$levelTerm"/></xsl:attribute>
+			<xsl:if test="preceding-sibling::*[1][self::mn:fmt-name]">
+				<xsl:attribute name="space-before">11mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="preferred-block-style">
 		<xsl:if test="$namespace = 'csd'">
 			<xsl:attribute name="line-height">1.1</xsl:attribute>

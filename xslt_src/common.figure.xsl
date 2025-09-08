@@ -164,6 +164,18 @@
 	<xsl:template name="refine_figure-style">
 	</xsl:template>
 
+	<xsl:attribute-set name="figure-number-style">
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="font-style">normal</xsl:attribute>
+			<xsl:attribute name="color">black</xsl:attribute>
+			<xsl:attribute name="text-transform">uppercase</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_figure-number-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="figure-name-style">
 		<xsl:attribute name="role">Caption</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">

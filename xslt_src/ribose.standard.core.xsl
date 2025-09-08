@@ -765,7 +765,7 @@
 	
 	
 	<xsl:template match="mn:feedback-statement" priority="2">
-		<fo:block-container border="1pt solid black" padding="1mm" padding-left="2mm">
+		<fo:block-container xsl:use-attribute-sets="feedback-statement-style">
 			<fo:block>
 				<xsl:apply-templates />
 			</fo:block>
@@ -1009,21 +1009,10 @@
 	
 	
 	<xsl:template match="mn:fmt-preferred | mn:fmt-deprecates | mn:fmt-admitted" priority="2">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="font-size">
-			<xsl:choose>
-				<xsl:when test="$level &gt;= 2">13pt</xsl:when>
-				<xsl:otherwise>12pt</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:variable name="levelTerm">
-			<xsl:call-template name="getLevelTermName"/>
-		</xsl:variable>
-		<fo:block font-weight="bold" color="black" font-size="{$font-size}" keep-with-next="always" role="H{$levelTerm}"> <!-- 600 - semibold -->
+  
+		<fo:block xsl:use-attribute-sets="preferred-style">
+			<xsl:call-template name="refine_preferred-style"/>
 			<xsl:if test="preceding-sibling::*[1][self::mn:fmt-name]">
-				<xsl:attribute name="space-before">11mm</xsl:attribute>
 				<fo:inline padding-right="1mm">
 					<xsl:apply-templates select="ancestor::mn:term[1]/mn:fmt-name" />
 				</fo:inline>
@@ -1057,7 +1046,6 @@
 					</fo:inline>
 				</fo:block>
 			</fo:inline-container>
-			
 		</fo:block>
 	</xsl:template>
 	
@@ -1067,14 +1055,10 @@
 			<fo:table width="100%" table-layout="fixed" >
 				<fo:table-column column-width="100%"/>				
 				<fo:table-header>
+					<!-- repeat table header on each page -->
 					<fo:table-row>
 						<fo:table-cell text-align="left">
-							<fo:block margin-left="-15mm" role="H1"> <!-- Bibliography section title -->
-								<xsl:attribute name="font-size">22pt</xsl:attribute>
-								<xsl:attribute name="font-weight">bold</xsl:attribute>
-								<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
-								<xsl:attribute name="color">black</xsl:attribute>
-								<xsl:attribute name="line-height">125%</xsl:attribute>
+							<fo:block xsl:use-attribute-sets="references-non-normative-title-style"> <!-- Bibliography section title -->
 								<xsl:apply-templates select="mn:fmt-title/node()"/>
 							</fo:block>
 						</fo:table-cell>
@@ -1090,21 +1074,26 @@
 					</fo:table-row>
 				</fo:table-body>
 			</fo:table>
-			
 		</fo:block>
 	</xsl:template>
 	
-	
-	
 	<xsl:template match="*[self::mn:table or self::mn:figure or self::mn:sourcecode]/mn:fmt-name/node()[1][self::text()]" priority="2">
+		<xsl:variable name="styles_">
+			<xsl:choose>
+				<xsl:when test="ancestor::mn:table"><styles xsl:use-attribute-sets="table-number-style"><xsl:call-template name="refine_table-number-style"/></styles></xsl:when>
+				<xsl:when test="ancestor::mn:figure"><styles xsl:use-attribute-sets="figure-number-style"><xsl:call-template name="refine_figure-number-style"/></styles></xsl:when>
+				<xsl:when test="ancestor::mn:sourcecode"><styles xsl:use-attribute-sets="sourcecode-number-style"><xsl:call-template name="refine_sourcecode-number-style"/></styles></xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="styles" select="xalan:nodeset($styles_)"/>
 		<xsl:choose>
 			<xsl:when test="contains(., '—')">
 				<xsl:variable name="name_number" select="normalize-space(translate(substring-before(., '—'), '&#xa0;', ' '))"/>
-				<fo:inline font-weight="bold" font-style="normal" color="black"><xsl:value-of select="java:toUpperCase(java:java.lang.String.new($name_number))"/><xsl:text>:</xsl:text></fo:inline>
+				<fo:inline><xsl:copy-of select="$styles/styles/@*"/><xsl:value-of select="$name_number"/><xsl:text>:</xsl:text></fo:inline>
 				<xsl:value-of select="substring-after(., '—')"/>
 			</xsl:when>
 			<xsl:when test="starts-with(., 'Figure ') or starts-with(., 'Table ')">
-				<fo:inline font-weight="bold" font-style="normal" color="black"><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/></fo:inline>
+				<fo:inline><xsl:copy-of select="$styles/styles/@*"/><xsl:value-of select="."/></fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="."/>
@@ -1113,15 +1102,9 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:clause" priority="2">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="mn:title/@depth"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<fo:block-container>
-			<xsl:if test="$level &gt;= 4">
-				<xsl:attribute name="margin-left">13mm</xsl:attribute>
-			</xsl:if>
+		<fo:block-container xsl:use-attribute-sets="clause-style">
+			<xsl:call-template name="refine_clause-style"/>
+      
 			<fo:block-container margin-left="0mm">
 				<fo:block>
 					<xsl:call-template name="setId"/>

@@ -682,7 +682,22 @@
 			</xsl:choose>
 	</xsl:template>
 	
+	<xsl:attribute-set name="clause-style">
+		
+	</xsl:attribute-set>
 	
+	<xsl:template name="refine_clause-style">
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:variable name="level">
+				<xsl:call-template name="getLevel">
+					<xsl:with-param name="depth" select="mn:title/@depth"/>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:if test="$level &gt;= 4">
+				<xsl:attribute name="margin-left">13mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 	
 	<!-- main sections -->
 	<xsl:template match="/*/mn:sections/*" name="sections_node" priority="2">
