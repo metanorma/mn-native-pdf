@@ -893,7 +893,8 @@
 			
 			<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 			
-				<fo:block-container line-height="130%">
+				<fo:block-container xsl:use-attribute-sets="toc-style">
+					<xsl:call-template name="refine_toc-style"/>
 					<fo:block role="TOC">
 						<xsl:for-each select="$contents//mnx:item[@display = 'true' and normalize-space(@id) != '']">
 							
@@ -959,13 +960,11 @@
 									</xsl:otherwise>
 								</xsl:choose>
 								
-								
 							</fo:block>
 						</xsl:for-each>
 					</fo:block>
 				</fo:block-container>	
 						
-
 				<!-- List of Tables -->
 				<xsl:if test="$contents//mnx:tables/mnx:table">
 					<xsl:call-template name="insertListOf_Title">
@@ -1292,11 +1291,9 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:legal-statement//mn:fmt-title" priority="2">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
 		<!-- inline title -->
-		<fo:inline font-weight="bold" role="H{$level}">
+		<fo:inline xsl:use-attribute-sets="legal-statement-title-style" >
+			<xsl:call-template name="refine_legal-statement-title-style"/>
 			<xsl:apply-templates /><xsl:text>: </xsl:text>
 		</fo:inline>
 	</xsl:template>
@@ -1307,9 +1304,9 @@
 		</xsl:call-template>		
 	</xsl:template>
 
-
 	<xsl:template match="mn:legal-statement//mn:p" priority="2">
-		<fo:inline>			
+		<fo:inline xsl:use-attribute-sets="legal-statement-p-style">
+			<xsl:call-template name="refine_legal-statement-p-style"/>
 			<xsl:apply-templates />			
 		</fo:inline>
 		<xsl:if test="following-sibling::mn:p">
@@ -1469,11 +1466,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:element name="{$element-name}">
-			<xsl:if test="@id">
-				<xsl:attribute name="id">
-					<xsl:value-of select="@id"/>
-				</xsl:attribute>
-			</xsl:if>
+			<xsl:copy-of select="@id"/>
 			
 			<xsl:call-template name="setBlockAttributes"/>
 			
@@ -1528,21 +1521,8 @@
 			</xsl:if>
 			<fo:block-container margin-left="0mm">
 				<fo:list-block xsl:use-attribute-sets="list-style">
-					<xsl:if test="self::mn:ul">
-						<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="$ul_indent"/>mm</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="ancestor::mn:table">
-						<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="ancestor::mn:ul | ancestor::mn:ol">
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-						<xsl:if test="ancestor::mn:table[not(@class)]">
-							<xsl:attribute name="space-after">1mm</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					<xsl:if test="following-sibling::*[1][self::mn:ul or self::mn:ol]">
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-					</xsl:if>
+					<xsl:call-template name="refine_list-style"/>
+					
 					<xsl:apply-templates>
 						<xsl:with-param name="indent" select="$indent + $ul_indent"/>
 					</xsl:apply-templates>
@@ -1565,10 +1545,8 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:term/mn:fmt-name" priority="2">
-		<xsl:variable name="levelTerm">
-			<xsl:call-template name="getLevelTermName"/>
-		</xsl:variable>
-		<fo:block space-before="36pt" margin-bottom="10pt" keep-with-next="always" role="H{$levelTerm}">
+		<fo:block xsl:use-attribute-sets="term-name-style">
+			<xsl:call-template name="refine_term-name-style"/>
 			<fo:list-block color="{$color_text_title}" keep-with-next="always" provisional-distance-between-starts="{string-length()*3.25}mm">
 				<fo:list-item>
 					<fo:list-item-label end-indent="label-end()">
@@ -1589,7 +1567,7 @@
 	
 	<!-- first preferred displays on the same line as term/name -->
 	<xsl:template match="mn:fmt-preferred[not(preceding-sibling::mn:fmt-preferred)]" mode="term_name" priority="2">
-		<fo:inline font-size="18pt" padding-right="3mm"><xsl:call-template name="refine_preferred-term-style"/><xsl:apply-templates /></fo:inline>		
+		<fo:inline xsl:use-attribute-sets="preferred-term-style"><xsl:call-template name="refine_preferred-term-style"/><xsl:apply-templates /></fo:inline>		
 		<fo:inline padding-right="2mm">&#xA0;</fo:inline>
 	</xsl:template>
 	

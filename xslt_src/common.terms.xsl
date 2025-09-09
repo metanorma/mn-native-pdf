@@ -38,6 +38,12 @@
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:attribute name="space-after">2pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="space-before">36pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="space-after">2pt</xsl:attribute>
@@ -49,6 +55,12 @@
 			<xsl:if test="not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="levelTerm">
+				<xsl:call-template name="getLevelTermName"/>
+			</xsl:variable>
+			<xsl:attribute name="role">H<xsl:value-of select="$levelTerm"/></xsl:attribute>
 		</xsl:if>
 	</xsl:template>
 	
@@ -128,6 +140,10 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-size">18pt</xsl:attribute>
+			<xsl:attribute name="padding-right">3mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
