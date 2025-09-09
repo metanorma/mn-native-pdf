@@ -981,9 +981,18 @@
 		</xsl:variable>
 		
 		<xsl:element name="{$element-name}">
-			<xsl:for-each select="parent::mn:clause">
-				<xsl:call-template name="setId"/>
-			</xsl:for-each>
+			
+			<xsl:choose>
+				<xsl:when test="@type = 'floating-title' or @type = 'section-title'">
+					<xsl:copy-of select="@id"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:for-each select="parent::mn:clause">
+						<xsl:call-template name="setId"/>
+					</xsl:for-each>
+				</xsl:otherwise>
+			</xsl:choose>
+			
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>			
 			<xsl:attribute name="font-weight">bold</xsl:attribute>			
 			<xsl:attribute name="space-before">
