@@ -36,6 +36,10 @@
 			<xsl:attribute name="font-family">Arial</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="line-height">1.08</xsl:attribute>
+			<xsl:attribute name="font-family">Lato</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
