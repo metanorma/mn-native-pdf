@@ -264,6 +264,12 @@
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="$doctype = 'technical-report'">
+				<xsl:attribute name="line-height">1.8</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template> <!-- refine_list-item-label-style -->
 
 	

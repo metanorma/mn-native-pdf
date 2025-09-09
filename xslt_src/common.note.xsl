@@ -193,6 +193,13 @@
 			</xsl:if>
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="not(ancestor::mn:table or ancestor::mn:figure or ancestor::mn:dl)">
+				<xsl:attribute name="margin-top">6pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:if test="ancestor::mn:ul or ancestor::mn:ol and not(ancestor::mn:note[1]/following-sibling::*)">
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
