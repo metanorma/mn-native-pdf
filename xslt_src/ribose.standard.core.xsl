@@ -1219,14 +1219,33 @@
 	</xsl:template>
 	
 	<xsl:template name="insertFooter">
-		<xsl:param name="invert"/>
+		<!-- <xsl:param name="invert"/> -->
 		<xsl:variable name="footerText"> 
 			<xsl:text>Ribose</xsl:text>
 			<xsl:text>&#xA0;</xsl:text>
-			<xsl:call-template name="capitalize">
-				<xsl:with-param name="str" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/>
+			<xsl:call-template name="capitalizeWords">
+				<xsl:with-param name="str">
+					<xsl:choose>
+						<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:doctype-alias">
+							<xsl:value-of select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:doctype-alias"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:with-param>
 			</xsl:call-template>
 		</xsl:variable>
+		<xsl:call-template name="insertFooterOdd">
+			<xsl:with-param name="footerText" select="$footerText"/>
+		</xsl:call-template>
+		<xsl:call-template name="insertFooterEven">
+			<xsl:with-param name="footerText" select="$footerText"/>
+		</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template name="insertFooterOdd">
+		<xsl:param name="footerText"/>
 		<fo:static-content flow-name="footer-odd" role="artifact">
 			<fo:block-container font-size="8pt" height="100%" color="black">
 				<fo:block text-align-last="justify" margin-right="1mm">
@@ -1239,14 +1258,18 @@
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
+	</xsl:template>
+	
+	<xsl:template name="insertFooterEven">
+		<xsl:param name="footerText"/>
 		<fo:static-content flow-name="footer-even" role="artifact">
 			<fo:block-container font-size="8pt" height="100%" color="black">
 				<fo:block text-align-last="justify" margin-right="1mm">
 					<fo:inline padding-right="11mm"><fo:page-number/></fo:inline>
 					<fo:inline>
-						<xsl:if test="$invert = 'true'">
+						<!-- <xsl:if test="$invert = 'true'">
 							<xsl:attribute name="color">white</xsl:attribute>
-						</xsl:if>
+						</xsl:if> -->
 						<xsl:value-of select="$footerText"/>
 					</fo:inline>
 					<fo:inline keep-together.within-line="always">
