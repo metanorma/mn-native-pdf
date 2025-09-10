@@ -409,9 +409,9 @@
 							<xsl:call-template name="insertHeaderFooter">
 								<xsl:with-param name="section">main</xsl:with-param>
 							</xsl:call-template>
-							<fo:flow flow-name="xsl-region-body">
+							<fo:flow flow-name="xsl-region-body" role="SKIP">
 							
-								<fo:block line-height="130%">
+								<fo:block line-height="130%" role="SKIP">
 								
 									<!-- <xsl:apply-templates select="/mn:metanorma/mn:preface/mn:abstract" />
 									<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:foreword" />
@@ -873,20 +873,20 @@
 			
 			<xsl:choose>
 				<xsl:when test="$level = 1">
-					<fo:block-container margin-left="-15mm">
-						<fo:block-container margin-left="0mm">
-							<fo:table width="100%" table-layout="fixed" >
+					<fo:block-container margin-left="-15mm" role="SKIP">
+						<fo:block-container margin-left="0mm" role="SKIP">
+							<fo:table width="100%" table-layout="fixed" role="SKIP">
 								<fo:table-column column-width="15mm"/>
 								<fo:table-column column-width="150mm"/>				
-								<fo:table-body>
-									<fo:table-row>
-										<fo:table-cell text-align="left">
-											<fo:block>
+								<fo:table-body role="SKIP">
+									<fo:table-row role="SKIP">
+										<fo:table-cell text-align="left" role="SKIP">
+											<fo:block role="SKIP">
 												<xsl:call-template name="extractSection"/><!-- section number 1 2 3  ... -->
 											</fo:block>
 										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>
+										<fo:table-cell role="SKIP">
+											<fo:block role="SKIP">
 													<xsl:call-template name="extractTitle"/> <!-- section title -->
 													<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 												</fo:block>
@@ -975,11 +975,11 @@
 	
 	
 	<xsl:template match="mn:ul | mn:ol" mode="list" priority="2">
-		<fo:block-container>
-			<fo:block-container margin-left="0mm">
+		<fo:block-container role="SKIP">
+			<fo:block-container margin-left="0mm" role="SKIP">
 				<xsl:choose>
 					<xsl:when test="not(ancestor::mn:ul) and not(ancestor::mn:ol)">
-						<fo:block padding-bottom="12pt" padding-top="4pt">
+						<fo:block padding-bottom="12pt" padding-top="4pt" role="SKIP">
 							<xsl:call-template name="listProcessing"/>
 						</fo:block>
 					</xsl:when>
@@ -1112,8 +1112,9 @@
 		<fo:block-container xsl:use-attribute-sets="clause-style">
 			<xsl:call-template name="refine_clause-style"/>
       
-			<fo:block-container margin-left="0mm">
-				<fo:block>
+			<fo:block-container margin-left="0mm" role="SKIP">
+				<xsl:call-template name="setNamedDestination"/>
+				<fo:block role="SKIP">
 					<xsl:call-template name="setId"/>
 					<xsl:call-template name="addReviewHelper"/>
 					<xsl:apply-templates />
