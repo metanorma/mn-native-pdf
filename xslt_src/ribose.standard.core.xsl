@@ -629,7 +629,7 @@
 	</xsl:template>
 
 	<xsl:template match="mn:preface/mn:clause[@type = 'toc']" name="toc" priority="3">
-		<fo:block role="TOC">
+		<fo:block role="SKIP">
 			<xsl:apply-templates />	
 			
 			<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
@@ -637,7 +637,7 @@
 				<xsl:if test="$contents//mnx:item[@display = 'true']">
 				
 					<fo:block-container xsl:use-attribute-sets="toc-style">
-						<fo:block-container margin-left="0mm" margin-right="0mm">
+						<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
 							<xsl:for-each select="$contents//mnx:item[@display = 'true']">
 								<fo:block xsl:use-attribute-sets="toc-item-style">
 									
