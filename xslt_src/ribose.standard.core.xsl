@@ -431,6 +431,8 @@
 				</xsl:for-each>
 			</xsl:for-each>
 			
+			<xsl:call-template name="back-page"/>
+			
 		</fo:root>
 	</xsl:template> 
 
@@ -532,6 +534,8 @@
 		</fo:page-sequence>
 	</xsl:template> <!-- END: cover-page -->
 	
+	<xsl:template name="back-page">
+	</xsl:template>
 
 	<xsl:template name="processPrefaceAndMainSectionsRibose_items">
 		<xsl:variable name="updated_xml_step_move_pagebreak">
