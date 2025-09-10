@@ -367,9 +367,13 @@
 				<xsl:variable name="toc_and_boilerplate">
 					<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:clause[@type = 'toc']" />
 					
+					<!-- <xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
+					
 					<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
 					
-					<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/>
+					<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/> -->
+					
+					<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/*"/>
 				</xsl:variable>
 				
 				<xsl:if test="normalize-space($toc_and_boilerplate) != ''">
@@ -763,6 +767,11 @@
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
+	<xsl:template match="mn:copyright-statement" priority="2"/>
+	
+	<xsl:template match="mn:legal-statement" priority="2">
+		<xsl:apply-templates/>
+	</xsl:template>
 	
 	<xsl:template match="mn:feedback-statement" priority="2">
 		<fo:block-container xsl:use-attribute-sets="feedback-statement-style">
@@ -772,12 +781,6 @@
 		</fo:block-container>
 	</xsl:template>
 
-	
-	<xsl:template match="mn:legal-statement" priority="2">
-		<xsl:apply-templates/>
-	</xsl:template>
-		
-	
 	<!-- ====== -->
 	<!-- title      -->
 	<!-- ====== -->
