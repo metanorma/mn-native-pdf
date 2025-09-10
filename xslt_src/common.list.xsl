@@ -141,6 +141,24 @@
 				<xsl:attribute name="space-after">0pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="ul_indent">6</xsl:variable>
+			<xsl:if test="self::mn:ul">
+				<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="$ul_indent"/>mm</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="ancestor::mn:table">
+				<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="ancestor::mn:ul | ancestor::mn:ol">
+				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+				<xsl:if test="ancestor::mn:table[not(@class)]">
+					<xsl:attribute name="space-after">1mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="following-sibling::*[1][self::mn:ul or self::mn:ol]">
+				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:if test="ancestor::mn:table">
 				<xsl:attribute name="provisional-distance-between-starts">4.5mm</xsl:attribute>
@@ -262,6 +280,12 @@
 			<xsl:if test="parent::mn:ol and not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="$doctype = 'technical-report'">
+				<xsl:attribute name="line-height">1.8</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template> <!-- refine_list-item-label-style -->

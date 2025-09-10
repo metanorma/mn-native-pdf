@@ -1268,8 +1268,6 @@
 	<xsl:template match="mn:note[not(ancestor::mn:table)]" priority="2">
 	
 		<fo:block-container id="{@id}" xsl:use-attribute-sets="note-style" role="SKIP">
-			<xsl:attribute name="margin-top">6pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			
 			<xsl:call-template name="setBlockSpanAll"/>
 			
@@ -1331,10 +1329,6 @@
 				<fo:block xsl:use-attribute-sets="list-item-label-style">
 				
 					<xsl:call-template name="refine_list-item-label-style"/>
-					
-					<xsl:if test="$doctype = 'technical-report'">
-						<xsl:attribute name="line-height">1.8</xsl:attribute>
-					</xsl:if>
 					
 					<xsl:variable name="list_item_label">
 						<xsl:call-template name="getListItemFormat" />

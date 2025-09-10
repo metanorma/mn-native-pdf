@@ -258,6 +258,9 @@
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="font-family">Lato</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
@@ -282,6 +285,12 @@
 				<xsl:attribute name="font-family">Arial Black</xsl:attribute>
 				<xsl:attribute name="font-size">13pt</xsl:attribute>
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="level">
+				<xsl:call-template name="getLevel"/>
+			</xsl:variable>
+			<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
 		</xsl:if>
 	</xsl:template>
 	
@@ -311,6 +320,15 @@
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="font-size">8pt</xsl:attribute>
 			<xsl:attribute name="line-height">125%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="border">1pt solid black</xsl:attribute>
+			<xsl:attribute name="padding">1mm</xsl:attribute>
+			<xsl:attribute name="padding-left">2mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- feedback-statement-style -->
 	

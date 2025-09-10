@@ -387,8 +387,10 @@
 
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" name="toc" priority="4">
 		<fo:block break-after="page"/>
-		<fo:block-container line-height="1.08" font-family="Lato">
+		<fo:block-container xsl:use-attribute-sets="toc-style">
 		
+			<xsl:call-template name="refine_toc-style"/>
+			
 			<xsl:apply-templates select="mn:fmt-title"/>
 		
 			<fo:block role="TOC">
@@ -551,7 +553,7 @@
 
 	
 	<xsl:template match="mn:feedback-statement" priority="2">
-		<fo:block margin-top="12pt" margin-bottom="12pt">
+		<fo:block xsl:use-attribute-sets="feedback-statement-style">
 			<xsl:apply-templates select="mn:clause[1]"/>
 		</fo:block>
 	</xsl:template>

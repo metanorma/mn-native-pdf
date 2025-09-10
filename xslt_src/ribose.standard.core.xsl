@@ -367,9 +367,13 @@
 				<xsl:variable name="toc_and_boilerplate">
 					<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:clause[@type = 'toc']" />
 					
+					<!-- <xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
+					
 					<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
 					
-					<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/>
+					<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/> -->
+					
+					<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/*"/>
 				</xsl:variable>
 				
 				<xsl:if test="normalize-space($toc_and_boilerplate) != ''">
@@ -426,6 +430,8 @@
 					</xsl:for-each>
 				</xsl:for-each>
 			</xsl:for-each>
+			
+			<xsl:call-template name="back-page"/>
 			
 		</fo:root>
 	</xsl:template> 
@@ -528,6 +534,8 @@
 		</fo:page-sequence>
 	</xsl:template> <!-- END: cover-page -->
 	
+	<xsl:template name="back-page">
+	</xsl:template>
 
 	<xsl:template name="processPrefaceAndMainSectionsRibose_items">
 		<xsl:variable name="updated_xml_step_move_pagebreak">
@@ -763,21 +771,20 @@
 	<!-- ============================= -->
 	<!-- ============================= -->
 	
+	<xsl:template match="mn:copyright-statement" priority="2"/>
+	
+	<xsl:template match="mn:legal-statement" priority="2">
+		<xsl:apply-templates/>
+	</xsl:template>
 	
 	<xsl:template match="mn:feedback-statement" priority="2">
-		<fo:block-container border="1pt solid black" padding="1mm" padding-left="2mm">
+		<fo:block-container xsl:use-attribute-sets="feedback-statement-style">
 			<fo:block>
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:block-container>
 	</xsl:template>
 
-	
-	<xsl:template match="mn:legal-statement" priority="2">
-		<xsl:apply-templates/>
-	</xsl:template>
-		
-	
 	<!-- ====== -->
 	<!-- title      -->
 	<!-- ====== -->
@@ -1009,21 +1016,10 @@
 	
 	
 	<xsl:template match="mn:fmt-preferred | mn:fmt-deprecates | mn:fmt-admitted" priority="2">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="font-size">
-			<xsl:choose>
-				<xsl:when test="$level &gt;= 2">13pt</xsl:when>
-				<xsl:otherwise>12pt</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:variable name="levelTerm">
-			<xsl:call-template name="getLevelTermName"/>
-		</xsl:variable>
-		<fo:block font-weight="bold" color="black" font-size="{$font-size}" keep-with-next="always" role="H{$levelTerm}"> <!-- 600 - semibold -->
+  
+		<fo:block xsl:use-attribute-sets="preferred-style">
+			<xsl:call-template name="refine_preferred-style"/>
 			<xsl:if test="preceding-sibling::*[1][self::mn:fmt-name]">
-				<xsl:attribute name="space-before">11mm</xsl:attribute>
 				<fo:inline padding-right="1mm">
 					<xsl:apply-templates select="ancestor::mn:term[1]/mn:fmt-name" />
 				</fo:inline>
@@ -1057,7 +1053,6 @@
 					</fo:inline>
 				</fo:block>
 			</fo:inline-container>
-			
 		</fo:block>
 	</xsl:template>
 	
@@ -1067,14 +1062,10 @@
 			<fo:table width="100%" table-layout="fixed" >
 				<fo:table-column column-width="100%"/>				
 				<fo:table-header>
+					<!-- repeat table header on each page -->
 					<fo:table-row>
 						<fo:table-cell text-align="left">
-							<fo:block margin-left="-15mm" role="H1"> <!-- Bibliography section title -->
-								<xsl:attribute name="font-size">22pt</xsl:attribute>
-								<xsl:attribute name="font-weight">bold</xsl:attribute>
-								<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
-								<xsl:attribute name="color">black</xsl:attribute>
-								<xsl:attribute name="line-height">125%</xsl:attribute>
+							<fo:block xsl:use-attribute-sets="references-non-normative-title-style"> <!-- Bibliography section title -->
 								<xsl:apply-templates select="mn:fmt-title/node()"/>
 							</fo:block>
 						</fo:table-cell>
@@ -1090,21 +1081,26 @@
 					</fo:table-row>
 				</fo:table-body>
 			</fo:table>
-			
 		</fo:block>
 	</xsl:template>
 	
-	
-	
 	<xsl:template match="*[self::mn:table or self::mn:figure or self::mn:sourcecode]/mn:fmt-name/node()[1][self::text()]" priority="2">
+		<xsl:variable name="styles_">
+			<xsl:choose>
+				<xsl:when test="ancestor::mn:table"><styles xsl:use-attribute-sets="table-number-style"><xsl:call-template name="refine_table-number-style"/></styles></xsl:when>
+				<xsl:when test="ancestor::mn:figure"><styles xsl:use-attribute-sets="figure-number-style"><xsl:call-template name="refine_figure-number-style"/></styles></xsl:when>
+				<xsl:when test="ancestor::mn:sourcecode"><styles xsl:use-attribute-sets="sourcecode-number-style"><xsl:call-template name="refine_sourcecode-number-style"/></styles></xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="styles" select="xalan:nodeset($styles_)"/>
 		<xsl:choose>
 			<xsl:when test="contains(., '—')">
 				<xsl:variable name="name_number" select="normalize-space(translate(substring-before(., '—'), '&#xa0;', ' '))"/>
-				<fo:inline font-weight="bold" font-style="normal" color="black"><xsl:value-of select="java:toUpperCase(java:java.lang.String.new($name_number))"/><xsl:text>:</xsl:text></fo:inline>
+				<fo:inline><xsl:copy-of select="$styles/styles/@*"/><xsl:value-of select="$name_number"/><xsl:text>:</xsl:text></fo:inline>
 				<xsl:value-of select="substring-after(., '—')"/>
 			</xsl:when>
 			<xsl:when test="starts-with(., 'Figure ') or starts-with(., 'Table ')">
-				<fo:inline font-weight="bold" font-style="normal" color="black"><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/></fo:inline>
+				<fo:inline><xsl:copy-of select="$styles/styles/@*"/><xsl:value-of select="."/></fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="."/>
@@ -1113,15 +1109,9 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:clause" priority="2">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel">
-				<xsl:with-param name="depth" select="mn:title/@depth"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<fo:block-container>
-			<xsl:if test="$level &gt;= 4">
-				<xsl:attribute name="margin-left">13mm</xsl:attribute>
-			</xsl:if>
+		<fo:block-container xsl:use-attribute-sets="clause-style">
+			<xsl:call-template name="refine_clause-style"/>
+      
 			<fo:block-container margin-left="0mm">
 				<fo:block>
 					<xsl:call-template name="setId"/>
@@ -1135,11 +1125,21 @@
 	
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="section"/>
+		
+		<xsl:call-template name="insertHoneycomb">
+			<xsl:with-param name="section" select="$section"/>
+		</xsl:call-template>
+		
+		<xsl:call-template name="insertFooter"/>
+	</xsl:template>
+	
+	<xsl:template name="insertHoneycomb">
+		<xsl:param name="section"/>
 		<!-- LT - left top -->
 		<!-- RT - right top -->
 		<!-- LB - left bottom -->
 		<!-- RB - right bottom -->
-		<xsl:variable name="width">170,26</xsl:variable>
+		<!-- <xsl:variable name="width">170,26</xsl:variable> -->
 		<xsl:variable name="left_left">-28.02</xsl:variable>
 		<xsl:variable name="left_right">72</xsl:variable>
 		<xsl:variable name="top_top">-25.75</xsl:variable>
@@ -1231,19 +1231,36 @@
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		
-		<xsl:call-template name="insertFooter"/>
 	</xsl:template>
 	
 	<xsl:template name="insertFooter">
-		<xsl:param name="invert"/>
+		<!-- <xsl:param name="invert"/> -->
 		<xsl:variable name="footerText"> 
 			<xsl:text>Ribose</xsl:text>
 			<xsl:text>&#xA0;</xsl:text>
-			<xsl:call-template name="capitalize">
-				<xsl:with-param name="str" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/>
+			<xsl:call-template name="capitalizeWords">
+				<xsl:with-param name="str">
+					<xsl:choose>
+						<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:doctype-alias">
+							<xsl:value-of select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:doctype-alias"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:with-param>
 			</xsl:call-template>
 		</xsl:variable>
+		<xsl:call-template name="insertFooterOdd">
+			<xsl:with-param name="footerText" select="$footerText"/>
+		</xsl:call-template>
+		<xsl:call-template name="insertFooterEven">
+			<xsl:with-param name="footerText" select="$footerText"/>
+		</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template name="insertFooterOdd">
+		<xsl:param name="footerText"/>
 		<fo:static-content flow-name="footer-odd" role="artifact">
 			<fo:block-container font-size="8pt" height="100%" color="black">
 				<fo:block text-align-last="justify" margin-right="1mm">
@@ -1256,14 +1273,18 @@
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
+	</xsl:template>
+	
+	<xsl:template name="insertFooterEven">
+		<xsl:param name="footerText"/>
 		<fo:static-content flow-name="footer-even" role="artifact">
 			<fo:block-container font-size="8pt" height="100%" color="black">
 				<fo:block text-align-last="justify" margin-right="1mm">
 					<fo:inline padding-right="11mm"><fo:page-number/></fo:inline>
 					<fo:inline>
-						<xsl:if test="$invert = 'true'">
+						<!-- <xsl:if test="$invert = 'true'">
 							<xsl:attribute name="color">white</xsl:attribute>
-						</xsl:if>
+						</xsl:if> -->
 						<xsl:value-of select="$footerText"/>
 					</fo:inline>
 					<fo:inline keep-together.within-line="always">

@@ -38,6 +38,12 @@
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:attribute name="space-after">2pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="space-before">36pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="space-after">2pt</xsl:attribute>
@@ -48,6 +54,42 @@
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:if test="not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="levelTerm">
+				<xsl:call-template name="getLevelTermName"/>
+			</xsl:variable>
+			<xsl:attribute name="role">H<xsl:value-of select="$levelTerm"/></xsl:attribute>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:attribute-set name="preferred-style">
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="color">black</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- preferred-style -->
+	
+	<xsl:template name="refine_preferred-style">
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:variable name="level">
+				<xsl:call-template name="getLevel"/>
+			</xsl:variable>
+			<xsl:variable name="font-size">
+				<xsl:choose>
+					<xsl:when test="$level &gt;= 2">13pt</xsl:when>
+					<xsl:otherwise>12pt</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:variable name="levelTerm">
+				<xsl:call-template name="getLevelTermName"/>
+			</xsl:variable>
+			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
+			<xsl:attribute name="role">H<xsl:value-of select="$levelTerm"/></xsl:attribute>
+			<xsl:if test="preceding-sibling::*[1][self::mn:fmt-name]">
+				<xsl:attribute name="space-before">11mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
@@ -98,6 +140,10 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-size">18pt</xsl:attribute>
+			<xsl:attribute name="padding-right">3mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
