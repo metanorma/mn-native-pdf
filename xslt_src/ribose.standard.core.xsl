@@ -1118,11 +1118,21 @@
 	
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="section"/>
+		
+		<xsl:call-template name="insertHoneycomb">
+			<xsl:with-param name="section" select="$section"/>
+		</xsl:call-template>
+		
+		<xsl:call-template name="insertFooter"/>
+	</xsl:template>
+	
+	<xsl:template name="insertHoneycomb">
+		<xsl:param name="section"/>
 		<!-- LT - left top -->
 		<!-- RT - right top -->
 		<!-- LB - left bottom -->
 		<!-- RB - right bottom -->
-		<xsl:variable name="width">170,26</xsl:variable>
+		<!-- <xsl:variable name="width">170,26</xsl:variable> -->
 		<xsl:variable name="left_left">-28.02</xsl:variable>
 		<xsl:variable name="left_right">72</xsl:variable>
 		<xsl:variable name="top_top">-25.75</xsl:variable>
@@ -1214,8 +1224,6 @@
 					</fo:block>
 			</fo:block-container>
 		</fo:static-content>
-		
-		<xsl:call-template name="insertFooter"/>
 	</xsl:template>
 	
 	<xsl:template name="insertFooter">
