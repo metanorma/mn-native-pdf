@@ -409,9 +409,9 @@
 							<xsl:call-template name="insertHeaderFooter">
 								<xsl:with-param name="section">main</xsl:with-param>
 							</xsl:call-template>
-							<fo:flow flow-name="xsl-region-body">
+							<fo:flow flow-name="xsl-region-body" role="SKIP">
 							
-								<fo:block line-height="130%">
+								<fo:block line-height="130%" role="SKIP">
 								
 									<!-- <xsl:apply-templates select="/mn:metanorma/mn:preface/mn:abstract" />
 									<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:foreword" />
@@ -629,7 +629,7 @@
 	</xsl:template>
 
 	<xsl:template match="mn:preface/mn:clause[@type = 'toc']" name="toc" priority="3">
-		<fo:block role="TOC">
+		<fo:block role="SKIP">
 			<xsl:apply-templates />	
 			
 			<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
@@ -637,7 +637,7 @@
 				<xsl:if test="$contents//mnx:item[@display = 'true']">
 				
 					<fo:block-container xsl:use-attribute-sets="toc-style">
-						<fo:block-container margin-left="0mm" margin-right="0mm">
+						<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
 							<xsl:for-each select="$contents//mnx:item[@display = 'true']">
 								<fo:block xsl:use-attribute-sets="toc-item-style">
 									
@@ -860,7 +860,6 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 			<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute> 
@@ -873,20 +872,21 @@
 			
 			<xsl:choose>
 				<xsl:when test="$level = 1">
-					<fo:block-container margin-left="-15mm">
-						<fo:block-container margin-left="0mm">
-							<fo:table width="100%" table-layout="fixed" >
+					<fo:block-container margin-left="-15mm" role="SKIP">
+						<fo:block-container margin-left="0mm" role="SKIP">
+							<fo:table width="100%" table-layout="fixed" role="SKIP">
 								<fo:table-column column-width="15mm"/>
 								<fo:table-column column-width="150mm"/>				
-								<fo:table-body>
-									<fo:table-row>
-										<fo:table-cell text-align="left">
-											<fo:block>
+								<fo:table-body role="SKIP">
+									<fo:table-row role="SKIP">
+										<fo:table-cell text-align="left" role="SKIP">
+											<fo:block role="SKIP">
+												<xsl:call-template name="setIDforNamedDestinationInline"/>
 												<xsl:call-template name="extractSection"/><!-- section number 1 2 3  ... -->
 											</fo:block>
 										</fo:table-cell>
-										<fo:table-cell>
-											<fo:block>
+										<fo:table-cell role="SKIP">
+											<fo:block role="SKIP">
 													<xsl:call-template name="extractTitle"/> <!-- section title -->
 													<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 												</fo:block>
@@ -898,6 +898,7 @@
 					</fo:block-container>
 				</xsl:when>
 				<xsl:otherwise>
+						<xsl:call-template name="setIDforNamedDestinationInline"/>
 						<xsl:apply-templates />
 						<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 				</xsl:otherwise>
@@ -937,6 +938,8 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="id">
 				<xsl:value-of select="@id"/>
@@ -975,11 +978,11 @@
 	
 	
 	<xsl:template match="mn:ul | mn:ol" mode="list" priority="2">
-		<fo:block-container>
-			<fo:block-container margin-left="0mm">
+		<fo:block-container role="SKIP">
+			<fo:block-container margin-left="0mm" role="SKIP">
 				<xsl:choose>
 					<xsl:when test="not(ancestor::mn:ul) and not(ancestor::mn:ol)">
-						<fo:block padding-bottom="12pt" padding-top="4pt">
+						<fo:block padding-bottom="12pt" padding-top="4pt" role="SKIP">
 							<xsl:call-template name="listProcessing"/>
 						</fo:block>
 					</xsl:when>
@@ -1058,23 +1061,23 @@
 	
 	<xsl:template match="mn:references[not(@normative='true')]" priority="3">
 		<fo:block break-after="page"/>
-		<fo:block id="{@id}">
-			<fo:table width="100%" table-layout="fixed" >
+		<fo:block id="{@id}" role="SKIP">
+			<fo:table width="100%" table-layout="fixed" role="Sect">
 				<fo:table-column column-width="100%"/>				
-				<fo:table-header>
+				<fo:table-header role="SKIP">
 					<!-- repeat table header on each page -->
-					<fo:table-row>
-						<fo:table-cell text-align="left">
+					<fo:table-row role="SKIP">
+						<fo:table-cell text-align="left" role="SKIP">
 							<fo:block xsl:use-attribute-sets="references-non-normative-title-style"> <!-- Bibliography section title -->
 								<xsl:apply-templates select="mn:fmt-title/node()"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
 				</fo:table-header>
-				<fo:table-body>
-					<fo:table-row>
-						<fo:table-cell text-align="left">
-							<fo:block>
+				<fo:table-body role="SKIP">
+					<fo:table-row role="SKIP">
+						<fo:table-cell text-align="left" role="SKIP">
+							<fo:block role="L">
 								<xsl:apply-templates select="node()[not(self::mn:fmt-title)]" />
 							</fo:block>
 						</fo:table-cell>
@@ -1112,8 +1115,9 @@
 		<fo:block-container xsl:use-attribute-sets="clause-style">
 			<xsl:call-template name="refine_clause-style"/>
       
-			<fo:block-container margin-left="0mm">
-				<fo:block>
+			<fo:block-container margin-left="0mm" role="SKIP">
+				<xsl:call-template name="setNamedDestination"/>
+				<fo:block role="SKIP">
 					<xsl:call-template name="setId"/>
 					<xsl:call-template name="addReviewHelper"/>
 					<xsl:apply-templates />

@@ -49,6 +49,7 @@
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="margin-left">32mm</xsl:attribute>
 			<xsl:attribute name="margin-right">-17mm</xsl:attribute>
+			<xsl:attribute name="role">TOC</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	

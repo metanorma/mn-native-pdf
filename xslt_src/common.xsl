@@ -690,7 +690,7 @@
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:variable name="level">
 				<xsl:call-template name="getLevel">
-					<xsl:with-param name="depth" select="mn:title/@depth"/>
+					<xsl:with-param name="depth" select="mn:fmt-title/@depth"/>
 				</xsl:call-template>
 			</xsl:variable>
 			<xsl:if test="$level &gt;= 4">
@@ -705,10 +705,14 @@
 				<fo:block break-after="page"/>
 		</xsl:if>
 		<xsl:call-template name="setNamedDestination"/>
-		<fo:block>
+		<fo:block role="Sect">
 			<xsl:call-template name="setId"/>
 			
 			<xsl:call-template name="sections_element_style"/>
+			
+			<xsl:if test="$namespace = 'rsd'">
+				<xsl:call-template name="addTagElementT"/>
+			</xsl:if>
 			
 			<xsl:call-template name="addReviewHelper"/>
 			
