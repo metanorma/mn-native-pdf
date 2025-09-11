@@ -278,6 +278,7 @@
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 			<xsl:attribute name="provisional-distance-between-starts">8mm</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- bibitem-non-normative-list-style -->
 	
@@ -868,11 +869,12 @@
 			
 			<xsl:when test="$namespace = 'rsd'">
 				<xsl:call-template name="setNamedDestination"/>
+				<!-- continue from <xsl:template match="mn:references[not(@normative='true')]" priority="3"> -->
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-style">
 					<xsl:call-template name="refine_bibitem-non-normative-list-style"/>
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
-							<fo:block>
+							<fo:block role="SKIP">
 								<xsl:apply-templates select="mn:biblio-tag">
 									<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
 								</xsl:apply-templates>

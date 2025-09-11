@@ -1058,23 +1058,23 @@
 	
 	<xsl:template match="mn:references[not(@normative='true')]" priority="3">
 		<fo:block break-after="page"/>
-		<fo:block id="{@id}">
-			<fo:table width="100%" table-layout="fixed" >
+		<fo:block id="{@id}" role="SKIP">
+			<fo:table width="100%" table-layout="fixed" role="Sect">
 				<fo:table-column column-width="100%"/>				
-				<fo:table-header>
+				<fo:table-header role="SKIP">
 					<!-- repeat table header on each page -->
-					<fo:table-row>
-						<fo:table-cell text-align="left">
+					<fo:table-row role="SKIP">
+						<fo:table-cell text-align="left" role="SKIP">
 							<fo:block xsl:use-attribute-sets="references-non-normative-title-style"> <!-- Bibliography section title -->
 								<xsl:apply-templates select="mn:fmt-title/node()"/>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
 				</fo:table-header>
-				<fo:table-body>
-					<fo:table-row>
-						<fo:table-cell text-align="left">
-							<fo:block>
+				<fo:table-body role="SKIP">
+					<fo:table-row role="SKIP">
+						<fo:table-cell text-align="left" role="SKIP">
+							<fo:block role="L">
 								<xsl:apply-templates select="node()[not(self::mn:fmt-title)]" />
 							</fo:block>
 						</fo:table-cell>
