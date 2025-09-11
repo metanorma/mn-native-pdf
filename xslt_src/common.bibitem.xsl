@@ -294,8 +294,17 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:variable name="last_bibitem_bibliotag" select="following-sibling::mn:bibitem[not(@hidden='true')][last()]/mn:biblio-tag"/>
-			<xsl:variable name="last_bibitem_bibliotag_number_length" select="string-length(translate($last_bibitem_bibliotag, '[]', ''))"/>
+			<xsl:variable name="last_bibitem_bibliotag">
+				<xsl:apply-templates select="following-sibling::mn:bibitem[not(@hidden='true')][last()]/mn:biblio-tag">
+					<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+				</xsl:apply-templates>
+				<xsl:if test="not(following-sibling::mn:bibitem[not(@hidden='true')][last()]/mn:biblio-tag)">
+					<xsl:apply-templates select="mn:biblio-tag">
+						<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+					</xsl:apply-templates>
+				</xsl:if>
+			</xsl:variable>
+			<xsl:variable name="last_bibitem_bibliotag_number_length" select="string-length(translate($last_bibitem_bibliotag, '[] ', ''))"/>
 			<xsl:if test="$last_bibitem_bibliotag_number_length &gt; 1">
 				<xsl:attribute name="provisional-distance-between-starts">
 					<xsl:choose>
