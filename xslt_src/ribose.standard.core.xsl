@@ -860,7 +860,6 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
 			<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute> 
@@ -882,6 +881,7 @@
 									<fo:table-row role="SKIP">
 										<fo:table-cell text-align="left" role="SKIP">
 											<fo:block role="SKIP">
+												<xsl:call-template name="setIDforNamedDestinationInline"/>
 												<xsl:call-template name="extractSection"/><!-- section number 1 2 3  ... -->
 											</fo:block>
 										</fo:table-cell>
@@ -898,6 +898,7 @@
 					</fo:block-container>
 				</xsl:when>
 				<xsl:otherwise>
+						<xsl:call-template name="setIDforNamedDestinationInline"/>
 						<xsl:apply-templates />
 						<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 				</xsl:otherwise>
@@ -937,6 +938,8 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:element name="{$element-name}">
 			<xsl:attribute name="id">
 				<xsl:value-of select="@id"/>
