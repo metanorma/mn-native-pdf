@@ -108,7 +108,7 @@
 			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-family">OpenSans, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+			<xsl:attribute name="font-family">Open Sans, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
 			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 			<xsl:attribute name="font-weight">300</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>

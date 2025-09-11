@@ -293,6 +293,18 @@
 				<xsl:attribute name="provisional-distance-between-starts">12mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:variable name="last_bibitem_bibliotag" select="following-sibling::mn:bibitem[not(@hidden='true')][last()]/mn:biblio-tag"/>
+			<xsl:variable name="last_bibitem_bibliotag_number_length" select="string-length(translate($last_bibitem_bibliotag, '[]', ''))"/>
+			<xsl:if test="$last_bibitem_bibliotag_number_length &gt; 1">
+				<xsl:attribute name="provisional-distance-between-starts">
+					<xsl:choose>
+						<xsl:when test="$last_bibitem_bibliotag_number_length = 2">9.2mm</xsl:when>
+						<xsl:when test="$last_bibitem_bibliotag_number_length &gt;= 3">11mm</xsl:when>
+					</xsl:choose>
+				</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:attribute-set name="bibitem-non-normative-list-item-style">
