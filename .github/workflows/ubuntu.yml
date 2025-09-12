@@ -53,15 +53,15 @@ jobs:
           fontist manifest-locations fonts/manifest.yml > fonts/manifest.paths.yml
           cat fonts/manifest.paths.yml
 
-#      - run: make all published
-#        env:
-#          GITHUB_USERNAME: ${{ github.actor }}
-#          GITHUB_TOKEN: ${{ github.token }}
-#
-#      - uses: actions/upload-artifact@master
-#        with:
-#          name: published-ubuntu
-#          path: published
+      - run: make all published
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: published-ubuntu
+          path: published
 
       - uses: actions/upload-artifact@master
         with:
