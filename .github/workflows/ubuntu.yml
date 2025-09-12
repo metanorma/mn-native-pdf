@@ -166,7 +166,7 @@ jobs:
 
       - run: rsync xslt/${{ matrix.prefix || matrix.flavor }}.*.xsl ${{ github.workspace }}/metanorma-taste/data/${{ matrix.flavor }}/
 
-      - uses: peter-evans/create-pull-request@v4
+      - uses: peter-evans/create-pull-request@v7
         id: cpr_taste
         with:
           path: ${{ github.workspace }}/metanorma-taste
