@@ -97,7 +97,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flavor: [csa, cc, iec, ieee, iho, iso, itu, jis, ogc, plateau, ribose] # gb, mpfa, m3aawg, un
+        flavor: [cc, iec, ieee, iho, iso, itu, jis, ogc, plateau, ribose] # gb, mpfa, m3aawg, un
         include:
           - flavor: bipm
             prefix: '{bipm,jcgm}'
@@ -140,6 +140,44 @@ jobs:
         with:
           name: pr-url-${{ matrix.flavor }}
           path: pr-url.txt
+
+  update-taste-xslts:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        flavor: [csa]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@master
+        with:
+          name: xslt
+          path: xslt
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          repository: metanorma/metanorma-taste
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          path: ${{ github.workspace }}/metanorma-taste
+
+      - run: rsync xslt/${{ matrix.prefix || matrix.flavor }}.*.xsl ${{ github.workspace }}/metanorma-taste/data/${{ matrix.flavor }}/
+
+      - uses: peter-evans/create-pull-request@v4
+        id: cpr_taste
+        with:
+          path: ${{ github.workspace }}/metanorma-taste
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          add-paths: data/${{ matrix.flavor }}
+          branch: csa_test
+          reviewers: |
+            opoudjis
+            ronaldtse
+          title: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
+          commit-message: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
 
   update-private-xslts:
     if: github.ref == 'refs/heads/master' && needs.build.outputs.common_changed == 'true'
