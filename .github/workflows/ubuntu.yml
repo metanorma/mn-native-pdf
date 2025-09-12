@@ -172,7 +172,8 @@ jobs:
           path: ${{ github.workspace }}/metanorma-taste
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
           add-paths: data/${{ matrix.flavor }}
-          branch: csa_test
+          branch: feature/xslt-update
+          delete-branch: true
           reviewers: |
             opoudjis
             ronaldtse
