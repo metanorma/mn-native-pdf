@@ -278,7 +278,7 @@ else
 endif
 	
 
-documents.rxl: $(HTML) $(DOC) $(RXL) | bundle # $(PDF) 
+documents.rxl: $(HTML) $(DOC) $(RXL) $(PDF) | bundle
 #	echo "### skipping step 'documents.rxl'"
 	bundle exec relaton concatenate \
 	  -t "mn2pdf samples" \

@@ -1,0 +1,61 @@
+name: macos
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.job }}-${{ github.head_ref || github.ref_name }}'
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: make update-init update-modules
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+          bundler-cache: true
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.fontist
+          key: fontist-macos
+          restore-keys: fontist-macos
+
+      - name: Install Fontist fonts
+        run: |
+          gem install fontist
+          fontist update
+          fontist manifest-install --confirm-license fonts/manifest.yml
+          fontist manifest-locations fonts/manifest.yml > fonts/manifest.paths.yml
+          cat fonts/manifest.paths.yml
+
+      # cabextract for fonts, gettext-base for envsubst
+      - name: Setup prerequisites
+        run: |
+          # Install `envsubst`
+          brew install gettext
+          brew link --force gettext
+
+          # Install cabextract
+          # brew install cabextract
+
+          # Install yq
+          brew install yq
+
+      - run: make all published
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: published-macos
+          path: published
