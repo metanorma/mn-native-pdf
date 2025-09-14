@@ -179,6 +179,7 @@ jobs:
             ronaldtse
           title: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
           commit-message: xslt update based on metanorma/mn-native-pdf@${{ github.sha }}
+          labels: automerge
 
   update-private-xslts:
     if: github.ref == 'refs/heads/master' && needs.build.outputs.common_changed == 'true'
