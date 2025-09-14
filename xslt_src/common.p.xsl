@@ -18,7 +18,7 @@
 			<xsl:attribute name="font-size">23pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-top">84pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">40pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">52pt</xsl:attribute>
 			<xsl:attribute name="line-height">1.1</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
