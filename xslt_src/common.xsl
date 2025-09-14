@@ -772,6 +772,16 @@
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:variable name="pos"><xsl:number count="*"/></xsl:variable>
+			<xsl:if test="$pos &gt;= 2">
+				<xsl:attribute name="space-before">
+					<xsl:for-each select="mn:fmt-title[1]">
+						<xsl:call-template name="getTitleMarginTop"/>
+					</xsl:for-each>
+				</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="role">Sect</xsl:attribute>
 		</xsl:if>

@@ -933,7 +933,7 @@
 					
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
-							<fo:block role="SKIP">
+							<fo:block role="SKIP" id="__internal_layout__bibitem_{@id}_{generate-id()}">
 								<fo:inline role="SKIP">
 									<xsl:if test="$namespace = 'ieee'">
 										<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report')">
