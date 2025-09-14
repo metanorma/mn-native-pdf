@@ -523,9 +523,10 @@
 					<xsl:if test="string-length($title) &gt; 80">
 						<xsl:attribute name="margin-right">-30mm</xsl:attribute>
 					</xsl:if>
-					<fo:block font-size="27pt" font-weight="bold" role="H1">
-							<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang]" mode="cover_page"/>
-					</fo:block>
+					
+					<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and (@type = 'intro' or not(@type))]" mode="cover_page"/>
+					<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'main'][last()]" mode="cover_page"/>
+					
 					<fo:block space-before="9pt" font-size="16.8pt" font-weight="600">
 						<xsl:value-of select="$docnumber_version"/>
 					</fo:block>
@@ -625,7 +626,9 @@
 	</xsl:template>
 
 	<xsl:template match="mn:title" mode="cover_page">
-		<xsl:apply-templates />
+		<fo:block font-size="27pt" font-weight="bold" role="H1">
+			<xsl:apply-templates />
+		</fo:block>
 	</xsl:template>
 
 	<xsl:template match="mn:preface/mn:clause[@type = 'toc']" name="toc" priority="3">
