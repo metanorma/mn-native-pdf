@@ -108,11 +108,12 @@
 			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-family">Open Sans, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+			<xsl:attribute name="font-family">Open Sans, Source Sans 3, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
 			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 			<xsl:attribute name="font-weight">300</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 			<xsl:attribute name="color">rgb(88, 88, 90)</xsl:attribute>
+			<xsl:attribute name="font-selection-strategy">character-by-character</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
 			<xsl:attribute name="font-family">Times New Roman, STIX Two Math, <xsl:value-of select="$font_noto_serif"/></xsl:attribute>
