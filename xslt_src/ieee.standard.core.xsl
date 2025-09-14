@@ -583,9 +583,7 @@
 								
 								<xsl:call-template name="insertHeaderFooter">
 									<xsl:with-param name="document_id" select="$document_id"/>
-									<xsl:with-param name="title_prefix" select="$title_prefix"/>
 									<xsl:with-param name="title" select="$title"/>
-									<xsl:with-param name="doctype" select="$doctype"/>
 									<xsl:with-param name="copyright_year" select="$copyright_year"/>
 									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 									<xsl:with-param name="hideFooter"><xsl:if test="not(contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != '')">false</xsl:if></xsl:with-param>
@@ -614,7 +612,6 @@
 								<xsl:call-template name="insertFootnoteSeparator"/>
 								
 								<xsl:call-template name="insertHeaderFooter">
-									<xsl:with-param name="doctype" select="$doctype"/>
 									<xsl:with-param name="copyright_year" select="$copyright_year"/>
 									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 									<!-- <xsl:with-param name="hideHeader">true</xsl:with-param> -->
@@ -710,9 +707,7 @@
 								<xsl:call-template name="insertFootnoteSeparator"/>
 								<xsl:call-template name="insertHeaderFooter">
 									<xsl:with-param name="document_id" select="$document_id"/>
-									<xsl:with-param name="title_prefix" select="$title_prefix"/>
 									<xsl:with-param name="title" select="$title"/>
-									<xsl:with-param name="doctype" select="$doctype"/>
 									<xsl:with-param name="copyright_year" select="$copyright_year"/>
 									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 								</xsl:call-template>
@@ -733,7 +728,6 @@
 							<fo:page-sequence master-reference="document-nonstandard" force-page-count="no-force" font-family="Calibri Light">
 							
 								<xsl:call-template name="insertHeaderFooter">
-									<xsl:with-param name="doctype" select="$doctype"/>
 									<xsl:with-param name="copyright_year" select="$copyright_year"/>
 									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 									<xsl:with-param name="hideHeader">true</xsl:with-param>
@@ -803,9 +797,7 @@
 										
 										<xsl:call-template name="insertHeaderFooter">
 											<xsl:with-param name="document_id" select="$document_id"/>
-											<xsl:with-param name="title_prefix" select="$title_prefix"/>
 											<xsl:with-param name="title" select="$title"/>
-											<xsl:with-param name="doctype" select="$doctype"/>
 											<xsl:with-param name="copyright_year" select="$copyright_year"/>
 											<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 										</xsl:call-template>
@@ -828,9 +820,7 @@
 										
 									<xsl:call-template name="insertHeaderFooter">
 										<xsl:with-param name="document_id" select="$document_id"/>
-										<xsl:with-param name="title_prefix" select="$title_prefix"/>
 										<xsl:with-param name="title" select="$title"/>
-										<xsl:with-param name="doctype" select="$doctype"/>
 										<xsl:with-param name="copyright_year" select="$copyright_year"/>
 										<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 									</xsl:call-template>
@@ -855,7 +845,6 @@
 							<fo:page-sequence master-reference="page-toc" force-page-count="no-force">
 							
 								<xsl:call-template name="insertHeaderFooter">
-									<xsl:with-param name="doctype" select="$doctype"/>
 									<xsl:with-param name="copyright_year" select="$copyright_year"/>
 									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 									<xsl:with-param name="hideHeader">true</xsl:with-param>
@@ -912,7 +901,6 @@
 							<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 								<xsl:call-template name="insert_page-sequence">
 									<xsl:with-param name="document_id" select="$document_id"/>
-									<xsl:with-param name="title_prefix" select="$title_prefix"/>
 									<xsl:with-param name="title" select="$title"/>
 									<xsl:with-param name="doctype" select="$doctype"/>
 									<xsl:with-param name="copyright_year" select="$copyright_year"/>
@@ -925,7 +913,6 @@
 						<xsl:for-each select=".//mn:page_sequence[parent::mn:sections][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 							<xsl:call-template name="insert_page-sequence">
 								<xsl:with-param name="document_id" select="$document_id"/>
-								<xsl:with-param name="title_prefix" select="$title_prefix"/>
 								<xsl:with-param name="title" select="$title"/>
 								<xsl:with-param name="doctype" select="$doctype"/>
 								<xsl:with-param name="copyright_year" select="$copyright_year"/>
@@ -938,7 +925,6 @@
 						<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface) and not(parent::mn:sections)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 							<xsl:call-template name="insert_page-sequence">
 								<xsl:with-param name="document_id" select="$document_id"/>
-								<xsl:with-param name="title_prefix" select="$title_prefix"/>
 								<xsl:with-param name="title" select="$title"/>
 								<xsl:with-param name="doctype" select="$doctype"/>
 								<xsl:with-param name="copyright_year" select="$copyright_year"/>
@@ -1071,7 +1057,6 @@
 	
 	<xsl:template name="insert_page-sequence">
 		<xsl:param name="document_id" />
-		<xsl:param name="title_prefix" />
 		<xsl:param name="title" />
 		<xsl:param name="doctype" />
 		<xsl:param name="copyright_year" />
@@ -1111,9 +1096,7 @@
 				<xsl:when test="$current_template = 'standard' or $current_template = 'draft'">
 					<xsl:call-template name="insertHeaderFooter">
 						<xsl:with-param name="document_id" select="$document_id"/>
-						<xsl:with-param name="title_prefix" select="$title_prefix"/>
 						<xsl:with-param name="title" select="$title"/>
-						<xsl:with-param name="doctype" select="$doctype"/>
 						<xsl:with-param name="copyright_year" select="$copyright_year"/>
 						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 						<xsl:with-param name="orientation">@orientation</xsl:with-param>
@@ -1121,7 +1104,6 @@
 				</xsl:when>
 				<xsl:otherwise> <!-- ($current_template = 'international-standard' and $isDraft = 'false') or $current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report' -->
 					<xsl:call-template name="insertHeaderFooter">
-						<xsl:with-param name="doctype" select="$doctype"/>
 						<xsl:with-param name="copyright_year" select="$copyright_year"/>
 						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 						<xsl:with-param name="hideHeader">true</xsl:with-param>
@@ -1228,10 +1210,7 @@
 					
 					<xsl:call-template name="insertHeaderFooter">
 						<xsl:with-param name="document_id" select="$document_id"/>
-						<xsl:with-param name="title_prefix" select="$title_prefix"/>
 						<xsl:with-param name="title" select="$title"/>
-						<xsl:with-param name="doctype" select="$doctype"/>
-						
 						<xsl:with-param name="copyright_year" select="$copyright_year"/>
 						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 						<xsl:with-param name="hideFooter">true</xsl:with-param>
@@ -1376,7 +1355,6 @@
 					<xsl:with-param name="enabler" select="$enabler"/>
 					<xsl:with-param name="standard_number" select="$standard_number"/>
 					<xsl:with-param name="history" select="$history_text"/>
-					<!-- <xsl:with-param name="standard_title_prefix" select="$title_prefix"/> -->
 					<xsl:with-param name="cutoff_date" select="$cutoff_date"/>
 					<xsl:with-param name="expiration_date" select="$expiration_date"/>
 				</xsl:call-template>
@@ -3095,9 +3073,7 @@
 	
 	
 	<xsl:template name="insertHeaderFooter">
-		<xsl:param name="doctype"/>
 		<xsl:param name="document_id"/>
-		<xsl:param name="title_prefix"/>
 		<xsl:param name="title"/>
 		
 		<xsl:param name="copyright_year"/>
@@ -3107,7 +3083,6 @@
 		<xsl:param name="hideFooter" select="'false'"/>
 		
 		<xsl:param name="orientation"/>
-		
 		
 		<xsl:variable name="header">
 			<fo:block font-family="Arial" font-size="8pt" text-align="center">
@@ -3210,42 +3185,62 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:if test="$hideHeader = 'false'">
+			<xsl:call-template name="insertHeader">
+				<xsl:with-param name="orientation" select="$orientation"/>
+				<xsl:with-param name="header" select="$header"/>
+			</xsl:call-template>
+		</xsl:if>
+		
+		<xsl:if test="$hideFooter = 'false'">
+			<xsl:call-template name="insertFooter">
+				<xsl:with-param name="orientation" select="$orientation"/>
+				<xsl:with-param name="footer" select="$footer"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template name="insertHeader">
+		<xsl:param name="orientation"/>
+		<xsl:param name="header"/>
 		<xsl:choose>
 			<xsl:when test="$orientation = 'landscape'">
-				<xsl:if test="$hideHeader = 'false'">
-					<fo:static-content flow-name="right-region-landscape" role="artifact">
-						<fo:block-container reference-orientation="270" margin-left="13mm">
-							<xsl:copy-of select="$header"/>
-						</fo:block-container>
-					</fo:static-content>
-				</xsl:if>
-				<xsl:if test="$hideFooter = 'false'">
-					<fo:static-content flow-name="left-region-landspace" role="artifact">
-						<fo:block-container reference-orientation="270" margin-left="13mm">
-							<xsl:copy-of select="$footer"/>
-						</fo:block-container>
-					</fo:static-content>
-				</xsl:if>
+				<fo:static-content flow-name="right-region-landscape" role="artifact">
+					<fo:block-container reference-orientation="270" margin-left="13mm">
+						<xsl:copy-of select="$header"/>
+					</fo:block-container>
+				</fo:static-content>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:if test="$hideHeader = 'false'">
-					<fo:static-content flow-name="header" role="artifact">
-						<fo:block-container margin-top="12.7mm">
-							<xsl:copy-of select="$header"/>
-						</fo:block-container>
-					</fo:static-content>
-				</xsl:if>
-				<xsl:if test="$hideFooter = 'false'">
-					<fo:static-content flow-name="footer" role="artifact">
-						<fo:block-container display-align="after" height="100%">
-							<xsl:copy-of select="$footer"/>
-						</fo:block-container>
-					</fo:static-content>
-				</xsl:if>
+				<fo:static-content flow-name="header" role="artifact">
+					<fo:block-container margin-top="12.7mm">
+						<xsl:copy-of select="$header"/>
+					</fo:block-container>
+				</fo:static-content>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-
+	
+	<xsl:template name="insertFooter">
+		<xsl:param name="orientation"/>
+		<xsl:param name="footer"/>
+		<xsl:choose>
+			<xsl:when test="$orientation = 'landscape'">
+				<fo:static-content flow-name="left-region-landspace" role="artifact">
+					<fo:block-container reference-orientation="270" margin-left="13mm">
+						<xsl:copy-of select="$footer"/>
+					</fo:block-container>
+				</fo:static-content>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:static-content flow-name="footer" role="artifact">
+					<fo:block-container display-align="after" height="100%">
+						<xsl:copy-of select="$footer"/>
+					</fo:block-container>
+				</fo:static-content>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 	<xsl:variable name="Image-IEEE-Logo-white-svg">
 		<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" id="svg20" height="28.959999mm" width="100.58mm" version="1.0">
@@ -3407,7 +3402,6 @@
 		<xsl:param name="enabler" />
 		<xsl:param name="standard_number" />
 		<xsl:param name="history" />
-		<!-- <xsl:param name="standard_title_prefix" /> -->
 		<xsl:param name="cutoff_date" />
 		<xsl:param name="expiration_date" />
 		
