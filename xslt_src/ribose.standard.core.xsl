@@ -632,6 +632,8 @@
 		</fo:block>
 	</xsl:template>
 
+	<xsl:variable name="toc_item_indent">7</xsl:variable>
+	
 	<xsl:template match="mn:preface/mn:clause[@type = 'toc']" name="toc" priority="3">
 		<fo:block role="SKIP">
 			<xsl:apply-templates />	
@@ -819,9 +821,11 @@
 				<!-- <xsl:when test="ancestor::mn:preface and $level &gt;= 2">12pt</xsl:when>
 				<xsl:when test="ancestor::mn:preface">13pt</xsl:when> -->
 				<xsl:when test="$level = 1">22pt</xsl:when>
-				<xsl:when test="$level = 2">13pt</xsl:when>
+				<!-- <xsl:when test="$level = 2">13pt</xsl:when>
 				<xsl:when test="$level &gt;= 3">11pt</xsl:when>
-				<xsl:otherwise>16pt</xsl:otherwise>
+				<xsl:otherwise>16pt</xsl:otherwise> -->
+				<xsl:when test="$level &gt;= 2">13pt</xsl:when>
+				<xsl:otherwise>13pt</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 	

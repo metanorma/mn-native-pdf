@@ -567,7 +567,7 @@
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>			
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-size">13pt</xsl:attribute>
+			<!-- <xsl:attribute name="font-size">13pt</xsl:attribute> -->
 			<xsl:attribute name="font-weight">300</xsl:attribute>
 			<xsl:attribute name="color">black</xsl:attribute>
 			<xsl:attribute name="text-align">left</xsl:attribute>
