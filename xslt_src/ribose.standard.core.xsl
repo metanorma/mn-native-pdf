@@ -924,7 +924,9 @@
 	</xsl:template> -->
 	
 	<xsl:template match="mn:terms" priority="3">
-		<fo:block break-after="page"/>
+		<xsl:if test="not(ancestor::*[@type = 'terms'])">
+			<fo:block break-after="page"/>
+		</xsl:if>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
