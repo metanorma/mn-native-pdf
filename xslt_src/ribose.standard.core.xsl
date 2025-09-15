@@ -524,8 +524,15 @@
 						<xsl:attribute name="margin-right">-30mm</xsl:attribute>
 					</xsl:if>
 					
-					<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and (@type = 'intro' or not(@type))]" mode="cover_page"/>
-					<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'main'][last()]" mode="cover_page"/>
+					<xsl:variable name="titles">
+						<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and (@type = 'intro' or not(@type))]"/>
+						<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'main'][last()]"/>
+					</xsl:variable>
+					<xsl:for-each select="xalan:nodeset($titles)/mn:title">
+						<fo:block font-size="27pt" font-weight="bold" role="H1">
+							<xsl:apply-templates /><xsl:if test="position() != last()"><xsl:value-of select="$nonbreak_space_em_dash"/></xsl:if>
+						</fo:block>
+					</xsl:for-each>
 					
 					<fo:block space-before="9pt" font-size="16.8pt" font-weight="600">
 						<xsl:value-of select="$docnumber_version"/>
@@ -622,12 +629,6 @@
 					</fo:inline>
 				</fo:basic-link>
 			</fo:block>
-		</fo:block>
-	</xsl:template>
-
-	<xsl:template match="mn:title" mode="cover_page">
-		<fo:block font-size="27pt" font-weight="bold" role="H1">
-			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 
