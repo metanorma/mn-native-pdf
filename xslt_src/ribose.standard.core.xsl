@@ -632,6 +632,8 @@
 		</fo:block>
 	</xsl:template>
 
+	<xsl:variable name="toc_item_indent">7</xsl:variable>
+	
 	<xsl:template match="mn:preface/mn:clause[@type = 'toc']" name="toc" priority="3">
 		<fo:block role="SKIP">
 			<xsl:apply-templates />	

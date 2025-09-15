@@ -47,7 +47,7 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="margin-left">32mm</xsl:attribute>
+			<xsl:attribute name="margin-left">10mm</xsl:attribute> <!-- 32mm -->
 			<xsl:attribute name="margin-right">-17mm</xsl:attribute>
 			<xsl:attribute name="role">TOC</xsl:attribute>
 		</xsl:if>
@@ -459,7 +459,7 @@
 				<xsl:attribute name="color">black</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="@level &gt;= 2">
-				<xsl:attribute name="margin-left"><xsl:value-of select="(@level - 1) * 16.5"/>mm</xsl:attribute>
+				<xsl:attribute name="margin-left"><xsl:value-of select="(@level - 1) * $toc_item_indent"/>mm</xsl:attribute> <!-- 16.5 -->
 				<xsl:attribute name="space-before">4pt</xsl:attribute>
 				<xsl:attribute name="space-after">5pt</xsl:attribute>
 			</xsl:if>
@@ -691,7 +691,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<!-- <xsl:attribute name="font-size">13pt</xsl:attribute> -->
-			<xsl:attribute name="margin-left">16.5mm</xsl:attribute>
+			<xsl:attribute name="margin-left"><xsl:value-of select="$toc_item_indent"/>mm</xsl:attribute> <!-- 16.5mm -->
 			<xsl:attribute name="space-before">4pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
