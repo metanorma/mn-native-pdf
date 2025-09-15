@@ -704,6 +704,11 @@
 		<xsl:if test="$namespace = 'm3d' or $namespace = 'unece-rec'">
 				<fo:block break-after="page"/>
 		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:if test="@type = 'terms'">
+				<fo:block break-after="page"/>
+			</xsl:if>
+		</xsl:if>
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block role="Sect">
 			<xsl:call-template name="setId"/>

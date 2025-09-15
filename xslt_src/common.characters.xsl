@@ -22,6 +22,7 @@
 	<xsl:variable name="en_dash">&#x2013;</xsl:variable>
 	<xsl:variable name="em_dash">&#x2014;</xsl:variable>
 	<xsl:variable name="nonbreak_space_em_dash_space">&#xa0;— </xsl:variable>
+	<xsl:variable name="nonbreak_space_em_dash">&#xa0;—</xsl:variable>
 	<xsl:variable name="cr">&#x0d;</xsl:variable>
 	<xsl:variable name="lf">&#x0a;</xsl:variable>
 
