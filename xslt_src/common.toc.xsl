@@ -164,7 +164,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="role">H1</xsl:attribute>
-			<xsl:attribute name="font-size">27pt</xsl:attribute>
+			<xsl:attribute name="font-size">22pt</xsl:attribute> <!-- 27pt -->
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color">black</xsl:attribute>
 			<xsl:attribute name="margin-left">-15mm</xsl:attribute>
@@ -322,7 +322,7 @@
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-size">13pt</xsl:attribute>
+			<!-- <xsl:attribute name="font-size">13pt</xsl:attribute> -->
 		</xsl:if>
 	</xsl:attribute-set> <!-- END: toc-item-style -->
 	
@@ -595,7 +595,7 @@
 			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-size">13pt</xsl:attribute>
+			<!-- <xsl:attribute name="font-size">13pt</xsl:attribute> -->
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color">black</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
@@ -690,7 +690,7 @@
 			 <xsl:attribute name="text-align-last">justify</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-size">13pt</xsl:attribute>
+			<!-- <xsl:attribute name="font-size">13pt</xsl:attribute> -->
 			<xsl:attribute name="margin-left">16.5mm</xsl:attribute>
 			<xsl:attribute name="space-before">4pt</xsl:attribute>
 		</xsl:if>
