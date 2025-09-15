@@ -125,7 +125,7 @@
 			</xsl:if>
 			<xsl:if test="$namespace = 'rsd'">
 				<xsl:choose>
-					<xsl:when test="ancestor::mn:table">inherit</xsl:when>
+					<xsl:when test="ancestor::mn:table">95%</xsl:when> <!-- 95% in https://github.com/metanorma/metanorma-ribose/issues/421, was inherit -->
 					<xsl:otherwise>95%</xsl:otherwise> <!-- 110% -->
 				</xsl:choose>
 			</xsl:if>

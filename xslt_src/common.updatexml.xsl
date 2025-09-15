@@ -629,9 +629,26 @@
 	<xsl:template match="mn:annotation-container" mode="update_xml_step1"/>
 	
 	<xsl:template match="mn:fmt-identifier[not(ancestor::*[local-name() = 'bibdata'])]//text()" mode="update_xml_step1">
-		<xsl:element name="{$element_name_keep-together_within-line}" namespace="{$namespace_full}">
-			<xsl:value-of select="."/>
-		</xsl:element>
+		<xsl:choose>
+			<xsl:when test="$namespace = 'rsd'"> <!-- https://github.com/metanorma/metanorma-ribose/issues/421 -->
+				<xsl:choose>
+					<xsl:when test="(ancestor::mn:td or ancestor::mn:th) and
+						normalize-space(java:matches(java:java.lang.String.new(.), '^(http://|https://|www\.)?(.*)')) = 'true'">
+						<xsl:value-of select="."/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:element name="{$element_name_keep-together_within-line}" namespace="{$namespace_full}">
+							<xsl:value-of select="."/>
+						</xsl:element>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="{$element_name_keep-together_within-line}" namespace="{$namespace_full}">
+					<xsl:value-of select="."/>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
   
 	<xsl:template match="@semx-id | @anchor" mode="update_xml_step1"/>
