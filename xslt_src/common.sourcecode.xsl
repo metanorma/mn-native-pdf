@@ -256,7 +256,8 @@
 				</xsl:if>						
 				<xsl:if test="$namespace = 'rsd'">
 					<xsl:choose>
-						<xsl:when test="ancestor::mn:table[not(parent::mn:sourcecode[@linenums = 'true'])]">inherit</xsl:when>
+						<!-- <xsl:when test="ancestor::mn:table[not(parent::mn:sourcecode[@linenums = 'true'])]">inherit</xsl:when> -->
+						<xsl:when test="ancestor::mn:table">95%</xsl:when>
 						<xsl:otherwise>95%</xsl:otherwise><!-- 110% -->
 					</xsl:choose>
 				</xsl:if>
