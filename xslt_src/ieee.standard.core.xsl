@@ -682,7 +682,9 @@
 												<xsl:if test="position() != last()">, </xsl:if>
 											</xsl:for-each>
 										</fo:block>
-										<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:acknowledgements"/>
+										<!-- From https://github.com/metanorma/metanorma-ieee/issues/566#issuecomment-3302383104:
+										the Acknowledgements section comes immediately after Introduction, as shown in the StyleMan -->
+										<!-- <xsl:apply-templates select="/mn:metanorma/mn:preface/mn:acknowledgements"/> -->
 									</fo:block>
 										
 									<!-- Example:
@@ -789,7 +791,7 @@
 							<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
 						
 								<!-- <xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]"> -->
-								<xsl:for-each select=".//mn:page_sequence[mn:introduction]">
+								<xsl:for-each select=".//mn:page_sequence[mn:introduction or mn:acknowledgements]">
 						
 									<fo:page-sequence master-reference="document-draft"> <!-- format="i" initial-page-number="1" -->
 								
@@ -977,9 +979,6 @@
 						<xsl:for-each select="/*/mn:preface/mn:introduction">
 							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
 						</xsl:for-each>
-					</xsl:element>
-					
-					<xsl:element name="page_sequence" namespace="{$namespace_full}">
 						<xsl:for-each select="/*/mn:preface/mn:acknowledgements">
 							<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
 						</xsl:for-each>
@@ -1330,7 +1329,9 @@
 										<xsl:if test="position() != last()">, </xsl:if>
 									</xsl:for-each>
 								</fo:block>
-								<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:acknowledgements"/>
+								<!-- From https://github.com/metanorma/metanorma-ieee/issues/566#issuecomment-3302383104:
+								the Acknowledgements section comes immediately after Introduction, as shown in the StyleMan -->
+								<!-- <xsl:apply-templates select="/mn:metanorma/mn:preface/mn:acknowledgements"/> -->
 							</fo:block>
 							
 							<!-- Example:
@@ -1952,7 +1953,7 @@
 		<fo:inline><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="mn:preface/mn:acknowledgements" priority="3">
+	<xsl:template match="mn:preface//mn:acknowledgements" priority="3">
 		<fo:block>
 			<xsl:apply-templates />
 		</fo:block>
@@ -2403,6 +2404,7 @@
 			<xsl:when test="$current_template = 'standard'">
 				<xsl:choose>
 					<xsl:when test="$level = 1 and (ancestor::mn:preface or ancestor::mn:introduction or ancestor::mn:annex)">12pt</xsl:when> <!-- 12pt -->
+					<xsl:when test="$level = 1 and ancestor::mn:acknowledgements">16pt</xsl:when>
 					<xsl:when test="$level = 1">20pt</xsl:when> <!-- 12pt -->
 					<xsl:when test="$level = 2">20pt</xsl:when>
 					<xsl:when test="$level &gt;= 3">18pt</xsl:when>
@@ -2433,7 +2435,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:choose>
-					<xsl:when test="$level = 1 and (ancestor::mn:preface or ancestor::mn:introduction)">12pt</xsl:when>
+					<xsl:when test="$level = 1 and (ancestor::mn:preface or ancestor::mn:introduction or ancestor::mn:acknowledgements)">12pt</xsl:when>
 					<xsl:when test="$level = 1 and not(following-sibling::*[1][self::mn:clause])">12pt</xsl:when>
 					<xsl:when test="$level = 1">24pt</xsl:when>
 					<xsl:otherwise>12pt</xsl:otherwise>
@@ -2469,7 +2471,7 @@
 				<xsl:otherwise>
 					<xsl:choose>
 						<xsl:when test="@type = 'section-title'">12pt</xsl:when>
-						<xsl:when test="ancestor::mn:acknowledgements">inherit</xsl:when>
+						<xsl:when test="$level = 1 and ancestor::mn:acknowledgements">11pt</xsl:when>
 						<xsl:when test="$level = 1">12pt</xsl:when>
 						<xsl:when test="$level = 2">11pt</xsl:when>
 						<xsl:otherwise>10pt</xsl:otherwise> <!-- 3rd, 4th, ... levels -->
