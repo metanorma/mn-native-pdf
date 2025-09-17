@@ -1121,6 +1121,31 @@
 		</xsl:choose>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'td']//text() | *[local-name() = 'th']//text()" priority="3">
+		<xsl:variable name="content">
+			<xsl:choose>
+				<xsl:when test="java:replaceAll(java:java.lang.String.new(.), $regex_url_start, '$2') != ''">
+					 <!-- url -->
+					<xsl:call-template name="add-zero-spaces-link-java"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="add-zero-spaces-java"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+	
+		<!-- add zero-width space in the words like 'adeOfAbstractTransportaonSpace' to split it in the table's cell -->
+		<xsl:variable name="content2" select="java:replaceAll(java:java.lang.String.new($content),'([a-z]{2,})([A-Z])(.?)','$1&#x200B;$2$3')"/>
+		
+		<!-- add zero-width space (#x200B) before character '(' if preceding and following are word chars -->
+		<xsl:variable name="content3" select="java:replaceAll(java:java.lang.String.new($content2), '(\w)(\()(\w)', '$1&#x200B;$2$3')"/>
+		
+		<!-- replace sequence #x200B to one &#x200B -->
+		<xsl:variable name="content4" select="java:replaceAll(java:java.lang.String.new($content3), '\u200b{2,}', '&#x200B;')"/>
+		
+		<xsl:value-of select="$content4"/>
+	</xsl:template>
+	
 	<xsl:template match="mn:clause" priority="2">
 		<fo:block-container xsl:use-attribute-sets="clause-style">
 			<xsl:call-template name="refine_clause-style"/>
