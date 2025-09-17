@@ -632,8 +632,9 @@
 		<xsl:choose>
 			<xsl:when test="$namespace = 'rsd'"> <!-- https://github.com/metanorma/metanorma-ribose/issues/421 -->
 				<xsl:choose>
-					<xsl:when test="(ancestor::mn:td or ancestor::mn:th) and
-						normalize-space(java:matches(java:java.lang.String.new(.), '^(http://|https://|www\.)?(.*)')) = 'true'">
+					<!-- commented (ancestor::mn:td or ancestor::mn:th) and
+						for https://github.com/metanorma/metanorma-taste/issues/24#issuecomment-3302963697 -->
+					<xsl:when test="normalize-space(java:matches(java:java.lang.String.new(.), '^(http://|https://|www\.)?(.*)')) = 'true'">
 						<xsl:value-of select="."/>
 					</xsl:when>
 					<xsl:otherwise>
