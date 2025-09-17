@@ -1121,7 +1121,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="*[local-name() = 'td']//mn:tt/text() | *[local-name() = 'th']//mn:tt/text()" priority="3">
+	<xsl:template match="*[local-name() = 'td']//text() | *[local-name() = 'th']//text()" priority="3">
 		<xsl:variable name="content">
 			<xsl:choose>
 				<xsl:when test="java:replaceAll(java:java.lang.String.new(.), $regex_url_start, '$2') != ''">
