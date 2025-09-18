@@ -425,8 +425,10 @@
 			<xsl:attribute name="baseline-shift">15%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
-			<xsl:attribute name="font-size">8pt</xsl:attribute>
-			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
+			<!-- <xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="baseline-shift">30%</xsl:attribute> -->
+			<xsl:attribute name="font-size">65%</xsl:attribute>
+			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="font-size">8pt</xsl:attribute>

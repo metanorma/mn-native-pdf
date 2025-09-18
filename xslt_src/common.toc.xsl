@@ -555,7 +555,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
 			 <xsl:attribute name="role">TOCI</xsl:attribute>
-			 <xsl:attribute name="space-before">12pt</xsl:attribute>
+			 <xsl:attribute name="space-before">18pt</xsl:attribute>
 			 <xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
