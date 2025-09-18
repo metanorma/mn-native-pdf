@@ -1495,24 +1495,24 @@
 										</fo:list-block>
 									</xsl:for-each>
 									
-									<!-- List of Figures -->
-									<xsl:for-each select="$contents//mnx:figures/mnx:figure">
+									<!-- List of Tables -->
+									<xsl:for-each select="$contents//mnx:tables/mnx:table">
 										<xsl:if test="position() = 1">
-											<fo:block break-after="page"/>
+											<!-- <fo:block break-after="page"/> -->
 											<xsl:call-template name="insertListOf_Title">
-												<xsl:with-param name="title" select="'Figures'"/>
+												<xsl:with-param name="title" select="$title-list-tables"/>
 											</xsl:call-template>
 										</xsl:if>
 										<xsl:call-template name="insertListOf_Item"/>
 									</xsl:for-each>
 									
-									<!-- List of Tables -->
-									<xsl:for-each select="$contents//mnx:tables/mnx:table">
+									<!-- List of Figures -->
+									<xsl:for-each select="$contents//mnx:figures/mnx:figure">
 										<xsl:if test="position() = 1">
-											<fo:block break-after="page"/>
-												<xsl:call-template name="insertListOf_Title">
-													<xsl:with-param name="title" select="'Tables'"/>
-												</xsl:call-template>
+											<!-- <fo:block break-after="page"/> -->
+											<xsl:call-template name="insertListOf_Title">
+												<xsl:with-param name="title" select="$title-list-figures"/>
+											</xsl:call-template>
 										</xsl:if>
 										<xsl:call-template name="insertListOf_Item"/>
 									</xsl:for-each>
