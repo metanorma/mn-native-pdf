@@ -1422,27 +1422,6 @@
 											</fo:block>
 										</fo:block>
 									</xsl:for-each>
-									
-									<!-- List of Tables -->
-									<xsl:for-each select="$contents//mnx:tables/mnx:table">
-										<xsl:if test="position() = 1">
-											<xsl:call-template name="insertListOf_Title">
-												<xsl:with-param name="title" select="$title-list-tables"/>
-											</xsl:call-template>
-										</xsl:if>
-										<xsl:call-template name="insertListOf_Item"/>
-									</xsl:for-each>
-									
-									<!-- List of Figures -->
-									<xsl:for-each select="$contents//mnx:figures/mnx:figure">
-										<xsl:if test="position() = 1">
-											<xsl:call-template name="insertListOf_Title">
-												<xsl:with-param name="title" select="$title-list-figures"/>
-											</xsl:call-template>
-										</xsl:if>
-										<xsl:call-template name="insertListOf_Item"/>
-									</xsl:for-each>
-							
 								</xsl:when> <!-- $stage = 'draft' -->
 								
 								<xsl:when test="$stage = 'published' or $stage = 'approved' or $stage_published = 'true'">
@@ -1494,32 +1473,30 @@
 									
 										</fo:list-block>
 									</xsl:for-each>
-									
-									<!-- List of Tables -->
-									<xsl:for-each select="$contents//mnx:tables/mnx:table">
-										<xsl:if test="position() = 1">
-											<!-- <fo:block break-after="page"/> -->
-											<xsl:call-template name="insertListOf_Title">
-												<xsl:with-param name="title" select="$title-list-tables"/>
-											</xsl:call-template>
-										</xsl:if>
-										<xsl:call-template name="insertListOf_Item"/>
-									</xsl:for-each>
-									
-									<!-- List of Figures -->
-									<xsl:for-each select="$contents//mnx:figures/mnx:figure">
-										<xsl:if test="position() = 1">
-											<!-- <fo:block break-after="page"/> -->
-											<xsl:call-template name="insertListOf_Title">
-												<xsl:with-param name="title" select="$title-list-figures"/>
-											</xsl:call-template>
-										</xsl:if>
-										<xsl:call-template name="insertListOf_Item"/>
-									</xsl:for-each>
-									
 								</xsl:when> <!-- $stage = 'published' or 'approved' -->
 							</xsl:choose>
 					
+							<!-- List of Tables -->
+							<xsl:for-each select="$contents//mnx:tables/mnx:table">
+								<xsl:if test="position() = 1">
+									<!-- <fo:block break-after="page"/> -->
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-tables"/>
+									</xsl:call-template>
+								</xsl:if>
+								<xsl:call-template name="insertListOf_Item"/>
+							</xsl:for-each>
+							
+							<!-- List of Figures -->
+							<xsl:for-each select="$contents//mnx:figures/mnx:figure">
+								<xsl:if test="position() = 1">
+									<!-- <fo:block break-after="page"/> -->
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-figures"/>
+									</xsl:call-template>
+								</xsl:if>
+								<xsl:call-template name="insertListOf_Item"/>
+							</xsl:for-each>
 						</xsl:when> <!-- 'standard' or 'draft' -->
 						
 						<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
