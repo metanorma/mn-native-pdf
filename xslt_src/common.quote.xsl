@@ -72,7 +72,7 @@
 				<xsl:attribute name="margin-left">7.5mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
-	</xsl:template>
+	</xsl:template> <!-- refine_quote-style -->
 
 	<xsl:attribute-set name="quote-source-style">		
 		<xsl:attribute name="text-align">right</xsl:attribute>
@@ -84,10 +84,20 @@
 			<xsl:attribute name="margin-left">12mm</xsl:attribute>
 			<xsl:attribute name="margin-right">12mm</xsl:attribute>			 
 		</xsl:if>		
-	</xsl:attribute-set>
+	</xsl:attribute-set> <!-- quote-source-style -->
 	
 	<xsl:template name="refine_quote-source-style">
 	</xsl:template>
+	
+	<xsl:attribute-set name="source-style">
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="space-after">8pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- source-style -->
+	
+	<xsl:template name="refine_source-style">
+	
+	</xsl:template> <!-- refine_source-style -->
 	
 	<!-- ====== -->
 	<!-- quote -->	
@@ -154,7 +164,9 @@
 		</xsl:if>
 		<xsl:choose>
 			<xsl:when test="not(parent::quote)">
-				<fo:block>
+				<fo:block xsl:use-attribute-sets="source-style">
+					<xsl:call-template name="refine_source-style"/>
+					
 					<xsl:call-template name="insert_basic_link">
 						<xsl:with-param name="element">
 							<fo:basic-link internal-destination="{@bibitemid}" fox:alt-text="{@citeas}">
