@@ -2934,7 +2934,8 @@
 						mn:figure/mn:name/text() |mn:figure/mn:fmt-name/text() |
 						mn:termexample/mn:name/text() |mn:termexample/mn:fmtname/text() |
 						mn:xref//text() | mn:fmt-xref//text() |
-						mn:origin/text() | mn:fmt-origin/text()" mode="update_xml_step1">
+						mn:origin/text() | mn:fmt-origin/text() |
+						mn:fmt-link/text()" mode="update_xml_step1">
 		<xsl:choose>
 			<xsl:when test="$vertical_layout = 'true'">
 				<xsl:choose>
