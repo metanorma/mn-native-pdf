@@ -1636,7 +1636,8 @@
 						mn:figure/mn:name/text() | mn:figure/mn:fmt-name/text() |
 						mn:termexample/mn:name/text() | mn:termexample/mn:fmt-name/text() |
 						mn:xref//text() | mn:fmt-xref//text() |
-						mn:origin/text() | mn:fmt-origin/text()" mode="update_xml_step1">
+						mn:origin/text() | mn:fmt-origin/text() |
+						mn:fmt-link/text()" mode="update_xml_step1">
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
 		<xsl:variable name="text_en">
 			<xsl:element name="text" namespace="{$namespace_full}">
