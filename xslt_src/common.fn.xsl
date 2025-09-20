@@ -135,9 +135,10 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="fn-num-style">
+		<xsl:attribute name="role">Reference</xsl:attribute>
 		<xsl:attribute name="keep-with-previous.within-line">always</xsl:attribute>
+		<xsl:attribute name="font-size">65%</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm' or $namespace = 'jcgm'">
-			<xsl:attribute name="font-size">65%</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
@@ -145,11 +146,9 @@
 			<xsl:attribute name="baseline-shift">30%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
-			<xsl:attribute name="font-size">65%</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
-			<xsl:attribute name="font-size">65%</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'gb'">
@@ -161,7 +160,6 @@
 			<xsl:attribute name="baseline-shift">15%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
-			<xsl:attribute name="font-size">65%</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
@@ -195,7 +193,6 @@
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-			<xsl:attribute name="font-size">65%</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
@@ -203,7 +200,6 @@
 			<xsl:attribute name="baseline-shift">25%</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-size">65%</xsl:attribute>
 			<xsl:attribute name="vertical-align">super</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'unece'">
@@ -567,27 +563,10 @@
 		<xsl:variable name="ref_id" select="@target"/>
 		
 		<xsl:variable name="footnote_inline">
-			<fo:inline role="Reference">
+			<fo:inline xsl:use-attribute-sets="fn-num-style">
 			
-				<xsl:variable name="fn_styles">
-					<xsl:choose>
-						<xsl:when test="ancestor::mn:bibitem">
-							<fn_styles xsl:use-attribute-sets="bibitem-note-fn-style">
-								<xsl:call-template name="refine_bibitem-note-fn-style"/>
-							</fn_styles>
-						</xsl:when>
-						<xsl:otherwise>
-							<fn_styles xsl:use-attribute-sets="fn-num-style">
-								<xsl:call-template name="refine_fn-num-style"/>
-							</fn_styles>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:variable>
-			
-				<xsl:for-each select="xalan:nodeset($fn_styles)/fn_styles/@*">
-					<xsl:copy-of select="."/>
-				</xsl:for-each>
-			
+				<xsl:call-template name="refine_fn-num-style"/>
+				
 				<!-- https://github.com/metanorma/metanorma-ieee/issues/595 -->
 				<!-- <xsl:if test="following-sibling::node()[normalize-space() != ''][1][self::mn:fn]">
 					<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
