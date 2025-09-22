@@ -372,8 +372,6 @@
 				<xsl:for-each select=".">
 				
 					<xsl:variable name="copyright_year" select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
-				
-					<xsl:variable name="approved_date_year" select="substring(normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'issued']),1,4)"/>
 					
 					<xsl:variable name="designation" select="/mn:metanorma/mn:bibdata/mn:docnumber"/>
 					
@@ -473,12 +471,13 @@
 					<xsl:variable name="enabler" select="xalan:nodeset($enabler_)"/>
 					
 					<xsl:variable name="approved_by">IEEE SA Standards Board</xsl:variable>
-					<xsl:variable name="approved_date">
+					<!-- <xsl:variable name="approved_date">
 						<xsl:call-template name="convertDate">
 							<xsl:with-param name="date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'issued'])"/>
 							<xsl:with-param name="format" select="'ddMMyyyy'"/>
 						</xsl:call-template>
-					</xsl:variable>
+					</xsl:variable> -->
+					<xsl:variable name="approved_date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'ieee-sasb-approved' and @format = 'ddMMMyyyy'])"/>
 					
 					<!-- Example: Revision of IEEE Std 802.1X™-2010
 						Incorporating IEEE Std 802.1Xbx™-2014
@@ -657,9 +656,11 @@
 										</fo:block>
 									</xsl:if>
 
-									<fo:block font-size="10pt" space-before="8mm" space-after="4pt">Approved <xsl:value-of select="$approved_date"/></fo:block>
-									<!-- Example: IEEE SA Standards Board -->
-									<fo:block font-size="11pt" font-weight="bold" margin-top="4mm"><xsl:value-of select="$approved_by"/></fo:block>
+									<xsl:if test="$approved_date != ''">
+										<fo:block font-size="10pt" space-before="8mm" space-after="4pt">Approved <xsl:value-of select="$approved_date"/></fo:block>
+										<!-- Example: IEEE SA Standards Board -->
+										<fo:block font-size="11pt" font-weight="bold" margin-top="4mm"><xsl:value-of select="$approved_by"/></fo:block>
+									</xsl:if>
 
 									<fo:block break-after="page"/>
 							
@@ -1276,14 +1277,16 @@
 									<fo:block>&#xa0;</fo:block>
 								</xsl:if>
 								
-								<fo:block>
-									<!-- Approved <Date Approved> -->
-									<xsl:text>Approved </xsl:text>
-									<xsl:value-of select="$approved_date"/>
-								</fo:block>
-								<fo:block>&#xa0;</fo:block>
-								<!-- Example: IEEE SA Standards Board -->
-								<fo:block font-size="11pt" font-weight="bold"><xsl:value-of select="$approved_by"/></fo:block>
+								<xsl:if test="$approved_date != ''">
+									<fo:block>
+										<!-- Approved <Date Approved> -->
+										<xsl:text>Approved </xsl:text>
+										<xsl:value-of select="$approved_date"/>
+									</fo:block>
+									<fo:block>&#xa0;</fo:block>
+									<!-- Example: IEEE SA Standards Board -->
+									<fo:block font-size="11pt" font-weight="bold"><xsl:value-of select="$approved_by"/></fo:block>
+								</xsl:if>
 								
 								<xsl:if test="normalize-space($cutoff_date) != ''">
 									<fo:block>&#xa0;</fo:block>
