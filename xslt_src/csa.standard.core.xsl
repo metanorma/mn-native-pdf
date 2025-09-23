@@ -86,35 +86,20 @@
 			
 			<xsl:call-template name="cover-page"/>
 			
-			<!-- Copyright, Content, Foreword, etc. pages -->
-			<fo:page-sequence master-reference="document" initial-page-number="2" format="1" force-page-count="no-force">
+			<xsl:call-template name="inner-cover-page"/>
+			
+			<xsl:if test="$debug = 'true'">
+				<redirect:write file="contents_.xml"> <!-- {java:getTime(java:java.util.Date.new())} -->
+					<xsl:copy-of select="$contents"/>
+				</redirect:write>
+			</xsl:if>
+			
+			<!-- Content, Foreword, etc. pages -->
+			<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
 
 				<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 				<xsl:call-template name="insertHeaderFooter"/>
 				<fo:flow flow-name="xsl-region-body">
-				
-					<xsl:if test="$debug = 'true'">
-						<redirect:write file="contents_.xml"> <!-- {java:getTime(java:java.util.Date.new())} -->
-							<xsl:copy-of select="$contents"/>
-						</redirect:write>
-					</xsl:if>
-					
-					<fo:block>
-						<fo:block>The permanent and official location for Cloud Security Alliance DevSecOps is</fo:block>
-						<fo:block color="rgb(33, 94, 159)" text-decoration="underline">https://cloudsecurityalliance.org/group/DevSecOps/</fo:block>
-					</fo:block>
-
-					<fo:block-container absolute-position="fixed" left="25mm" top="152mm" width="165mm" height="100mm" display-align="after" color="rgb(165, 169, 172)" line-height="145%">
-						<fo:block>© <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/> Cloud Security Alliance – All Rights Reserved. You may download, store, display on your
-						computer, view, print, and link to the Cloud Security Alliance at <fo:inline text-decoration="underline">https://cloudsecurityalliance.org</fo:inline>
-						subject to the following: (a) the draft may be used solely for your personal, informational, noncommercial
-						use; (b) the draft may not be modified or altered in any way; (c) the draft may not be
-						redistributed; and (d) the trademark, copyright or other notices may not be removed. You may quote
-						portions of the draft as permitted by the Fair Use provisions of the United States Copyright Act,
-						provided that you attribute the portions to the Cloud Security Alliance.</fo:block>
-					</fo:block-container>
-					
-					<fo:block break-after="page"/>
 					
 					<fo:block font-size="26pt" margin-bottom="18pt" role="H1">
 						<xsl:call-template name="getLocalizedString">
@@ -273,6 +258,32 @@
 		</fo:page-sequence>
 	</xsl:template> <!-- END: cover-page -->
 		
+
+	<xsl:template name="inner-cover-page">
+		<!-- Copyright -->
+		<fo:page-sequence master-reference="document" initial-page-number="2" format="1" force-page-count="no-force">
+
+			<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+			<xsl:call-template name="insertHeaderFooter"/>
+			<fo:flow flow-name="xsl-region-body">
+				
+				<fo:block>
+					<fo:block>The permanent and official location for Cloud Security Alliance DevSecOps is</fo:block>
+					<fo:block color="rgb(33, 94, 159)" text-decoration="underline">https://cloudsecurityalliance.org/group/DevSecOps/</fo:block>
+				</fo:block>
+
+				<fo:block-container absolute-position="fixed" left="25mm" top="152mm" width="165mm" height="100mm" display-align="after" color="rgb(165, 169, 172)" line-height="145%">
+					<fo:block>© <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/> Cloud Security Alliance – All Rights Reserved. You may download, store, display on your
+					computer, view, print, and link to the Cloud Security Alliance at <fo:inline text-decoration="underline">https://cloudsecurityalliance.org</fo:inline>
+					subject to the following: (a) the draft may be used solely for your personal, informational, noncommercial
+					use; (b) the draft may not be modified or altered in any way; (c) the draft may not be
+					redistributed; and (d) the trademark, copyright or other notices may not be removed. You may quote
+					portions of the draft as permitted by the Fair Use provisions of the United States Copyright Act,
+					provided that you attribute the portions to the Cloud Security Alliance.</fo:block>
+				</fo:block-container>
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template>
 
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
