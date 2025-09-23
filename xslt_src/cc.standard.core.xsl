@@ -189,13 +189,34 @@
 				<xsl:call-template name="updateXML"/>
 			</xsl:variable>
 			
+			<xsl:if test="$debug = 'true'">
+				<redirect:write file="updated_xml.xml">
+					<xsl:copy-of select="$updated_xml"/>
+				</redirect:write>
+			</xsl:if>
+			
 			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
 			
 				<xsl:variable name="updated_xml_with_pages">
 					<xsl:call-template name="processPrefaceAndMainSectionsDefault_items"/>
 				</xsl:variable>
+				
+				<xsl:if test="$debug = 'true'">
+					<redirect:write file="updated_xml_with_pages.xml">
+						<xsl:copy-of select="$updated_xml_with_pages"/>
+					</redirect:write>
+				</xsl:if>
+			
+				<xsl:if test="$debug = 'true'">
+					<redirect:write file="contents_.xml"> <!-- {java:getTime(java:java.util.Date.new())} -->
+						<xsl:copy-of select="$contents"/>
+					</redirect:write>
+				</xsl:if>
 			
 				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
+				
+					<xsl:call-template name="inner-cover-page"/>
+					
 					<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 			
 						<!-- Copyright, Content, Foreword, etc. pages -->
@@ -206,9 +227,6 @@
 								<xsl:call-template name="getPageSequenceOrientation"/>
 							</xsl:attribute>
 						
-							<xsl:if test="position() = 1">
-								<xsl:attribute name="initial-page-number">2</xsl:attribute>
-							</xsl:if>
 							<xsl:if test="position() = last()">
 								<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
 							</xsl:if>
@@ -216,35 +234,6 @@
 							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 							<xsl:call-template name="insertHeaderFooter"/>
 							<fo:flow flow-name="xsl-region-body">
-								
-								<xsl:if test="$debug = 'true'">
-									<redirect:write file="contents_.xml"> <!-- {java:getTime(java:java.util.Date.new())} -->
-										<xsl:copy-of select="$contents"/>
-									</redirect:write>
-								</xsl:if>
-								
-								<xsl:if test="position() = 1">
-									<fo:block margin-bottom="15pt">&#xA0;</fo:block>
-									<fo:block margin-bottom="14pt">
-										<xsl:text>© </xsl:text>
-										<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
-										<xsl:text> </xsl:text>
-										<fo:inline>
-											<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement/mn:clause/mn:p[@id = 'boilerplate-name']"/>
-										</fo:inline>
-									</fo:block>
-									<fo:block margin-bottom="12pt">
-										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
-									</fo:block>
-									<fo:block margin-bottom="12pt">
-										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement/mn:clause/mn:p[@id = 'boilerplate-name']"/>
-									</fo:block>
-									<fo:block>
-										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement/mn:clause/mn:p[@id = 'boilerplate-address']"/>
-									</fo:block>
-									
-									<fo:block break-after="page"/>
-								</xsl:if>  <!-- for 1st page_sequence only -->
 								
 								<!-- Table of contents, Foreword, Introduction -->					
 								<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
@@ -358,6 +347,34 @@
 			</fo:flow>
 		</fo:page-sequence>
 	</xsl:template> <!-- END: cover-page -->
+	
+	<xsl:template name="inner-cover-page">
+		<fo:page-sequence master-reference="preface" format="i" initial-page-number="2">
+			<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+			<xsl:call-template name="insertHeaderFooter"/>
+			<fo:flow flow-name="xsl-region-body">
+				<fo:block margin-bottom="15pt">&#xA0;</fo:block>
+				<fo:block margin-bottom="14pt">
+					<xsl:text>© </xsl:text>
+					<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
+					<xsl:text> </xsl:text>
+					<fo:inline>
+						<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement/mn:clause/mn:p[@id = 'boilerplate-name']"/>
+					</fo:inline>
+				</fo:block>
+				<fo:block margin-bottom="12pt">
+					<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
+				</fo:block>
+				<fo:block margin-bottom="12pt">
+					<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement/mn:clause/mn:p[@id = 'boilerplate-name']"/>
+				</fo:block>
+				<fo:block>
+					<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement/mn:clause/mn:p[@id = 'boilerplate-address']"/>
+				</fo:block>
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template>
+	
 
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>

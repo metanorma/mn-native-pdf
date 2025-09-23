@@ -541,234 +541,20 @@
 						<xsl:with-param name="history_text" select="$history_text"/>
 					</xsl:call-template>
 					
-					<xsl:variable name="title_standard_coverpage_">
-						<!-- <xsl:choose>
-							title starts with lower-cased letter
-							<xsl:when test="translate(substring($title_intro,1,1),$lower,'') = ''">
-								<fo:block font-size="18pt">
-									<xsl:value-of select="$title_prefix"/>
-									<xsl:copy-of select="$title_intro"/>
-								</fo:block>
-							</xsl:when>
-							<xsl:otherwise>
-								Example: IEEE Standard for
-								<fo:block font-size="18pt">
-								<xsl:value-of select="$title_prefix"/>
-							</fo:block>
-								<fo:block font-size="18pt" margin-left="6mm">
-									Example Local and Metropolitan Area Networks—
-									<xsl:copy-of select="$title_intro"/>
-								</fo:block>
-							</xsl:otherwise>
-						</xsl:choose> -->
-
-						<fo:block font-size="23pt"> <!-- 18pt -->
-							<!-- <xsl:value-of select="$title_prefix"/> -->
-							<xsl:copy-of select="$title_main"/>
-						</fo:block>
-
-					</xsl:variable>
-					<xsl:variable name="title_standard_coverpage" select="xalan:nodeset($title_standard_coverpage_)"/>
-					
-					<!-- =================== -->
-					<!-- Second page(s) -->
-					<!-- =================== -->
-					<xsl:choose>
-					
-						<xsl:when test="$current_template = 'draft'">
-							<!-- Legal statement -->
-							<fo:page-sequence master-reference="document-draft" force-page-count="no-force" format="1">
-								<xsl:call-template name="insertFootnoteSeparator"/>
-								
-								<xsl:call-template name="insertHeaderFooter">
-									<xsl:with-param name="document_id" select="$document_id"/>
-									<xsl:with-param name="title" select="$title"/>
-									<xsl:with-param name="copyright_year" select="$copyright_year"/>
-									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
-									<xsl:with-param name="hideFooter"><xsl:if test="not(contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != '')">false</xsl:if></xsl:with-param>
-								</xsl:call-template>
-								
-								<fo:flow flow-name="xsl-region-body">
-									<fo:block>
-										<!-- Example:
-										Important Notices and Disclaimers Concerning IEEE Standards Documents
-										IEEE Standards documents are made available for use subject to important notices and legal disclaimers. These notices and disclaimers, or a reference to this page (https://standards.ieee.org/ipr/disclaimers.html), appear in all standards and may be found under the heading “Important Notices and Disclaimers Concerning IEEE Standards Documents.”
-										...
-										-->
-										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
-									</fo:block>
-								</fo:flow>
-								
-							</fo:page-sequence> <!-- End: Legal statement -->
-						
-						</xsl:when> <!-- $current_template = 'draft' -->
-					
-					
-						<xsl:when test="$current_template = 'standard'">
-							<!-- Second, third page -->
-							<fo:page-sequence master-reference="document-draft" force-page-count="no-force" font-family="Arial" initial-page-number="1">
-							
-								<xsl:call-template name="insertFootnoteSeparator"/>
-								
-								<xsl:call-template name="insertHeaderFooter">
-									<xsl:with-param name="copyright_year" select="$copyright_year"/>
-									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
-									<!-- <xsl:with-param name="hideHeader">true</xsl:with-param> -->
-									<xsl:with-param name="hideFooter">true</xsl:with-param>
-								</xsl:call-template>
-								
-								<fo:flow flow-name="xsl-region-body">
-									<fo:block text-align="right" margin-top="-11.5mm" id="__internal_layout__titlepage_{generate-id()}"> <!-- margin-top="2mm" -->
-										<fo:block font-size="12pt" font-weight="bold"><xsl:value-of select="$standard_number"/></fo:block>
-										<fo:block font-size="9pt"><xsl:value-of select="$history_text"/></fo:block>
-									</fo:block>
-									
-									<fo:block-container width="105%"> <!-- width="135mm" -->
-										<fo:block font-weight="bold" space-before="25.5mm" line-height="1.15"> <!--  space-before="13mm" -->
-											<xsl:copy-of select="$title_standard_coverpage"/>
-										</fo:block>
-									</fo:block-container>
-									
-									<xsl:if test="$committee != ''">
-										<fo:block font-size="10pt" space-before="11mm" space-after="4pt"><xsl:value-of select="$developed_by"/></fo:block>
-										<fo:block font-size="11pt" font-weight="bold" margin-top="4mm">
-											<!-- Example: LAN/MAN Standards Committee -->
-											<fo:block line-height="1.12"><xsl:value-of select="$committee"/></fo:block>
-											<fo:block font-weight="normal" font-size="10pt">of the</fo:block>
-											<!-- Example: IEEE Computer Society -->
-											<fo:block><xsl:value-of select="$society"/></fo:block>
-										</fo:block>
-									</xsl:if>
-									
-									<xsl:if test="normalize-space($enabler) != ''">
-										<fo:block font-size="10pt" space-before="9mm" space-after="4pt"><xsl:value-of select="$sponsored_by"/></fo:block>
-										<fo:block font-size="11pt" font-weight="bold" margin-top="4mm">
-											<!-- Sponsored by the
-												LAN/MAN Standards Committee -->
-											<xsl:for-each select="$enabler/mn:subdivision">
-												<fo:block line-height="1.12"><xsl:value-of select="mn:subdivision/mn:name"/></fo:block>
-												<fo:block font-weight="normal" font-size="10pt">of the</fo:block>
-												<fo:block><xsl:value-of select="concat(../mn:abbreviation, ' ', mn:name)"/></fo:block>
-												<xsl:if test="position() != last()">
-													<fo:block font-weight="normal" font-size="10pt">and the</fo:block>
-												</xsl:if>
-											</xsl:for-each>
-										</fo:block>
-									</xsl:if>
-
-									<xsl:if test="$approved_date != ''">
-										<fo:block font-size="10pt" space-before="8mm" space-after="4pt">Approved <xsl:value-of select="$approved_date"/></fo:block>
-										<!-- Example: IEEE SA Standards Board -->
-										<fo:block font-size="11pt" font-weight="bold" margin-top="4mm"><xsl:value-of select="$approved_by"/></fo:block>
-									</xsl:if>
-
-									<fo:block break-after="page"/>
-							
-									<fo:block font-family="Arial" text-align="justify">
-										<fo:block>
-											<fo:inline font-weight="bold">
-												<xsl:call-template name="getLocalizedString">
-													<xsl:with-param name="key">abstract</xsl:with-param>
-												</xsl:call-template>
-												<xsl:text>: </xsl:text>
-											</fo:inline>
-											<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:abstract/node()[not(self::mn:fmt-title)] | 
-													/mn:metanorma/mn:preface/mn:clause[@id = '_abstract' or mn:fmt-title = 'Abstract']/node()[not(self::mn:fmt-title)]"/>
-										</fo:block>
-										<fo:block>&#xa0;</fo:block>
-										<fo:block>
-											<fo:inline font-weight="bold">Keywords: </fo:inline>
-											<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:keyword">
-												<xsl:value-of select="."/>
-												<xsl:if test="position() != last()">, </xsl:if>
-											</xsl:for-each>
-										</fo:block>
-										<!-- From https://github.com/metanorma/metanorma-ieee/issues/566#issuecomment-3302383104:
-										the Acknowledgements section comes immediately after Introduction, as shown in the StyleMan -->
-										<!-- <xsl:apply-templates select="/mn:metanorma/mn:preface/mn:acknowledgements"/> -->
-									</fo:block>
-										
-									<!-- Example:
-									The Institute of Electrical and Electronics Engineers, Inc.
-									3 Park Avenue, New York, NY 10016-5997, USA
-									...
-									PDF: ISBN 978-0-XXXX-XXXX-X STDXXXXX
-									Print: ISBN 978-0-XXXX-XXXX-X STDPDXXXXX
-									-->
-									<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/>
-									
-								</fo:flow>
-							</fo:page-sequence>
-							
-							
-							<!-- Example:
-								Important Notices and Disclaimers Concerning IEEE Standards Documents
-								IEEE Standards documents are made available for use subject to important notices and legal disclaimers. These notices and disclaimers, or a reference to this page (https://standards.ieee.org/ipr/disclaimers.html), appear in all standards and may be found under the heading “Important Notices and Disclaimers Concerning IEEE Standards Documents.”
-								...
-							-->
-							<fo:page-sequence master-reference="document-draft-two-columns" force-page-count="no-force">
-								<xsl:call-template name="insertFootnoteSeparator"/>
-								<xsl:call-template name="insertHeaderFooter">
-									<xsl:with-param name="document_id" select="$document_id"/>
-									<xsl:with-param name="title" select="$title"/>
-									<xsl:with-param name="copyright_year" select="$copyright_year"/>
-									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
-								</xsl:call-template>
-								
-								<fo:flow flow-name="xsl-region-body">
-								
-									<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
-									
-									<xsl:if test="not(/mn:metanorma/mn:boilerplate/mn:legal-statement/*)">
-										<fo:block>&#xa0;</fo:block>
-									</xsl:if>
-								</fo:flow>
-							</fo:page-sequence>
-						</xsl:when> <!-- $current_template = 'standard' -->
-						
-						
-						<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
-							<fo:page-sequence master-reference="document-nonstandard" force-page-count="no-force" font-family="Calibri Light">
-							
-								<xsl:call-template name="insertHeaderFooter">
-									<xsl:with-param name="copyright_year" select="$copyright_year"/>
-									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
-									<xsl:with-param name="hideHeader">true</xsl:with-param>
-								</xsl:call-template>
-								
-								<fo:flow flow-name="xsl-region-body">
-									<fo:block-container>
-									
-										<fo:block>
-											<!-- TRADEMARKS AND DISCLAIMERS -->
-											<!-- ACKNOWLEDGEMENTS -->
-											<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement/*[@id = 'boilerplate-tm' or normalize-space(mn:fmt-title) = 'Trademarks and Disclaimers' or @id = 'boilerplate-participants' or normalize-space(mn:fmt-title) = 'Acknowledgements']" mode="whitepaper"/>
-										</fo:block>
-										
-										<!-- Example:
-										The Institute of Electrical and Electronics Engineers, Inc. 3 Park Avenue, New York, NY 10016-5997, USA
-										...
-										PDF: STDXXXXX ISBN 978-0-XXXX-XXXX-X 
-										-->
-										<fo:block font-style="italic">
-											<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/>
-										</fo:block>
-										
-										<!-- NOTICE AND DISCLAIMER OF LIABILITY CONCERNING THE USE OF IEEE SA DOCUMENTS -->
-										<fo:block break-after="page"/>
-										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement/*[not(@id = 'boilerplate-tm') and not(normalize-space(mn:fmt-title) = 'Trademarks and Disclaimers') and not(@id = 'boilerplate-participants') and not(normalize-space(mn:title) = 'Acknowledgements')]"/>
-										
-									</fo:block-container>
-								</fo:flow>
-								
-							</fo:page-sequence>
-						
-						</xsl:when> <!-- $current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report' -->
-						
-					</xsl:choose>
-					<!-- =================== -->
-					<!-- End Second page(s) -->
-					<!-- =================== -->
+					<xsl:call-template name="inner-cover-page">
+						<xsl:with-param name="document_id" select="$document_id"/>
+						<xsl:with-param name="title" select="$title"/>
+						<xsl:with-param name="society" select="$society"/>
+						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+						<xsl:with-param name="copyright_year" select="$copyright_year"/>
+						<xsl:with-param name="committee" select="$committee"/>
+						<xsl:with-param name="enabler" select="$enabler"/>
+						<xsl:with-param name="approved_date" select="$approved_date"/>
+						<xsl:with-param name="approved_by" select="$approved_by"/>
+						<xsl:with-param name="title_main" select="$title_main"/>
+						<xsl:with-param name="standard_number" select="$standard_number"/>
+						<xsl:with-param name="history_text" select="$history_text"/>
+					</xsl:call-template>
 					
 					
 					<xsl:variable name="updated_xml_with_pages">
@@ -1376,6 +1162,220 @@
 		<!-- END Cover page -->
 		<!-- ======================= -->
 	</xsl:template> <!-- END: cover-page -->
+	
+	<xsl:template name="inner-cover-page">
+		<xsl:param name="document_id"/>
+		<xsl:param name="title"/>
+		<xsl:param name="society"/>
+		<xsl:param name="copyright_holder"/>
+		<xsl:param name="copyright_year"/>
+		<xsl:param name="committee"/>
+		<xsl:param name="enabler"/>
+		<xsl:param name="approved_date"/>
+		<xsl:param name="approved_by"/>
+		<xsl:param name="title_main"/>
+		<xsl:param name="standard_number"/>
+		<xsl:param name="history_text"/>
+		<!-- =================== -->
+		<!-- Second page(s) -->
+		<!-- =================== -->
+		<xsl:choose>
+		
+			<xsl:when test="$current_template = 'draft'">
+				<!-- Legal statement -->
+				<fo:page-sequence master-reference="document-draft" force-page-count="no-force" format="1">
+					<xsl:call-template name="insertFootnoteSeparator"/>
+					
+					<xsl:call-template name="insertHeaderFooter">
+						<xsl:with-param name="document_id" select="$document_id"/>
+						<xsl:with-param name="title" select="$title"/>
+						<xsl:with-param name="copyright_year" select="$copyright_year"/>
+						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+						<xsl:with-param name="hideFooter"><xsl:if test="not(contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != '')">false</xsl:if></xsl:with-param>
+					</xsl:call-template>
+					
+					<fo:flow flow-name="xsl-region-body">
+						<fo:block>
+							<!-- Example:
+							Important Notices and Disclaimers Concerning IEEE Standards Documents
+							IEEE Standards documents are made available for use subject to important notices and legal disclaimers. These notices and disclaimers, or a reference to this page (https://standards.ieee.org/ipr/disclaimers.html), appear in all standards and may be found under the heading “Important Notices and Disclaimers Concerning IEEE Standards Documents.”
+							...
+							-->
+							<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
+						</fo:block>
+					</fo:flow>
+					
+				</fo:page-sequence> <!-- End: Legal statement -->
+			
+			</xsl:when> <!-- $current_template = 'draft' -->
+		
+		
+			<xsl:when test="$current_template = 'standard'">
+				<!-- Second, third page -->
+				<fo:page-sequence master-reference="document-draft" force-page-count="no-force" font-family="Arial" initial-page-number="1">
+				
+					<xsl:call-template name="insertFootnoteSeparator"/>
+					
+					<xsl:call-template name="insertHeaderFooter">
+						<xsl:with-param name="copyright_year" select="$copyright_year"/>
+						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+						<!-- <xsl:with-param name="hideHeader">true</xsl:with-param> -->
+						<xsl:with-param name="hideFooter">true</xsl:with-param>
+					</xsl:call-template>
+					
+					<fo:flow flow-name="xsl-region-body">
+						<fo:block text-align="right" margin-top="-11.5mm" id="__internal_layout__titlepage_{generate-id()}"> <!-- margin-top="2mm" -->
+							<fo:block font-size="12pt" font-weight="bold"><xsl:value-of select="$standard_number"/></fo:block>
+							<fo:block font-size="9pt"><xsl:value-of select="$history_text"/></fo:block>
+						</fo:block>
+						
+						<fo:block-container width="105%"> <!-- width="135mm" -->
+							<fo:block font-size="23pt" font-weight="bold" space-before="25.5mm" line-height="1.15"> <!--  space-before="13mm" -->
+								<xsl:copy-of select="$title_main"/>
+							</fo:block>
+						</fo:block-container>
+						
+						<xsl:if test="$committee != ''">
+							<fo:block font-size="10pt" space-before="11mm" space-after="4pt"><xsl:value-of select="$developed_by"/></fo:block>
+							<fo:block font-size="11pt" font-weight="bold" margin-top="4mm">
+								<!-- Example: LAN/MAN Standards Committee -->
+								<fo:block line-height="1.12"><xsl:value-of select="$committee"/></fo:block>
+								<fo:block font-weight="normal" font-size="10pt">of the</fo:block>
+								<!-- Example: IEEE Computer Society -->
+								<fo:block><xsl:value-of select="$society"/></fo:block>
+							</fo:block>
+						</xsl:if>
+						
+						<xsl:if test="normalize-space($enabler) != ''">
+							<fo:block font-size="10pt" space-before="9mm" space-after="4pt"><xsl:value-of select="$sponsored_by"/></fo:block>
+							<fo:block font-size="11pt" font-weight="bold" margin-top="4mm">
+								<!-- Sponsored by the
+									LAN/MAN Standards Committee -->
+								<xsl:for-each select="$enabler/mn:subdivision">
+									<fo:block line-height="1.12"><xsl:value-of select="mn:subdivision/mn:name"/></fo:block>
+									<fo:block font-weight="normal" font-size="10pt">of the</fo:block>
+									<fo:block><xsl:value-of select="concat(../mn:abbreviation, ' ', mn:name)"/></fo:block>
+									<xsl:if test="position() != last()">
+										<fo:block font-weight="normal" font-size="10pt">and the</fo:block>
+									</xsl:if>
+								</xsl:for-each>
+							</fo:block>
+						</xsl:if>
+
+						<xsl:if test="$approved_date != ''">
+							<fo:block font-size="10pt" space-before="8mm" space-after="4pt">Approved <xsl:value-of select="$approved_date"/></fo:block>
+							<!-- Example: IEEE SA Standards Board -->
+							<fo:block font-size="11pt" font-weight="bold" margin-top="4mm"><xsl:value-of select="$approved_by"/></fo:block>
+						</xsl:if>
+
+						<fo:block break-after="page"/>
+				
+						<fo:block font-family="Arial" text-align="justify">
+							<fo:block>
+								<fo:inline font-weight="bold">
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">abstract</xsl:with-param>
+									</xsl:call-template>
+									<xsl:text>: </xsl:text>
+								</fo:inline>
+								<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:abstract/node()[not(self::mn:fmt-title)] | 
+										/mn:metanorma/mn:preface/mn:clause[@id = '_abstract' or mn:fmt-title = 'Abstract']/node()[not(self::mn:fmt-title)]"/>
+							</fo:block>
+							<fo:block>&#xa0;</fo:block>
+							<fo:block>
+								<fo:inline font-weight="bold">Keywords: </fo:inline>
+								<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:keyword">
+									<xsl:value-of select="."/>
+									<xsl:if test="position() != last()">, </xsl:if>
+								</xsl:for-each>
+							</fo:block>
+							<!-- From https://github.com/metanorma/metanorma-ieee/issues/566#issuecomment-3302383104:
+							the Acknowledgements section comes immediately after Introduction, as shown in the StyleMan -->
+							<!-- <xsl:apply-templates select="/mn:metanorma/mn:preface/mn:acknowledgements"/> -->
+						</fo:block>
+							
+						<!-- Example:
+						The Institute of Electrical and Electronics Engineers, Inc.
+						3 Park Avenue, New York, NY 10016-5997, USA
+						...
+						PDF: ISBN 978-0-XXXX-XXXX-X STDXXXXX
+						Print: ISBN 978-0-XXXX-XXXX-X STDPDXXXXX
+						-->
+						<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/>
+						
+					</fo:flow>
+				</fo:page-sequence>
+				
+				
+				<!-- Example:
+					Important Notices and Disclaimers Concerning IEEE Standards Documents
+					IEEE Standards documents are made available for use subject to important notices and legal disclaimers. These notices and disclaimers, or a reference to this page (https://standards.ieee.org/ipr/disclaimers.html), appear in all standards and may be found under the heading “Important Notices and Disclaimers Concerning IEEE Standards Documents.”
+					...
+				-->
+				<fo:page-sequence master-reference="document-draft-two-columns" force-page-count="no-force">
+					<xsl:call-template name="insertFootnoteSeparator"/>
+					<xsl:call-template name="insertHeaderFooter">
+						<xsl:with-param name="document_id" select="$document_id"/>
+						<xsl:with-param name="title" select="$title"/>
+						<xsl:with-param name="copyright_year" select="$copyright_year"/>
+						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+					</xsl:call-template>
+					
+					<fo:flow flow-name="xsl-region-body">
+					
+						<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
+						
+						<xsl:if test="not(/mn:metanorma/mn:boilerplate/mn:legal-statement/*)">
+							<fo:block>&#xa0;</fo:block>
+						</xsl:if>
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:when> <!-- $current_template = 'standard' -->
+			
+			
+			<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
+				<fo:page-sequence master-reference="document-nonstandard" force-page-count="no-force" font-family="Calibri Light">
+				
+					<xsl:call-template name="insertHeaderFooter">
+						<xsl:with-param name="copyright_year" select="$copyright_year"/>
+						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+						<xsl:with-param name="hideHeader">true</xsl:with-param>
+					</xsl:call-template>
+					
+					<fo:flow flow-name="xsl-region-body">
+						<fo:block-container>
+						
+							<fo:block>
+								<!-- TRADEMARKS AND DISCLAIMERS -->
+								<!-- ACKNOWLEDGEMENTS -->
+								<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement/*[@id = 'boilerplate-tm' or normalize-space(mn:fmt-title) = 'Trademarks and Disclaimers' or @id = 'boilerplate-participants' or normalize-space(mn:fmt-title) = 'Acknowledgements']" mode="whitepaper"/>
+							</fo:block>
+							
+							<!-- Example:
+							The Institute of Electrical and Electronics Engineers, Inc. 3 Park Avenue, New York, NY 10016-5997, USA
+							...
+							PDF: STDXXXXX ISBN 978-0-XXXX-XXXX-X 
+							-->
+							<fo:block font-style="italic">
+								<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/>
+							</fo:block>
+							
+							<!-- NOTICE AND DISCLAIMER OF LIABILITY CONCERNING THE USE OF IEEE SA DOCUMENTS -->
+							<fo:block break-after="page"/>
+							<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement/*[not(@id = 'boilerplate-tm') and not(normalize-space(mn:fmt-title) = 'Trademarks and Disclaimers') and not(@id = 'boilerplate-participants') and not(normalize-space(mn:title) = 'Acknowledgements')]"/>
+							
+						</fo:block-container>
+					</fo:flow>
+					
+				</fo:page-sequence>
+			
+			</xsl:when> <!-- $current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report' -->
+			
+		</xsl:choose>
+		<!-- =================== -->
+		<!-- End Second page(s) -->
+		<!-- =================== -->
+	</xsl:template>  <!-- END: inner-cover-page -->
 	
 	
 	<xsl:template match="mn:preface/mn:clause[@type = 'toc']" priority="3">

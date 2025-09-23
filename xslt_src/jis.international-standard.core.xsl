@@ -556,6 +556,7 @@
 						<xsl:with-param name="docidentifier" select="$docidentifier"/>
 					</xsl:call-template>
 					
+					<xsl:call-template name="inner-cover-page"/>
 				
 					<!-- ========================== -->
 					<!-- Contents and preface pages -->
@@ -1054,6 +1055,8 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template name="inner-cover-page">
+	</xsl:template>
 	
 	<xsl:template match="mn:references[not(@hidden = 'true')]" mode="linear_xml" priority="2">
 		<xsl:copy>

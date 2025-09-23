@@ -369,6 +369,8 @@
 				
 				<xsl:call-template name="cover-page"/>
 				
+				<xsl:call-template name="inner-cover-page"/>
+				
 				<!-- Copyright, Content, Foreword, etc. pages -->
 				<fo:page-sequence master-reference="preface" initial-page-number="2" format="i" force-page-count="no-force">
 					<xsl:call-template name="insertFootnoteSeparator"/>
@@ -802,6 +804,8 @@
 		</fo:page-sequence>
 	</xsl:template> <!-- END: cover-page -->
 	
+	<xsl:template name="inner-cover-page">
+	</xsl:template>
 
 	<xsl:template name="processPrefaceAndMainSectionsOGC_items">
 		<xsl:variable name="updated_xml_step_move_pagebreak">

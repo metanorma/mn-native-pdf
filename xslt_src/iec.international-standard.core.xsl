@@ -355,116 +355,12 @@
 				</fo:flow>
 			</fo:page-sequence> <!-- END: 1st Cover Page --> 
 			
-			<!-- 2nd Cover Page -->
-			<fo:page-sequence master-reference="cover_2nd" force-page-count="no-force"  font-size="8pt">
-				<fo:flow flow-name="xsl-region-body">
-					<fo:block span="all">
-						<fo:block-container border="0.5pt solid black" margin-top="7mm">
-							<fo:block-container margin-left="2.5mm" margin-right="2.5mm" margin-top="1mm" margin-bottom="1mm">
-								<fo:block-container margin-left="0mm" margin-right="0mm">
-									<fo:table table-layout="fixed" width="100%">
-										<fo:table-column column-width="20mm"/>
-										<fo:table-column column-width="130mm"/>
-										<fo:table-body>
-											<fo:table-row>
-												<fo:table-cell>
-													<fo:block>
-														<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="17.8mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
-													</fo:block>
-												</fo:table-cell>
-												<fo:table-cell font-size="10pt" font-weight="bold" display-align="after">
-													<fo:block margin-bottom="3pt">THIS PUBLICATION IS COPYRIGHT PROTECTED</fo:block>
-													<fo:block margin-bottom="10pt">
-														<!-- Example: Copyright © 2014 IEC, Geneva, Switzerland -->
-														<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-year')]"/>
-													</fo:block>
-												</fo:table-cell>
-											</fo:table-row>
-										</fo:table-body>
-									</fo:table>
-									<fo:block>
-										<fo:block margin-bottom="8pt" text-align="justify">
-										<!-- Example: All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized in any form
-	or by any means, electronic or mechanical, including photocopying and microfilm, without permission in writing from
-	either IEC or IEC's member National Committee in the country of the requester. If you have any questions about IEC
-	copyright or have an enquiry about obtaining additional rights to this publication, please contact the address below or
-	your local IEC member National Committee for further information. -->
-										<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-message')]"/>
-										</fo:block>
-										<!-- Droits de reproduction réservés. Sauf indication contraire, aucune partie de cette publication ne peut être reproduite
-	ni utilisée sous quelque forme que ce soit et par aucun procédé, électronique ou mécanique, y compris la photocopie
-	et les microfilms, sans l'accord écrit de l'IEC ou du Comité national de l'IEC du pays du demandeur. Si vous avez des
-	questions sur le copyright de l'IEC ou si vous désirez obtenir des droits supplémentaires sur cette publication, utilisez
-	les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pays de résidence. -->
-										<fo:block margin-bottom="8pt" text-align="justify">
-											<xsl:apply-templates select="$updated_document2_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-message')]"/>
-										</fo:block>
-									
-										<xsl:variable name="telpos" select="count($updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
-										<fo:table table-layout="fixed" width="100%">
-											<fo:table-column column-width="59mm"/>
-											<fo:table-column column-width="90mm"/>
-											<fo:table-body>
-												<fo:table-row>
-													<fo:table-cell>
-														<fo:block>
-															<!-- Example: IEC Central Office
-																3, rue de Varembé
-																CH-1211 Geneva 20
-																Switzerland -->
-															<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-name')]" mode="coverpage"/>
-															<xsl:choose>
-																<xsl:when test="$telpos != 0">
-																	<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/node()[position() &lt; $telpos]" mode="coverpage"/>
-																</xsl:when>
-																<xsl:otherwise>
-																	<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]" mode="coverpage"/>
-																</xsl:otherwise>
-															</xsl:choose>
-														</fo:block>
-													</fo:table-cell>
-													<fo:table-cell>
-														<fo:block>
-															<!-- Example: Tel.: +41 22 919 02 11
-															 Fax: +41 22 919 0
-															 info@iec.ch
-															www.iec.ch -->
-															<xsl:choose>
-																<xsl:when test="$telpos != 0">
-																	<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/node()[position() &gt; $telpos]" mode="coverpage"/>
-																</xsl:when>
-																<xsl:otherwise>&#xA0;</xsl:otherwise>
-															</xsl:choose>
-														</fo:block>
-													</fo:table-cell>
-												</fo:table-row>
-											</fo:table-body>
-										</fo:table>
-									
-									</fo:block>
-								</fo:block-container>
-							</fo:block-container>
-						</fo:block-container>
-					</fo:block>
-					
-					<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:feedback-statement"/> <!-- //mn:clause[not(@id) or @id != 'boilerplate-cenelec-attention'] -->
-					<fo:block span="all" border-bottom="0.5pt solid black"/>
-					<!-- About the IEC
-					The International Electrotechnical Commission (IEC) is the leading global organization that prepares and publishes
-					International Standards for all electrical, electronic and related technologies.
-					About IEC publications
-					The technical content of IEC publications is kept under constant review by the IEC. Please make sure that you have the
-					latest edition, a corrigenda or an amendment might have been published.
-					...
-					-->
-					<xsl:if test="$updated_document2_boilerplate/mn:boilerplate/mn:feedback-statement">
-						<xsl:apply-templates select="$updated_document2_boilerplate/mn:boilerplate/mn:feedback-statement"/>
-						<fo:block span="all"/>
-					</xsl:if>
-					
-				</fo:flow>
-			</fo:page-sequence> <!-- END: 2nd Cover Page -->
+			<xsl:call-template name="inner-cover-page">
+				<xsl:with-param name="updated_document1_boilerplate" select="$updated_document1_boilerplate"/>
+				<xsl:with-param name="updated_document2_boilerplate" select="$updated_document2_boilerplate"/>
+			</xsl:call-template>
 		</xsl:if>
+		
 		<xsl:variable name="lang_second" select="(//mn:metanorma)[2]/mn:bibdata/mn:language[@current = 'true']"/>
 		<!-- For 'Published' documents insert 3rd Cover Page 
 				OR insert first Cover Page for FDIS -->
@@ -1014,6 +910,120 @@
 			</fo:page-sequence> <!-- END: cover-FDIS -->
 		</xsl:if>
 	</xsl:template>
+
+	<xsl:template name="inner-cover-page">
+		<xsl:param name="updated_document1_boilerplate"/>
+		<xsl:param name="updated_document2_boilerplate"/>
+		<!-- 2nd Cover Page -->
+		<fo:page-sequence master-reference="cover_2nd" force-page-count="no-force"  font-size="8pt">
+			<fo:flow flow-name="xsl-region-body">
+				<fo:block span="all">
+					<fo:block-container border="0.5pt solid black" margin-top="7mm">
+						<fo:block-container margin-left="2.5mm" margin-right="2.5mm" margin-top="1mm" margin-bottom="1mm">
+							<fo:block-container margin-left="0mm" margin-right="0mm">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="20mm"/>
+									<fo:table-column column-width="130mm"/>
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell>
+												<fo:block>
+													<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="17.8mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell font-size="10pt" font-weight="bold" display-align="after">
+												<fo:block margin-bottom="3pt">THIS PUBLICATION IS COPYRIGHT PROTECTED</fo:block>
+												<fo:block margin-bottom="10pt">
+													<!-- Example: Copyright © 2014 IEC, Geneva, Switzerland -->
+													<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-year')]"/>
+												</fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+								<fo:block>
+									<fo:block margin-bottom="8pt" text-align="justify">
+									<!-- Example: All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized in any form
+or by any means, electronic or mechanical, including photocopying and microfilm, without permission in writing from
+either IEC or IEC's member National Committee in the country of the requester. If you have any questions about IEC
+copyright or have an enquiry about obtaining additional rights to this publication, please contact the address below or
+your local IEC member National Committee for further information. -->
+									<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-message')]"/>
+									</fo:block>
+									<!-- Droits de reproduction réservés. Sauf indication contraire, aucune partie de cette publication ne peut être reproduite
+ni utilisée sous quelque forme que ce soit et par aucun procédé, électronique ou mécanique, y compris la photocopie
+et les microfilms, sans l'accord écrit de l'IEC ou du Comité national de l'IEC du pays du demandeur. Si vous avez des
+questions sur le copyright de l'IEC ou si vous désirez obtenir des droits supplémentaires sur cette publication, utilisez
+les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pays de résidence. -->
+									<fo:block margin-bottom="8pt" text-align="justify">
+										<xsl:apply-templates select="$updated_document2_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-message')]"/>
+									</fo:block>
+								
+									<xsl:variable name="telpos" select="count($updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/text()[contains(., 'Tel.')]/preceding-sibling::node())"/>
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="59mm"/>
+										<fo:table-column column-width="90mm"/>
+										<fo:table-body>
+											<fo:table-row>
+												<fo:table-cell>
+													<fo:block>
+														<!-- Example: IEC Central Office
+															3, rue de Varembé
+															CH-1211 Geneva 20
+															Switzerland -->
+														<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-name')]" mode="coverpage"/>
+														<xsl:choose>
+															<xsl:when test="$telpos != 0">
+																<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/node()[position() &lt; $telpos]" mode="coverpage"/>
+															</xsl:when>
+															<xsl:otherwise>
+																<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]" mode="coverpage"/>
+															</xsl:otherwise>
+														</xsl:choose>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell>
+													<fo:block>
+														<!-- Example: Tel.: +41 22 919 02 11
+														 Fax: +41 22 919 0
+														 info@iec.ch
+														www.iec.ch -->
+														<xsl:choose>
+															<xsl:when test="$telpos != 0">
+																<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:copyright-statement/mn:clause/mn:p[contains(@id, 'boilerplate-address')]/node()[position() &gt; $telpos]" mode="coverpage"/>
+															</xsl:when>
+															<xsl:otherwise>&#xA0;</xsl:otherwise>
+														</xsl:choose>
+													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+										</fo:table-body>
+									</fo:table>
+								
+								</fo:block>
+							</fo:block-container>
+						</fo:block-container>
+					</fo:block-container>
+				</fo:block>
+				
+				<xsl:apply-templates select="$updated_document1_boilerplate/mn:boilerplate/mn:feedback-statement"/> <!-- //mn:clause[not(@id) or @id != 'boilerplate-cenelec-attention'] -->
+				<fo:block span="all" border-bottom="0.5pt solid black"/>
+				<!-- About the IEC
+				The International Electrotechnical Commission (IEC) is the leading global organization that prepares and publishes
+				International Standards for all electrical, electronic and related technologies.
+				About IEC publications
+				The technical content of IEC publications is kept under constant review by the IEC. Please make sure that you have the
+				latest edition, a corrigenda or an amendment might have been published.
+				...
+				-->
+				<xsl:if test="$updated_document2_boilerplate/mn:boilerplate/mn:feedback-statement">
+					<xsl:apply-templates select="$updated_document2_boilerplate/mn:boilerplate/mn:feedback-statement"/>
+					<fo:block span="all"/>
+				</xsl:if>
+				
+			</fo:flow>
+		</fo:page-sequence> <!-- END: 2nd Cover Page -->
+	</xsl:template> <!-- END: inner-cover-page -->
 
 	<xsl:template match="mn:pagebreak" priority="2">
 		<xsl:copy-of select="."/>
