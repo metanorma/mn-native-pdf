@@ -179,10 +179,10 @@
 				<fo:region-end extent="19mm"/>
 			</fo:simple-page-master>
 			<!-- internal cover page -->
-			<fo:simple-page-master master-name="internal-cover-page-jcgm" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+			<fo:simple-page-master master-name="inner-cover-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="11mm" margin-bottom="21mm" margin-left="25mm" margin-right="19mm"/>
 				<fo:region-before region-name="header" extent="11mm"/>
-				<fo:region-after region-name="internal-cover-page-jcgm-footer" extent="21mm"/>
+				<fo:region-after region-name="inner-cover-page-footer" extent="21mm"/>
 				<fo:region-start extent="25mm"/>
 				<fo:region-end extent="19mm"/>
 			</fo:simple-page-master>
@@ -268,6 +268,7 @@
 			
 			<xsl:call-template name="cover-page"/>
 			
+			<xsl:call-template name="inner-cover-page"/>
 			
 			<xsl:variable name="updated_xml">
 				<xsl:call-template name="updateXML"/>
@@ -446,9 +447,11 @@
 				</fo:block-container>
 			</fo:flow>
 		</fo:page-sequence>
-		
-		<fo:page-sequence master-reference="internal-cover-page-jcgm" force-page-count="no-force">
-			<fo:static-content flow-name="internal-cover-page-jcgm-footer" font-size="9pt">
+	</xsl:template> <!-- END: cover-page -->
+	
+	<xsl:template name="inner-cover-page">
+		<fo:page-sequence master-reference="inner-cover-page" force-page-count="no-force">
+			<fo:static-content flow-name="inner-cover-page-footer" font-size="9pt">
 				<!-- example: (c) JCGM 2009— All rights reserved -->
 				<fo:block text-align="right">
 					<xsl:value-of select="$copyrightText"/>
@@ -496,8 +499,8 @@
 					</xsl:if>
 				</fo:block>
 			</fo:flow>
-		</fo:page-sequence> <!-- END: internal-cover-page-jcgm -->
-		</xsl:template> <!-- END: cover-page -->
+		</fo:page-sequence>
+	</xsl:template> <!-- END: inner-cover-page -->
 
 
 	<xsl:template name="processPrefaceAndMainSectionsJCGM_items">
