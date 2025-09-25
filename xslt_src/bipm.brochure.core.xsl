@@ -623,6 +623,7 @@
 				</xsl:otherwise>
 			</xsl:choose>
 			
+			<xsl:call-template name="back-page"/>
 			
 		</fo:root>
 	</xsl:template>
@@ -1899,7 +1900,9 @@
 		</xsl:if>
 	</xsl:template> <!-- END: inner-cover-page -->
 	<!-- End Cover Pages -->
-		
+	
+	<xsl:template name="back-page">
+	</xsl:template>
 	
 	<xsl:template match="mn:metanorma/mn:bibdata/mn:title[@language = 'en']/text()" priority="3">
 		<xsl:variable name="mep_text" select="'Mise en pratique'"/>
