@@ -423,6 +423,9 @@
 					<!-- =========================== -->
 					<!-- =========================== -->
 			</xsl:for-each>
+			
+			<xsl:call-template name="back-page"/>
+			
 		</fo:root>
 	</xsl:template>
 	
@@ -662,6 +665,9 @@
 				</fo:page-sequence>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template> <!-- inner-cover-page -->
+	
+	<xsl:template name="back-page">
 	</xsl:template>
 	
 	<xsl:template name="insertListOf_Title">

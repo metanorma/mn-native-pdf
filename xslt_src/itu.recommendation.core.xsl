@@ -611,6 +611,8 @@
 				</xsl:for-each>
 			</xsl:for-each>
 			
+			<xsl:call-template name="back-page"/>
+			
 		</fo:root>
 	</xsl:template> 
 
@@ -1803,6 +1805,9 @@
 			</fo:page-sequence>
 			 <!-- End: Second cover page -->
 		</xsl:if>
+	</xsl:template> <!-- END: inner-cover-page -->
+	
+	<xsl:template name="back-page">
 	</xsl:template>
 
 	<xsl:template name="insertMeetingInfo">

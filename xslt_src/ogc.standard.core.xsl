@@ -549,6 +549,8 @@
 				
 			</xsl:for-each>
 				
+			<xsl:call-template name="back-page"/>
+				
 		</fo:root>
 		
 	</xsl:template> 
@@ -805,6 +807,9 @@
 	</xsl:template> <!-- END: cover-page -->
 	
 	<xsl:template name="inner-cover-page">
+	</xsl:template>
+	
+	<xsl:template name="back-page">
 	</xsl:template>
 
 	<xsl:template name="processPrefaceAndMainSectionsOGC_items">
