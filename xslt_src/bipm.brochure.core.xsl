@@ -2349,7 +2349,7 @@
 
 	
 	<xsl:template match="mn:feedback-statement//mn:p" priority="2">
-		<fo:block margin-top="6pt">
+		<fo:block xsl:use-attribute-sets="feedback-statement-p-style">
 			<xsl:variable name="p_num"><xsl:number/></xsl:variable>			
 			<xsl:if test="$p_num = 1">Édité par le </xsl:if>
 			<xsl:apply-templates />
