@@ -171,67 +171,70 @@
 	</xsl:variable>
 	
 	<xsl:variable name="toc_recommendations_">
-		<xsl:for-each select="//mn:table[.//mn:p[@class = 'RecommendationTitle']]">
-			<xsl:variable name="table_id" select="@id"/>
-			<recommendation alt-text="{.//mn:p[@class = 'RecommendationTitle'][1]}">
-				<xsl:copy-of select="@id"/>
-				<xsl:variable name="title">
-					<xsl:apply-templates select=".//mn:p[@class = 'RecommendationTitle'][ancestor::mn:table[1][@id= $table_id]]/mn:fmt-name/node()"/>
-					<xsl:if test=".//mn:p[@class = 'RecommendationLabel'][ancestor::mn:table[1][@id= $table_id]]/node()">
-						<xsl:text>: </xsl:text>
-						<xsl:variable name="recommendationLabel">
-							<tt><xsl:copy-of select=".//mn:p[@class = 'RecommendationLabel'][ancestor::mn:table[1][@id= $table_id]]/mn:fmt-name/node()"/></tt>
-						</xsl:variable>
-						<xsl:apply-templates select="xalan:nodeset($recommendationLabel)/node()"/>
-					</xsl:if>
-				</xsl:variable>
-				<xsl:variable name="bookmark">
-					<xsl:value-of select="normalize-space(.//mn:p[@class = 'RecommendationTitle'][ancestor::mn:table[1][@id= $table_id]]/mn:fmt-name)"/>
-					<xsl:if test=".//mn:p[@class = 'RecommendationLabel'][ancestor::mn:table[1][@id= $table_id]]/node()">
-						<xsl:text>: </xsl:text>
-						<xsl:value-of select="normalize-space(.//mn:p[@class = 'RecommendationLabel'][ancestor::mn:table[1][@id= $table_id]]/mn:fmt-name)"/>
-					</xsl:if>
-				</xsl:variable>
-				<xsl:variable name="regex_str" select="'^([^0-9]+) (\d+).*'"/>
-				<xsl:variable name="class" select="java:replaceAll(java:java.lang.String.new($bookmark), $regex_str, '$1')"/>
-				<xsl:variable name="num" select="java:replaceAll(java:java.lang.String.new($bookmark), $regex_str, '$2')"/>
-				<xsl:variable name="class_lc" select="java:toLowerCase(java:java.lang.String.new($class))"/>
-				<!-- <xsl:attribute name="class_str">
-					<xsl:value-of select="$class"/>
-				</xsl:attribute> -->
-				<xsl:attribute name="class">
-					<xsl:choose>
-						<xsl:when test="$class_lc = 'requirements class'">1</xsl:when>
-						<xsl:when test="$class_lc = 'requirement'">2</xsl:when>
-						<xsl:when test="$class_lc = 'recommendation'">3</xsl:when>
-						<xsl:when test="$class_lc = 'permission'">4</xsl:when>
-						<xsl:when test="$class_lc = 'conformance class'">5</xsl:when>
-						<xsl:when test="$class_lc = 'abstract test'">6</xsl:when>
-						<xsl:when test="$class_lc = 'requirement test'">7</xsl:when>
-						<xsl:when test="$class_lc = 'recommendation test'">8</xsl:when>
-						<xsl:when test="$class_lc = 'permission test'">9</xsl:when>
-						<xsl:otherwise>9999</xsl:otherwise>
-					</xsl:choose>
-				</xsl:attribute>
-				<xsl:attribute name="num">
-					<xsl:value-of select="$num"/>
-				</xsl:attribute>
-				<title>
-					<xsl:copy-of select="$title"/>
-				</title>
-				<bookmark>
-					<xsl:value-of select="$bookmark"/>
-				</bookmark>
-			</recommendation>
-		</xsl:for-each>
+		<xsl:if test="//mn:metanorma/mn:metanorma-extension/mn:toc[@type='recommendation']/mn:title">
+			<xsl:for-each select="//mn:table[.//mn:p[@class = 'RecommendationTitle']]">
+				<xsl:variable name="table_id" select="@id"/>
+				<recommendation alt-text="{.//mn:p[@class = 'RecommendationTitle'][1]}">
+					<xsl:copy-of select="@id"/>
+					<xsl:variable name="title">
+						<xsl:apply-templates select=".//mn:p[@class = 'RecommendationTitle'][ancestor::mn:table[1][@id= $table_id]]/mn:fmt-name/node()"/>
+						<xsl:if test=".//mn:p[@class = 'RecommendationLabel'][ancestor::mn:table[1][@id= $table_id]]/node()">
+							<xsl:text>: </xsl:text>
+							<xsl:variable name="recommendationLabel">
+								<tt><xsl:copy-of select=".//mn:p[@class = 'RecommendationLabel'][ancestor::mn:table[1][@id= $table_id]]/mn:fmt-name/node()"/></tt>
+							</xsl:variable>
+							<xsl:apply-templates select="xalan:nodeset($recommendationLabel)/node()"/>
+						</xsl:if>
+					</xsl:variable>
+					<xsl:variable name="bookmark">
+						<xsl:value-of select="normalize-space(.//mn:p[@class = 'RecommendationTitle'][ancestor::mn:table[1][@id= $table_id]]/mn:fmt-name)"/>
+						<xsl:if test=".//mn:p[@class = 'RecommendationLabel'][ancestor::mn:table[1][@id= $table_id]]/node()">
+							<xsl:text>: </xsl:text>
+							<xsl:value-of select="normalize-space(.//mn:p[@class = 'RecommendationLabel'][ancestor::mn:table[1][@id= $table_id]]/mn:fmt-name)"/>
+						</xsl:if>
+					</xsl:variable>
+					<xsl:variable name="regex_str" select="'^([^0-9]+) (\d+).*'"/>
+					<xsl:variable name="class" select="java:replaceAll(java:java.lang.String.new($bookmark), $regex_str, '$1')"/>
+					<xsl:variable name="num" select="java:replaceAll(java:java.lang.String.new($bookmark), $regex_str, '$2')"/>
+					<xsl:variable name="class_lc" select="java:toLowerCase(java:java.lang.String.new($class))"/>
+					<!-- <xsl:attribute name="class_str">
+						<xsl:value-of select="$class"/>
+					</xsl:attribute> -->
+					<xsl:attribute name="class">
+						<xsl:choose>
+							<xsl:when test="$class_lc = 'requirements class'">1</xsl:when>
+							<xsl:when test="$class_lc = 'requirement'">2</xsl:when>
+							<xsl:when test="$class_lc = 'recommendation'">3</xsl:when>
+							<xsl:when test="$class_lc = 'permission'">4</xsl:when>
+							<xsl:when test="$class_lc = 'conformance class'">5</xsl:when>
+							<xsl:when test="$class_lc = 'abstract test'">6</xsl:when>
+							<xsl:when test="$class_lc = 'requirement test'">7</xsl:when>
+							<xsl:when test="$class_lc = 'recommendation test'">8</xsl:when>
+							<xsl:when test="$class_lc = 'permission test'">9</xsl:when>
+							<xsl:otherwise>9999</xsl:otherwise>
+						</xsl:choose>
+					</xsl:attribute>
+					<xsl:attribute name="num">
+						<xsl:value-of select="$num"/>
+					</xsl:attribute>
+					<title>
+						<xsl:copy-of select="$title"/>
+					</title>
+					<bookmark>
+						<xsl:value-of select="$bookmark"/>
+					</bookmark>
+				</recommendation>
+			</xsl:for-each>
+		</xsl:if>
 	</xsl:variable>
-	<xsl:variable name="toc_recommendations">
+	<xsl:variable name="toc_recommendations__">
 		<xsl:for-each select="xalan:nodeset($toc_recommendations_)/*">
 			<xsl:sort select="@class" data-type="number"/>
 			<xsl:sort select="@num" data-type="number"/>
 			<xsl:copy-of select="."/>
 		</xsl:for-each>
-	</xsl:variable>	
+	</xsl:variable>
+	<xsl:variable name="toc_recommendations" select="xalan:nodeset($toc_recommendations__)"/>
 	
 	<xsl:variable name="contents_">
 		<mnx:contents>
@@ -241,9 +244,9 @@
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
 			<xsl:apply-templates select="//mn:indexsect" mode="contents"/>
 			
-			<xsl:call-template name="processTablesFigures_Contents">
-				<xsl:with-param name="always">true</xsl:with-param>
-			</xsl:call-template>
+			<xsl:call-template name="processTablesFigures_Contents"/>
+			<!-- 	<xsl:with-param name="always">true</xsl:with-param>
+			</xsl:call-template> -->
 		</mnx:contents>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
@@ -314,7 +317,7 @@
 				<xsl:call-template name="addBookmarks">
 					<xsl:with-param name="contents" select="$contents"/>
 					<xsl:with-param name="contents_addon">
-						<xsl:if test="$contents//mnx:tables/mnx:table or $contents//mnx:figures/mnx:figure or //mn:table[.//mn:p[@class = 'RecommendationTitle']]">
+						<xsl:if test="$contents//mnx:tables/mnx:table or $contents//mnx:figures/mnx:figure or $toc_recommendations/*[normalize-space(@id) != '']">
 						<fo:bookmark internal-destination="empty_bookmark">
 							<fo:bookmark-title>—————</fo:bookmark-title>
 						</fo:bookmark>
@@ -352,12 +355,12 @@
 						</fo:bookmark>
 					</xsl:if>
 
-					<xsl:if test="//mn:table[.//mn:p[@class = 'RecommendationTitle']]">							
+					<xsl:if test="$toc_recommendations/*[normalize-space(@id) != '']">							
 						<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
 							<fo:bookmark-title>
 								<xsl:value-of select="$title-list-recommendations"/>
 							</fo:bookmark-title>
-							<xsl:for-each select="xalan:nodeset($toc_recommendations)/*">
+							<xsl:for-each select="$toc_recommendations/*[normalize-space(@id) != '']">
 								<fo:bookmark internal-destination="{@id}">
 									<fo:bookmark-title><xsl:value-of select="bookmark"/></fo:bookmark-title>
 								</fo:bookmark>
@@ -999,12 +1002,12 @@
 				</xsl:if>
 				
 				<!-- List of Recommendations -->
-				<xsl:if test="//mn:table[.//mn:p[@class = 'RecommendationTitle']]">							
+				<xsl:if test="$toc_recommendations/*[normalize-space(@id) != '']">							
 					<xsl:call-template name="insertListOf_Title">
 						<xsl:with-param name="title" select="$title-list-recommendations"/>
 					</xsl:call-template>
 					<fo:block-container line-height="130%" role="TOC">
-						<xsl:for-each select="xalan:nodeset($toc_recommendations)/*[normalize-space(@id) != '']">
+						<xsl:for-each select="$toc_recommendations/*[normalize-space(@id) != '']">
 							<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
 								<fo:basic-link internal-destination="{@id}">
 									<xsl:call-template name="setAltText">
