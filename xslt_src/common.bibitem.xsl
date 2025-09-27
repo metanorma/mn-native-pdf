@@ -294,24 +294,40 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:variable name="last_bibitem_bibliotag">
-				<xsl:apply-templates select="following-sibling::mn:bibitem[not(@hidden='true')][last()]/mn:biblio-tag">
-					<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
-				</xsl:apply-templates>
-				<xsl:if test="not(following-sibling::mn:bibitem[not(@hidden='true')][last()]/mn:biblio-tag)">
-					<xsl:apply-templates select="mn:biblio-tag">
-						<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
-					</xsl:apply-templates>
+			<xsl:variable name="bibitems_bibliotag_num_only">
+				<xsl:for-each select="following-sibling::mn:bibitem[not(@hidden='true')]/mn:biblio-tag">
+					<xsl:copy>
+						<xsl:apply-templates select=".">
+							<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+						</xsl:apply-templates>
+					</xsl:copy>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:variable name="bibitems_bibliotag">				
+				<xsl:copy-of select="xalan:nodeset($bibitems_bibliotag_num_only)/mn:biblio-tag[normalize-space(translate(., '[]1234567890', '')) = '']"/>
+				<xsl:if test="not(xalan:nodeset($bibitems_bibliotag_num_only)/mn:biblio-tag[normalize-space(translate(., '[]1234567890', '')) = ''])">
+					<mn:biblio-tag>
+						<xsl:apply-templates select="mn:biblio-tag">
+							<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+						</xsl:apply-templates>
+					</mn:biblio-tag>
 				</xsl:if>
 			</xsl:variable>
+			<!-- <xsl:copy-of select="$bibitems_bibliotag"/> -->
+			<xsl:variable name="last_bibitem_bibliotag" select="xalan:nodeset($bibitems_bibliotag)/mn:biblio-tag[normalize-space(translate(., '[]1234567890', '')) = ''][last()]"/>
 			<xsl:variable name="last_bibitem_bibliotag_number_length" select="string-length(translate($last_bibitem_bibliotag, '[] ', ''))"/>
 			<xsl:if test="$last_bibitem_bibliotag_number_length &gt; 1">
 				<xsl:attribute name="provisional-distance-between-starts">
+					<!-- if biblio-tag is number, i.e. [1], [10] -->
 					<xsl:choose>
 						<xsl:when test="$last_bibitem_bibliotag_number_length = 2">9.2mm</xsl:when>
 						<xsl:when test="$last_bibitem_bibliotag_number_length &gt;= 3">11mm</xsl:when>
 					</xsl:choose>
 				</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$last_bibitem_bibliotag_number_length = 0">
+				<!-- <biblio-tag>[PDF Declarations]</biblio-tag> -->
+				<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
@@ -684,16 +700,31 @@
 				<!-- continue from <xsl:template match="mn:references[not(@normative='true')]" priority="3"> -->
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="bibitem-non-normative-list-style">
 					<xsl:call-template name="refine_bibitem-non-normative-list-style"/>
+					<xsl:variable name="biblio_tag_first_part">
+						<xsl:apply-templates select="mn:biblio-tag">
+							<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
+						</xsl:apply-templates>
+					</xsl:variable>
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block role="SKIP">
-								<xsl:apply-templates select="mn:biblio-tag">
-									<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
-								</xsl:apply-templates>
+								<!-- if biblio-tag is number -->
+								<xsl:if test="normalize-space(translate($biblio_tag_first_part, '[] 1234567890', '')) = ''">
+									<xsl:value-of select="$biblio_tag_first_part"/>
+								</xsl:if>
 							</fo:block>
 						</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()">
 							<fo:block>
+								<!-- if biblio-tag isn't number -->
+								<xsl:if test="normalize-space(translate($biblio_tag_first_part, '[] 1234567890', '')) != ''">
+									<xsl:attribute name="margin-left">8mm</xsl:attribute>
+									<xsl:attribute name="text-indent">-8mm</xsl:attribute>
+									<xsl:if test="not(contains($biblio_tag_first_part, '['))">[</xsl:if>
+									<xsl:value-of select="$biblio_tag_first_part"/>
+									<xsl:if test="not(contains($biblio_tag_first_part, '['))">]</xsl:if>
+									<xsl:text>&#xa0;</xsl:text>
+								</xsl:if>
 								<xsl:apply-templates select="mn:biblio-tag">
 									<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 								</xsl:apply-templates>
