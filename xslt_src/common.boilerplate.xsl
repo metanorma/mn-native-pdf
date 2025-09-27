@@ -35,6 +35,19 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="copyright-statement-title-style">
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+			<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
+			<xsl:attribute name="space-after">0pt</xsl:attribute>
+			<xsl:attribute name="space-before">16pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="margin-left">0.5mm</xsl:attribute>
 			<xsl:attribute name="margin-bottom">3mm</xsl:attribute>
@@ -55,6 +68,11 @@
 	</xsl:attribute-set> <!-- copyright-statement-title-style -->
 	
 	<xsl:template name="refine_copyright-statement-title-style">
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:if test="$doctype = 'flex-standard'">
+				<xsl:attribute name="space-after">2pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$layoutVersion = '1989'">
 					<xsl:attribute name="font-size">11pt</xsl:attribute>
@@ -203,6 +221,9 @@
 			<xsl:attribute name="margin-left">1.5mm</xsl:attribute>
 			<xsl:attribute name="margin-right">1.5mm</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 		</xsl:if>
@@ -295,6 +316,9 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="legal-statement-p-style">
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="text-align">left</xsl:attribute>
 		</xsl:if>
@@ -347,16 +371,53 @@
 	
 	<xsl:attribute-set name="feedback-statement-title-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="space-after">2pt</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="space-before">16pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- feedback-statement-title-style -->
 	
 	<xsl:template name="refine_feedback-statement-title-style">
-	
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:if test="@depth = 1 and not(../following-sibling::*)">
+				<xsl:attribute name="font-size">9pt</xsl:attribute><!-- for address -->
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
+			<xsl:if test="@depth &gt;= 2">
+				<xsl:attribute name="role">H<xsl:value-of select="@depth"/></xsl:attribute>
+				<xsl:attribute name="font-size">inherit</xsl:attribute>
+				<xsl:attribute name="space-after">0pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:if test="@depth &gt;= 2">
+				<xsl:attribute name="color">inherit</xsl:attribute>
+				<xsl:attribute name="space-before">0</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:attribute-set name="feedback-statement-p-style">
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="space-after">4pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="margin-top">6pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
@@ -369,6 +430,19 @@
 	</xsl:attribute-set> <!-- feedback-statement-p-style -->
 
 	<xsl:template name="refine_feedback-statement-p-style">
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
+			<xsl:if test="following-sibling::mn:ul">
+				<xsl:attribute name="space-after">4</xsl:attribute>
+			</xsl:if>
+			<!-- for address -->
+			<xsl:if test="not(../following-sibling::*)">
+				<xsl:attribute name="font-size">8pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="count(ancestor::mn:clause) &gt; 1">
+				<xsl:attribute name="space-after">0</xsl:attribute>
+				<xsl:attribute name="font-size">inherit</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template>
 
 	<!-- End boilerplate sections styles -->
