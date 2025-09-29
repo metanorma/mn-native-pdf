@@ -3331,7 +3331,7 @@
 		<xsl:call-template name="insertHeader">
 			<xsl:with-param name="docidentifier" select="$docidentifier"/>
 			<xsl:with-param name="section" select="$section"/>
-			<xsl:with-param name="section_title" select="$section_title"/>/>
+			<xsl:with-param name="section_title" select="$section_title"/>
 		</xsl:call-template>
 		
 		<xsl:call-template name="insertFooter">
