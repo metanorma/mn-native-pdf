@@ -1075,6 +1075,14 @@
 		
 		<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 		
+		<xsl:call-template name="insertHeader">
+			<xsl:with-param name="isDraft" select="$isDraft"/>
+		</xsl:call-template>
+		<xsl:call-template name="insertFooter"/>
+	</xsl:template>
+	
+	<xsl:template name="insertHeader">
+		<xsl:param name="isDraft"/>
 		<fo:static-content flow-name="header-even-jcgm" role="artifact">
 			<xsl:call-template name="insertDraftWatermark">
 				<xsl:with-param name="isDraft" select="$isDraft"/>
@@ -1082,17 +1090,6 @@
 			<fo:block-container height="98%">
 				<fo:block font-size="13pt" font-weight="bold" padding-top="12mm">
 					<xsl:value-of select="$header_text"/>
-				</fo:block>
-			</fo:block-container>
-		</fo:static-content>
-		<fo:static-content flow-name="footer-even-jcgm" role="artifact">
-			<fo:block-container height="98%">
-				<fo:block text-align-last="justify" >
-					<fo:inline font-size="12pt" font-weight="bold"><fo:page-number/></fo:inline>
-					<fo:inline keep-together.within-line="always">
-						<fo:leader leader-pattern="space"/>
-						<fo:inline font-size="10pt"><xsl:value-of select="$copyrightText"/></fo:inline>
-					</fo:inline>
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
@@ -1106,6 +1103,26 @@
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
+		<fo:static-content flow-name="header-blank" role="artifact">
+			<xsl:call-template name="insertDraftWatermark">
+				<xsl:with-param name="isDraft" select="$isDraft"/>
+			</xsl:call-template>
+			<fo:block></fo:block>
+		</fo:static-content>
+	</xsl:template>
+	
+	<xsl:template name="insertFooter">
+		<fo:static-content flow-name="footer-even-jcgm" role="artifact">
+			<fo:block-container height="98%">
+				<fo:block text-align-last="justify" >
+					<fo:inline font-size="12pt" font-weight="bold"><fo:page-number/></fo:inline>
+					<fo:inline keep-together.within-line="always">
+						<fo:leader leader-pattern="space"/>
+						<fo:inline font-size="10pt"><xsl:value-of select="$copyrightText"/></fo:inline>
+					</fo:inline>
+				</fo:block>
+			</fo:block-container>
+		</fo:static-content>
 		<fo:static-content flow-name="footer-odd-jcgm" role="artifact">
 			<fo:block-container height="98%">
 				<fo:block text-align-last="justify" >
@@ -1116,12 +1133,6 @@
 					</fo:inline>
 				</fo:block>
 			</fo:block-container>
-		</fo:static-content>
-		<fo:static-content flow-name="header-blank" role="artifact">
-			<xsl:call-template name="insertDraftWatermark">
-				<xsl:with-param name="isDraft" select="$isDraft"/>
-			</xsl:call-template>
-			<fo:block></fo:block>
 		</fo:static-content>
 	</xsl:template>
 	
