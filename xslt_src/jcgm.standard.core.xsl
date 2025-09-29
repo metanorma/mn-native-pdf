@@ -384,6 +384,8 @@
 			<!-- Index -->
 			<xsl:apply-templates select="xalan:nodeset($indexes)/doc//mn:indexsect" mode="index" />
 			
+			<xsl:call-template name="back-page"/>
+			
 		</fo:root>
 	</xsl:template>
 
@@ -502,6 +504,8 @@
 		</fo:page-sequence>
 	</xsl:template> <!-- END: inner-cover-page -->
 
+	<xsl:template name="back-page">
+	</xsl:template>
 
 	<xsl:template name="processPrefaceAndMainSectionsJCGM_items">
 		
