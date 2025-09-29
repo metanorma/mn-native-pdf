@@ -1170,11 +1170,18 @@
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="section"/>
 		
-		<xsl:call-template name="insertHoneycomb">
+		<xsl:call-template name="insertHeader">
 			<xsl:with-param name="section" select="$section"/>
 		</xsl:call-template>
 		
 		<xsl:call-template name="insertFooter"/>
+	</xsl:template>
+	
+	<xsl:template name="insertHeader">
+		<xsl:param name="section"/>
+		<xsl:call-template name="insertHoneycomb">
+			<xsl:with-param name="section" select="$section"/>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<xsl:template name="insertHoneycomb">
