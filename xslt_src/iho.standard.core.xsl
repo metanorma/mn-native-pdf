@@ -1189,14 +1189,29 @@
 	<!-- https://github.com/metanorma/mn-native-pdf/issues/214 -->
 	<xsl:template match="mn:index"/>
 	
-
-
+	
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="title_header"/>
 		<xsl:param name="docidentifier"/>
 		<xsl:param name="edition"/>
 		<xsl:param name="month_year"/>
 		<xsl:param name="font-weight" select="'bold'"/>
+		<xsl:param name="orientation"/>
+		
+		<xsl:call-template name="insertHeader">
+			<xsl:with-param name="title_header" select="$title_header"/>
+			<xsl:with-param name="orientation" select="$orientation"/>
+		</xsl:call-template>
+		
+		<xsl:call-template name="insertFooter">
+			<xsl:with-param name="docidentifier" select="$docidentifier"/>
+			<xsl:with-param name="edition" select="$edition"/>
+			<xsl:with-param name="month_year" select="$month_year"/>
+		</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template name="insertHeader">
+		<xsl:param name="title_header"/>
 		<xsl:param name="orientation"/>
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container height="100%" font-size="8pt">
@@ -1238,12 +1253,8 @@
 			<xsl:with-param name="title_header" select="$title_header"/>
 			<xsl:with-param name="orientation" select="$orientation"/>
 		</xsl:call-template>
-		<xsl:call-template name="insertFooter">
-			<xsl:with-param name="docidentifier" select="$docidentifier"/>
-			<xsl:with-param name="edition" select="$edition"/>
-			<xsl:with-param name="month_year" select="$month_year"/>
-		</xsl:call-template>
 	</xsl:template>
+	
 	<xsl:template name="insertHeaderBlank">
 		<xsl:param name="title_header"/>
 		<xsl:param name="orientation"/>
@@ -1273,6 +1284,7 @@
 			</fo:block-container>
 		</fo:static-content>
 	</xsl:template>
+	
 	<xsl:template name="insertFooter">
 		<xsl:param name="docidentifier"/>
 		<xsl:param name="edition"/>
@@ -1293,6 +1305,7 @@
 			</fo:block-container>
 		</fo:static-content>
 	</xsl:template>
+	
 	<xsl:template name="insertHeaderFooterBlank">
 		<xsl:param name="title_header"/>
 		<xsl:param name="docidentifier"/>
