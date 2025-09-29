@@ -2070,6 +2070,11 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 	<!-- =================== -->
 	
 	<xsl:template name="insertHeaderFooter">
+		<xsl:call-template name="insertHeader"/>
+		<xsl:call-template name="insertFooter"/>
+	</xsl:template>
+	
+	<xsl:template name="insertHeader">
 		<fo:static-content flow-name="header-even" role="artifact">
 			<fo:block-container height="25mm" display-align="after">
 				<fo:table table-layout="fixed" width="100%">
@@ -2119,6 +2124,9 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 		</fo:static-content>
 	</xsl:template>
 
+	<xsl:template name="insertFooter">
+	</xsl:template>
+	
 	<xsl:template name="back-page">
 		<xsl:if test="$stage_published = 'true'">
 			<fo:page-sequence master-reference="blank-page">
