@@ -650,8 +650,12 @@
 		</xsl:call-template>
 	</xsl:template>
 
-	
 	<xsl:template name="insertHeaderFooter">
+		<xsl:call-template name="insertHeader"/>
+		<xsl:call-template name="insertFooter"/>
+	</xsl:template>
+
+	<xsl:template name="insertHeader">
 		<fo:static-content flow-name="header-even" role="artifact">
 			<fo:block-container height="17mm" display-align="before">
 				<fo:block padding-top="12.5mm">
@@ -659,6 +663,16 @@
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
+		<fo:static-content flow-name="header-odd" role="artifact">
+			<fo:block-container height="17mm" display-align="before">
+				<fo:block text-align="right" padding-top="12.5mm">
+					<xsl:value-of select="$header"/>
+				</fo:block>
+			</fo:block-container>
+		</fo:static-content>
+	</xsl:template>
+	
+	<xsl:template name="insertFooter">
 		<fo:static-content flow-name="footer-even" role="artifact">
 			<fo:block-container font-size="10pt" height="100%" display-align="after">
 				<fo:table table-layout="fixed" width="100%">
@@ -675,13 +689,6 @@
 						</fo:table-row>
 					</fo:table-body>
 				</fo:table>
-			</fo:block-container>
-		</fo:static-content>
-		<fo:static-content flow-name="header-odd" role="artifact">
-			<fo:block-container height="17mm" display-align="before">
-				<fo:block text-align="right" padding-top="12.5mm">
-					<xsl:value-of select="$header"/>
-				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="footer-odd" role="artifact">
