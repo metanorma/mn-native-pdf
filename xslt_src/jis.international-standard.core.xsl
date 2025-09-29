@@ -3327,6 +3327,23 @@
 		<xsl:param name="section"/>
 		<xsl:param name="copyrightText"/>
 		<xsl:param name="section_title"/>
+		
+		<xsl:call-template name="insertHeader">
+			<xsl:with-param name="docidentifier" select="$docidentifier"/>
+			<xsl:with-param name="section" select="$section"/>
+			<xsl:with-param name="section_title" select="$section_title"/>/>
+		</xsl:call-template>
+		
+		<xsl:call-template name="insertFooter">
+			<xsl:with-param name="section" select="$section"/>
+			<xsl:with-param name="copyrightText" select="$copyrightText"/>
+		</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template name="insertHeader">
+		<xsl:param name="docidentifier"/>
+	  <xsl:param name="section"/>
+	  <xsl:param name="section_title"/>
 		<fo:static-content flow-name="header-odd-first" role="artifact">
 			<fo:block-container font-family="Arial" font-size="9pt" height="26mm" display-align="after" text-align="right">
 				<xsl:if test="$vertical_layout = 'true'">
@@ -3381,12 +3398,7 @@
 				<fo:block><fo:page-number /></fo:block>
 				<fo:block>&#xa0;</fo:block>
 			</fo:block-container>
-		</fo:static-content>		
-		
-		<xsl:call-template name="insertFooter">
-			<xsl:with-param name="section" select="$section"/>
-			<xsl:with-param name="copyrightText" select="$copyrightText"/>
-		</xsl:call-template>
+		</fo:static-content>
 	</xsl:template>
 	
 	<xsl:template name="insertFooter">
@@ -3394,9 +3406,9 @@
 		<xsl:param name="copyrightText"/>
 		<fo:static-content flow-name="footer">
 			<fo:block-container height="24mm" display-align="after">
-        <xsl:if test="$section = 'commentary'">
-          <xsl:attribute name="height">24.5mm</xsl:attribute>
-        </xsl:if>
+				<xsl:if test="$section = 'commentary'">
+					<xsl:attribute name="height">24.5mm</xsl:attribute>
+				</xsl:if>
 				<xsl:if test="$section = 'preface'">
 					<fo:block font-size="9pt" text-align="center" space-after="10pt">(<fo:inline font-family="Times New Roman"><fo:page-number /></fo:inline>)</fo:block>
 				</xsl:if>
