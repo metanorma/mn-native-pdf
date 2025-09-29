@@ -42,8 +42,8 @@
 
 	<xsl:variable name="layoutVersion_">
 		<xsl:choose>
-			<xsl:when test="$document_scheme = '' or $document_scheme = 'current'">2022</xsl:when>
-			<xsl:otherwise>default</xsl:otherwise>
+			<xsl:when test="$document_scheme = '' or $document_scheme = '2022'">2022</xsl:when>
+			<xsl:otherwise>2018</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
 	<xsl:variable name="layoutVersion" select="normalize-space($layoutVersion_)"/>
