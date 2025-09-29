@@ -628,11 +628,19 @@
 
 		
 	<xsl:template name="insertHeaderFooter">
+		<xsl:call-template name="insertHeader"/>
+		<xsl:call-template name="insertFooter"/>
+	</xsl:template>
+	
+	<xsl:template name="insertHeader">
 		<fo:static-content flow-name="header" role="artifact">
 			<fo:block-container height="2.5mm" background-color="{$color-header-document}">
 				<fo:block font-size="1pt">&#xA0;</fo:block>
 			</fo:block-container>
 		</fo:static-content>
+	</xsl:template>
+	
+	<xsl:template name="insertFooter">
 		<fo:static-content flow-name="footer" role="artifact">
 			<fo:block-container font-family="Azo Sans Lt" font-size="10.1pt" height="100%" display-align="after"> <!-- 11.5pt -->
 				<fo:block padding-bottom="13mm" text-align="right" color="rgb(144, 144, 144)">
