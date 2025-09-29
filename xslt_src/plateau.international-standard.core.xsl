@@ -1901,32 +1901,7 @@
 	
 	<xsl:template name="insertHeaderFooter">
 		<xsl:call-template name="insertHeader"/>
-		<fo:static-content flow-name="footer">
-			<xsl:choose>
-				<xsl:when test="$doctype = 'technical-report'">
-					<fo:block-container height="23mm" display-align="after">
-						<fo:block text-align="center" margin-bottom="16mm">
-							<xsl:if test="$vertical_layout = 'true'">
-								<xsl:attribute name="margin-bottom">0mm</xsl:attribute>
-							</xsl:if>
-							<xsl:text>- </xsl:text>
-							<fo:page-number />
-							<xsl:text> -</xsl:text>
-						</fo:block>
-					</fo:block-container>
-				</xsl:when>
-				<xsl:otherwise>
-					<fo:block-container height="24mm" display-align="after">
-						<fo:block text-align="center" margin-bottom="16mm">
-							<xsl:if test="$vertical_layout = 'true'">
-								<xsl:attribute name="margin-bottom">0mm</xsl:attribute>
-							</xsl:if>
-							<fo:page-number />
-						</fo:block>
-					</fo:block-container>
-				</xsl:otherwise>
-			</xsl:choose>
-		</fo:static-content>
+		<xsl:call-template name="insertFooter"/>
 	</xsl:template>
 	
 	<xsl:template name="insertHeader">
@@ -1939,6 +1914,24 @@
 				</fo:block-container>
 			</fo:static-content>
 		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="insertFooter">
+		<fo:static-content flow-name="footer">
+			<fo:block-container height="24mm" display-align="after">
+				<xsl:if test="$doctype = 'technical-report'">
+					<xsl:attribute name="height">23mm</xsl:attribute>
+				</xsl:if>
+				<fo:block text-align="center" margin-bottom="16mm">
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="margin-bottom">0mm</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$doctype = 'technical-report'"><xsl:text>- </xsl:text></xsl:if>
+					<fo:page-number />
+					<xsl:if test="$doctype = 'technical-report'"><xsl:text> -</xsl:text></xsl:if>
+				</fo:block>
+			</fo:block-container>
+		</fo:static-content>
 	</xsl:template>
 	
 	<xsl:template name="back-page">
