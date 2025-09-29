@@ -3619,6 +3619,22 @@
 		<xsl:param name="orientation"/>
 		<xsl:param name="isDraft"/>
 		<xsl:param name="lang"/>
+		
+		<xsl:call-template name="insertHeader">
+			<xsl:with-param name="header-title" select="$header-title"/>
+			<xsl:with-param name="orientation" select="$orientation"/>
+			<xsl:with-param name="isDraft" select="$isDraft"/>
+			<xsl:with-param name="lang" select="$lang"/>
+		</xsl:call-template>
+		<xsl:call-template name="insertFooter"/>
+	</xsl:template>
+
+	<xsl:template name="insertHeader">
+		<xsl:param name="header-title"/>
+		<xsl:param name="orientation"/>
+		<xsl:param name="isDraft"/>
+		<xsl:param name="lang"/>
+		
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<xsl:call-template name="insertDraftWatermark">
 				<xsl:with-param name="isDraft" select="$isDraft"/>
@@ -3667,6 +3683,9 @@
 			</xsl:call-template>
 			<fo:block></fo:block>
 		</fo:static-content>
+	</xsl:template>
+
+	<xsl:template name="insertFooter">
 	</xsl:template>
 
 	<xsl:template match="@*|node()" mode="header_title_remove_link_embedded">
