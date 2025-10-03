@@ -2406,27 +2406,16 @@
 	
 	
 	<xsl:template match="mn:fmt-preferred" priority="2">
-		<!-- DEBUG need -->
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="levelTerm">
-			<xsl:call-template name="getLevelTermName"/>
-		</xsl:variable>
-		<fo:block space-before="6pt" text-align="justify" role="H{$levelTerm}">
-			<fo:inline padding-right="5mm" font-weight="bold">				
-				<!-- level=<xsl:value-of select="$level"/> -->
-				<xsl:attribute name="padding-right">
-					<xsl:choose>
-						<xsl:when test="$level = 4">2mm</xsl:when>
-						<xsl:when test="$level = 3">4mm</xsl:when>
-						<xsl:otherwise>5mm</xsl:otherwise>
-					</xsl:choose>
-				</xsl:attribute>
+		<fo:block xsl:use-attribute-sets="term-preferred-block-style">
+			<xsl:call-template name="refine_term-preferred-block-style"/>
+			
+			<fo:inline xsl:use-attribute-sets="term-number-style">
+				<xsl:call-template name="refine_term-number-style"/>
+				
 				<xsl:apply-templates select="ancestor::mn:term[1]/mn:fmt-name" />
 			</fo:inline>
-			<fo:inline font-weight="bold">
-				<xsl:call-template name="refine_preferred-term-style"/>
+			<fo:inline xsl:use-attribute-sets="term-preferred-style">
+				<xsl:call-template name="refine_term-preferred-style"/>
 				<xsl:apply-templates />
 			</fo:inline>
 			<xsl:if test="../mn:fmt-termsource">

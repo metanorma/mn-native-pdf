@@ -879,12 +879,12 @@
 		<xsl:variable name="levelTerm">
 			<xsl:call-template name="getLevelTermName"/>
 		</xsl:variable>
-		<fo:block role="H{$levelTerm}" xsl:use-attribute-sets="preferred-block-style">
-			<fo:block xsl:use-attribute-sets="term-name-style">
+		<fo:block role="H{$levelTerm}" xsl:use-attribute-sets="term-preferred-block-style">
+			<fo:block xsl:use-attribute-sets="term-number-style">
 				<xsl:apply-templates select="preceding-sibling::mn:term_name[1]" mode="presentation"/>				
 			</fo:block>
-			<fo:block xsl:use-attribute-sets="preferred-term-style">
-				<xsl:call-template name="refine_preferred-term-style"/>
+			<fo:block xsl:use-attribute-sets="term-preferred-style">
+				<xsl:call-template name="refine_term-preferred-style"/>
 				<xsl:apply-templates />
 			</fo:block>
 		</fo:block>
@@ -900,8 +900,8 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:domain[not(parent::mn:term)]" priority="2">
-		<fo:block xsl:use-attribute-sets="domain-style">
-			<xsl:call-template name="refine_domain-style"/>
+		<fo:block xsl:use-attribute-sets="term-domain-style">
+			<xsl:call-template name="refine_term-domain-style"/>
 			<fo:inline>
 				<xsl:text>&lt;</xsl:text>
 				<xsl:apply-templates/>

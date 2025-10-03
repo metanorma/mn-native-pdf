@@ -1035,15 +1035,17 @@
 	
 	<xsl:template match="mn:fmt-preferred | mn:fmt-deprecates | mn:fmt-admitted" priority="2">
   
-		<fo:block xsl:use-attribute-sets="preferred-style">
-			<xsl:call-template name="refine_preferred-style"/>
+		<fo:block xsl:use-attribute-sets="term-preferred-block-style">
+			<xsl:call-template name="refine_term-preferred-block-style"/>
 			<xsl:if test="preceding-sibling::*[1][self::mn:fmt-name]">
-				<fo:inline padding-right="1mm">
+				<fo:inline xsl:use-attribute-sets="term-number-style">
+					<xsl:call-template name="refine_term-number-style"/>
+					
 					<xsl:apply-templates select="ancestor::mn:term[1]/mn:fmt-name" />
 				</fo:inline>
 			</xsl:if>
 			
-			<fo:inline padding-right="4mm"><xsl:if test="self::mn:fmt-preferred"><xsl:call-template name="refine_preferred-term-style"/></xsl:if><xsl:apply-templates /></fo:inline>
+			<fo:inline xsl:use-attribute-sets="term-preferred-style"><xsl:call-template name="refine_term-preferred-style"/><xsl:apply-templates /></fo:inline>
 			
 			<xsl:variable name="term_kind">
 				<xsl:choose>

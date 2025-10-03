@@ -1557,8 +1557,8 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:term/mn:fmt-name" priority="2">
-		<fo:block xsl:use-attribute-sets="term-name-style">
-			<xsl:call-template name="refine_term-name-style"/>
+		<fo:block xsl:use-attribute-sets="term-number-style">
+			<xsl:call-template name="refine_term-number-style"/>
 			<fo:list-block color="{$color_text_title}" keep-with-next="always" provisional-distance-between-starts="{string-length()*3.25}mm">
 				<fo:list-item>
 					<fo:list-item-label end-indent="label-end()">
@@ -1579,7 +1579,7 @@
 	
 	<!-- first preferred displays on the same line as term/name -->
 	<xsl:template match="mn:fmt-preferred[not(preceding-sibling::mn:fmt-preferred)]" mode="term_name" priority="2">
-		<fo:inline xsl:use-attribute-sets="preferred-term-style"><xsl:call-template name="refine_preferred-term-style"/><xsl:apply-templates /></fo:inline>		
+		<fo:inline xsl:use-attribute-sets="term-preferred-style"><xsl:call-template name="refine_term-preferred-style"/><xsl:apply-templates /></fo:inline>		
 		<fo:inline padding-right="2mm">&#xA0;</fo:inline>
 	</xsl:template>
 	
