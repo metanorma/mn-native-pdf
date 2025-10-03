@@ -2678,7 +2678,8 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:term/mn:fmt-definition" priority="2">
-		<fo:block xsl:use-attribute-sets="definition-style">
+		<fo:block xsl:use-attribute-sets="term-definition-style">
+			<xsl:call-template name="refine_term-definition-style"/>
 			<xsl:apply-templates />
 		</fo:block>
 		<!-- change termsource order - show after definition before termnote -->
@@ -3023,7 +3024,8 @@
 						<xsl:value-of select="$localized.source"/>
 						<xsl:text>: </xsl:text>
 					</fo:inline> -->
-					<fo:inline xsl:use-attribute-sets="origin-style">
+					<fo:inline xsl:use-attribute-sets="term-origin-style">
+						<xsl:call-template name="refine_term-origin-style"/>
 						<xsl:apply-templates/>
 					</fo:inline>
 				</fo:basic-link>
