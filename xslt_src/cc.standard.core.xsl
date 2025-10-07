@@ -285,69 +285,77 @@
 
 	<xsl:template name="cover-page">
 		<!-- Cover Page -->
-		<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
-			<xsl:call-template name="insertFootnoteSeparatorCommon"/>
-			
-			<fo:static-content flow-name="cover-page-header" font-size="10pt">
-				<fo:block-container height="23.5mm" display-align="before">
-					<fo:block padding-top="12.5mm">
-						<xsl:value-of select="$copyright"/>
-					</fo:block>
-				</fo:block-container>
-			</fo:static-content>
-				
-			<fo:flow flow-name="xsl-region-body">
-				
-				<fo:block text-align="right">
-					<!-- CC/FDS 18011:2018 -->
-					<fo:block font-size="14pt" font-weight="bold" margin-bottom="10pt">
-						<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'csd']"/><xsl:text> </xsl:text>
-					</fo:block>
-					<fo:block margin-bottom="12pt">
-						<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:name"/>
-						<xsl:text> TC </xsl:text>
-						<!-- <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:technical-committee"/> -->
-						<xsl:value-of select="//mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Technical committee']/mn:name"/>
-						<xsl:text> </xsl:text>
-					</fo:block>
-				</fo:block>
-				<fo:block font-size="24pt" font-weight="bold" text-align="center" role="H1">
-					<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en']" />
-					<xsl:value-of select="$linebreak"/>
-				</fo:block>
-				<fo:block>&#xA0;</fo:block>
-				<fo:block margin-bottom="12pt">&#xA0;</fo:block>
-				<fo:block-container font-size="16pt" text-align="center" border="0.5pt solid black" margin-bottom="12pt" margin-left="-1mm" margin-right="-1mm">
-					<fo:block-container margin-left="0mm" margin-right="0mm">
-						<fo:block padding-top="1mm">
-							<xsl:call-template name="capitalizeWords">
-								<!-- ex: final-draft -->
-								<xsl:with-param name="str" select="/mn:metanorma/mn:bibdata/mn:status/mn:stage"/>
-							</xsl:call-template>
-							<xsl:text> </xsl:text>
-							<xsl:call-template name="capitalizeWords">
-								<!-- ex: standard -->
-								<xsl:with-param name="str" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/>
-							</xsl:call-template>
+		<xsl:choose>
+			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image']/mn:value/mn:image and 
+							normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:full-coverpage-replacement) = 'true'">
+				<xsl:call-template name="insertCoverPageFullImage"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
+					<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+					
+					<fo:static-content flow-name="cover-page-header" font-size="10pt">
+						<fo:block-container height="23.5mm" display-align="before">
+							<fo:block padding-top="12.5mm">
+								<xsl:value-of select="$copyright"/>
+							</fo:block>
+						</fo:block-container>
+					</fo:static-content>
+						
+					<fo:flow flow-name="xsl-region-body">
+						
+						<fo:block text-align="right">
+							<!-- CC/FDS 18011:2018 -->
+							<fo:block font-size="14pt" font-weight="bold" margin-bottom="10pt">
+								<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'csd']"/><xsl:text> </xsl:text>
+							</fo:block>
+							<fo:block margin-bottom="12pt">
+								<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:name"/>
+								<xsl:text> TC </xsl:text>
+								<!-- <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:technical-committee"/> -->
+								<xsl:value-of select="//mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Technical committee']/mn:name"/>
+								<xsl:text> </xsl:text>
+							</fo:block>
 						</fo:block>
-					</fo:block-container>
-				</fo:block-container>
-				<fo:block margin-bottom="10pt">&#xA0;</fo:block>
-				<fo:block-container font-size="10pt" border="0.5pt solid black" margin-bottom="12pt" margin-left="-1mm" margin-right="-1mm">
-					<fo:block-container margin-left="0mm" margin-right="0mm">
-						<fo:block text-align="center" font-weight="bold" padding-top="1mm" margin-bottom="6pt">Warning for drafts</fo:block>
-						<fo:block margin-left="2mm" margin-right="2mm">
-							<fo:block margin-bottom="6pt">This document is not a CalConnect Standard. It is distributed for review and comment, and is subject to change without notice and may not be referred to as a Standard. Recipients of this draft are invited to submit, with their comments, notification of any relevant patent rights of which they are aware and to provide supporting documentation.</fo:block>
-							<fo:block margin-bottom="10pt">Recipients of this draft are invited to submit, with their comments, notification of any relevant patent rights of which they are aware and to provide supporting documentation.</fo:block>
+						<fo:block font-size="24pt" font-weight="bold" text-align="center" role="H1">
+							<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en']" />
+							<xsl:value-of select="$linebreak"/>
 						</fo:block>
-					</fo:block-container>
-				</fo:block-container>
-				<fo:block text-align="center">
-					<xsl:text>The Calendaring and Scheduling Consortium, Inc.&#xA0; </xsl:text>
-					<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
-				</fo:block>
-			</fo:flow>
-		</fo:page-sequence>
+						<fo:block>&#xA0;</fo:block>
+						<fo:block margin-bottom="12pt">&#xA0;</fo:block>
+						<fo:block-container font-size="16pt" text-align="center" border="0.5pt solid black" margin-bottom="12pt" margin-left="-1mm" margin-right="-1mm">
+							<fo:block-container margin-left="0mm" margin-right="0mm">
+								<fo:block padding-top="1mm">
+									<xsl:call-template name="capitalizeWords">
+										<!-- ex: final-draft -->
+										<xsl:with-param name="str" select="/mn:metanorma/mn:bibdata/mn:status/mn:stage"/>
+									</xsl:call-template>
+									<xsl:text> </xsl:text>
+									<xsl:call-template name="capitalizeWords">
+										<!-- ex: standard -->
+										<xsl:with-param name="str" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/>
+									</xsl:call-template>
+								</fo:block>
+							</fo:block-container>
+						</fo:block-container>
+						<fo:block margin-bottom="10pt">&#xA0;</fo:block>
+						<fo:block-container font-size="10pt" border="0.5pt solid black" margin-bottom="12pt" margin-left="-1mm" margin-right="-1mm">
+							<fo:block-container margin-left="0mm" margin-right="0mm">
+								<fo:block text-align="center" font-weight="bold" padding-top="1mm" margin-bottom="6pt">Warning for drafts</fo:block>
+								<fo:block margin-left="2mm" margin-right="2mm">
+									<fo:block margin-bottom="6pt">This document is not a CalConnect Standard. It is distributed for review and comment, and is subject to change without notice and may not be referred to as a Standard. Recipients of this draft are invited to submit, with their comments, notification of any relevant patent rights of which they are aware and to provide supporting documentation.</fo:block>
+									<fo:block margin-bottom="10pt">Recipients of this draft are invited to submit, with their comments, notification of any relevant patent rights of which they are aware and to provide supporting documentation.</fo:block>
+								</fo:block>
+							</fo:block-container>
+						</fo:block-container>
+						<fo:block text-align="center">
+							<xsl:text>The Calendaring and Scheduling Consortium, Inc.&#xA0; </xsl:text>
+							<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
+						</fo:block>
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template> <!-- END: cover-page -->
 	
 	<xsl:template name="inner-cover-page">

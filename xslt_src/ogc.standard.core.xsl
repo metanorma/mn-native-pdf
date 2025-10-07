@@ -560,253 +560,261 @@
 
 	<xsl:template name="cover-page">
 		<!-- Cover Page -->
-		<fo:page-sequence master-reference="cover-page" force-page-count="no-force">				
-			<xsl:call-template name="insertFootnoteSeparatorCommon"/>
-			
-				
-			<fo:flow flow-name="xsl-region-body" color="white">
-			
-				<xsl:variable name="curr_lang" select="/mn:metanorma/mn:bibdata/mn:language[@current = 'true']"/>					
-				<xsl:variable name="stage" select="/mn:metanorma/mn:bibdata/mn:status/mn:stage[@language = $curr_lang] | /mn:metanorma/mn:bibdata/mn:status/mn:stage[not(@language)]"/>
-				<xsl:variable name="isLegacy" select="normalize-space($stage = 'deprecated' or $stage = 'legacy' or $stage = 'retired' or $stage = 'rescinded')"/>
-				
-				<!-- background image -->
-				<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0">
-					<fo:block>
-						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="{$pageWidth}mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
-					</fo:block>
-				</fo:block-container>
-				
-				<xsl:call-template name="insertBackgroundColor">
-					<xsl:with-param name="opacity">0.85</xsl:with-param>
-				</xsl:call-template>
-				
-				<xsl:call-template name="insertCrossingLines"/>
-				
-				<!-- title and logo -->
-				<fo:block>
-					<fo:table table-layout="fixed" width="100%">
-						<fo:table-column column-width="75%"/>
-						<fo:table-column column-width="25%"/>
-						<fo:table-body>
-							<fo:table-row>
-								<fo:table-cell font-weight="bold">
-									<fo:block font-size="16pt" color="{$color_design}" margin-bottom="4pt">
-										<xsl:variable name="ogc_document" select="concat('OGC® DOCUMENT: ', $docnumber)"/>
-										<xsl:call-template name="addLetterSpacing">
-											<xsl:with-param name="text" select="$ogc_document"/>
-											<xsl:with-param name="letter-spacing" select="0.3"/>
-										</xsl:call-template>
-									</fo:block>
-									<xsl:variable name="ogc_external" select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type='ogc-external']" />
-									<xsl:if test="normalize-space($ogc_external) != ''">
-										<fo:block font-size="10pt">External identifier of this OGC<fo:inline font-size="58%" baseline-shift="30%">®</fo:inline>  document: <fo:inline font-weight="normal"><xsl:value-of select="$ogc_external"/></fo:inline></fo:block>
-									</xsl:if>
-								</fo:table-cell>
-								<fo:table-cell text-align="right">
-									<fo:block>
-										<xsl:call-template name="insertLogo" />
-									</fo:block>
-								</fo:table-cell>
-							</fo:table-row>
-						</fo:table-body>
-					</fo:table>
-				</fo:block>
-				
-				<!-- <fo:block-container absolute-position="fixed" left="16.5mm" top="83mm" height="90mm"> -->
-				<fo:block-container absolute-position="fixed" left="16.5mm" top="40mm" height="170mm">
-					<fo:block-container width="155mm" height="99%" display-align="center">
-						<fo:block font-size="33pt" role="H1">
-							<xsl:variable name="length_title" select="string-length($doctitle)"/>
-							<xsl:variable name="fit_font-size">
-								<xsl:choose>
-									<xsl:when test="$length_title &gt; 230">20</xsl:when>
-									<xsl:when test="$length_title &gt; 170">26</xsl:when>
-									<xsl:when test="$length_title &gt; 155">28</xsl:when>
-									<xsl:when test="$length_title &gt; 130">30</xsl:when>
-								</xsl:choose>
-							</xsl:variable>
-							<xsl:if test="normalize-space($fit_font-size) != ''">
-								<xsl:attribute name="font-size"><xsl:value-of select="$fit_font-size"/>pt</xsl:attribute>
-							</xsl:if>
-							<xsl:call-template name="addLetterSpacing">
-								<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($doctitle))"/>
-								<xsl:with-param name="letter-spacing" select="1.1"/>
-							</xsl:call-template>
-						</fo:block>
-						<fo:block-container width="22.5mm" border-bottom="2pt solid {$color_design}" margin-bottom="24pt">
-							<fo:block margin-top="4pt">&#xA0;</fo:block>
-						</fo:block-container>
-						<fo:block color="{$color_design}">
-							<fo:block font-size="17pt">
-								<xsl:call-template name="addLetterSpacing">
-									<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($doctype))"/>
-								</xsl:call-template>									
-								<xsl:value-of select="$linebreak"/>
-								<xsl:variable name="docsubtype" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:subdoctype)"/>
-								<xsl:variable name="docsubtype_str">
-									<xsl:choose>
-										<xsl:when test="$docsubtype = 'implementation'">Implementation</xsl:when>
-										<xsl:when test="$docsubtype = 'conceptual-model'">Conceptual model</xsl:when>
-										<xsl:when test="$docsubtype = 'conceptual-model-and-encoding'">Conceptual model &amp; encoding</xsl:when>
-										<xsl:when test="$docsubtype = 'conceptual-model-and-implementation'">Conceptual model &amp; implementation</xsl:when>
-										<xsl:when test="$docsubtype = 'encoding'">Encoding</xsl:when>
-										<xsl:when test="$docsubtype = 'extension'">Extension</xsl:when>
-										<xsl:when test="$docsubtype = 'profile'">Profile</xsl:when>
-										<xsl:when test="$docsubtype = 'profile-with-extension'">Profile with extension</xsl:when>
-										<xsl:when test="$docsubtype = 'general'">General</xsl:when>
-									</xsl:choose>
-								</xsl:variable>									
-								<xsl:call-template name="addLetterSpacing">
-									<xsl:with-param name="text" select="$docsubtype_str"/>
-									<xsl:with-param name="letter-spacing" select="0.25"/>
-								</xsl:call-template>									
+		<xsl:choose>
+			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image']/mn:value/mn:image and 
+							normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:full-coverpage-replacement) = 'true'">
+				<xsl:call-template name="insertCoverPageFullImage"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:page-sequence master-reference="cover-page" force-page-count="no-force">				
+					<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+					
+						
+					<fo:flow flow-name="xsl-region-body" color="white">
+					
+						<xsl:variable name="curr_lang" select="/mn:metanorma/mn:bibdata/mn:language[@current = 'true']"/>					
+						<xsl:variable name="stage" select="/mn:metanorma/mn:bibdata/mn:status/mn:stage[@language = $curr_lang] | /mn:metanorma/mn:bibdata/mn:status/mn:stage[not(@language)]"/>
+						<xsl:variable name="isLegacy" select="normalize-space($stage = 'deprecated' or $stage = 'legacy' or $stage = 'retired' or $stage = 'rescinded')"/>
+						
+						<!-- background image -->
+						<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0">
+							<fo:block>
+								<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="{$pageWidth}mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
 							</fo:block>
-							<xsl:variable name="stage_uc" select="java:toUpperCase(java:java.lang.String.new($stage))"/>
-							
+						</fo:block-container>
+						
+						<xsl:call-template name="insertBackgroundColor">
+							<xsl:with-param name="opacity">0.85</xsl:with-param>
+						</xsl:call-template>
+						
+						<xsl:call-template name="insertCrossingLines"/>
+						
+						<!-- title and logo -->
+						<fo:block>
+							<fo:table table-layout="fixed" width="100%">
+								<fo:table-column column-width="75%"/>
+								<fo:table-column column-width="25%"/>
+								<fo:table-body>
+									<fo:table-row>
+										<fo:table-cell font-weight="bold">
+											<fo:block font-size="16pt" color="{$color_design}" margin-bottom="4pt">
+												<xsl:variable name="ogc_document" select="concat('OGC® DOCUMENT: ', $docnumber)"/>
+												<xsl:call-template name="addLetterSpacing">
+													<xsl:with-param name="text" select="$ogc_document"/>
+													<xsl:with-param name="letter-spacing" select="0.3"/>
+												</xsl:call-template>
+											</fo:block>
+											<xsl:variable name="ogc_external" select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type='ogc-external']" />
+											<xsl:if test="normalize-space($ogc_external) != ''">
+												<fo:block font-size="10pt">External identifier of this OGC<fo:inline font-size="58%" baseline-shift="30%">®</fo:inline>  document: <fo:inline font-weight="normal"><xsl:value-of select="$ogc_external"/></fo:inline></fo:block>
+											</xsl:if>
+										</fo:table-cell>
+										<fo:table-cell text-align="right">
+											<fo:block>
+												<xsl:call-template name="insertLogo" />
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+								</fo:table-body>
+							</fo:table>
+						</fo:block>
+						
+						<!-- <fo:block-container absolute-position="fixed" left="16.5mm" top="83mm" height="90mm"> -->
+						<fo:block-container absolute-position="fixed" left="16.5mm" top="40mm" height="170mm">
+							<fo:block-container width="155mm" height="99%" display-align="center">
+								<fo:block font-size="33pt" role="H1">
+									<xsl:variable name="length_title" select="string-length($doctitle)"/>
+									<xsl:variable name="fit_font-size">
+										<xsl:choose>
+											<xsl:when test="$length_title &gt; 230">20</xsl:when>
+											<xsl:when test="$length_title &gt; 170">26</xsl:when>
+											<xsl:when test="$length_title &gt; 155">28</xsl:when>
+											<xsl:when test="$length_title &gt; 130">30</xsl:when>
+										</xsl:choose>
+									</xsl:variable>
+									<xsl:if test="normalize-space($fit_font-size) != ''">
+										<xsl:attribute name="font-size"><xsl:value-of select="$fit_font-size"/>pt</xsl:attribute>
+									</xsl:if>
+									<xsl:call-template name="addLetterSpacing">
+										<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($doctitle))"/>
+										<xsl:with-param name="letter-spacing" select="1.1"/>
+									</xsl:call-template>
+								</fo:block>
+								<fo:block-container width="22.5mm" border-bottom="2pt solid {$color_design}" margin-bottom="24pt">
+									<fo:block margin-top="4pt">&#xA0;</fo:block>
+								</fo:block-container>
+								<fo:block color="{$color_design}">
+									<fo:block font-size="17pt">
+										<xsl:call-template name="addLetterSpacing">
+											<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($doctype))"/>
+										</xsl:call-template>									
+										<xsl:value-of select="$linebreak"/>
+										<xsl:variable name="docsubtype" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:subdoctype)"/>
+										<xsl:variable name="docsubtype_str">
+											<xsl:choose>
+												<xsl:when test="$docsubtype = 'implementation'">Implementation</xsl:when>
+												<xsl:when test="$docsubtype = 'conceptual-model'">Conceptual model</xsl:when>
+												<xsl:when test="$docsubtype = 'conceptual-model-and-encoding'">Conceptual model &amp; encoding</xsl:when>
+												<xsl:when test="$docsubtype = 'conceptual-model-and-implementation'">Conceptual model &amp; implementation</xsl:when>
+												<xsl:when test="$docsubtype = 'encoding'">Encoding</xsl:when>
+												<xsl:when test="$docsubtype = 'extension'">Extension</xsl:when>
+												<xsl:when test="$docsubtype = 'profile'">Profile</xsl:when>
+												<xsl:when test="$docsubtype = 'profile-with-extension'">Profile with extension</xsl:when>
+												<xsl:when test="$docsubtype = 'general'">General</xsl:when>
+											</xsl:choose>
+										</xsl:variable>									
+										<xsl:call-template name="addLetterSpacing">
+											<xsl:with-param name="text" select="$docsubtype_str"/>
+											<xsl:with-param name="letter-spacing" select="0.25"/>
+										</xsl:call-template>									
+									</fo:block>
+									<xsl:variable name="stage_uc" select="java:toUpperCase(java:java.lang.String.new($stage))"/>
+									
+									<xsl:choose>
+										<xsl:when test="$isLegacy = 'true'">
+											<fo:block-container font-size="17pt" background-color="{$color_background_blue}" margin-left="-2.5mm" height="11.5mm" width="56mm" display-align="center" margin-top="0.5mm">
+												<fo:block-container margin-left="2.5mm">
+													<fo:block-container margin-left="0mm">
+														<fo:block margin-top="1mm">
+															<xsl:call-template name="addLetterSpacing">
+																<xsl:with-param name="text" select="$stage_uc"/>
+															</xsl:call-template>
+														</fo:block>
+													</fo:block-container>
+												</fo:block-container>
+											</fo:block-container>
+										</xsl:when>
+										<xsl:otherwise>
+											<fo:block font-size="12pt" font-weight="bold" margin-top="14pt">
+												<xsl:call-template name="addLetterSpacing">
+													<xsl:with-param name="text" select="$stage_uc"/>
+												</xsl:call-template>
+											</fo:block>
+										</xsl:otherwise>
+									</xsl:choose>
+									
+								</fo:block>
+							</fo:block-container>
+						</fo:block-container>
+
+						<fo:block-container absolute-position="fixed" left="16.5mm" top="204mm" height="60mm" width="180mm" display-align="after" font-size="10pt">
+							<fo:block line-height="140%">
+								<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:edition[normalize-space(@language) = '']"/>
+								<fo:block>
+									<fo:inline font-weight="bold">
+										<!-- Submission Date:  -->
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">submission_date</xsl:with-param>
+										</xsl:call-template><xsl:text>: </xsl:text>
+									</fo:inline>
+									<xsl:choose>
+										<xsl:when test="/mn:metanorma/mn:bibdata/mn:date[@type = 'received']/mn:on">
+											<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'received']/mn:on"/>
+										</xsl:when>
+										<xsl:otherwise>XXX</xsl:otherwise>
+									</xsl:choose>
+								</fo:block>
+								<fo:block>
+									<fo:inline font-weight="bold">
+									<!-- Approval Date:  -->
+									<xsl:call-template name="getLocalizedString">
+										<xsl:with-param name="key">approval_date</xsl:with-param>
+									</xsl:call-template><xsl:text>: </xsl:text>
+									</fo:inline>
+									<xsl:choose>
+										<xsl:when test="/mn:metanorma/mn:bibdata/mn:date[@type = 'issued']/mn:on">
+											<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'issued']/mn:on"/>
+										</xsl:when>
+										<xsl:otherwise>XXX</xsl:otherwise>
+									</xsl:choose>							
+								</fo:block>
+								<fo:block>
+									<fo:inline font-weight="bold">
+										<!-- Publication Date:  -->
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">publication_date</xsl:with-param>
+										</xsl:call-template><xsl:text>: </xsl:text>
+									</fo:inline>
+									<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']/mn:on"/>
+								</fo:block>
+								
+								<fo:block margin-bottom="12pt">
+									<xsl:if test="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='author']/mn:person/mn:name/mn:completename">
+										<fo:block>
+											<fo:inline font-weight="bold">
+												<!-- Author:  -->
+												<xsl:call-template name="getLocalizedString">
+													<xsl:with-param name="key">author</xsl:with-param>
+												</xsl:call-template><xsl:text>: </xsl:text>
+											</fo:inline>
+											<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='author']/mn:person/mn:name/mn:completename">
+												<xsl:value-of select="."/>
+												<xsl:if test="position() != last()">, </xsl:if>
+											</xsl:for-each>
+										</fo:block>
+									</xsl:if>
+									<xsl:if test="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='editor']/mn:person/mn:name/mn:completename">
+										<fo:block>
+											<fo:inline font-weight="bold">
+												<!-- Editor:  -->
+												<xsl:call-template name="getLocalizedString">
+													<xsl:with-param name="key">editor_full</xsl:with-param>
+												</xsl:call-template><xsl:text>: </xsl:text>
+											</fo:inline>
+											<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='editor']/mn:person/mn:name/mn:completename">
+												<xsl:value-of select="."/>
+												<xsl:if test="position() != last()">, </xsl:if>
+											</xsl:for-each>
+										</fo:block>
+									</xsl:if>
+									<xsl:if test="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='contributor']/mn:person/mn:name/mn:completename">
+										<fo:block>
+											<fo:inline font-weight="bold">
+												<!-- Contributor:  -->
+												<xsl:call-template name="getLocalizedString">
+													<xsl:with-param name="key">contributor</xsl:with-param>
+												</xsl:call-template><xsl:text>: </xsl:text>
+											</fo:inline>
+											<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='contributor']/mn:person/mn:name/mn:completename">
+												<xsl:value-of select="."/>
+												<xsl:if test="position() != last()">, </xsl:if>
+											</xsl:for-each>
+										</fo:block>
+									</xsl:if>
+								</fo:block>
+							</fo:block>
+													
 							<xsl:choose>
 								<xsl:when test="$isLegacy = 'true'">
-									<fo:block-container font-size="17pt" background-color="{$color_background_blue}" margin-left="-2.5mm" height="11.5mm" width="56mm" display-align="center" margin-top="0.5mm">
-										<fo:block-container margin-left="2.5mm">
-											<fo:block-container margin-left="0mm">
-												<fo:block margin-top="1mm">
-													<xsl:call-template name="addLetterSpacing">
-														<xsl:with-param name="text" select="$stage_uc"/>
-													</xsl:call-template>
+									<fo:block-container margin-left="-7mm" color="{$color_design}" background-color="{$color_background_blue}" width="202mm">
+										<fo:block-container margin-left="2.5mm" margin-right="1mm" padding-top="0.5mm" padding-bottom="0.5mm">
+											<fo:block-container margin-left="0mm" margin-right="0mm">
+												<fo:block>
+													<xsl:variable name="legal_statement">
+														<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement" mode="update_xml_step1"/>
+													</xsl:variable>
+													<xsl:apply-templates select="xalan:nodeset($legal_statement)/*">
+														<xsl:with-param name="isLegacy" select="$isLegacy"/>	
+													</xsl:apply-templates>
 												</fo:block>
 											</fo:block-container>
 										</fo:block-container>
 									</fo:block-container>
 								</xsl:when>
 								<xsl:otherwise>
-									<fo:block font-size="12pt" font-weight="bold" margin-top="14pt">
-										<xsl:call-template name="addLetterSpacing">
-											<xsl:with-param name="text" select="$stage_uc"/>
-										</xsl:call-template>
-									</fo:block>
+									<xsl:variable name="legal_statement">
+										<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement" mode="update_xml_step1"/>
+									</xsl:variable>
+									<xsl:apply-templates select="xalan:nodeset($legal_statement)/*"/>
 								</xsl:otherwise>
 							</xsl:choose>
 							
-						</fo:block>
-					</fo:block-container>
-				</fo:block-container>
+						</fo:block-container>
 
-				<fo:block-container absolute-position="fixed" left="16.5mm" top="204mm" height="60mm" width="180mm" display-align="after" font-size="10pt">
-					<fo:block line-height="140%">
-						<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:edition[normalize-space(@language) = '']"/>
-						<fo:block>
-							<fo:inline font-weight="bold">
-								<!-- Submission Date:  -->
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">submission_date</xsl:with-param>
-								</xsl:call-template><xsl:text>: </xsl:text>
-							</fo:inline>
-							<xsl:choose>
-								<xsl:when test="/mn:metanorma/mn:bibdata/mn:date[@type = 'received']/mn:on">
-									<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'received']/mn:on"/>
-								</xsl:when>
-								<xsl:otherwise>XXX</xsl:otherwise>
-							</xsl:choose>
-						</fo:block>
-						<fo:block>
-							<fo:inline font-weight="bold">
-							<!-- Approval Date:  -->
-							<xsl:call-template name="getLocalizedString">
-								<xsl:with-param name="key">approval_date</xsl:with-param>
-							</xsl:call-template><xsl:text>: </xsl:text>
-							</fo:inline>
-							<xsl:choose>
-								<xsl:when test="/mn:metanorma/mn:bibdata/mn:date[@type = 'issued']/mn:on">
-									<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'issued']/mn:on"/>
-								</xsl:when>
-								<xsl:otherwise>XXX</xsl:otherwise>
-							</xsl:choose>							
-						</fo:block>
-						<fo:block>
-							<fo:inline font-weight="bold">
-								<!-- Publication Date:  -->
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">publication_date</xsl:with-param>
-								</xsl:call-template><xsl:text>: </xsl:text>
-							</fo:inline>
-							<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']/mn:on"/>
-						</fo:block>
-						
-						<fo:block margin-bottom="12pt">
-							<xsl:if test="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='author']/mn:person/mn:name/mn:completename">
-								<fo:block>
-									<fo:inline font-weight="bold">
-										<!-- Author:  -->
-										<xsl:call-template name="getLocalizedString">
-											<xsl:with-param name="key">author</xsl:with-param>
-										</xsl:call-template><xsl:text>: </xsl:text>
-									</fo:inline>
-									<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='author']/mn:person/mn:name/mn:completename">
-										<xsl:value-of select="."/>
-										<xsl:if test="position() != last()">, </xsl:if>
-									</xsl:for-each>
-								</fo:block>
-							</xsl:if>
-							<xsl:if test="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='editor']/mn:person/mn:name/mn:completename">
-								<fo:block>
-									<fo:inline font-weight="bold">
-										<!-- Editor:  -->
-										<xsl:call-template name="getLocalizedString">
-											<xsl:with-param name="key">editor_full</xsl:with-param>
-										</xsl:call-template><xsl:text>: </xsl:text>
-									</fo:inline>
-									<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='editor']/mn:person/mn:name/mn:completename">
-										<xsl:value-of select="."/>
-										<xsl:if test="position() != last()">, </xsl:if>
-									</xsl:for-each>
-								</fo:block>
-							</xsl:if>
-							<xsl:if test="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='contributor']/mn:person/mn:name/mn:completename">
-								<fo:block>
-									<fo:inline font-weight="bold">
-										<!-- Contributor:  -->
-										<xsl:call-template name="getLocalizedString">
-											<xsl:with-param name="key">contributor</xsl:with-param>
-										</xsl:call-template><xsl:text>: </xsl:text>
-									</fo:inline>
-									<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='contributor']/mn:person/mn:name/mn:completename">
-										<xsl:value-of select="."/>
-										<xsl:if test="position() != last()">, </xsl:if>
-									</xsl:for-each>
-								</fo:block>
-							</xsl:if>
-						</fo:block>
-					</fo:block>
-											
-					<xsl:choose>
-						<xsl:when test="$isLegacy = 'true'">
-							<fo:block-container margin-left="-7mm" color="{$color_design}" background-color="{$color_background_blue}" width="202mm">
-								<fo:block-container margin-left="2.5mm" margin-right="1mm" padding-top="0.5mm" padding-bottom="0.5mm">
-									<fo:block-container margin-left="0mm" margin-right="0mm">
-										<fo:block>
-											<xsl:variable name="legal_statement">
-												<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement" mode="update_xml_step1"/>
-											</xsl:variable>
-											<xsl:apply-templates select="xalan:nodeset($legal_statement)/*">
-												<xsl:with-param name="isLegacy" select="$isLegacy"/>	
-											</xsl:apply-templates>
-										</fo:block>
-									</fo:block-container>
-								</fo:block-container>
-							</fo:block-container>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:variable name="legal_statement">
-								<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement" mode="update_xml_step1"/>
-							</xsl:variable>
-							<xsl:apply-templates select="xalan:nodeset($legal_statement)/*"/>
-						</xsl:otherwise>
-					</xsl:choose>
-					
-				</fo:block-container>
-
-			</fo:flow>
-		</fo:page-sequence>
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template> <!-- END: cover-page -->
 	
 	<xsl:template name="inner-cover-page">

@@ -440,108 +440,116 @@
 
 	<xsl:template name="cover-page">
 		<!-- Cover Page -->
-		<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
-			
-			<fo:flow flow-name="xsl-region-body" color="black">
-				<!-- background image -->
-				<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0">
-					<fo:block>
-						<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="{$pageWidth}mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/> -->
-						<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" height="{$pageHeight}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
-					</fo:block>
-				</fo:block-container>
-				
-				<!-- Ribose logo -->
-				<fo:block-container absolute-position="fixed" left="171mm" top="{$pageHeight - 33.4}mm" height="30mm" width="40mm" id="__internal_layout__logo_{generate-id()}"> <!-- top="246mm" -->
-					<fo:block>
-						<fo:instream-foreign-object content-width="32mm"  fox:alt-text="Ribose Logo">
-							<xsl:copy-of select="$Ribose-Logo"/>
-						</fo:instream-foreign-object>
-					</fo:block>
-				</fo:block-container>
-				
-				<fo:block-container absolute-position="fixed" left="0mm" top="{$pageHeight - 52.4}mm" height="41mm" display-align="after"> <!--  top="227mm" -->
-					<fo:block font-size="10pt" line-height="1.4">
-						<fo:table table-layout="fixed" width="100%">
-							<fo:table-column column-width="proportional-column-width(13)"/>
-							<fo:table-column column-width="proportional-column-width(38)"/>
-							<fo:table-column column-width="proportional-column-width(90)"/>
-							<fo:table-column column-width="proportional-column-width(61)"/>
-							<fo:table-column column-width="proportional-column-width(12)"/>
-							<fo:table-body>
-								<fo:table-row>
-									<fo:table-cell><fo:block></fo:block></fo:table-cell>
-									<fo:table-cell display-align="before" border-right="0.5pt solid black" padding-top="1.5mm" padding-right="5mm">
-										<!-- Author's list -->
-										<fo:block>
-											<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='author']/mn:person/mn:name/mn:completename">
+		<xsl:choose>
+			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image']/mn:value/mn:image and 
+							normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:full-coverpage-replacement) = 'true'">
+				<xsl:call-template name="insertCoverPageFullImage"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
+					
+					<fo:flow flow-name="xsl-region-body" color="black">
+						<!-- background image -->
+						<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0">
+							<fo:block>
+								<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="{$pageWidth}mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/> -->
+								<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" height="{$pageHeight}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
+							</fo:block>
+						</fo:block-container>
+						
+						<!-- Ribose logo -->
+						<fo:block-container absolute-position="fixed" left="171mm" top="{$pageHeight - 33.4}mm" height="30mm" width="40mm" id="__internal_layout__logo_{generate-id()}"> <!-- top="246mm" -->
+							<fo:block>
+								<fo:instream-foreign-object content-width="32mm"  fox:alt-text="Ribose Logo">
+									<xsl:copy-of select="$Ribose-Logo"/>
+								</fo:instream-foreign-object>
+							</fo:block>
+						</fo:block-container>
+						
+						<fo:block-container absolute-position="fixed" left="0mm" top="{$pageHeight - 52.4}mm" height="41mm" display-align="after"> <!--  top="227mm" -->
+							<fo:block font-size="10pt" line-height="1.4">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(13)"/>
+									<fo:table-column column-width="proportional-column-width(38)"/>
+									<fo:table-column column-width="proportional-column-width(90)"/>
+									<fo:table-column column-width="proportional-column-width(61)"/>
+									<fo:table-column column-width="proportional-column-width(12)"/>
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell><fo:block></fo:block></fo:table-cell>
+											<fo:table-cell display-align="before" border-right="0.5pt solid black" padding-top="1.5mm" padding-right="5mm">
+												<!-- Author's list -->
 												<fo:block>
-													<xsl:apply-templates />
+													<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='author']/mn:person/mn:name/mn:completename">
+														<fo:block>
+															<xsl:apply-templates />
+														</fo:block>
+													</xsl:for-each>
 												</fo:block>
-											</xsl:for-each>
-										</fo:block>
-									</fo:table-cell>
-									<fo:table-cell display-align="before" padding-top="1.5mm" padding-left="8mm">
-										<fo:block>
-											<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:ext/mn:security"/>
-											<fo:block>
-												<xsl:call-template name="convertDate">
-													<xsl:with-param name="date" select="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']/mn:on"/>
-													<xsl:with-param name="format" select="'Month DD, YYYY'"/>
-												</xsl:call-template>
-											</fo:block>
-											<fo:block><xsl:value-of select="$docnumber_version"/></fo:block>
-											<!-- <xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"/> -->
-											<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Committee']/mn:name"/>
-											<fo:block>
-												<xsl:text>© </xsl:text>
-												<xsl:value-of select="$copyright_year"/>
-												<xsl:text> </xsl:text>
-												<xsl:variable name="publisher" select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='publisher']/mn:organization/mn:name"/>
-												<xsl:value-of select="$publisher"/>
-												<xsl:if test="substring($publisher, string-length($publisher)) != '.'"><xsl:text>.</xsl:text></xsl:if>
-												<xsl:text> </xsl:text>
-												<xsl:call-template name="getLocalizedString">
-													<xsl:with-param name="key">all_rights_reserved</xsl:with-param>
-												</xsl:call-template>
-											</fo:block>
-										</fo:block>
-									</fo:table-cell>
-									<fo:table-cell display-align="after" >
-										<fo:block text-align="right">
-											<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Ribose-Logo))}" width="32mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Ribose Logo"/> -->
-										</fo:block>
-									</fo:table-cell>
-									<fo:table-cell><fo:block></fo:block></fo:table-cell>
-								</fo:table-row>
-							</fo:table-body>
-						</fo:table>
-					</fo:block>
-				</fo:block-container>
-				
-				<!-- title and version  -->
-				<fo:block-container margin-top="{$pageHeight - 279.4}mm" height="60mm" display-align="center">
-					<xsl:variable name="title" select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang]"/>
-					<xsl:if test="string-length($title) &gt; 80">
-						<xsl:attribute name="margin-right">-30mm</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:variable name="titles">
-						<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and (@type = 'intro' or not(@type))]"/>
-						<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'main'][last()]"/>
-					</xsl:variable>
-					<xsl:for-each select="xalan:nodeset($titles)/mn:title">
-						<fo:block font-size="27pt" font-weight="bold" role="H1">
-							<xsl:apply-templates /><xsl:if test="position() != last()"><xsl:value-of select="$nonbreak_space_em_dash"/></xsl:if>
-						</fo:block>
-					</xsl:for-each>
-					
-					<fo:block space-before="9pt" font-size="16.8pt" font-weight="600">
-						<xsl:value-of select="$docnumber_version"/>
-					</fo:block>
-				</fo:block-container>
-			</fo:flow>
-		</fo:page-sequence>
+											</fo:table-cell>
+											<fo:table-cell display-align="before" padding-top="1.5mm" padding-left="8mm">
+												<fo:block>
+													<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:ext/mn:security"/>
+													<fo:block>
+														<xsl:call-template name="convertDate">
+															<xsl:with-param name="date" select="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']/mn:on"/>
+															<xsl:with-param name="format" select="'Month DD, YYYY'"/>
+														</xsl:call-template>
+													</fo:block>
+													<fo:block><xsl:value-of select="$docnumber_version"/></fo:block>
+													<!-- <xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"/> -->
+													<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Committee']/mn:name"/>
+													<fo:block>
+														<xsl:text>© </xsl:text>
+														<xsl:value-of select="$copyright_year"/>
+														<xsl:text> </xsl:text>
+														<xsl:variable name="publisher" select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type='publisher']/mn:organization/mn:name"/>
+														<xsl:value-of select="$publisher"/>
+														<xsl:if test="substring($publisher, string-length($publisher)) != '.'"><xsl:text>.</xsl:text></xsl:if>
+														<xsl:text> </xsl:text>
+														<xsl:call-template name="getLocalizedString">
+															<xsl:with-param name="key">all_rights_reserved</xsl:with-param>
+														</xsl:call-template>
+													</fo:block>
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell display-align="after" >
+												<fo:block text-align="right">
+													<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Ribose-Logo))}" width="32mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Ribose Logo"/> -->
+												</fo:block>
+											</fo:table-cell>
+											<fo:table-cell><fo:block></fo:block></fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+							</fo:block>
+						</fo:block-container>
+						
+						<!-- title and version  -->
+						<fo:block-container margin-top="{$pageHeight - 279.4}mm" height="60mm" display-align="center">
+							<xsl:variable name="title" select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang]"/>
+							<xsl:if test="string-length($title) &gt; 80">
+								<xsl:attribute name="margin-right">-30mm</xsl:attribute>
+							</xsl:if>
+							
+							<xsl:variable name="titles">
+								<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and (@type = 'intro' or not(@type))]"/>
+								<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'main'][last()]"/>
+							</xsl:variable>
+							<xsl:for-each select="xalan:nodeset($titles)/mn:title">
+								<fo:block font-size="27pt" font-weight="bold" role="H1">
+									<xsl:apply-templates /><xsl:if test="position() != last()"><xsl:value-of select="$nonbreak_space_em_dash"/></xsl:if>
+								</fo:block>
+							</xsl:for-each>
+							
+							<fo:block space-before="9pt" font-size="16.8pt" font-weight="600">
+								<xsl:value-of select="$docnumber_version"/>
+							</fo:block>
+						</fo:block-container>
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template> <!-- END: cover-page -->
 	
 	<xsl:template name="inner-cover-page">

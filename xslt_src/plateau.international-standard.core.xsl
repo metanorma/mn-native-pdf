@@ -614,143 +614,151 @@
 	
 	<xsl:template name="cover-page">
 		<xsl:param name="num"/>
-		<fo:page-sequence master-reference="cover-page" force-page-count="no-force" font-family="Noto Sans Condensed">
-			
-			<xsl:if test="$doctype = 'annex'">
-				<xsl:attribute name="color">white</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$doctype = 'technical-report'">
-				<xsl:attribute name="font-family">Noto Sans</xsl:attribute>
-			</xsl:if>
-			
-			<fo:static-content flow-name="header" role="artifact" id="__internal_layout__coverpage_header_{generate-id()}">
-				<!-- background cover image -->
-				<xsl:call-template name="insertBackgroundPageImage"/>
-			</fo:static-content>
-			
-			<fo:static-content flow-name="footer" role="artifact">
-				<fo:block-container>
-					<fo:table table-layout="fixed" width="100%">
-						<fo:table-column column-width="proportional-column-width(140)"/>
-						<fo:table-column column-width="proportional-column-width(13.5)"/>
-						<xsl:choose>
-							<xsl:when test="$doctype = 'technical-report'">
-								<fo:table-column column-width="proportional-column-width(20)"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<fo:table-column column-width="proportional-column-width(11)"/>
-							</xsl:otherwise>
-						</xsl:choose>
-						<fo:table-body>
-							<fo:table-row>
-								<fo:table-cell>
-									<fo:block font-size="28pt" font-family="Noto Sans JP">
-										<xsl:if test="$doctype = 'annex'">
-											<xsl:attribute name="text-indent">-7mm</xsl:attribute>
-											<xsl:value-of select="concat('（', $i18n_doctype_dict_annex)"/>
-											<fo:inline letter-spacing="-3mm">）</fo:inline>
-										</xsl:if>
-										<xsl:if test="$doctype = 'technical-report'">
-											<xsl:attribute name="font-size">18pt</xsl:attribute>
-											<xsl:attribute name="line-height">1.8</xsl:attribute>
-										</xsl:if>
-										<xsl:variable name="title">
-											<xsl:apply-templates select="/*/mn:bibdata/mn:title[@language = 'ja' and @type = 'title-main']/node()"/>
-										</xsl:variable>
-										<xsl:copy-of select="$title"/>
-										<xsl:if test="$doctype = 'technical-report'">
-											<xsl:choose>
-												<xsl:when test="string-length($title) &gt; 60">
-													<fo:inline> <xsl:value-of select="$i18n_doctype_dict_technical_report"/></fo:inline>
-												</xsl:when>
-												<xsl:otherwise>
-													<fo:block><xsl:value-of select="$i18n_doctype_dict_technical_report"/></fo:block>
-												</xsl:otherwise>
-											</xsl:choose>
-										</xsl:if>
-									</fo:block>
-									<fo:block font-size="14pt" margin-top="3mm">
-										<xsl:if test="$doctype = 'technical-report'">
-											<xsl:attribute name="font-size">9pt</xsl:attribute>
-											<xsl:attribute name="margin-top">1mm</xsl:attribute>
-										</xsl:if>
-										<xsl:apply-templates select="/*/mn:bibdata/mn:title[@language = 'en' and @type = 'title-main']/node()"/>
-									</fo:block>
-								</fo:table-cell>
-								<fo:table-cell text-align="right" font-size="8.5pt" padding-top="3mm" padding-right="2mm">
-									<xsl:if test="$doctype = 'technical-report'">
-										<xsl:attribute name="font-size">9.5pt</xsl:attribute>
-										<xsl:attribute name="padding-top">2mm</xsl:attribute>
-									</xsl:if>
-									<fo:block>series</fo:block>
-									<fo:block>No.</fo:block>
-								</fo:table-cell>
-								<fo:table-cell text-align="right">
-									<xsl:if test="$doctype = 'technical-report'">
-										<xsl:attribute name="text-align">center</xsl:attribute>
-									</xsl:if>
-									<fo:block font-size="32pt">
-										<xsl:if test="$doctype = 'technical-report'">
-											<xsl:attribute name="font-size">28pt</xsl:attribute>
-										</xsl:if>
-										<xsl:variable name="docnumber" select="/*/mn:bibdata/mn:docnumber"/>
-										<xsl:if test="string-length($docnumber) = 1">0</xsl:if><xsl:value-of select="$docnumber"/>
-									</fo:block>
-								</fo:table-cell>
-							</fo:table-row>
-						</fo:table-body>
-					</fo:table>
-				</fo:block-container>
-			</fo:static-content>
-		
-			<fo:static-content flow-name="left-region" role="artifact" id="__internal_layout__coverpage_left_region_{generate-id()}">				
-				<fo:block text-align="center" margin-top="14.5mm" margin-left="2mm">
-					<xsl:if test="$doctype = 'technical-report'">
-						<xsl:attribute name="margin-left">5.5mm</xsl:attribute>
+		<xsl:choose>
+			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image']/mn:value/mn:image and 
+							normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:full-coverpage-replacement) = 'true'">
+				<xsl:call-template name="insertCoverPageFullImage"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:page-sequence master-reference="cover-page" force-page-count="no-force" font-family="Noto Sans Condensed">
+					
+					<xsl:if test="$doctype = 'annex'">
+						<xsl:attribute name="color">white</xsl:attribute>
 					</xsl:if>
-					<fo:instream-foreign-object content-width="24mm" fox:alt-text="PLATEAU Logo">
-						<xsl:if test="$doctype = 'technical-report'">
-							<xsl:attribute name="content-width">20.5mm</xsl:attribute>
-						</xsl:if>
-						<xsl:choose>
-							<xsl:when test="$doctype = 'annex'">
-								<xsl:copy-of select="$PLATEAU-Logo-inverted"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:copy-of select="$PLATEAU-Logo"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</fo:instream-foreign-object>
-				</fo:block>
-				<fo:block-container reference-orientation="-90" width="205mm" height="36mm" margin-top="6mm">
 					<xsl:if test="$doctype = 'technical-report'">
-						<xsl:attribute name="margin-top">2mm</xsl:attribute>
+						<xsl:attribute name="font-family">Noto Sans</xsl:attribute>
 					</xsl:if>
-					<fo:block font-size="21.2pt" margin-top="7mm">
-						<xsl:if test="$doctype = 'technical-report'">
-							<xsl:attribute name="font-size">16pt</xsl:attribute>
-							<xsl:attribute name="margin-top">8mm</xsl:attribute>
-						</xsl:if>
-						<xsl:apply-templates select="/*/mn:bibdata/mn:title[@language = 'en' and @type = 'title-intro']/node()"/>
-					</fo:block>
-					<fo:block font-family="Noto Sans JP" font-size="14.2pt" margin-top="2mm">
-						<xsl:if test="$doctype = 'annex'">
-							<xsl:attribute name="text-indent">-3.5mm</xsl:attribute>
-							<xsl:value-of select="concat('（', $i18n_doctype_dict_annex)"/>
-							<fo:inline letter-spacing="-1mm">）</fo:inline>
-						</xsl:if>
-						<xsl:if test="$doctype = 'technical-report'">
-							<xsl:attribute name="font-size">12pt</xsl:attribute>
-						</xsl:if>
-						<xsl:apply-templates select="/*/mn:bibdata/mn:title[@language = 'ja' and @type = 'title-intro']/node()"/>
-					</fo:block>
-				</fo:block-container>
-			</fo:static-content>
-			
-			<fo:flow flow-name="xsl-region-body">
-				<fo:block id="firstpage_id_{$num}">&#xa0;</fo:block>
-			</fo:flow>
-		</fo:page-sequence>
+					
+					<fo:static-content flow-name="header" role="artifact" id="__internal_layout__coverpage_header_{generate-id()}">
+						<!-- background cover image -->
+						<xsl:call-template name="insertBackgroundPageImage"/>
+					</fo:static-content>
+					
+					<fo:static-content flow-name="footer" role="artifact">
+						<fo:block-container>
+							<fo:table table-layout="fixed" width="100%">
+								<fo:table-column column-width="proportional-column-width(140)"/>
+								<fo:table-column column-width="proportional-column-width(13.5)"/>
+								<xsl:choose>
+									<xsl:when test="$doctype = 'technical-report'">
+										<fo:table-column column-width="proportional-column-width(20)"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<fo:table-column column-width="proportional-column-width(11)"/>
+									</xsl:otherwise>
+								</xsl:choose>
+								<fo:table-body>
+									<fo:table-row>
+										<fo:table-cell>
+											<fo:block font-size="28pt" font-family="Noto Sans JP">
+												<xsl:if test="$doctype = 'annex'">
+													<xsl:attribute name="text-indent">-7mm</xsl:attribute>
+													<xsl:value-of select="concat('（', $i18n_doctype_dict_annex)"/>
+													<fo:inline letter-spacing="-3mm">）</fo:inline>
+												</xsl:if>
+												<xsl:if test="$doctype = 'technical-report'">
+													<xsl:attribute name="font-size">18pt</xsl:attribute>
+													<xsl:attribute name="line-height">1.8</xsl:attribute>
+												</xsl:if>
+												<xsl:variable name="title">
+													<xsl:apply-templates select="/*/mn:bibdata/mn:title[@language = 'ja' and @type = 'title-main']/node()"/>
+												</xsl:variable>
+												<xsl:copy-of select="$title"/>
+												<xsl:if test="$doctype = 'technical-report'">
+													<xsl:choose>
+														<xsl:when test="string-length($title) &gt; 60">
+															<fo:inline> <xsl:value-of select="$i18n_doctype_dict_technical_report"/></fo:inline>
+														</xsl:when>
+														<xsl:otherwise>
+															<fo:block><xsl:value-of select="$i18n_doctype_dict_technical_report"/></fo:block>
+														</xsl:otherwise>
+													</xsl:choose>
+												</xsl:if>
+											</fo:block>
+											<fo:block font-size="14pt" margin-top="3mm">
+												<xsl:if test="$doctype = 'technical-report'">
+													<xsl:attribute name="font-size">9pt</xsl:attribute>
+													<xsl:attribute name="margin-top">1mm</xsl:attribute>
+												</xsl:if>
+												<xsl:apply-templates select="/*/mn:bibdata/mn:title[@language = 'en' and @type = 'title-main']/node()"/>
+											</fo:block>
+										</fo:table-cell>
+										<fo:table-cell text-align="right" font-size="8.5pt" padding-top="3mm" padding-right="2mm">
+											<xsl:if test="$doctype = 'technical-report'">
+												<xsl:attribute name="font-size">9.5pt</xsl:attribute>
+												<xsl:attribute name="padding-top">2mm</xsl:attribute>
+											</xsl:if>
+											<fo:block>series</fo:block>
+											<fo:block>No.</fo:block>
+										</fo:table-cell>
+										<fo:table-cell text-align="right">
+											<xsl:if test="$doctype = 'technical-report'">
+												<xsl:attribute name="text-align">center</xsl:attribute>
+											</xsl:if>
+											<fo:block font-size="32pt">
+												<xsl:if test="$doctype = 'technical-report'">
+													<xsl:attribute name="font-size">28pt</xsl:attribute>
+												</xsl:if>
+												<xsl:variable name="docnumber" select="/*/mn:bibdata/mn:docnumber"/>
+												<xsl:if test="string-length($docnumber) = 1">0</xsl:if><xsl:value-of select="$docnumber"/>
+											</fo:block>
+										</fo:table-cell>
+									</fo:table-row>
+								</fo:table-body>
+							</fo:table>
+						</fo:block-container>
+					</fo:static-content>
+				
+					<fo:static-content flow-name="left-region" role="artifact" id="__internal_layout__coverpage_left_region_{generate-id()}">				
+						<fo:block text-align="center" margin-top="14.5mm" margin-left="2mm">
+							<xsl:if test="$doctype = 'technical-report'">
+								<xsl:attribute name="margin-left">5.5mm</xsl:attribute>
+							</xsl:if>
+							<fo:instream-foreign-object content-width="24mm" fox:alt-text="PLATEAU Logo">
+								<xsl:if test="$doctype = 'technical-report'">
+									<xsl:attribute name="content-width">20.5mm</xsl:attribute>
+								</xsl:if>
+								<xsl:choose>
+									<xsl:when test="$doctype = 'annex'">
+										<xsl:copy-of select="$PLATEAU-Logo-inverted"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:copy-of select="$PLATEAU-Logo"/>
+									</xsl:otherwise>
+								</xsl:choose>
+							</fo:instream-foreign-object>
+						</fo:block>
+						<fo:block-container reference-orientation="-90" width="205mm" height="36mm" margin-top="6mm">
+							<xsl:if test="$doctype = 'technical-report'">
+								<xsl:attribute name="margin-top">2mm</xsl:attribute>
+							</xsl:if>
+							<fo:block font-size="21.2pt" margin-top="7mm">
+								<xsl:if test="$doctype = 'technical-report'">
+									<xsl:attribute name="font-size">16pt</xsl:attribute>
+									<xsl:attribute name="margin-top">8mm</xsl:attribute>
+								</xsl:if>
+								<xsl:apply-templates select="/*/mn:bibdata/mn:title[@language = 'en' and @type = 'title-intro']/node()"/>
+							</fo:block>
+							<fo:block font-family="Noto Sans JP" font-size="14.2pt" margin-top="2mm">
+								<xsl:if test="$doctype = 'annex'">
+									<xsl:attribute name="text-indent">-3.5mm</xsl:attribute>
+									<xsl:value-of select="concat('（', $i18n_doctype_dict_annex)"/>
+									<fo:inline letter-spacing="-1mm">）</fo:inline>
+								</xsl:if>
+								<xsl:if test="$doctype = 'technical-report'">
+									<xsl:attribute name="font-size">12pt</xsl:attribute>
+								</xsl:if>
+								<xsl:apply-templates select="/*/mn:bibdata/mn:title[@language = 'ja' and @type = 'title-intro']/node()"/>
+							</fo:block>
+						</fo:block-container>
+					</fo:static-content>
+					
+					<fo:flow flow-name="xsl-region-body">
+						<fo:block id="firstpage_id_{$num}">&#xa0;</fo:block>
+					</fo:flow>
+				</fo:page-sequence>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template> <!-- cover-page -->
 	
 	<xsl:template name="inner-cover-page">

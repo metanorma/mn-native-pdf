@@ -709,6 +709,11 @@
 		<!-- ============================================= -->
 
 		<xsl:choose>
+			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image']/mn:value/mn:image and 
+							normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:full-coverpage-replacement) = 'true'">
+				<xsl:call-template name="insertCoverPageFullImage"/>
+			</xsl:when>
+			
 			<xsl:when test="$layoutVersion = '2023'">
 				<!-- cover page, version 2023 -->
 				<fo:page-sequence force-page-count="no-force" master-reference="cover-page_2023" writing-mode="lr-tb" font-family="Arial" font-size="12pt">

@@ -1482,6 +1482,11 @@
 			<xsl:variable name="fo_cover_page">
 			<!-- cover page -->
 			<xsl:choose>
+				<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image']/mn:value/mn:image and 
+								normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:full-coverpage-replacement) = 'true'">
+					<xsl:call-template name="insertCoverPageFullImage"/>
+				</xsl:when>
+				
 				<xsl:when test="$layoutVersion = '1951'">
 					<fo:page-sequence master-reference="cover-page_1951" force-page-count="no-force">
 						<fo:static-content flow-name="cover-page-header" font-family="Times New Roman" font-size="8.5pt" font-weight="bold">
