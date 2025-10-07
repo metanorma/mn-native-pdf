@@ -2001,6 +2001,18 @@
 		</fo:block-container>
 	</xsl:template>
 	
+	<!-- for https://github.com/metanorma/mn-native-pdf/issues/845 -->
+	<xsl:template name="insertCoverPageFullImage">
+		<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
+			<xsl:if test="$namespace = 'bipm'">
+				<xsl:attribute name="force-page-count">even</xsl:attribute>
+			</xsl:if>
+			<fo:flow flow-name="xsl-region-body">
+				<xsl:call-template name="insertBackgroundPageImage"/>
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template>
+	
 	<xsl:template name="insertPageImage">
 		<xsl:param name="svg_content_height" select="$pageHeight"/>
 		<xsl:param name="bitmap_width" select="$pageWidth"/>
