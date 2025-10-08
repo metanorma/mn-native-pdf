@@ -1018,41 +1018,49 @@
 	<xsl:template name="cover-page">
 		<xsl:param name="num"/>
 		<xsl:param name="docidentifier"/>
-		<xsl:if test="$isGenerateTableIF = 'false'">
-			<xsl:variable name="doctype"><xsl:call-template name="get_doctype"/></xsl:variable>
-			<xsl:variable name="docidentifier_JIS"><xsl:call-template name="get_docidentifier_JIS"/></xsl:variable>
-			<xsl:variable name="doclang"><xsl:call-template name="getLang"/></xsl:variable>
-			<xsl:variable name="copyrightText"><xsl:call-template name="get_copyrightText"/></xsl:variable>
-			<xsl:choose>
-				<xsl:when test="$vertical_layout = 'true'">
-					<xsl:call-template name="insertCoverPageVerticalLayout">
-						<xsl:with-param name="num" select="$num"/>
-						<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS"/>
-					</xsl:call-template>
-				</xsl:when>
-				<xsl:when test="$doctype = 'technical-specification'">
-					<xsl:call-template name="insertCoverPageJSA">
-						<xsl:with-param name="num" select="$num"/>
-						<xsl:with-param name="doclang" select="$doclang"/>
-						<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS"/>
-					</xsl:call-template>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:call-template name="insertCoverPage">
-						<xsl:with-param name="num" select="$num"/>
-						<xsl:with-param name="copyrightText" select="$copyrightText"/>
-						<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS"/>
-					</xsl:call-template>
-				</xsl:otherwise>
-			</xsl:choose>
-			
-			<xsl:if test="not($vertical_layout = 'true')">
-				<xsl:call-template name="insertInnerCoverPage">
-					<xsl:with-param name="docidentifier" select="$docidentifier"/>
-					<xsl:with-param name="copyrightText" select="$copyrightText"/>
-				</xsl:call-template>
-			</xsl:if>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image']/mn:value/mn:image and 
+							normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:full-coverpage-replacement) = 'true'">
+				<xsl:call-template name="insertCoverPageFullImage"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:if test="$isGenerateTableIF = 'false'">
+					<xsl:variable name="doctype"><xsl:call-template name="get_doctype"/></xsl:variable>
+					<xsl:variable name="docidentifier_JIS"><xsl:call-template name="get_docidentifier_JIS"/></xsl:variable>
+					<xsl:variable name="doclang"><xsl:call-template name="getLang"/></xsl:variable>
+					<xsl:variable name="copyrightText"><xsl:call-template name="get_copyrightText"/></xsl:variable>
+					<xsl:choose>
+						<xsl:when test="$vertical_layout = 'true'">
+							<xsl:call-template name="insertCoverPageVerticalLayout">
+								<xsl:with-param name="num" select="$num"/>
+								<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS"/>
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:when test="$doctype = 'technical-specification'">
+							<xsl:call-template name="insertCoverPageJSA">
+								<xsl:with-param name="num" select="$num"/>
+								<xsl:with-param name="doclang" select="$doclang"/>
+								<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS"/>
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:call-template name="insertCoverPage">
+								<xsl:with-param name="num" select="$num"/>
+								<xsl:with-param name="copyrightText" select="$copyrightText"/>
+								<xsl:with-param name="docidentifier_jis" select="$docidentifier_JIS"/>
+							</xsl:call-template>
+						</xsl:otherwise>
+					</xsl:choose>
+					
+					<xsl:if test="not($vertical_layout = 'true')">
+						<xsl:call-template name="insertInnerCoverPage">
+							<xsl:with-param name="docidentifier" select="$docidentifier"/>
+							<xsl:with-param name="copyrightText" select="$copyrightText"/>
+						</xsl:call-template>
+					</xsl:if>
+				</xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template name="inner-cover-page">
