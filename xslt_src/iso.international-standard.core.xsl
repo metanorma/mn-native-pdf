@@ -4240,15 +4240,9 @@
 				<xsl:call-template name="titleAmendment"/>				
 			</xsl:when>
 			<xsl:otherwise>
-				<fo:block font-size="16pt" font-weight="bold" text-align="center" margin-top="6pt" margin-bottom="36pt" keep-with-next="always" role="H1">
-					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
-						<xsl:attribute name="font-size">14pt</xsl:attribute>
-						<xsl:attribute name="span">all</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="$layoutVersion = '2024'">
-						<xsl:attribute name="margin-top">0pt</xsl:attribute>
-						<xsl:attribute name="margin-bottom">30pt</xsl:attribute>
-					</xsl:if>
+				<fo:block xsl:use-attribute-sets="references-non-normative-title-style">
+					<xsl:call-template name="refine_references-non-normative-title-style"/>
+					
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:otherwise>

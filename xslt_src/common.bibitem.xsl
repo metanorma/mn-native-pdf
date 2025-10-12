@@ -30,6 +30,15 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="font-size">16pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-top">0pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">30pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="margin-left">-15mm</xsl:attribute>
 			<xsl:attribute name="role">H1</xsl:attribute>
@@ -42,7 +51,16 @@
 	</xsl:attribute-set>
 	
 	<xsl:template name="refine_references-non-normative-title-style">
-		
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+				<xsl:attribute name="font-size">14pt</xsl:attribute>
+				<xsl:attribute name="span">all</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$layoutVersion != '2024'">
+				<xsl:attribute name="margin-top">6pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">36pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- bibitem in Normative References (references/@normative="true") -->
