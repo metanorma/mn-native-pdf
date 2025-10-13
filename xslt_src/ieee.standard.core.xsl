@@ -477,7 +477,7 @@
 							<xsl:with-param name="format" select="'ddMMyyyy'"/>
 						</xsl:call-template>
 					</xsl:variable> -->
-					<xsl:variable name="approved_date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'ieee-sasb-approved' and @format = 'ddMMMyyyy'])"/>
+					<xsl:variable name="approved_date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'ieee-sasb-approved' and (@format = 'ddMMMyyyy' or @format = 'text')])"/>
 					
 					<!-- Example: Revision of IEEE Std 802.1X™-2010
 						Incorporating IEEE Std 802.1Xbx™-2014
