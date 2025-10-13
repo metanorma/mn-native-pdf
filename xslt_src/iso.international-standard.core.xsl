@@ -4599,77 +4599,18 @@
 		</xsl:variable>
 		
 		<xsl:call-template name="setNamedDestination"/>
+		
+		<xsl:variable name="p_styles">
+			<styles xsl:use-attribute-sets="p-style">
+				<xsl:call-template name="refine_p-style">
+					<xsl:with-param name="element-name" select="$element-name"/>
+				</xsl:call-template>
+			</styles>
+		</xsl:variable>
+		
 		<xsl:element name="{$element-name}">
 			
-			<xsl:call-template name="setBlockAttributes">
-				<xsl:with-param name="text_align_default">justify</xsl:with-param>
-			</xsl:call-template>
-			
-			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
-			<xsl:if test="count(ancestor::mn:li) = 1 and not(ancestor::mn:li[1]/following-sibling::mn:li) and not(following-sibling::mn:p)">
-				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="starts-with(ancestor::mn:table[1]/@type, 'recommend') and not(following-sibling::mn:p)">
-				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="parent::*[self::mn:td or self::mn:th]">
-				<xsl:choose>
-					<xsl:when test="not(following-sibling::*)"> <!-- last paragraph in table cell -->
-						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
-					</xsl:otherwise>
-				</xsl:choose>
-				<!-- Special case: if paragraph in 'strong', i.e. it's sub-header, then keeps with next -->
-				<xsl:if test="count(node()) = count(mn:strong) and following-sibling::*">
-					<xsl:attribute name="keep-with-next">always</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
-			<xsl:if test="@id">
-				<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-			</xsl:if>
-			
-			<!-- bookmarks only in paragraph -->
-			<xsl:if test="count(mn:bookmark) != 0 and count(*) = count(mn:bookmark) and normalize-space() = ''">
-				<xsl:attribute name="font-size">0</xsl:attribute>
-				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-				<xsl:attribute name="line-height">0</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$element-name = 'fo:inline'">
-				<xsl:attribute name="role">P</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="ancestor::*[self::mn:li or self::mn:td or self::mn:th or self::mn:dd]">
-				<xsl:attribute name="role">SKIP</xsl:attribute>
-			</xsl:if>
-			<!-- <xsl:apply-templates>
-				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
-			</xsl:apply-templates> -->
-			<!-- <xsl:apply-templates select="node()[not(self::mn:note[not(following-sibling::*) or count(following-sibling::*) = count(../mn:note) - 1])]"> -->
-			
-			<xsl:if test="$layoutVersion = '1951'">
-				<xsl:if test="not(ancestor::*[self::mn:li or self::mn:td or self::mn:th or self::mn:dd])">
-					<!-- for paragraphs in the main text -->
-					<xsl:choose>
-						<xsl:when test="$revision_date_num &lt; 19600101">
-							<xsl:attribute name="margin-bottom">14pt</xsl:attribute>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:if>
-				<xsl:if test="(ancestor::mn:preface and parent::mn:clause) or ancestor::mn:foreword">
-					<xsl:attribute name="text-indent">7.1mm</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
-			
-			<xsl:if test="$layoutVersion = '2024'">
-				<xsl:attribute name="line-height">1.13</xsl:attribute>
-				<xsl:if test="parent::mn:li/following-sibling::* or parent::mn:dd">
-					<xsl:attribute name="margin-bottom">9pt</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
+			<xsl:copy-of select="xalan:nodeset($p_styles)/styles/@*"/>
 			
 			<!-- put inline title in the first paragraph -->
 			<xsl:if test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
