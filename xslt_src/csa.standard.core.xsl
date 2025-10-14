@@ -470,7 +470,6 @@
 	<!-- title      -->
 	<!-- ====== -->	
 	<xsl:template match="mn:annex/mn:fmt-title">
-		<xsl:call-template name="setNamedDestination"/>
 		<fo:block xsl:use-attribute-sets="annex-title-style">
 			<xsl:call-template name="refine_annex-title-style"/>
 			

@@ -21,6 +21,13 @@
 			<xsl:attribute name="color">black</xsl:attribute>
 			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="margin-bottom">32pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-size">16pt</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
@@ -48,6 +55,9 @@
 				<xsl:attribute name="color">rgb(3, 115, 200)</xsl:attribute>
 				<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<!-- <xsl:call-template name="setIDforNamedDestination"/> -->
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:call-template name="setIDforNamedDestination"/>
