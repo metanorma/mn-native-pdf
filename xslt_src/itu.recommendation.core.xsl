@@ -2268,7 +2268,8 @@
 	<!-- ====== -->	
 	<xsl:template match="mn:annex/mn:fmt-title">
 		<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
-		<fo:block  font-size="14pt" font-weight="bold" text-align="center" margin-bottom="18pt" role="H1">			
+		<fo:block xsl:use-attribute-sets="annex-title-style">			
+			<xsl:call-template name="refine_annex-title-style"/>
 			<fo:block>
 				<xsl:apply-templates />
 				<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
