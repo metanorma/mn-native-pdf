@@ -4217,15 +4217,9 @@
 				<xsl:call-template name="titleAmendment"/>				
 			</xsl:when>
 			<xsl:otherwise>
-				<fo:block font-size="16pt" text-align="center" margin-bottom="48pt" keep-with-next="always" role="H1">
-					<xsl:call-template name="setIDforNamedDestination"/>
-					<xsl:if test="$layoutVersion = '2024'">
-						<xsl:attribute name="line-height">1.1</xsl:attribute>
-						<!-- <xsl:attribute name="margin-bottom">52pt</xsl:attribute> -->
-					</xsl:if>
-					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
-						<xsl:attribute name="span">all</xsl:attribute>
-					</xsl:if>
+				<fo:block xsl:use-attribute-sets="annex-title-style">
+					<xsl:call-template name="refine_annex-title-style"/>
+					
 					<xsl:apply-templates />
 					<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 				</fo:block>
