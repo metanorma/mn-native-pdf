@@ -682,6 +682,12 @@
 			</xsl:choose>
 	</xsl:template>
 	
+	<xsl:attribute-set name="reset-margins-style">
+		<xsl:attribute name="margin-left">0mm</xsl:attribute>
+		<xsl:attribute name="margin-right">0mm</xsl:attribute>
+		<xsl:attribute name="role">SKIP</xsl:attribute>
+	</xsl:attribute-set>
+	
 	<xsl:attribute-set name="clause-style">
 		
 	</xsl:attribute-set>

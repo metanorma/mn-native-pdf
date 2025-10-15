@@ -656,7 +656,7 @@
 				<xsl:if test="$contents//mnx:item[@display = 'true']">
 				
 					<fo:block-container xsl:use-attribute-sets="toc-style">
-						<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
+						<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 							<xsl:for-each select="$contents//mnx:item[@display = 'true']">
 								<fo:block xsl:use-attribute-sets="toc-item-style">
 									
