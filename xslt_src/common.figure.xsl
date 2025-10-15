@@ -754,6 +754,14 @@
 	<!-- image    -->
 	<!-- ====== -->
 	
+	<!-- show figure's name 'before' or 'after' image -->
+	<xsl:variable name="figure-name-position">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'rsd'"><xsl:text>before</xsl:text></xsl:when>
+			<xsl:otherwise><xsl:text>after</xsl:text></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
 	<xsl:template match="mn:figure" name="figure">
 		<xsl:variable name="isAdded" select="@added"/>
 		<xsl:variable name="isDeleted" select="@deleted"/>
@@ -766,7 +774,7 @@
 				<xsl:with-param name="isDeleted" select="$isDeleted"/>
 			</xsl:call-template>
 			
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'rsd'"> <!-- show figure's name BEFORE image -->
+			<xsl:if test="$figure-name-position = 'before'"> <!-- show figure's name BEFORE image -->
 				<xsl:apply-templates select="mn:fmt-name" />
 			</xsl:if>
 			
@@ -800,12 +808,15 @@
 				<xsl:call-template name="showFigureKey"/>
 			</xsl:if>
 			
-			<xsl:choose>
+			<!-- <xsl:choose>
 				<xsl:when test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'rsd'"></xsl:when>
 				<xsl:otherwise>
-					<xsl:apply-templates select="mn:fmt-name" /> <!-- show figure's name AFTER image -->
-				</xsl:otherwise>
-			</xsl:choose>
+					<xsl:apply-templates select="mn:fmt-name" /> --> <!-- show figure's name AFTER image -->
+				<!-- </xsl:otherwise>
+			</xsl:choose> -->
+			<xsl:if test="$figure-name-position = 'after'">
+				<xsl:apply-templates select="mn:fmt-name" /> <!-- show figure's name AFTER image -->
+			</xsl:if>
 			
 		</fo:block-container>
 		

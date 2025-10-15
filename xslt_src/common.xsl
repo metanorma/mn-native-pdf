@@ -682,6 +682,12 @@
 			</xsl:choose>
 	</xsl:template>
 	
+	<xsl:attribute-set name="reset-margins-style">
+		<xsl:attribute name="margin-left">0mm</xsl:attribute>
+		<xsl:attribute name="margin-right">0mm</xsl:attribute>
+		<xsl:attribute name="role">SKIP</xsl:attribute>
+	</xsl:attribute-set>
+	
 	<xsl:attribute-set name="clause-style">
 		
 	</xsl:attribute-set>
@@ -1938,8 +1944,9 @@
  
 	<xsl:template name="setTextAlignment">
 		<xsl:param name="default">left</xsl:param>
+		<xsl:param name="skip_default">false</xsl:param>
 		<xsl:variable name="align" select="normalize-space(@align)"/>
-		<xsl:attribute name="text-align">
+		<xsl:variable name="text_align">
 			<xsl:choose>
 				<xsl:when test="$lang = 'ar' and $align = 'left'">start</xsl:when>
 				<xsl:when test="$lang = 'ar' and $align = 'right'">end</xsl:when>
@@ -1947,9 +1954,13 @@
 				<xsl:when test="$align != '' and not($align = 'indent')"><xsl:value-of select="$align"/></xsl:when>
 				<xsl:when test="ancestor::mn:td/@align"><xsl:value-of select="ancestor::mn:td/@align"/></xsl:when>
 				<xsl:when test="ancestor::mn:th/@align"><xsl:value-of select="ancestor::mn:th/@align"/></xsl:when>
+				<xsl:when test="$skip_default = 'true'"></xsl:when>
 				<xsl:otherwise><xsl:value-of select="$default"/></xsl:otherwise>
 			</xsl:choose>
-		</xsl:attribute>
+		</xsl:variable>
+		<xsl:if test="normalize-space($text_align) != ''">
+			<xsl:attribute name="text-align"><xsl:value-of select="$text_align"/></xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$align = 'indent'">
 			<xsl:attribute name="margin-left">7mm</xsl:attribute>
 		</xsl:if>
@@ -1957,8 +1968,10 @@
  
 	<xsl:template name="setBlockAttributes">
 		<xsl:param name="text_align_default">left</xsl:param>
+		<xsl:param name="skip_text_align_default">false</xsl:param>
 		<xsl:call-template name="setTextAlignment">
 			<xsl:with-param name="default" select="$text_align_default"/>
+			<xsl:with-param name="skip_default" select="$skip_text_align_default"/>
 		</xsl:call-template>
 		<xsl:call-template name="setKeepAttributes"/>
 		<xsl:if test="node()[1][self::mn:span][contains(@style, 'line-height')]">

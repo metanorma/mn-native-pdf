@@ -674,7 +674,7 @@
 										<xsl:when test="$isLegacy = 'true'">
 											<fo:block-container font-size="17pt" background-color="{$color_background_blue}" margin-left="-2.5mm" height="11.5mm" width="56mm" display-align="center" margin-top="0.5mm">
 												<fo:block-container margin-left="2.5mm">
-													<fo:block-container margin-left="0mm">
+													<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 														<fo:block margin-top="1mm">
 															<xsl:call-template name="addLetterSpacing">
 																<xsl:with-param name="text" select="$stage_uc"/>
@@ -788,7 +788,7 @@
 								<xsl:when test="$isLegacy = 'true'">
 									<fo:block-container margin-left="-7mm" color="{$color_design}" background-color="{$color_background_blue}" width="202mm">
 										<fo:block-container margin-left="2.5mm" margin-right="1mm" padding-top="0.5mm" padding-bottom="0.5mm">
-											<fo:block-container margin-left="0mm" margin-right="0mm">
+											<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 												<fo:block>
 													<xsl:variable name="legal_statement">
 														<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement" mode="update_xml_step1"/>
@@ -882,7 +882,7 @@
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
 		<fo:block-container xsl:use-attribute-sets="toc-listof-title-style">
-			<fo:block-container margin-left="0mm" role="H2">								
+			<fo:block-container xsl:use-attribute-sets="reset-margins-style" role="H2">								
 				<xsl:call-template name="insertSectionTitle">
 					<xsl:with-param name="title" select="$title"/>
 				</xsl:call-template>
@@ -1045,7 +1045,7 @@
 		</xsl:variable>
 		
 		<fo:block-container margin-left="-18mm" margin-bottom="40pt">
-			<fo:block-container margin-left="0mm">
+			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 				<fo:block xsl:use-attribute-sets="toc-title-style">
 					<xsl:call-template name="addLetterSpacing">
 						<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($title-toc))"/>
@@ -1391,7 +1391,7 @@
 		<xsl:choose>
 			<xsl:when test="$level = 1">			
 				<fo:block-container margin-left="-22mm" role="SKIP">
-					<fo:block-container margin-left="0mm" role="SKIP">
+					<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 						<fo:block margin-bottom="10pt" space-before="36pt" keep-with-next="always" role="H{$level}">
 							<fo:table table-layout="fixed" width="100%">
 								<fo:table-column column-width="22mm"/>
@@ -1539,7 +1539,7 @@
 					<xsl:attribute name="margin-top">1mm</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<fo:block-container margin-left="0mm">
+			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 				<fo:list-block xsl:use-attribute-sets="list-style">
 					<xsl:call-template name="refine_list-style"/>
 					

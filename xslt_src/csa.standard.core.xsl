@@ -470,16 +470,9 @@
 	<!-- title      -->
 	<!-- ====== -->	
 	<xsl:template match="mn:annex/mn:fmt-title">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="color">
-			<xsl:choose>
-				<xsl:when test="$level &gt;= 2">rgb(3, 115, 200)</xsl:when>
-				<xsl:otherwise>black</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" keep-with-next="always" color="{$color}" role="H{$level}">
+		<fo:block xsl:use-attribute-sets="annex-title-style">
+			<xsl:call-template name="refine_annex-title-style"/>
+			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 		</fo:block>		

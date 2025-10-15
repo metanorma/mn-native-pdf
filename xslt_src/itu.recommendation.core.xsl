@@ -724,7 +724,7 @@
 							<xsl:when test="$cover_header_hide = 'false'">
 								<fo:block-container margin-left="13mm">
 									<xsl:call-template name="setWritingMode"/>
-									<fo:block-container margin-left="0mm">
+									<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 										
 										<fo:table width="185.5mm" table-layout="fixed" margin-top="11.5mm">
 											<fo:table-column column-width="proportional-column-width(1)"/>
@@ -1268,7 +1268,7 @@
 									</fo:block>
 								</fo:block>
 								<fo:block-container margin-left="10mm">
-									<fo:block-container margin-left="0mm">
+									<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 										
 										<fo:block font-size="20pt" font-weight="bold" space-before="30mm">
 											<xsl:value-of select="$i18n_tsb"/>
@@ -2268,7 +2268,8 @@
 	<!-- ====== -->	
 	<xsl:template match="mn:annex/mn:fmt-title">
 		<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
-		<fo:block  font-size="14pt" font-weight="bold" text-align="center" margin-bottom="18pt" role="H1">			
+		<fo:block xsl:use-attribute-sets="annex-title-style">			
+			<xsl:call-template name="refine_annex-title-style"/>
 			<fo:block>
 				<xsl:apply-templates />
 				<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
@@ -2640,7 +2641,7 @@
 								</xsl:if>
 							</xsl:if>
 							
-							<fo:block-container margin-left="0mm" margin-right="0mm">
+							<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 								<fo:block>
 									
 									<xsl:apply-templates select="node()[not(self::mn:note)]" />

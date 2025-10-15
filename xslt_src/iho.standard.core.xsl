@@ -518,7 +518,7 @@
 													<fo:table-cell number-columns-spanned="2" border="0.5pt solid rgb(0, 21, 50)" font-weight="bold" color="rgb(0, 0, 76)" padding-top="3mm">
 														<fo:block-container height="165mm" width="115mm">
 															<fo:block-container margin-left="10mm">
-																<fo:block-container margin-left="0mm">
+																<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 																
 																	<!-- <fo:block-container display-align="center" height="90mm"> -->
 																	<fo:table table-layout="fixed" width="100%">
@@ -585,7 +585,7 @@
 											</fo:table-cell>
 											<fo:table-cell number-rows-spanned="2">
 												<fo:block-container width="79mm" height="72mm" margin-left="56.8mm" background-color="rgb(0, 172, 158)" text-align="right" display-align="after">
-													<fo:block-container margin-left="0mm">
+													<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 														<fo:block font-size="8pt" color="white" margin-right="5mm" margin-bottom="5mm" line-height-shift-adjustment="disregard-shifts">
 															<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/>
 														</fo:block>
@@ -636,7 +636,7 @@
 					</xsl:call-template>
 					<fo:flow flow-name="xsl-region-body">
 						<fo:block-container margin-left="-1.5mm" margin-right="-1mm">
-							<fo:block-container margin-left="0mm" margin-right="0mm" border="0.5pt solid black" >
+							<fo:block-container xsl:use-attribute-sets="reset-margins-style" border="0.5pt solid black" >
 								<fo:block-container margin-top="6.5mm" margin-left="7.5mm" margin-right="8.5mm" margin-bottom="7.5mm">
 									<fo:block-container margin="0">
 										<fo:block text-align="justify">

@@ -279,6 +279,14 @@
 		</xsl:element>
 	</xsl:template>
 	
+	<!-- show sourcecode's name 'before' or 'after' source code -->
+	<xsl:variable name="sourcecode-name-position">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'rsd'"><xsl:text>before</xsl:text></xsl:when>
+			<xsl:otherwise><xsl:text>after</xsl:text></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	
 	<xsl:template match="mn:sourcecode" name="sourcecode">
 	
 		<xsl:variable name="sourcecode_attributes">
@@ -302,9 +310,10 @@
 				
 					<xsl:call-template name="refine_sourcecode-container-style"/>
 
-					<fo:block-container margin-left="0mm" role="SKIP">
+					<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
 				
-						<xsl:if test="$namespace = 'rsd'">
+						<!-- <xsl:if test="$namespace = 'rsd'"> -->
+						<xsl:if test="$sourcecode-name-position = 'before'">
 							<xsl:apply-templates select="mn:fmt-name" /> <!-- show sourcecode's name BEFORE content -->
 						</xsl:if>
 						
@@ -335,12 +344,15 @@
 						
 						<xsl:apply-templates select="mn:dl"/> <!-- Key table -->
 						
-						<xsl:choose>
+						<!-- <xsl:choose>
 							<xsl:when test="$namespace = 'rsd'"></xsl:when>
 							<xsl:otherwise>
-								<xsl:apply-templates select="mn:fmt-name" /> <!-- show sourcecode's name AFTER content -->
-							</xsl:otherwise>
-						</xsl:choose>
+								<xsl:apply-templates select="mn:fmt-name" />  --><!-- show sourcecode's name AFTER content -->
+							<!-- </xsl:otherwise>
+						</xsl:choose> -->
+						<xsl:if test="$sourcecode-name-position = 'after'">
+							<xsl:apply-templates select="mn:fmt-name" /> <!-- show sourcecode's name AFTER content -->
+						</xsl:if>
 							
 						<xsl:if test="$namespace = 'ogc'">
 							<xsl:if test="parent::mn:example">
