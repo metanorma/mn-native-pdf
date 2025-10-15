@@ -894,7 +894,7 @@
 			<xsl:choose>
 				<xsl:when test="$level = 1">
 					<fo:block-container margin-left="-15mm" role="SKIP">
-						<fo:block-container margin-left="0mm" role="SKIP">
+						<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 							<fo:table width="100%" table-layout="fixed" role="SKIP">
 								<fo:table-column column-width="15mm"/>
 								<fo:table-column column-width="150mm"/>				
@@ -1002,7 +1002,7 @@
 	
 	<xsl:template match="mn:ul | mn:ol" mode="list" priority="2">
 		<fo:block-container role="SKIP">
-			<fo:block-container margin-left="0mm" role="SKIP">
+			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 				<xsl:choose>
 					<xsl:when test="not(ancestor::mn:ul) and not(ancestor::mn:ol)">
 						<fo:block padding-bottom="12pt" padding-top="4pt" role="SKIP">
@@ -1165,7 +1165,7 @@
 		<fo:block-container xsl:use-attribute-sets="clause-style">
 			<xsl:call-template name="refine_clause-style"/>
       
-			<fo:block-container margin-left="0mm" role="SKIP">
+			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 				<xsl:call-template name="setNamedDestination"/>
 				<fo:block role="SKIP">
 					<xsl:call-template name="setId"/>

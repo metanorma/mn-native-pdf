@@ -463,7 +463,7 @@
 									</fo:inline>
 								</fo:block>
 								<fo:block-container margin-left="1.5mm">
-									<fo:block-container margin-left="0mm">
+									<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 										<fo:block-container border="0.5pt solid black" font-size="10pt" margin-top="8mm" font-weight="bold" padding-left="1.5mm" padding-top="0.5mm" width="102%" height="11mm" display-align="center" id="__internal_layout__warning_block">
 											<fo:block margin-left="1mm">Warning! Make sure that you obtained this publication from an authorized distributor.</fo:block>
 											<xsl:if test="//mn:metanorma/mn:bibdata/mn:title[@language = 'fr']">
@@ -531,7 +531,7 @@
 								<xsl:text>&#xA0;</xsl:text>
 							</fo:block>
 							<fo:block-container margin-left="57mm">
-								<fo:block-container margin-left="0mm">
+								<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 									<fo:table table-layout="fixed" width="118mm" background-color="rgb(219, 229, 241)" id="__internal_layout__project_{generate-id()}">
 										<fo:table-column column-width="50%"/>
 										<fo:table-column column-width="50%"/>
@@ -604,7 +604,7 @@
 							</fo:block-container>
 							
 							<fo:block-container margin-left="-2mm" margin-right="-2mm" margin-top="5mm">
-								<fo:block-container margin-left="0mm" margin-right="0mm">
+								<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 									<xsl:variable name="border-color">rgb(221, 213, 213)</xsl:variable>
 									<fo:table table-layout="fixed" width="100%" border="1.5pt solid {$border-color}">
 										<fo:table-column column-width="50%"/>
@@ -925,7 +925,7 @@
 				<fo:block span="all">
 					<fo:block-container border="0.5pt solid black" margin-top="7mm">
 						<fo:block-container margin-left="2.5mm" margin-right="2.5mm" margin-top="1mm" margin-bottom="1mm">
-							<fo:block-container margin-left="0mm" margin-right="0mm">
+							<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 								<fo:table table-layout="fixed" width="100%">
 									<fo:table-column column-width="20mm"/>
 									<fo:table-column column-width="130mm"/>
@@ -1087,7 +1087,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 			<fo:block>&#xA0;</fo:block>
 		</fo:block>
 		<fo:block-container font-size="30pt" font-weight="bold" height="56mm" margin-left="7.5mm" line-height="115%">
-			<fo:block-container margin-left="0mm">
+			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 				<fo:block-container height="25mm"  display-align="after">
 					<xsl:if test="$stage_published = 'true'">
 						<xsl:attribute name="width">100mm</xsl:attribute>
@@ -1125,7 +1125,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 			</fo:block-container>
 		</fo:block-container>
 		<fo:block-container margin-left="8mm">
-			<fo:block-container margin-left="0mm">
+			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 				<fo:block-container height="6mm">
 					<fo:block text-align="right" margin-top="-4.5mm" margin-right="-1mm">
 						<xsl:if test="//mn:metanorma/mn:bibdata/mn:ext/mn:accessibility-color-inside = 'true'">
@@ -1168,7 +1168,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 			</fo:block-container>
 		</fo:block-container>
 		<fo:block-container margin-left="8.5mm">
-			<fo:block-container margin-left="0mm">
+			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 				<fo:block font-size="12pt" font-weight="bold" color="{$color_blue}" margin-bottom="16pt" role="H1">
 					<!-- Example:
 						Electromagnetic compatibility (EMC) – 
@@ -2146,7 +2146,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 			<fo:page-sequence master-reference="back-page">
 				<fo:flow flow-name="xsl-region-body">
 					<fo:block-container margin-left="20mm" margin-top="19mm">
-						<fo:block-container margin-left="0mm" margin-top="0mm">
+						<fo:block-container xsl:use-attribute-sets="reset-margins-style" margin-top="0mm">
 							<fo:block font-size="11pt" color="{$color_blue}" margin-bottom="12pt" line-height="150%">
 								<fo:block-container width="42mm">
 									<fo:block>

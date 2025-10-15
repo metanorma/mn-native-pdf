@@ -5227,7 +5227,7 @@
 			<xsl:call-template name="insertLayoutVersionAttributesTop">
 				<xsl:with-param name="odd_or_even" select="$odd_or_even"/>
 			</xsl:call-template>
-			<fo:block-container margin-left="0mm" margin-right="0mm">
+			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 				<fo:table table-layout="fixed" width="100%">
 					<fo:table-column column-width="proportional-column-width(1)"/>
 					<fo:table-column column-width="proportional-column-width(1)"/>
@@ -5421,7 +5421,7 @@
 		<xsl:attribute name="display-align">after</xsl:attribute>
 		<xsl:attribute name="text-align">center</xsl:attribute>
 		<fo:block-container margin-left="-13mm" margin-right="-13mm">
-			<fo:block-container margin-left="0mm" margin-right="0mm">
+			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 				<fo:table table-layout="fixed" width="100%" margin-bottom="5mm">
 					<fo:table-column column-width="proportional-column-width(35)"/>
 					<fo:table-column column-width="proportional-column-width(100)"/>

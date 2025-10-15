@@ -324,7 +324,7 @@
 						<fo:block>&#xA0;</fo:block>
 						<fo:block margin-bottom="12pt">&#xA0;</fo:block>
 						<fo:block-container font-size="16pt" text-align="center" border="0.5pt solid black" margin-bottom="12pt" margin-left="-1mm" margin-right="-1mm">
-							<fo:block-container margin-left="0mm" margin-right="0mm">
+							<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 								<fo:block padding-top="1mm">
 									<xsl:call-template name="capitalizeWords">
 										<!-- ex: final-draft -->
@@ -340,7 +340,7 @@
 						</fo:block-container>
 						<fo:block margin-bottom="10pt">&#xA0;</fo:block>
 						<fo:block-container font-size="10pt" border="0.5pt solid black" margin-bottom="12pt" margin-left="-1mm" margin-right="-1mm">
-							<fo:block-container margin-left="0mm" margin-right="0mm">
+							<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 								<fo:block text-align="center" font-weight="bold" padding-top="1mm" margin-bottom="6pt">Warning for drafts</fo:block>
 								<fo:block margin-left="2mm" margin-right="2mm">
 									<fo:block margin-bottom="6pt">This document is not a CalConnect Standard. It is distributed for review and comment, and is subject to change without notice and may not be referred to as a Standard. Recipients of this draft are invited to submit, with their comments, notification of any relevant patent rights of which they are aware and to provide supporting documentation.</fo:block>

@@ -1285,7 +1285,7 @@
 			
 			<xsl:call-template name="refine_note-style"/>
 			
-			<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
+			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 	
 				<fo:table table-layout="fixed" width="99%" border="1pt solid black">
 					<fo:table-body>
@@ -1448,7 +1448,7 @@
 				<xsl:if test="position() = last()">
 					<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 				</xsl:if>
-				<fo:block-container margin-left="0mm">
+				<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 					<fo:list-block provisional-distance-between-starts="10mm">
 						<fo:list-item>
 							<fo:list-item-label end-indent="label-end()">
@@ -1865,7 +1865,7 @@
 			<xsl:if test="not(following-sibling::*[1][self::mn:p[@class = 'dl']])"> <!-- last dl -->
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 			</xsl:if>
-			<fo:block-container margin-left="0mm">
+			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 				<fo:block>
 					<xsl:if test="parent::mn:table">
 						<xsl:attribute name="font-size">10pt</xsl:attribute>

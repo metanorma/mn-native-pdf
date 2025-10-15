@@ -664,7 +664,7 @@
 								
 									<fo:block-container margin-left="47mm" margin-top="10mm"> <!-- margin-top="27mm" -->
 									
-										<fo:block-container margin-left="0mm">
+										<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 										
 											<xsl:apply-templates select="/*/mn:preface/mn:clause[@type = 'toc']">
 												<xsl:with-param name="num" select="$num"/>

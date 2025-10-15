@@ -724,7 +724,7 @@
 							<xsl:when test="$cover_header_hide = 'false'">
 								<fo:block-container margin-left="13mm">
 									<xsl:call-template name="setWritingMode"/>
-									<fo:block-container margin-left="0mm">
+									<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 										
 										<fo:table width="185.5mm" table-layout="fixed" margin-top="11.5mm">
 											<fo:table-column column-width="proportional-column-width(1)"/>
@@ -1268,7 +1268,7 @@
 									</fo:block>
 								</fo:block>
 								<fo:block-container margin-left="10mm">
-									<fo:block-container margin-left="0mm">
+									<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 										
 										<fo:block font-size="20pt" font-weight="bold" space-before="30mm">
 											<xsl:value-of select="$i18n_tsb"/>
@@ -2641,7 +2641,7 @@
 								</xsl:if>
 							</xsl:if>
 							
-							<fo:block-container margin-left="0mm" margin-right="0mm">
+							<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 								<fo:block>
 									
 									<xsl:apply-templates select="node()[not(self::mn:note)]" />
