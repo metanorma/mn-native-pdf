@@ -2999,42 +2999,15 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:variable name="p_styles">
+			<styles xsl:use-attribute-sets="p-style">
+				<xsl:call-template name="refine_p-style"><xsl:with-param name="element-name" select="$element-name"/></xsl:call-template>
+			</styles>
+		</xsl:variable>
+		
 		<xsl:element name="{$element-name}">
-			<xsl:attribute name="id">
-				<xsl:value-of select="@id"/>
-			</xsl:attribute>
-			<xsl:attribute name="text-align">
-				<xsl:choose>
-					<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
-					<xsl:when test="ancestor::mn:note_side">left</xsl:when>
-					<xsl:when test="../@align"><xsl:value-of select="../@align"/></xsl:when>
-					<xsl:otherwise>justify</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:call-template name="setKeepAttributes"/>
-			<xsl:copy-of select="@font-family"/>
-			<xsl:if test="not(ancestor::mn:table)">
-				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="ancestor::mn:table and ancestor::mn:preface">
-				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="parent::mn:li">
-				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="@align = 'center'">
-				<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="*[1][self::mn:strong] and normalize-space(.) = normalize-space(*[1])">
-				<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="@parent-type = 'quote'">
-				<xsl:attribute name="font-family">Arial</xsl:attribute>
-				<xsl:attribute name="font-size">9pt</xsl:attribute>
-				<xsl:attribute name="line-height">130%</xsl:attribute>
-				<xsl:attribute name="role">BlockQuote</xsl:attribute>
-			</xsl:if>
-			<xsl:attribute name="line-height-shift-adjustment">disregard-shifts</xsl:attribute>
+			<xsl:copy-of select="xalan:nodeset($p_styles)/styles/@*"/>
+			
 			<xsl:apply-templates>
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 			</xsl:apply-templates>

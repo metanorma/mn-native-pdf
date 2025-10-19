@@ -2724,51 +2724,15 @@
 					<!-- 	<xsl:otherwise>fo:block</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable> -->
-				<xsl:element name="{$element-name}">
-					<xsl:call-template name="setBlockAttributes">
-						<xsl:with-param name="text_align_default">justify</xsl:with-param>
-					</xsl:call-template>
-					
-					<xsl:attribute name="margin-bottom">6pt</xsl:attribute><!-- 8pt -->
-					<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') and (ancestor::mn:sections or ancestor::mn:annex)">
-						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="../following-sibling::*[1][self::mn:note or self::mn:termnote or self::mn:ul or self::mn:ol] or following-sibling::*[1][self::mn:ul or self::mn:ol]">
-						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="parent::mn:li">
-						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-						<xsl:if test="ancestor::mn:feedback-statement">
-							<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					<xsl:if test="parent::mn:li and (ancestor::mn:note or ancestor::mn:termnote)">
-						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="(following-sibling::*[1][self::mn:clause or self::mn:terms or self::mn:references])">
-						<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="@id">
-						<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-					</xsl:if>
-					<xsl:attribute name="line-height">1.2</xsl:attribute>
-					<!-- bookmarks only in paragraph -->
-					<xsl:if test="count(mn:bookmark) != 0 and count(*) = count(mn:bookmark) and normalize-space() = ''">
-						<xsl:attribute name="font-size">0</xsl:attribute>
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-						<xsl:attribute name="line-height">0</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') and not(parent::mn:li)">
-						<xsl:attribute name="line-height"><xsl:value-of select="$line-height"/></xsl:attribute>
-						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') and parent::mn:li">
-						<xsl:attribute name="line-height">inherit</xsl:attribute>
-						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-					</xsl:if>
 				
+				<xsl:variable name="p_styles">
+					<styles xsl:use-attribute-sets="p-style">
+						<xsl:call-template name="refine_p-style"><xsl:with-param name="element-name" select="$element-name"/></xsl:call-template>
+					</styles>
+				</xsl:variable>
+				
+				<xsl:element name="{$element-name}">
+					<xsl:copy-of select="xalan:nodeset($p_styles)/styles/@*"/>
 					
 					<xsl:apply-templates>
 						<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>

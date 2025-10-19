@@ -2213,47 +2213,14 @@
 				<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 				<xsl:variable name="element-name">fo:block</xsl:variable>
 				
-				<xsl:element name="{$element-name}">
-					<xsl:call-template name="setBlockAttributes">
-						<xsl:with-param name="text_align_default">justify</xsl:with-param>
-					</xsl:call-template>
-					<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
-					
-					<xsl:if test="not(parent::mn:note or parent::mn:li or ancestor::mn:table)">
-						<xsl:attribute name="text-indent"><xsl:value-of select="$text_indent"/>mm</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:copy-of select="@id"/>
-					
-					<xsl:attribute name="line-height">1.5</xsl:attribute>
-					<!-- bookmarks only in paragraph -->
+				<xsl:variable name="p_styles">
+					<styles xsl:use-attribute-sets="p-style">
+						<xsl:call-template name="refine_p-style"><xsl:with-param name="element-name" select="$element-name"/></xsl:call-template>
+					</styles>
+				</xsl:variable>
 				
-					<xsl:if test="count(mn:bookmark) != 0 and count(*) = count(mn:bookmark) and normalize-space() = ''">
-						<xsl:attribute name="font-size">0</xsl:attribute>
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-						<xsl:attribute name="line-height">0</xsl:attribute>
-					</xsl:if>
-
-					<xsl:if test="ancestor::*[@key = 'true']">
-						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="parent::mn:fmt-definition">
-						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="parent::mn:li or following-sibling::*[1][self::mn:ol or self::mn:ul or self::mn:note or self::mn:example] or parent::mn:quote">
-						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="parent::mn:td or parent::mn:th or parent::mn:dd">
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="parent::mn:clause[@type = 'inner-cover-note'] or ancestor::mn:boilerplate">
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-					</xsl:if>
-					
+				<xsl:element name="{$element-name}">
+					<xsl:copy-of select="xalan:nodeset($p_styles)/styles/@*"/>
 					
 					<xsl:apply-templates>
 						<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
