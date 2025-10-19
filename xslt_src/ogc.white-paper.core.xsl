@@ -696,23 +696,16 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
+		<xsl:variable name="p_styles">
+			<styles xsl:use-attribute-sets="p-style">
+				<xsl:call-template name="refine_p-style"><xsl:with-param name="element-name" select="$element-name"/></xsl:call-template>
+			</styles>
+		</xsl:variable>
+		
 		<xsl:element name="{$element-name}">
-			<xsl:attribute name="id">
-				<xsl:value-of select="@id"/>
-			</xsl:attribute>
+			<xsl:copy-of select="xalan:nodeset($p_styles)/styles/@*"/>
 			
-			<xsl:call-template name="setBlockAttributes"/>
-			
-			<xsl:attribute name="space-after">
-				<xsl:choose>
-					<xsl:when test="ancestor::mn:li">0pt</xsl:when>					
-					<xsl:otherwise>12pt</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>
-			<xsl:if test="ancestor::mn:dd and not(ancestor::mn:table)">
-				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-			</xsl:if>
-			<xsl:attribute name="line-height">115%</xsl:attribute>
 			<xsl:apply-templates>
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
 			</xsl:apply-templates>

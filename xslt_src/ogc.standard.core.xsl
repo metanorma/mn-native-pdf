@@ -1485,21 +1485,15 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
+		<xsl:variable name="p_styles">
+			<styles xsl:use-attribute-sets="p-style">
+				<xsl:call-template name="refine_p-style"><xsl:with-param name="element-name" select="$element-name"/></xsl:call-template>
+			</styles>
+		</xsl:variable>
+		
 		<xsl:element name="{$element-name}">
-			<xsl:copy-of select="@id"/>
-			
-			<xsl:call-template name="setBlockAttributes"/>
-			
-			<xsl:if test="not(ancestor::mn:table)">
-				<xsl:attribute name="line-height">124%</xsl:attribute>
-				<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
-			</xsl:if>			
-			<xsl:if test="ancestor::mn:dd and not(ancestor::mn:table)">
-				<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
-				<xsl:if test="not(ancestor::mn:dd[1]/following-sibling::mn:dt)">
-					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
+			<xsl:copy-of select="xalan:nodeset($p_styles)/styles/@*"/>
 			
 			<xsl:apply-templates>
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>

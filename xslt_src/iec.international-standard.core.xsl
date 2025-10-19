@@ -1954,38 +1954,17 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		
+				
+		<xsl:variable name="p_styles">
+			<styles xsl:use-attribute-sets="p-style">
+				<xsl:call-template name="refine_p-style"><xsl:with-param name="element-name" select="$element-name"/></xsl:call-template>
+			</styles>
+		</xsl:variable>
+				
 		<xsl:choose>
 			<xsl:when test="$element-name = 'fo:block'">
 				<xsl:element name="{$element-name}">
-				
-					<xsl:call-template name="setBlockAttributes">
-						<xsl:with-param name="text_align_default">justify</xsl:with-param>
-					</xsl:call-template>
-					
-					<xsl:attribute name="margin-top">5pt</xsl:attribute>
-					<xsl:if test="ancestor::mn:fmt-definition">
-						<xsl:attribute name="margin-top">1pt</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="ancestor::mn:dl">
-						<xsl:attribute name="margin-top">0pt</xsl:attribute>
-					</xsl:if>
-					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-					<xsl:if test="local-name(following-sibling::*[1])= 'table'">
-						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="ancestor::mn:admonition">
-						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="ancestor::mn:admonition and not(following-sibling::mn:p)">
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="ancestor::mn:dl">
-						<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
-					</xsl:if>
-					<xsl:if test="@id">
-						<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-					</xsl:if>
+					<xsl:copy-of select="xalan:nodeset($p_styles)/styles/@*"/>
 					
 					<xsl:apply-templates select="@language"/>
 					<xsl:apply-templates>

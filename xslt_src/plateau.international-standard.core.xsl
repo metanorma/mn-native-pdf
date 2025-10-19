@@ -1173,89 +1173,17 @@
 					</xsl:choose>
 				</xsl:variable>
 				
+				<xsl:variable name="p_styles">
+					<styles xsl:use-attribute-sets="p-style">
+						<xsl:call-template name="refine_p-style"><xsl:with-param name="element-name" select="$element-name"/></xsl:call-template>
+					</styles>
+				</xsl:variable>
+				
 				<xsl:element name="{$element-name}">
-					<xsl:call-template name="setBlockAttributes">
-						<xsl:with-param name="text_align_default">justify</xsl:with-param>
-					</xsl:call-template>
-					<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
-					<xsl:if test="$doctype = 'technical-report'">
-						<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
-					</xsl:if>
-					
-					<!--
-					<xsl:if test="not(parent::mn:note or parent::mn:li or ancestor::mn:table)">
-						<xsl:attribute name="text-indent"><xsl:value-of select="$text_indent"/>mm</xsl:attribute>
-					</xsl:if>
-					-->
-					
-					<xsl:copy-of select="@id"/>
-					
-					<xsl:if test="$doctype = 'technical-report'">
-						<xsl:attribute name="line-height">1.8</xsl:attribute>
-					</xsl:if>
-					
-					<!-- bookmarks only in paragraph -->
-					<xsl:if test="count(mn:bookmark) != 0 and count(*) = count(mn:bookmark) and normalize-space() = ''">
-						<xsl:attribute name="font-size">0</xsl:attribute>
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-						<xsl:attribute name="line-height">0</xsl:attribute>
-					</xsl:if>
-
-					<xsl:if test="ancestor::*[@key = 'true']">
-						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="parent::mn:fmt-definition">
-						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="parent::mn:li or parent::mn:quote">
-						<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="parent::mn:li and following-sibling::*[1][self::mn:ol or self::mn:ul or self::mn:note or self::mn:example]">
-						<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="ancestor::mn:td or ancestor::mn:th">
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="parent::mn:dd">
-						<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="parent::mn:dd and ancestor::mn:dl[@key = 'true'] and (ancestor::mn:tfoot or ancestor::mn:figure)">
-						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="parent::mn:clause[@type = 'inner-cover-note'] or ancestor::mn:boilerplate">
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="parent::mn:note and not(following-sibling::*)">
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="(ancestor::*[local-name() = 'td' or local-name() = 'th']) and
-											(.//*[local-name() = 'font_en' or local-name() = 'font_en_bold'])">
-						<xsl:if test="$isGenerateTableIF = 'false'">
-							<xsl:attribute name="language">en</xsl:attribute>
-							<xsl:attribute name="hyphenate">true</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					
-					<xsl:if test="ancestor::mn:note[@type = 'units']">
-						<xsl:attribute name="text-align">right</xsl:attribute>
-					</xsl:if>
-					
-					<!-- paragraph in table or figure footer -->
-					<xsl:if test="parent::mn:table or parent::mn:figure or (ancestor::mn:tfoot and ancestor::mn:td[1]/@colspan and not(parent::mn:dd))">
-						<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
-						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-					</xsl:if>
+					<xsl:copy-of select="xalan:nodeset($p_styles)/styles/@*"/>
 					
 					<xsl:if test="parent::mn:clause or (ancestor::mn:note and not(ancestor::mn:table))">
+						<!-- Ideographic Space -->
 						<xsl:text>&#x3000;</xsl:text>
 					</xsl:if>
 					
