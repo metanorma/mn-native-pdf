@@ -829,44 +829,6 @@
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
 		
-		<xsl:variable name="font-size">
-			<xsl:choose>
-				<!-- <xsl:when test="ancestor::mn:preface and $level &gt;= 2">12pt</xsl:when>
-				<xsl:when test="ancestor::mn:preface">13pt</xsl:when> -->
-				<xsl:when test="$level = 1">22pt</xsl:when>
-				<!-- <xsl:when test="$level = 2">13pt</xsl:when>
-				<xsl:when test="$level &gt;= 3">11pt</xsl:when>
-				<xsl:otherwise>16pt</xsl:otherwise> -->
-				<xsl:when test="$level &gt;= 2">13pt</xsl:when>
-				<xsl:otherwise>13pt</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-	
-		<xsl:variable name="font-weight">
-			<xsl:choose>
-				<xsl:when test="$level &gt;= 4">normal</xsl:when>
-				<xsl:otherwise>bold</xsl:otherwise> <!-- 600 - semibold-->
-			</xsl:choose>
-		</xsl:variable>
-	
-		<xsl:variable name="space-before">
-			<xsl:choose>
-				<xsl:when test="$level = 1">25mm</xsl:when>
-				<xsl:when test="$level = 2">9mm</xsl:when>
-				<xsl:when test="$level = 3">12pt</xsl:when>
-				<xsl:when test="$level &gt;= 4">8pt</xsl:when>
-				<xsl:otherwise>13.5pt</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
-		<xsl:variable name="margin-bottom">
-			<xsl:choose>
-				<xsl:when test="$level = 1">12pt</xsl:when>
-				<xsl:when test="$level &gt;= 4">4pt</xsl:when>
-				<xsl:otherwise>12pt</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="../@inline-header = 'true'">fo:inline</xsl:when>
@@ -874,22 +836,12 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="color">
-			<xsl:choose>
-				<xsl:when test="$level = 3"><xsl:value-of select="$color_blue"/></xsl:when>
-				<xsl:otherwise>black</xsl:otherwise>
-			</xsl:choose>
+		<xsl:variable name="title_styles">
+			<styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"/></styles>
 		</xsl:variable>
 		
 		<xsl:element name="{$element-name}">
-			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-			<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute> 
-			<xsl:attribute name="space-before"><xsl:value-of select="$space-before"/></xsl:attribute>
-			<xsl:attribute name="margin-bottom"><xsl:value-of select="$margin-bottom"/></xsl:attribute>
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
-			<xsl:attribute name="color"><xsl:value-of select="$color"/></xsl:attribute>
-			<xsl:attribute name="line-height">125%</xsl:attribute>
-			<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
+			<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
 			
 			<xsl:choose>
 				<xsl:when test="$level = 1">
