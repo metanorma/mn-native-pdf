@@ -40,6 +40,14 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="space-before">24pt</xsl:attribute>
+			<xsl:attribute name="space-after">10pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">22pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute> 
@@ -120,6 +128,37 @@
 			</xsl:if>
 			
 			<!-- $namespace = 'iec' -->
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:choose>
+				<xsl:when test="@type = 'floating-title' or @type = 'section-title'">
+					<xsl:copy-of select="@id"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:for-each select="parent::mn:clause">
+						<xsl:call-template name="setId"/>
+					</xsl:for-each>
+				</xsl:otherwise>
+			</xsl:choose>
+			
+			<xsl:if test="$level = 2">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+				<xsl:attribute name="space-before">24pt</xsl:attribute>
+				<xsl:if test="../preceding-sibling::*[1][self::mn:fmt-title]">
+					<xsl:attribute name="space-before">10pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$level &gt;= 3">
+				<xsl:attribute name="font-size">10pt</xsl:attribute>
+				<xsl:attribute name="space-before">6pt</xsl:attribute>
+				<xsl:attribute name="space-after">6pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="../@id = '_document_history' or . = 'Document History'">
+				<xsl:attribute name="text-align">center</xsl:attribute>
+			</xsl:if>
+			<!-- $namespace = 'iho' -->
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'rsd'">
