@@ -2275,13 +2275,7 @@
 	
 	<!-- Bibliography -->
 	<xsl:template match="mn:references[not(@normative='true')]/mn:fmt-title">
-		<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
-		<fo:block font-size="14pt" font-weight="bold" text-align="center" margin-bottom="18pt" role="H1">
-			<xsl:if test="$doctype = 'implementers-guide'">
-				<xsl:attribute name="text-align">left</xsl:attribute>
-				<xsl:attribute name="font-size">12pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-			</xsl:if>
+		<fo:block xsl:use-attribute-sets="references-non-normative-title-style">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
