@@ -57,6 +57,13 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="font-size">13pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="space-before">36pt</xsl:attribute>
+			<xsl:attribute name="space-after">12pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
+		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">22pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute> 
@@ -221,6 +228,50 @@
 			<!-- $namespace = 'itu' -->
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'jcgm'">
+			
+			<xsl:if test="$level = 1">
+				<xsl:if test="parent::mn:annex">
+					<xsl:attribute name="space-before">0pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$level = 2">
+				<xsl:attribute name="font-size">11.5pt</xsl:attribute>
+				<xsl:attribute name="space-before">18pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$level &gt;= 3">
+				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
+				<xsl:attribute name="space-before">3pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="../@inline-header = 'true'  or @inline-header = 'true'">
+				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="following-sibling::*[1][self::mn:fmt-admitted]">
+				<xsl:attribute name="space-after">0pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="ancestor::mn:preface">
+				<xsl:attribute name="font-size">15pt</xsl:attribute>
+				<xsl:attribute name="space-after">12pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="parent::mn:annex">
+				<xsl:attribute name="font-size">15pt</xsl:attribute>
+				<xsl:attribute name="space-after">30pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$element-name = 'fo:inline'">
+				<xsl:attribute name="padding-right">
+					<xsl:choose>
+						<xsl:when test="$level = 3">6.5mm</xsl:when>
+						<xsl:otherwise>4mm</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="parent::mn:annex">
+				<xsl:attribute name="text-align">center</xsl:attribute>
+				<xsl:attribute name="line-height">130%</xsl:attribute>
+			</xsl:if>
+			
+			<!-- $namespace = 'jcgm' -->
+		</xsl:if>
 		
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:if test="$level &gt;= 2">
