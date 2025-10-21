@@ -64,6 +64,16 @@
 			<xsl:attribute name="space-after">12pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 		</xsl:if>
+		
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:attribute name="space-before">0mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">22pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute> 
@@ -271,6 +281,106 @@
 			</xsl:if>
 			
 			<!-- $namespace = 'jcgm' -->
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'plateau'">
+			<!-- <xsl:attribute name="font-size">10pt</xsl:attribute> -->
+			<xsl:if test="ancestor::mn:sections">
+				<xsl:attribute name="font-size">12pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="ancestor::mn:annex">
+				<xsl:attribute name="font-size">12pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="@inline-header = 'true'">
+				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="@type = 'section-title'">
+				<xsl:attribute name="margin-bottom">6mm</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$level = 1">
+				<xsl:if test="not(ancestor::mn:preface)">
+					<xsl:attribute name="space-before">6.5mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="following-sibling::*[1][self::mn:clause]">
+					<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="ancestor::mn:foreword">
+					<xsl:attribute name="text-align">center</xsl:attribute>
+					<xsl:attribute name="space-before">9mm</xsl:attribute>
+					<xsl:attribute name="margin-bottom">9mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="ancestor::mn:annex">
+					<xsl:attribute name="font-size">14pt</xsl:attribute>
+					<xsl:attribute name="text-align">center</xsl:attribute>
+					<xsl:attribute name="space-before">0mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$doctype = 'technical-report'">
+					<xsl:attribute name="font-size">16pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$level &gt;= 2">
+				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$level = 2">
+				<xsl:attribute name="space-before">2mm</xsl:attribute>
+				<xsl:if test="ancestor::mn:foreword">
+					<xsl:attribute name="space-before">0mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="ancestor::mn:bibliography">
+					<xsl:attribute name="space-before">0mm</xsl:attribute>
+				</xsl:if>
+				
+				<xsl:if test="following-sibling::*[1][self::mn:clause]">
+					<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+				</xsl:if>
+				
+				<xsl:if test="$doctype = 'technical-report'">
+					<xsl:attribute name="font-size">14pt</xsl:attribute>
+					<xsl:attribute name="background-color">rgb(229,229,229)</xsl:attribute>
+					<xsl:attribute name="padding-top">2mm</xsl:attribute>
+					<xsl:attribute name="padding-bottom">2mm</xsl:attribute>
+					<xsl:if test="preceding-sibling::*[2][self::mn:fmt-title]">
+						<xsl:attribute name="space-before">0mm</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$level = 3">
+				<xsl:attribute name="space-before">2mm</xsl:attribute>
+				<xsl:if test="$doctype = 'technical-report'">
+					<xsl:attribute name="font-size">12pt</xsl:attribute>
+					<xsl:attribute name="background-color">rgb(204,204,204)</xsl:attribute>
+					<xsl:if test="preceding-sibling::*[2][self::mn:fmt-title]">
+						<xsl:attribute name="space-before">0mm</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$level &gt;= 4">
+				<xsl:attribute name="space-before">2mm</xsl:attribute>
+				<xsl:if test="$doctype = 'technical-report'">
+					<xsl:attribute name="font-size">10pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="ancestor::mn:preface">
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$doctype = 'technical-report'">
+				<xsl:if test="following-sibling::*[1][self::mn:clause]">
+					<xsl:attribute name="margin-bottom">0</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="following-sibling::*[1][self::mn:p]">
+					<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
+				<xsl:copy-of select="@id"/>
+			</xsl:if>
+			<!-- $namespace = 'plateau' -->
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'rsd'">

@@ -941,55 +941,6 @@
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
 		
-		<xsl:variable name="font-size">
-			<xsl:choose>
-				<!-- <xsl:when test="@parent = 'preface'">10pt</xsl:when> -->
-				<xsl:when test="$doctype = 'technical-report' and $level = 1">16pt</xsl:when>
-				<xsl:when test="$doctype = 'technical-report' and $level = 2">14pt</xsl:when>
-				<xsl:when test="$doctype = 'technical-report' and $level = 3">12pt</xsl:when>
-				<xsl:when test="$doctype = 'technical-report' and $level &gt;= 4">10pt</xsl:when>
-				<xsl:when test="ancestor::mn:sections">12pt</xsl:when>
-				<xsl:when test="ancestor::mn:annex and $level = 1">14pt</xsl:when>
-				<xsl:when test="ancestor::mn:annex">12pt</xsl:when>
-				<xsl:otherwise>10pt</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
-		<xsl:variable name="font-weight">bold</xsl:variable>
-			<!-- <xsl:choose>
-				<xsl:when test="@parent = 'preface'">bold</xsl:when>
-				<xsl:when test="@parent = 'annex'">bold</xsl:when>
-				<xsl:when test="@parent = 'bibliography'">bold</xsl:when>
-				<xsl:otherwise>normal</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable> -->
-		
-		<xsl:variable name="text-align">
-			<xsl:choose>
-				<xsl:when test="ancestor::mn:foreword and $level = 1">center</xsl:when>
-				<xsl:when test="ancestor::mn:annex and $level = 1">center</xsl:when>
-				<xsl:otherwise>left</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
-		
-		<xsl:variable name="margin-top">
-			<xsl:choose>
-				<xsl:when test="ancestor::mn:foreword and $level = 1">9mm</xsl:when>
-				<!-- <xsl:when test="ancestor::mn:annex and $level = '1' and ancestor::mn:annex[1][@commentary = 'true']">1mm</xsl:when> -->
-				<xsl:when test="ancestor::mn:annex and $level = 1">0mm</xsl:when>
-				<xsl:when test="$level = 1 and not(ancestor::mn:preface)">6.5mm</xsl:when>
-				<xsl:when test="ancestor::mn:foreword and $level = 2">0mm</xsl:when>
-				<!-- <xsl:when test="ancestor::mn:annex and $level = 2">4.5mm</xsl:when> -->
-				<xsl:when test="ancestor::mn:bibliography and $level = 2">0mm</xsl:when>
-				<xsl:when test="$doctype = 'technical-report' and $level = 2 and preceding-sibling::*[2][self::mn:fmt-title]">0mm</xsl:when>
-				<xsl:when test="$doctype = 'technical-report' and $level = 3 and preceding-sibling::*[2][self::mn:fmt-title]">0mm</xsl:when>
-				<xsl:when test="$level = 2">2mm</xsl:when>
-				<xsl:when test="$level &gt;= 3">2mm</xsl:when>
-				<xsl:otherwise>0mm</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="@inline-header = 'true'">fo:inline</xsl:when>
@@ -997,38 +948,13 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="margin-bottom">
-			<xsl:choose>
-				<xsl:when test="$doctype = 'technical-report'">
-					<xsl:choose>
-						<xsl:when test="following-sibling::*[1][self::mn:clause]">0</xsl:when>
-						<xsl:when test="following-sibling::*[1][self::mn:p]">16pt</xsl:when>
-						<xsl:otherwise>12pt</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:choose>
-						<xsl:when test="ancestor::mn:preface">6pt</xsl:when>
-						<xsl:when test="ancestor::mn:foreword and $level = 1">9mm</xsl:when>
-						<!-- <xsl:when test="ancestor::mn:annex and $level = '1' and ancestor::mn:annex[1][@commentary = 'true']">7mm</xsl:when> -->
-						<!-- <xsl:when test="ancestor::mn:annex and $level = 1">1mm</xsl:when> -->
-						<xsl:when test="$level = 1 and following-sibling::*[1][self::mn:clause]">8pt</xsl:when>
-						<xsl:when test="$level = 1">12pt</xsl:when>
-						<xsl:when test="$level = 2 and following-sibling::*[1][self::mn:clause]">8pt</xsl:when>
-						<xsl:when test="$level &gt;= 2">12pt</xsl:when>
-						<xsl:when test="@type = 'section-title'">6mm</xsl:when>
-						<xsl:when test="@inline-header = 'true'">0pt</xsl:when>
-						<xsl:otherwise>0mm</xsl:otherwise>
-					</xsl:choose>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-	
-
 		<!-- to space-before Foreword -->
 		<xsl:if test="ancestor::mn:foreword and $level = '1'"><fo:block></fo:block></xsl:if>
 	
-
+		<xsl:variable name="title_styles">
+			<styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"/></styles>
+		</xsl:variable>
+	
 		<xsl:choose>
 			<xsl:when test="@inline-header = 'true' and following-sibling::*[1][self::mn:p]">
 				<fo:block role="H{$level}">
@@ -1041,34 +967,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:element name="{$element-name}">
-					<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-					<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute>
-					<xsl:attribute name="text-align"><xsl:value-of select="$text-align"/></xsl:attribute>
-					<xsl:attribute name="space-before"><xsl:value-of select="$margin-top"/></xsl:attribute>
-					<xsl:attribute name="margin-bottom"><xsl:value-of select="$margin-bottom"/></xsl:attribute>
-					<xsl:attribute name="keep-with-next">always</xsl:attribute>
-					<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
-					
-					<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
-						<xsl:copy-of select="@id"/>
-					</xsl:if>
-					
-					<!-- <xsl:if test="$level = '3'">
-						<xsl:attribute name="margin-left">7.5mm</xsl:attribute>
-					</xsl:if> -->
-					
-					<xsl:if test="$doctype = 'technical-report'">
-						<xsl:choose>
-							<xsl:when test="$level = 2">
-								<xsl:attribute name="background-color">rgb(229,229,229)</xsl:attribute>
-								<xsl:attribute name="padding-top">2mm</xsl:attribute>
-								<xsl:attribute name="padding-bottom">2mm</xsl:attribute>
-							</xsl:when>
-							<xsl:when test="$level = 3">
-								<xsl:attribute name="background-color">rgb(204,204,204)</xsl:attribute>
-							</xsl:when>
-						</xsl:choose>
-					</xsl:if>
+					<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
 					
 					<!-- if first and last childs are `add` ace-tag, then move start ace-tag before title -->
 					<xsl:if test="mn:tab[1]/following-sibling::node()[last()][self::mn:add][starts-with(text(), $ace_tag)]">
