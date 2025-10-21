@@ -48,6 +48,15 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:attribute name="space-before">18pt</xsl:attribute>
+			<xsl:attribute name="space-after">6pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-size">22pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute> 
@@ -60,6 +69,7 @@
 	</xsl:attribute-set> <!-- title-style -->
 
 	<xsl:template name="refine_title-style">
+		<xsl:param name="element-name"/>
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
@@ -160,6 +170,57 @@
 			</xsl:if>
 			<!-- $namespace = 'iho' -->
 		</xsl:if>
+		
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
+			
+			<xsl:if test="$level = 1">
+				<xsl:if test="$doctype = 'resolution'">
+					<xsl:attribute name="font-size">14pt</xsl:attribute>
+					<xsl:attribute name="text-align">center</xsl:attribute>
+					<xsl:attribute name="space-after">24pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$doctype = 'service-publication'">
+					<xsl:attribute name="space-before">12pt</xsl:attribute>
+					<xsl:attribute name="space-after">12pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$level = 2">
+				<xsl:attribute name="space-before">12pt</xsl:attribute>
+				<xsl:attribute name="space-after">6pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$level &gt;= 2">
+				<xsl:if test="$doctype = 'resolution' and ../@inline-header = 'true'">
+					<xsl:attribute name="font-size">11pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$level &gt;= 3">
+				<xsl:attribute name="space-before">6pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$doctype = 'service-publication'">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$lang = 'ar'">
+				<xsl:attribute name="text-align">start</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$element-name = 'fo:inline'">
+				<xsl:attribute name="padding-right">
+					<xsl:choose>
+						<xsl:when test="$level = 2">9mm</xsl:when>
+						<xsl:when test="$level = 3">6.5mm</xsl:when>
+						<xsl:otherwise>4mm</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+			</xsl:if>
+			<!-- $namespace = 'itu' -->
+		</xsl:if>
+		
 		
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:if test="$level &gt;= 2">
