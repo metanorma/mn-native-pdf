@@ -14,6 +14,17 @@
 	
 	<xsl:attribute-set name="title-style">
 		<!-- Note: font-size for level 1 title -->
+		
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="font-size">18pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
+			<xsl:attribute name="space-before">0mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">17mm</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="keep-together.within-column">always</xsl:attribute>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="font-size">26pt</xsl:attribute>
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -26,7 +37,7 @@
 		
 		<xsl:if test="$namespace = 'csd'">
 			<xsl:attribute name="font-size">13pt</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>			
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 			<xsl:attribute name="color">rgb(14, 26, 133)</xsl:attribute>
@@ -90,6 +101,54 @@
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
+		
+		<xsl:if test="$namespace = 'pas'">
+			<!-- copy @id from empty preceding clause -->
+			<xsl:copy-of select="preceding-sibling::*[1][self::mn:clause and count(node()) = 0]/@id"/>
+			<xsl:if test="$level = 1">
+				<xsl:attribute name="span">all</xsl:attribute>
+				<xsl:attribute name="keep-with-next">auto</xsl:attribute>
+				<xsl:if test="@ancestor = 'foreword'">
+					<xsl:attribute name="font-size">31pt</xsl:attribute>
+					<xsl:attribute name="font-weight">300</xsl:attribute>
+					<xsl:attribute name="margin-bottom">12mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="@ancestor = 'introduction'">
+					<xsl:attribute name="font-size">31pt</xsl:attribute>
+					<xsl:attribute name="font-weight">300</xsl:attribute>
+					<xsl:attribute name="margin-bottom">13mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="following-sibling::mn:p[1][@align = 'span' or @columns = '1']">
+				<xsl:attribute name="span">all</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
+				<xsl:copy-of select="@id"/>
+			</xsl:if>
+			<xsl:if test="$level = 2">
+				<xsl:attribute name="font-size">12pt</xsl:attribute>
+				<xsl:attribute name="space-before">4mm</xsl:attribute>
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$level = 3">
+				<xsl:attribute name="space-before">3mm</xsl:attribute>
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$level &gt;= 3">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+				<xsl:if test="@type = 'floating-title'">
+					<xsl:attribute name="font-size">12pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<xsl:if test="$level &gt;= 4">
+				<xsl:attribute name="space-before">0mm</xsl:attribute>
+				<xsl:attribute name="margin-bottom">0mm</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$element-name = 'fo:inline'">
+				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			</xsl:if>
+			<!-- $namespace = 'pas' -->
+		</xsl:if>
 		
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:if test="$level &gt; 1">
