@@ -15,6 +15,14 @@
 	<xsl:attribute-set name="title-style">
 		<!-- Note: font-size for level 1 title -->
 		
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="font-size">11.5pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="space-before">4.5mm</xsl:attribute>
+			<xsl:attribute name="space-after">2mm</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'pas'">
 			<xsl:attribute name="font-size">18pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -101,6 +109,128 @@
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
+		
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:if test="$level = 1">
+				<xsl:if test="@ancestor = 'foreword' or @ancestor = 'executivesummary' or @ancestor = 'introduction'">
+					<xsl:attribute name="font-size">18pt</xsl:attribute>
+					<xsl:attribute name="space-after">5.5mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="@ancestor = 'sections' and $doctype = 'expert-commentary'">
+					<xsl:attribute name="font-size">14pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="@ancestor = 'annex'">
+					<xsl:attribute name="font-size">18pt</xsl:attribute>
+					<xsl:attribute name="margin-left">-10mm</xsl:attribute>
+					<xsl:attribute name="line-height">1.15</xsl:attribute>
+					<xsl:attribute name="space-after">6mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="@ancestor = 'bibliography'">
+					<xsl:attribute name="font-size">13pt</xsl:attribute>
+					<xsl:if test="preceding-sibling::mn:references">
+						<xsl:attribute name="font-size">11.5pt</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$level &gt;= 2">
+				<xsl:if test="@ancestor = 'foreword'">
+					<xsl:attribute name="font-size">11pt</xsl:attribute>
+					
+				</xsl:if>
+				<xsl:if test="@ancestor = 'introduction'">
+					<xsl:attribute name="font-size">11pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="@ancestor = 'bibliography'">
+					<xsl:attribute name="font-size">10pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$level = 2">
+				<xsl:attribute name="space-before">2mm</xsl:attribute>
+				<xsl:attribute name="space-after">6pt</xsl:attribute>
+				<xsl:if test="@ancestor = 'foreword'">
+					<xsl:attribute name="space-before">0mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="@ancestor = 'sections'">
+					<xsl:attribute name="font-size">11pt</xsl:attribute>
+					<xsl:if test="preceding-sibling::*[1][self::mn:references]"><!-- Normative references -->
+						<xsl:attribute name="font-size">inherit</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$doctype = 'expert-commentary'">
+						<xsl:attribute name="font-size">11pt</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				<xsl:if test="@ancestor = 'annex'">
+					<xsl:attribute name="font-size">13pt</xsl:attribute>
+					<xsl:attribute name="space-before">4.5mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="@ancestor = 'bibliography'">
+					<xsl:attribute name="space-before">0mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$level = 3">
+				<xsl:if test="@ancestor = 'sections'">
+					<xsl:attribute name="font-size">10.5pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$level &gt;= 4">
+				<xsl:if test="@ancestor = 'sections'">
+					<xsl:attribute name="font-size">10pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$level &gt;= 3">
+				<xsl:attribute name="space-before">2mm</xsl:attribute>
+				<xsl:attribute name="space-after">6pt</xsl:attribute>
+				<xsl:if test="@ancestor = 'sections'">
+					<xsl:if test="preceding-sibling::*[1][self::mn:terms]">
+						<xsl:attribute name="font-size">11pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$doctype = 'expert-commentary'">
+						<xsl:attribute name="font-size">10pt</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+				<xsl:if test="@ancestor = 'annex'">
+					<xsl:attribute name="font-size">11.5pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test=". = 'Executive summary' or . = 'Executive Summary'">
+				<xsl:attribute name="font-size">18pt</xsl:attribute>
+				<xsl:attribute name="space-after">5.5mm</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="@type = 'section-title'">
+				<xsl:attribute name="font-size">18pt</xsl:attribute>
+				<xsl:attribute name="margin-left">-10mm</xsl:attribute>
+				<xsl:attribute name="space-after">6mm</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="@inline-header = 'true'">
+				<xsl:attribute name="space-after">0pt</xsl:attribute>
+			</xsl:if>
+			
+			
+			<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
+				<xsl:copy-of select="@id"/>
+			</xsl:if>
+			
+			<xsl:if test="$doctype = 'expert-commentary'">
+				<xsl:attribute name="color">
+					<xsl:choose>
+						<xsl:when test="$level = '1'">rgb(206,42,39)</xsl:when>
+						<xsl:otherwise>rgb(7,129,147)</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+			</xsl:if>
+			
+			
+			
+			<!-- $namespace = 'bsi' -->
+		</xsl:if>
 		
 		<xsl:if test="$namespace = 'pas'">
 			<!-- copy @id from empty preceding clause -->
