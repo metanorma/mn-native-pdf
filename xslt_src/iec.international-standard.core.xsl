@@ -1882,7 +1882,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 	
 	<!-- Bibliography -->
 	<xsl:template match="mn:references[not(@normative='true')]/mn:fmt-title">
-		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" keep-with-next="always" role="H1">
+		<fo:block xsl:use-attribute-sets="references-non-normative-title-style">
 			<xsl:apply-templates />			
 		</fo:block>
 	</xsl:template>
@@ -1895,47 +1895,23 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 	
 	<xsl:template match="mn:fmt-title" name="title">
 		
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		
-		<xsl:variable name="font-size">
+		<xsl:variable name="element-name">
 			<xsl:choose>
-				<xsl:when test="ancestor::mn:sections and $level = 1">11pt</xsl:when>
-				<xsl:when test="ancestor::mn:annex and $level &lt;= 2">11pt</xsl:when>
-				<xsl:when test="ancestor::mn:references[not (preceding-sibling::mn:references)]">11pt</xsl:when>
-				<xsl:otherwise>10pt</xsl:otherwise>
+				<xsl:when test="../@inline-header = 'true'">fo:inline</xsl:when>
+				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
+		<xsl:variable name="title_styles">
+			<styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"/></styles>
+		</xsl:variable>
+		
+		<xsl:element name="{$element-name}">
+			<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
 			
-		<xsl:choose>
-			<xsl:when test="../@inline-header = 'true'">
-				<fo:inline font-size="{$font-size}" font-weight="bold" role="H{$level}">
-					<xsl:apply-templates />
-				</fo:inline>
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:block font-size="{$font-size}" font-weight="bold" keep-with-next="always" role="H{$level}">
-					<xsl:attribute name="space-before"> <!-- margin-top -->
-						<xsl:choose>
-							<xsl:when test="$level = 2 and ancestor::mn:annex">22pt</xsl:when>
-							<xsl:when test="$level &gt;= 2 and ancestor::mn:annex">5pt</xsl:when>
-							<xsl:when test="$level = '' or $level = 1">18pt</xsl:when>
-							<xsl:otherwise>10pt</xsl:otherwise>
-						</xsl:choose>
-					</xsl:attribute>
-					<xsl:attribute name="margin-bottom">
-						<xsl:choose>
-							<xsl:when test="$level = '' or $level = 1">14pt</xsl:when>
-							<xsl:when test="$level = 2 and ancestor::mn:annex">14pt</xsl:when>
-							<xsl:otherwise>5pt</xsl:otherwise>
-						</xsl:choose>
-					</xsl:attribute>
-					<xsl:apply-templates />
-					<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
-				</fo:block>
-			</xsl:otherwise>
-		</xsl:choose>
+			<xsl:apply-templates />
+			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
+		</xsl:element>
 	</xsl:template>
 	<!-- ====== -->
 	<!-- ====== -->

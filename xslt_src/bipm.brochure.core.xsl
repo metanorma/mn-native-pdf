@@ -2371,72 +2371,18 @@
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
 		
-		<xsl:variable name="font-size">
-			<xsl:choose>
-				<xsl:when test="$level = 1">16pt</xsl:when>
-				<xsl:when test="$level = 2 and ancestor::mn:annex and ../@type = 'toc'">16pt</xsl:when>
-				<xsl:when test="$level = 2 and ancestor::mn:annex">10.5pt</xsl:when>
-				<xsl:when test="$level = 2">14pt</xsl:when>
-				<xsl:when test="$level &gt;= 3 and ancestor::mn:annex and ../@type = 'toc'">9pt</xsl:when>
-				<xsl:when test="$level = 3 and ancestor::mn:annex">10pt</xsl:when>
-				<xsl:when test="$level &gt;= 4 and ancestor::mn:annex">9pt</xsl:when>
-				<xsl:when test="$level = 3">12pt</xsl:when>
-				<xsl:otherwise>11pt</xsl:otherwise>
-			</xsl:choose>
+		<xsl:variable name="title_styles">
+			<styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"/></styles>
 		</xsl:variable>
 		
+		<fo:block-container xsl:use-attribute-sets="title-style">
+			<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
 		
-		<xsl:variable name="element-name">
-			<xsl:choose>
-				<xsl:when test="../@inline-header = 'true'">fo:inline</xsl:when>
-				<xsl:otherwise>fo:block</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
-		<fo:block-container margin-left="-14mm" font-family="Arial" font-size="{$font-size}" font-weight="bold" keep-with-next="always"  line-height="130%">				 <!-- line-height="145%" -->
-			<xsl:if test="local-name(preceding-sibling::*[1]) = 'clause'">
-				<xsl:attribute name="id"><xsl:value-of select="preceding-sibling::*[1]/@id"/></xsl:attribute>
-			</xsl:if>
-			<xsl:attribute name="margin-bottom">
-				<xsl:choose>
-					<xsl:when test="$level = 1 and (parent::mn:annex or ancestor::mn:annex or parent::mn:abstract or ancestor::mn:preface)">84pt</xsl:when>
-					<xsl:when test="$level = 1">6pt</xsl:when>
-					<xsl:when test="$level = 2 and ancestor::mn:annex and ../@type = 'toc'">29mm</xsl:when>
-					<xsl:when test="$level = 2 and ancestor::mn:annex">6pt</xsl:when>
-					<xsl:when test="$level = 2">10pt</xsl:when>
-					<xsl:otherwise>6pt</xsl:otherwise>
-				</xsl:choose>
-			</xsl:attribute>			
-			
-			<xsl:if test="$level = 2 and ancestor::mn:annex">
-				<xsl:attribute name="space-before">18pt</xsl:attribute> <!-- 24 pt -->
-			</xsl:if>
-			<xsl:if test="$level = 2 and not(ancestor::mn:annex)">
-				<xsl:attribute name="space-before">30pt</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$level = 3 and ancestor::mn:annex">
-				<xsl:attribute name="space-before">12pt</xsl:attribute> <!-- 6pt -->
-			</xsl:if>
-			<xsl:if test="$level = 4 and ancestor::mn:annex">
-				<xsl:attribute name="space-before">12pt</xsl:attribute>
-			</xsl:if>
-			<xsl:if test="$level = 3 and not(ancestor::mn:annex)">
-				<xsl:attribute name="space-before">20pt</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:if test="$level &gt;= 3 and ancestor::mn:annex and ../@type = 'toc'">
-				<xsl:attribute name="space-before">0pt</xsl:attribute>
-			</xsl:if>
-			
-			<xsl:if test="@type = 'quoted'">
-				<xsl:attribute name="font-weight">normal</xsl:attribute>
-			</xsl:if>
-			
 			<fo:block-container margin-left="0mm">
 				
 				<xsl:choose>
 					<xsl:when test="mn:tab and not(ancestor::mn:annex) "><!-- split number and title -->
-						<fo:table table-layout="fixed" width="100%" role="H{$level}">
+						<fo:table table-layout="fixed" width="100%" role="SKIP">
 							<fo:table-column column-width="14mm"/>
 							<fo:table-column column-width="136mm"/>
 							<fo:table-body>
@@ -2457,7 +2403,7 @@
 						</fo:table>
 					</xsl:when>
 					<xsl:otherwise>
-						<fo:block role="H{$level}">
+						<fo:block role="SKIP">
 							
 							<xsl:if test="ancestor::mn:clause[@type = 'toc'] and $level &gt;= 3">
 								<xsl:attribute name="role">Caption</xsl:attribute>
