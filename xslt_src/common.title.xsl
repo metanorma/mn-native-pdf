@@ -15,6 +15,16 @@
 	<xsl:attribute-set name="title-style">
 		<!-- Note: font-size for level 1 title -->
 		
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="font-size">16pt</xsl:attribute>
+			<xsl:attribute name="margin-left">-14mm</xsl:attribute>
+			<xsl:attribute name="font-family">Arial</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="line-height">130%</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="font-size">11.5pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -109,6 +119,66 @@
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
+		
+		<xsl:if test="$namespace = 'bipm'">
+		
+			<xsl:if test="$level = 1">
+				<xsl:if test="parent::mn:annex or ancestor::mn:annex or parent::mn:abstract or ancestor::mn:preface">
+					<xsl:attribute name="margin-bottom">84pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+		
+			<xsl:if test="$level = 2">
+				<xsl:attribute name="font-size">14pt</xsl:attribute>
+				<xsl:attribute name="space-before">30pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+				<xsl:if test="ancestor::mn:annex">
+					<xsl:attribute name="font-size">10.5pt</xsl:attribute>
+					<xsl:attribute name="space-before">18pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+					<xsl:if test="../@type = 'toc'">
+						<xsl:attribute name="font-size">16pt</xsl:attribute>
+						<xsl:attribute name="margin-bottom">29mm</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$level = 3">
+				<xsl:attribute name="font-size">12pt</xsl:attribute>
+				<xsl:attribute name="space-before">20pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+				<xsl:if test="ancestor::mn:annex">
+					<xsl:attribute name="font-size">10pt</xsl:attribute>
+					<xsl:attribute name="space-before">12pt</xsl:attribute>
+					<xsl:if test="../@type = 'toc'">
+						<xsl:attribute name="font-size">9pt</xsl:attribute>
+						<xsl:attribute name="space-before">0pt</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$level &gt;= 4">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+				<xsl:if test="ancestor::mn:annex">
+					<xsl:attribute name="font-size">9pt</xsl:attribute>
+					<xsl:if test="$level = 4">
+						<xsl:attribute name="space-before">12pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="../@type = 'toc'">
+						<xsl:attribute name="space-before">0pt</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="local-name(preceding-sibling::*[1]) = 'clause'">
+				<xsl:attribute name="id"><xsl:value-of select="preceding-sibling::*[1]/@id"/></xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@type = 'quoted'">
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+			</xsl:if>
+			<!-- $namespace = 'bipm' -->
+		</xsl:if>
 		
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:if test="$level = 1">
