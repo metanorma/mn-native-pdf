@@ -50,24 +50,20 @@
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
 	<xsl:variable name="docnumber_version">
-		<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'rsd' or @type = 'Ribose']"/>
-			<xsl:text>:</xsl:text>
-			<xsl:value-of select="$copyright_year"/>
-			
-			<xsl:variable name="edition" select="normalize-space(/mn:metanorma/mn:bibdata/mn:edition[normalize-space(@language) = ''])"/>
-			<xsl:if test="$edition != ''">
-				<xsl:variable name="title-version">
-					<xsl:call-template name="capitalize">
-						<xsl:with-param name="str">
-							<xsl:call-template name="getLocalizedString">
-								<xsl:with-param name="key">version</xsl:with-param>
-							</xsl:call-template>
-						</xsl:with-param>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:text>, </xsl:text><xsl:value-of select="$title-version"/><xsl:text> </xsl:text><xsl:value-of select="$edition"/>
-			</xsl:if>
-			
+		<xsl:value-of select="concat(/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'rsd' or @type = 'Ribose' or @primary = 'true'], ':', $copyright_year)"/>
+		<xsl:variable name="edition" select="normalize-space(/mn:metanorma/mn:bibdata/mn:edition[normalize-space(@language) = ''])"/>
+		<xsl:if test="$edition != ''">
+			<xsl:variable name="title-version">
+				<xsl:call-template name="capitalize">
+					<xsl:with-param name="str">
+						<xsl:call-template name="getLocalizedString">
+							<xsl:with-param name="key">version</xsl:with-param>
+						</xsl:call-template>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:value-of select="concat(', ', $title-version, ' ', $edition)"/>
+		</xsl:if>
 	</xsl:variable>
 	
 	<xsl:template name="layout-master-set">
@@ -1240,7 +1236,8 @@
 	<xsl:template name="insertFooter">
 		<!-- <xsl:param name="invert"/> -->
 		<xsl:variable name="footerText"> 
-			<xsl:text>Ribose</xsl:text>
+			<!-- Ribose -->
+			<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'publisher']/mn:organization/mn:abbreviation"/>
 			<xsl:text>&#xA0;</xsl:text>
 			<xsl:call-template name="capitalizeWords">
 				<xsl:with-param name="str">
