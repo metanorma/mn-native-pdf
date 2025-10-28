@@ -94,6 +94,15 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="font-family">Arial</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -296,9 +305,6 @@
 					</xsl:choose>
 				</xsl:attribute>
 			</xsl:if>
-			
-			
-			
 			<!-- $namespace = 'bsi' -->
 		</xsl:if>
 		
@@ -540,6 +546,74 @@
 			</xsl:if>
 			
 			<!-- $namespace = 'jcgm' -->
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'nist-cswp'">
+			<xsl:if test="$level = 1">
+				<xsl:attribute name="margin-left">4mm</xsl:attribute>
+				<xsl:attribute name="padding-top">1mm</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$level &gt;= 2">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+				<xsl:if test="ancestor::mn:annex">
+					<xsl:attribute name="margin-top">3pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="not(ancestor::mn:annex)">
+					<xsl:attribute name="color"><xsl:value-of select="$color"/></xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$level = 2">
+				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+				<xsl:if test="ancestor::mn:annex">
+					<xsl:attribute name="font-size">12pt</xsl:attribute>
+					<xsl:attribute name="text-align">center</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$level &gt;= 3">
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+				<xsl:if test="ancestor::mn:annex">
+					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<!-- $namespace = 'nist-cswp' -->
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:if test="$level = 1">
+				<xsl:attribute name="margin-left">4mm</xsl:attribute>
+				<xsl:attribute name="padding-top">1mm</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$level &gt;= 2">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+				<xsl:if test="ancestor-or-self::mn:annex">
+					<xsl:attribute name="margin-top">3pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$level = 2">
+				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+				<xsl:if test="ancestor-or-self::mn:annex">
+					<xsl:attribute name="font-size">12pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="not(ancestor-or-self::mn:annex)">
+					<xsl:attribute name="space-before">12pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$level &gt;= 3">
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+				<xsl:if test="ancestor-or-self::mn:annex">
+					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="not(ancestor-or-self::mn:annex)">
+					<xsl:attribute name="space-before">6pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<!-- $namespace = 'nist-sp' -->
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'plateau'">
