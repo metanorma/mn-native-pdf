@@ -103,6 +103,16 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:attribute name="space-before">6.5mm</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -637,6 +647,78 @@
 			</xsl:if>
 			
 			<!-- $namespace = 'jcgm' -->
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'jis'">
+		
+			<xsl:if test="@inline-header = 'true'">
+				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="@type = 'section-title'">
+				<xsl:attribute name="margin-bottom">6mm</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$level = 1">
+				<xsl:if test="following-sibling::mn:clause">
+					<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="@ancestor = 'foreword'">
+					<xsl:attribute name="font-size">14pt</xsl:attribute>
+					<xsl:attribute name="text-align">center</xsl:attribute>
+					<xsl:attribute name="space-before">9mm</xsl:attribute>
+					<xsl:attribute name="margin-bottom">9mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="@ancestor = 'annex'">
+					<xsl:attribute name="font-size">14pt</xsl:attribute>
+					<xsl:attribute name="text-align">center</xsl:attribute>
+					<xsl:if test="preceding-sibling::mn:annex[1][@commentary = 'true']">
+						<xsl:attribute name="font-size">16pt</xsl:attribute>
+						<xsl:attribute name="space-before">1mm</xsl:attribute>
+						<xsl:attribute name="margin-bottom">7mm</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$level = 2">
+				<xsl:attribute name="space-before">2mm</xsl:attribute>
+				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+				<xsl:if test="@ancestor = 'foreword'">
+					<xsl:attribute name="space-before">0mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="@ancestor = 'annex'">
+					<xsl:attribute name="space-before">4.5mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="@ancestor = 'bibliography'">
+					<xsl:attribute name="space-before">0mm</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="following-sibling::mn:clause">
+					<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="$level &gt;= 3">
+				<xsl:attribute name="space-before">2mm</xsl:attribute>
+				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="@type = 'section-title'">
+				<xsl:attribute name="font-size">18pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
+				<xsl:copy-of select="@id"/>
+			</xsl:if>
+			
+			<xsl:if test="$vertical_layout = 'true'">
+				<xsl:attribute name="font-family">Noto Sans JP</xsl:attribute>
+				<xsl:attribute name="font-size">12pt</xsl:attribute>
+				<xsl:attribute name="font-weight">500</xsl:attribute>
+				<xsl:if test="not($level = 1 and (@ancestor = 'foreword' or @ancestor = 'annex'))">
+					<xsl:attribute name="margin-left">-6mm</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			<!-- $namespace = 'jis' -->
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'nist-cswp'">
