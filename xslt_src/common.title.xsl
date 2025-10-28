@@ -69,6 +69,15 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="font-family">Arial</xsl:attribute>
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="keep-together.within-column">always</xsl:attribute>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -292,7 +301,6 @@
 				<xsl:attribute name="space-after">0pt</xsl:attribute>
 			</xsl:if>
 			
-			
 			<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
 				<xsl:copy-of select="@id"/>
 			</xsl:if>
@@ -420,6 +428,89 @@
 			</xsl:if>
 			
 			<!-- $namespace = 'iec' -->
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:variable name="space_before">
+				<xsl:call-template name="getTitleMarginTop"/>
+			</xsl:variable>
+			
+			<xsl:choose>
+				<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
+					<xsl:attribute name="font-family">Arial Black</xsl:attribute>
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+					<xsl:if test="ancestor::mn:abstract">
+						<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+					</xsl:if>
+					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+					<xsl:variable name="section">
+						<xsl:call-template name="extractSection"/>
+					</xsl:variable>
+					<xsl:if test="string-length($section) != 0 and $element-name = 'fo:block'">
+						<xsl:attribute name="provisional-distance-between-starts">
+							<xsl:choose>
+								<xsl:when test="$level = 1 and string-length($section) = 2">8.5mm</xsl:when>
+								<xsl:when test="$level = 1 and string-length($section) = 3">13mm</xsl:when>
+								<xsl:when test="$level &gt;= 2">17.8mm</xsl:when>
+								<xsl:otherwise>10mm</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+						<xsl:if test="$level = 1">
+							<xsl:attribute name="font-size">20pt</xsl:attribute>
+							<xsl:attribute name="line-height">20pt</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="$level = 2">
+							<xsl:attribute name="font-size">16pt</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="$level = 3">
+							<xsl:attribute name="font-size">13pt</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="$level &gt;= 4">
+							<xsl:attribute name="font-size">11pt</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="ancestor::mn:abstract">
+							<xsl:attribute name="font-size">13pt</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:if test="$level = 1">
+						<xsl:if test="ancestor::mn:acknowledgements">
+							<xsl:attribute name="font-size">11pt</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="ancestor::mn:annex">
+							<xsl:attribute name="font-weight">normal</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="not(following-sibling::*[1][self::mn:clause])">
+							<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+						</xsl:if>
+						<xsl:if test="ancestor::mn:preface or ancestor::mn:introduction or ancestor::mn:acknowledgements">
+							<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+					<xsl:if test="$level &gt;= 2">
+						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$level = 2">
+						<xsl:attribute name="font-size">11pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$level &gt;= 3">
+						<xsl:attribute name="font-size">10pt</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="@type = 'section-title'">
+						<xsl:attribute name="font-size">12pt</xsl:attribute>
+					</xsl:if>
+				</xsl:otherwise>
+			</xsl:choose>
+			
+			<xsl:attribute name="space-before"><xsl:value-of select="$space_before"/></xsl:attribute>
+			<xsl:if test="ancestor::mn:introduction"><xsl:attribute name="margin-top"><xsl:value-of select="$space_before"/></xsl:attribute></xsl:if>
+			
+			<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
+				<xsl:copy-of select="@id"/>
+			</xsl:if>
+			<!-- $namespace = 'ieee' -->
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iho'">
