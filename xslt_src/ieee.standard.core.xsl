@@ -2352,12 +2352,9 @@
 	<!-- <xsl:template match="mn:fmt-title[@inline-header = 'true'][following-sibling::*[1][self::mn:p] or following-sibling::*[1][self::mn:clause] or not(following-sibling::*)]" priority="3"> -->
 	<xsl:template match="mn:fmt-title[../@inline-header = 'true'][following-sibling::*[1][self::mn:p] or following-sibling::*[1][self::mn:clause] or not(following-sibling::*)]" priority="3">
 		<fo:block>
-			<xsl:attribute name="space-before">
-				<xsl:call-template name="getTitleMarginTop"/>
-			</xsl:attribute>
-			<xsl:attribute name="margin-bottom">
-				<xsl:call-template name="getTitleMarginBottom"/>
-			</xsl:attribute>
+			<xsl:variable name="title_styles"><styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"/></styles></xsl:variable>
+			<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*[local-name() = 'space-before' or local-name() = 'margin-bottom']"/>
+			
 			<xsl:call-template name="title"/>
 			<xsl:apply-templates select="following-sibling::*[1][self::mn:p]">
 				<xsl:with-param name="inline-header">true</xsl:with-param>
@@ -2372,7 +2369,7 @@
 			</fo:block-container>
 		</fo:block-container>
 	</xsl:template>
-	
+
 	<xsl:template name="getTitleMarginTop">
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel"/>
@@ -2405,90 +2402,9 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
-	<xsl:template name="getTitleMarginBottom">
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
-				<xsl:choose>
-					<xsl:when test="ancestor::mn:abstract">6pt</xsl:when>
-					<xsl:otherwise>12pt</xsl:otherwise>
-				</xsl:choose>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:choose>
-					<xsl:when test="$level = 1 and (ancestor::mn:preface or ancestor::mn:introduction or ancestor::mn:acknowledgements)">12pt</xsl:when>
-					<xsl:when test="$level = 1 and not(following-sibling::*[1][self::mn:clause])">12pt</xsl:when>
-					<xsl:when test="$level = 1">24pt</xsl:when>
-					<xsl:otherwise>12pt</xsl:otherwise>
-				</xsl:choose>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
+
 	
 	<xsl:template match="mn:fmt-title" priority="2" name="title">
-	
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		
-		<xsl:variable name="font-family">
-			<xsl:choose>
-				<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">Arial Black</xsl:when>
-				<xsl:otherwise>Arial</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
-		<xsl:variable name="font-size">
-			<xsl:choose>
-				<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
-					<xsl:choose>
-						<xsl:when test="ancestor::mn:abstract">13pt</xsl:when>
-						<xsl:when test="$level = 1">20pt</xsl:when>
-						<xsl:when test="$level = 2">16pt</xsl:when>
-						<xsl:when test="$level = 3">13pt</xsl:when>
-						<xsl:otherwise>11pt</xsl:otherwise> <!-- 4th, ... levels -->
-					</xsl:choose>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:choose>
-						<xsl:when test="@type = 'section-title'">12pt</xsl:when>
-						<xsl:when test="$level = 1 and ancestor::mn:acknowledgements">11pt</xsl:when>
-						<xsl:when test="$level = 1">12pt</xsl:when>
-						<xsl:when test="$level = 2">11pt</xsl:when>
-						<xsl:otherwise>10pt</xsl:otherwise> <!-- 3rd, 4th, ... levels -->
-					</xsl:choose>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
-		<xsl:variable name="font-weight">
-			<xsl:choose>
-				<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">normal</xsl:when>
-				<xsl:otherwise>
-					<xsl:choose>
-						<!-- <xsl:when test="@ancestor = 'annex' and $level = 1">normal</xsl:when> -->
-						<xsl:when test="ancestor::mn:annex and $level = 1">normal</xsl:when>
-						<xsl:otherwise>bold</xsl:otherwise>
-					</xsl:choose>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		
-		<xsl:variable name="margin-top">
-			<xsl:call-template name="getTitleMarginTop"/>
-		</xsl:variable>
-		
-		<xsl:variable name="margin-bottom">
-			<xsl:call-template name="getTitleMarginBottom"/>
-		</xsl:variable>
-			<!-- <xsl:choose>
-				<xsl:when test="$level = 1">12pt</xsl:when>
-				<xsl:otherwise>12pt</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable> -->
 		
 		<xsl:variable name="element-name">
 			<xsl:choose>
@@ -2497,26 +2413,7 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<xsl:variable name="attributes_">
-			<attributes>
-				<xsl:attribute name="font-family"><xsl:value-of select="$font-family"/></xsl:attribute>
-				<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-				<xsl:attribute name="font-weight"><xsl:value-of select="$font-weight"/></xsl:attribute>
-				<xsl:attribute name="space-before"><xsl:value-of select="$margin-top"/></xsl:attribute>
-				<!-- <xsl:attribute name="margin-top"><xsl:value-of select="$margin-top"/></xsl:attribute> -->
-				<xsl:if test="ancestor::mn:introduction"><xsl:attribute name="margin-top"><xsl:value-of select="$margin-top"/></xsl:attribute></xsl:if>
-				<xsl:attribute name="margin-bottom"><xsl:value-of select="$margin-bottom"/></xsl:attribute>
-				<xsl:attribute name="keep-with-next">always</xsl:attribute>
-				<xsl:attribute name="keep-together.within-column">always</xsl:attribute>
-				
-				<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
-				
-				<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
-					<xsl:copy-of select="@id"/>
-				</xsl:if>
-			</attributes>
-		</xsl:variable>
-		<xsl:variable name="attributes" select="xalan:nodeset($attributes_)"/>
+		<xsl:variable name="title_styles"><styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"><xsl:with-param name="element-name" select="$element-name"/></xsl:call-template></styles></xsl:variable>
 		
 		<xsl:variable name="section">
 			<xsl:call-template name="extractSection"/>
@@ -2525,26 +2422,15 @@
 		
 		<xsl:choose>
 			<xsl:when test="string-length($section) != 0 and $element-name = 'fo:block' and ($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report')">
-				
-				<xsl:variable name="provisional-distance-between-starts">
-					<xsl:choose>
-						<xsl:when test="$level = 1 and string-length($section) = 2">8.5mm</xsl:when>
-						<xsl:when test="$level = 1 and string-length($section) = 3">13mm</xsl:when>
-						<xsl:when test="$level &gt;= 2">17.8mm</xsl:when>
-						<xsl:otherwise>10mm</xsl:otherwise>
-					</xsl:choose>
-				</xsl:variable>
-				<fo:list-block provisional-distance-between-starts="{$provisional-distance-between-starts}">
-				
-					<xsl:copy-of select="$attributes/attributes/@*"/>
-				
-					<xsl:if test="$level = 1">
-						<xsl:attribute name="line-height">20pt</xsl:attribute>
-					</xsl:if>
+				<fo:list-block>
+					<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
 				
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
 							<fo:block id="__internal_layout__toc_section_{generate-id()}">
+								<xsl:variable name="level">
+									<xsl:call-template name="getLevel"/>
+								</xsl:variable>
 								<xsl:if test="$level = 1">
 									<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 								</xsl:if>
@@ -2572,8 +2458,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:element name="{$element-name}">
-					
-					<xsl:copy-of select="$attributes/attributes/@*"/>
+					<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
 					
 					<!-- if first and last childs are `add` ace-tag, then move start ace-tag before title -->
 					<xsl:if test="mn:tab[1]/following-sibling::node()[last()][self::mn:add][starts-with(text(), $ace_tag)]">
