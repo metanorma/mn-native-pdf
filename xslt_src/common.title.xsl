@@ -122,6 +122,13 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-size">18pt</xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -787,6 +794,41 @@
 				</xsl:if>
 			</xsl:if>
 			<!-- $namespace = 'nist-sp' -->
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'ogc'">
+		
+			<xsl:if test="$level = 1">
+				<xsl:attribute name="space-before">36pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+			</xsl:if>
+		
+			<xsl:if test="$level = 2">
+				<xsl:attribute name="space-before">24pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$level = 3">
+				<xsl:attribute name="font-size">14pt</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$level &gt;= 3">
+				<xsl:attribute name="margin-top">30pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$level = 4">
+				<xsl:attribute name="font-size">12pt</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$level = 5">
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$level &gt;= 5">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+			</xsl:if>
+			<!-- $namespace = 'ogc' -->
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'plateau'">
