@@ -129,6 +129,14 @@
 			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 		</xsl:if>
 		
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="font-family">Lato</xsl:attribute>
+			<xsl:attribute name="font-size">26pt</xsl:attribute>
+			<xsl:attribute name="margin-top">18pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>		
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -829,6 +837,31 @@
 				<xsl:attribute name="font-size">11pt</xsl:attribute>
 			</xsl:if>
 			<!-- $namespace = 'ogc' -->
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:if test="$level = 1">
+				<xsl:attribute name="color">rgb(59, 56, 56)</xsl:attribute>
+				<xsl:attribute name="border-bottom">2pt solid rgb(21, 43, 77)</xsl:attribute>
+				<xsl:attribute name="line-height">110%</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$level = 2">
+				<xsl:attribute name="font-size">18pt</xsl:attribute>
+				<xsl:attribute name="color">rgb(21, 43, 77)</xsl:attribute>
+				<xsl:attribute name="margin-top">12pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+				<xsl:attribute name="line-height">110%</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="$level = 3">
+				<xsl:attribute name="font-size">12pt</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<xsl:attribute name="color">rgb(21, 43, 77)</xsl:attribute>
+				<xsl:attribute name="margin-top">6pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+			</xsl:if>
+			<!-- 'ogc-white-paper' -->
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'plateau'">

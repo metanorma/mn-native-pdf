@@ -41,40 +41,6 @@
 	<xsl:variable name="color_text_title" select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-text-title']/mn:value"/>
 	<xsl:variable name="color_table_header_row" select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-background-table-header']/mn:value"/>
 	
-	<xsl:attribute-set name="title-depth1-style" use-attribute-sets="toc-title-style">		
-		<xsl:attribute name="font-family">Lato</xsl:attribute>
-		<xsl:attribute name="color">rgb(59, 56, 56)</xsl:attribute>
-		<xsl:attribute name="margin-top">18pt</xsl:attribute>
-		<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
-		<xsl:attribute name="line-height">110%</xsl:attribute>
-		<xsl:attribute name="role">H1</xsl:attribute>
-	</xsl:attribute-set>
-	
-	<xsl:attribute-set name="title-depth2-style">
-		<xsl:attribute name="font-family">Lato</xsl:attribute>
-		<xsl:attribute name="font-size">18pt</xsl:attribute>
-		<xsl:attribute name="color">rgb(21, 43, 77)</xsl:attribute>
-		<xsl:attribute name="margin-top">12pt</xsl:attribute>
-		<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
-		<xsl:attribute name="keep-with-next">always</xsl:attribute>		
-		<xsl:attribute name="line-height">110%</xsl:attribute>
-		<xsl:attribute name="role">H2</xsl:attribute>
-	</xsl:attribute-set>
-	
-	<xsl:attribute-set name="title-depth3-style">
-		<xsl:attribute name="font-family">Lato</xsl:attribute>
-		<xsl:attribute name="font-size">12pt</xsl:attribute>
-		<xsl:attribute name="font-weight">bold</xsl:attribute>
-		<xsl:attribute name="color">rgb(21, 43, 77)</xsl:attribute>
-		<xsl:attribute name="margin-top">6pt</xsl:attribute>
-		<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
-		<xsl:attribute name="keep-with-next">always</xsl:attribute>
-		<xsl:attribute name="role">H3</xsl:attribute>
-	</xsl:attribute-set>
-	
-	<xsl:attribute-set name="empty-style">
-	</xsl:attribute-set>
-	
 	<xsl:variable name="contents_">
 		<mnx:contents>
 			<!-- Abstract, Keywords, Preface, Submitting Organizations, Submitters -->
@@ -610,12 +576,12 @@
 	<!-- title      -->
 	<!-- ====== -->
 	
-	<xsl:template match="mn:annex/mn:fmt-title">
+	<!-- <xsl:template match="mn:annex/mn:fmt-title">
 		<fo:block xsl:use-attribute-sets="title-depth1-style" role="H1">			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
-	</xsl:template>
+	</xsl:template> -->
 	
 	<xsl:template match="mn:fmt-title" name="title">
 		
@@ -623,63 +589,21 @@
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
 		
+		<xsl:variable name="element-name">
+			<xsl:choose>
+				<xsl:when test="../@inline-header = 'true'">fo:inline</xsl:when>
+				<xsl:otherwise>fo:block</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		
-		<xsl:choose>
-			<xsl:when test="../@inline-header = 'true'">
-				<xsl:choose>
-					<xsl:when test="$level = 1">
-						<fo:inline xsl:use-attribute-sets="title-depth1-style">
-							<xsl:apply-templates />
-						</fo:inline>
-					</xsl:when>
-					<xsl:when test="$level = 2">
-						<fo:inline xsl:use-attribute-sets="title-depth2-style">
-							<xsl:apply-templates />
-						</fo:inline>
-					</xsl:when>
-					<xsl:when test="$level = 3">
-						<fo:inline xsl:use-attribute-sets="title-depth3-style">
-							<xsl:apply-templates />
-						</fo:inline>
-					</xsl:when>
-					<xsl:otherwise>
-						<fo:inline font-family="Lato" role="H{$level}">
-							<xsl:apply-templates />
-						</fo:inline>
-					</xsl:otherwise>
-				</xsl:choose>			
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:choose>
-					<xsl:when test="$level = 1">
-						<fo:block xsl:use-attribute-sets="title-depth1-style">
-							<xsl:apply-templates />
-							<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
-						</fo:block>
-					</xsl:when>
-					<xsl:when test="$level = 2">
-						<fo:block xsl:use-attribute-sets="title-depth2-style">
-							<xsl:apply-templates />
-							<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
-						</fo:block>
-					</xsl:when>
-					<xsl:when test="$level = 3">
-						<fo:block xsl:use-attribute-sets="title-depth3-style">
-							<xsl:apply-templates />
-							<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
-						</fo:block>
-					</xsl:when>
-					<xsl:otherwise>
-						<fo:block font-family="Lato" role="H{$level}">
-							<xsl:apply-templates />
-							<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
-						</fo:block>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:otherwise>
-		</xsl:choose>
-	
+		<xsl:variable name="title_styles"><styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"/></styles></xsl:variable>
+		
+		<xsl:element name="{$element-name}">
+			<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
 			
+			<xsl:apply-templates />
+			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
+		</xsl:element>
 	</xsl:template>
 	<!-- ====== -->
 	<!-- ====== -->
