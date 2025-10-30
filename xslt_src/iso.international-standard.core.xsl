@@ -4249,68 +4249,6 @@
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
 		
-		<xsl:variable name="font-size">
-			<xsl:choose>
-				<xsl:when test="$layoutVersion = '1951'">
-					<xsl:choose>
-						<xsl:when test="$level = 1 and ancestor::mn:preface and $revision_date_num &gt;= 19680101">9.5pt</xsl:when> <!-- BRIEF HISTORY, FOREWORD -->
-						<xsl:when test="$level = 1 and ancestor::mn:preface">13pt</xsl:when>
-						<xsl:when test="$revision_date_num &lt; 19680101 and ancestor::mn:sections and not(ancestor::mn:introduction)">9pt</xsl:when>
-						<!-- <xsl:when test="$level = 1">9pt</xsl:when> -->
-						<xsl:otherwise>inherit</xsl:otherwise>
-						<!-- <xsl:when test="$level = 2">10pt</xsl:when>
-						<xsl:when test="$level &gt;= 3">9pt</xsl:when> -->
-					</xsl:choose>
-				</xsl:when>
-				<xsl:when test="$layoutVersion = '1972'">
-					<xsl:choose>
-						<xsl:when test="$level = 1">9pt</xsl:when>
-						<xsl:otherwise>9pt</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))">
-					<xsl:choose>
-						<xsl:when test="$level = 1">11pt</xsl:when>
-						<xsl:when test="$level = 2">10pt</xsl:when>
-						<xsl:when test="$level &gt;= 3">9pt</xsl:when>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
-					<xsl:choose>
-						<xsl:when test="ancestor::mn:annex and $level = 2">12pt</xsl:when>
-						<xsl:when test="ancestor::mn:annex and $level = 3">11pt</xsl:when>
-						<xsl:when test="ancestor::mn:introduction and $level &gt;= 2">10pt</xsl:when>
-						<xsl:when test="ancestor::mn:preface">14pt</xsl:when>
-						<xsl:when test="$level = 2">10pt</xsl:when>
-						<xsl:when test="$level &gt;= 3">10pt</xsl:when>
-						<xsl:otherwise>12pt</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<!-- <xsl:when test="$layoutVersion = '2024'">
-					<xsl:choose>
-						<xsl:when test="ancestor::mn:annex and $level = 2">12.5pt</xsl:when>
-						<xsl:when test="ancestor::mn:annex and $level = 3">11.5pt</xsl:when>
-						<xsl:when test="ancestor::mn:introduction and $level &gt;= 2">10.5pt</xsl:when>
-						<xsl:when test="ancestor::mn:preface">15.3pt</xsl:when>
-						<xsl:when test="$level = 2">11.5pt</xsl:when>
-						<xsl:when test="$level &gt;= 3">10.5pt</xsl:when>
-						<xsl:otherwise>12.5pt</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when> -->
-				<xsl:otherwise>
-					<xsl:choose>
-						<xsl:when test="ancestor::mn:annex and $level = 2">13pt</xsl:when>
-						<xsl:when test="ancestor::mn:annex and $level = 3">12pt</xsl:when>
-						<xsl:when test="ancestor::mn:introduction and $level &gt;= 2">11pt</xsl:when>
-						<xsl:when test="ancestor::mn:preface">16pt</xsl:when>
-						<xsl:when test="$level = 2">12pt</xsl:when>
-						<xsl:when test="$level &gt;= 3">11pt</xsl:when>
-						<xsl:otherwise>13pt</xsl:otherwise>
-					</xsl:choose>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable> <!-- font-size -->
-		
 		<xsl:variable name="element-name">
 			<xsl:choose>
 				<xsl:when test="@inline-header = 'true'">fo:inline</xsl:when>
@@ -4318,6 +4256,8 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
+		<xsl:variable name="title_styles"><styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"><xsl:with-param name="element-name" select="$element-name"/></xsl:call-template></styles></xsl:variable>
 		
 		<xsl:choose>
 			<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum')) and parent::mn:foreword"><!-- skip Foreword title --></xsl:when>
@@ -4339,100 +4279,14 @@
 						<fo:leader leader-pattern="rule" leader-length="12%"/>
 					</fo:block>
 				</xsl:if>
-				
 			
 				<xsl:element name="{$element-name}">
-				
-					<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
-						<!-- copy @id from empty preceding clause -->
-						<xsl:copy-of select="preceding-sibling::*[1][self::mn:clause and count(node()) = 0]/@id"/>
-					</xsl:if>
-				
-					<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					<xsl:variable name="attribute-name-before">
-						<xsl:choose>
-							<xsl:when test="ancestor::mn:preface and $level = 1">margin-top</xsl:when> <!-- for Foreword and Introduction titles -->
-							<xsl:otherwise>space-before</xsl:otherwise>
-						</xsl:choose>
-					</xsl:variable>
-					<xsl:attribute name="{$attribute-name-before}"> <!-- space-before or margin-top -->
-						<xsl:choose>
-							<xsl:when test="$layoutVersion = '1951' and ancestor::mn:preface and $level = 1">20mm</xsl:when>
-							<xsl:when test="$layoutVersion = '1951' and $level = 1 and $revision_date_num &gt;= 19680101">12pt</xsl:when>
-							<xsl:when test="ancestor::mn:introduction and $level &gt;= 2 and ../preceding-sibling::mn:clause">30pt</xsl:when>
-							<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum')) and ancestor::mn:preface and $level = 1">10mm</xsl:when>
-							<xsl:when test="($layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and ancestor::mn:preface and $level = 1">62mm</xsl:when>
-							<xsl:when test="$layoutVersion = '1972' and $level = 1">30pt</xsl:when>
-							<xsl:when test="$layoutVersion = '1989' and ancestor::mn:preface and $level = 1">56pt</xsl:when>
-							<xsl:when test="$layoutVersion = '2024' and ancestor::mn:preface and $level = 1">0pt</xsl:when>
-							<xsl:when test="ancestor::mn:preface">8pt</xsl:when>
-							<xsl:when test="$level = 2 and ancestor::mn:annex">18pt</xsl:when>
-							<xsl:when test="$level = 1">18pt</xsl:when>
-							<xsl:when test="($level = 2 or $level = 3) and not(../preceding-sibling::mn:clause) and $layoutVersion = '2024'">12pt</xsl:when> <!-- first title in 3rd level clause -->
-							<xsl:when test="($level = 2 or $level = 3) and not(../preceding-sibling::mn:clause)">14pt</xsl:when> <!-- first title in 3rd level clause -->
-							<xsl:when test="$level = 3">14pt</xsl:when>
-							<xsl:when test="$level &gt; 3">3pt</xsl:when>
-							<xsl:when test="$level = ''">6pt</xsl:when>
-							<xsl:otherwise>12pt</xsl:otherwise>
-						</xsl:choose>
-					</xsl:attribute>
-					<xsl:attribute name="space-after"> <!-- margin-bottom -->
-						<xsl:choose>
-							<xsl:when test="$layoutVersion = '1951' and $level = 1 and ancestor::mn:preface">14.7mm</xsl:when>
-							<xsl:when test="$layoutVersion = '1951' and parent::mn:introduction and $revision_date_num &lt; 19680101">6mm</xsl:when>
-							<xsl:when test="$layoutVersion = '1951' and parent::mn:introduction">2mm</xsl:when>
-							<!-- <xsl:when test="$layoutVersion = '1951' and $revision_date_num &gt;= 19680101">4pt</xsl:when> -->
-							<xsl:when test="$layoutVersion = '1951' and $level = 1">12pt</xsl:when>
-							<xsl:when test="ancestor::mn:introduction and $level &gt;= 2">8pt</xsl:when>
-							<xsl:when test="ancestor::mn:preface">18pt</xsl:when>
-							<xsl:when test="$level = 3">9pt</xsl:when>
-							<!-- <xsl:when test="$level = 2 and ancestor::mn:annex and $layoutVersion = '2024'">2pt</xsl:when> -->
-							<!-- <xsl:otherwise>12pt</xsl:otherwise> -->
-							<xsl:otherwise>8pt</xsl:otherwise>
-						</xsl:choose>
-					</xsl:attribute>
-					<xsl:attribute name="keep-with-next">always</xsl:attribute>		
-					<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>
-					<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
-						<xsl:copy-of select="@id"/>
-					</xsl:if>
-					<xsl:if test="$layoutVersion = '1951'">
-						<xsl:if test="$element-name = 'fo:block' and ($level  = 1 or parent::mn:introduction)">
-						
-							<xsl:if test="($revision_date_num &lt; 19690101) or ancestor::mn:preface or (parent::mn:introduction and $revision_date_num &gt;= 19680101)">
-							<xsl:attribute name="text-align">center</xsl:attribute>
-							</xsl:if>
-							
-							<xsl:attribute name="text-transform">uppercase</xsl:attribute>
-								
-							<xsl:if test="ancestor::mn:preface or ancestor::mn:introduction">
-								<xsl:attribute name="font-weight">normal</xsl:attribute>
-							</xsl:if>
-						</xsl:if>
-					</xsl:if>
+					<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
 					
-					<xsl:if test="$layoutVersion = '1972'">
-						<xsl:if test="$level = 1">
-							<xsl:attribute name="text-transform">uppercase</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					
-					<xsl:if test="$layoutVersion = '1987' and ../@type = 'section'">
-						<xsl:attribute name="font-size">14pt</xsl:attribute>
-						<xsl:attribute name="text-align">center</xsl:attribute>
-						<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
-						<xsl:attribute name="keep-with-next">always</xsl:attribute>
-					</xsl:if>
 					<xsl:if test="$element-name = 'fo:inline'">
-						<xsl:choose>
-							<xsl:when test="$lang = 'zh'">
-								<xsl:value-of select="$tab_zh"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:attribute name="padding-right">2mm</xsl:attribute>
-							</xsl:otherwise>
-						</xsl:choose>						
+						<xsl:if test="$lang = 'zh'">
+							<xsl:value-of select="$tab_zh"/>
+						</xsl:if>
 					</xsl:if>
 					
 					<xsl:call-template name="setIDforNamedDestinationInline"/>
