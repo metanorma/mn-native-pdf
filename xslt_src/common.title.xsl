@@ -565,6 +565,14 @@
 				</xsl:otherwise>
 			</xsl:choose>
 			
+			<xsl:if test="$level = 1">
+				<xsl:if test="ancestor::mn:annex">
+					<xsl:attribute name="text-align">center</xsl:attribute>
+					<xsl:attribute name="space-before">0</xsl:attribute>
+					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="$level = 2">
 				<xsl:attribute name="font-size">11pt</xsl:attribute>
 				<xsl:attribute name="space-before">24pt</xsl:attribute>
