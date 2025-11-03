@@ -469,14 +469,6 @@
 	<!-- ====== -->
 	<!-- title      -->
 	<!-- ====== -->	
-	<xsl:template match="mn:annex/mn:fmt-title">
-		<fo:block xsl:use-attribute-sets="annex-title-style">
-			<xsl:call-template name="refine_annex-title-style"/>
-			
-			<xsl:apply-templates />
-			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
-		</fo:block>		
-	</xsl:template>
 	
 	<xsl:template match="mn:fmt-title" name="title">
 
