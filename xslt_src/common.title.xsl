@@ -451,6 +451,15 @@
 				(ancestor::mn:references[not (preceding-sibling::mn:references)])">
 				<xsl:attribute name="font-size">11pt</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="$level = 1">
+				<xsl:if test="ancestor::mn:annex">
+					<xsl:attribute name="font-size">12pt</xsl:attribute>
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+					<xsl:attribute name="text-align">center</xsl:attribute>
+					<xsl:attribute name="space-before">0</xsl:attribute>
+					<xsl:attribute name="margin-bottom">32pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
 			<xsl:if test="$level &gt;= 2">
 				<xsl:attribute name="space-before">10pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
