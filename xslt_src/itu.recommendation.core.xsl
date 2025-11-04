@@ -2244,30 +2244,6 @@
 	<!-- ====== -->
 	<!-- title      -->
 	<!-- ====== -->	
-	<xsl:template match="mn:annex/mn:fmt-title">
-		<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
-		<fo:block xsl:use-attribute-sets="annex-title-style">			
-			<xsl:call-template name="refine_annex-title-style"/>
-			<fo:block>
-				<xsl:apply-templates />
-				<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
-			</fo:block>
-			<xsl:if test="$doctype != 'resolution'">
-				<fo:block font-size="12pt" font-weight="normal" margin-top="6pt">
-					<!-- <xsl:choose>
-						<xsl:when test="parent::*[@obligation = 'informative']">
-							<xsl:text>(This appendix does not form an integral part of this Recommendation.)</xsl:text>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:text>(This annex forms an integral part of this Recommendation.)</xsl:text>
-						</xsl:otherwise>
-					</xsl:choose> -->
-					<!-- Added for https://github.com/metanorma/isodoc/issues/614 -->
-					<xsl:apply-templates select="following-sibling::mn:p[not(preceding-sibling::mn:clause)][starts-with(normalize-space(), '(')]/node()"/>
-				</fo:block>
-			</xsl:if>
-		</fo:block>
-	</xsl:template>
 	
 	<!-- Added for https://github.com/metanorma/isodoc/issues/614 -->
 	<!-- renders in the annex/title template -->
@@ -2298,6 +2274,24 @@
 			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
+      
+      <xsl:if test="parent::mn:annex"><!-- Annex title -->
+        <xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
+        <xsl:if test="$doctype != 'resolution'">
+          <fo:block font-size="12pt" font-weight="normal" margin-top="6pt">
+            <!-- <xsl:choose>
+              <xsl:when test="parent::*[@obligation = 'informative']">
+                <xsl:text>(This appendix does not form an integral part of this Recommendation.)</xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>(This annex forms an integral part of this Recommendation.)</xsl:text>
+              </xsl:otherwise>
+            </xsl:choose> -->
+            <!-- Added for https://github.com/metanorma/isodoc/issues/614 -->
+            <xsl:apply-templates select="following-sibling::mn:p[not(preceding-sibling::mn:clause)][starts-with(normalize-space(), '(')]/node()"/>
+          </fo:block>
+        </xsl:if>
+      </xsl:if>
 		</xsl:element>
 		
 		<xsl:if test="$element-name = 'fo:inline' and not(following-sibling::mn:p)">
