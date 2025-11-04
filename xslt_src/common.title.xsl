@@ -764,23 +764,23 @@
 					<xsl:otherwise>12pt</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-      
-      <xsl:if test="$level = 1">
-        <xsl:if test="ancestor::mn:annex">
-          <xsl:attribute name="font-size">16pt</xsl:attribute>
-          <xsl:attribute name="font-weight">normal</xsl:attribute>
-          <xsl:attribute name="text-align">center</xsl:attribute>
-          <xsl:attribute name="space-before">0pt</xsl:attribute>
-          <xsl:attribute name="margin-bottom">48pt</xsl:attribute>
-          <xsl:if test="$layoutVersion = '2024'">
-            <xsl:attribute name="line-height">1.1</xsl:attribute>
-            <!-- <xsl:attribute name="margin-bottom">52pt</xsl:attribute> -->
-          </xsl:if>
-          <xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
-            <xsl:attribute name="span">all</xsl:attribute>
-          </xsl:if>
-        </xsl:if>
-      </xsl:if>
+			
+			<xsl:if test="$level = 1">
+				<xsl:if test="ancestor::mn:annex">
+					<xsl:attribute name="font-size">16pt</xsl:attribute>
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+					<xsl:attribute name="text-align">center</xsl:attribute>
+					<xsl:attribute name="space-before">0pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">48pt</xsl:attribute>
+					<xsl:if test="$layoutVersion = '2024'">
+						<xsl:attribute name="line-height">1.1</xsl:attribute>
+						<!-- <xsl:attribute name="margin-bottom">52pt</xsl:attribute> -->
+					</xsl:if>
+					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+						<xsl:attribute name="span">all</xsl:attribute>
+					</xsl:if>
+				</xsl:if>
+			</xsl:if>
 			<!-- $namespace = 'iso' -->
 		</xsl:if>
 		
@@ -822,28 +822,28 @@
 				<xsl:attribute name="text-align">start</xsl:attribute>
 			</xsl:if>
 			
-      <xsl:if test="$level = 1">
-        <xsl:if test="ancestor::mn:annex">
-          <xsl:attribute name="font-size">14pt</xsl:attribute>
-          <xsl:attribute name="text-align">center</xsl:attribute>
-          <xsl:attribute name="space-before">0pt</xsl:attribute>
-          <xsl:attribute name="margin-bottom">18pt</xsl:attribute>
-        </xsl:if>
-      </xsl:if>
-      
-      <xsl:if test="ancestor::mn:preface">
-        <xsl:attribute name="font-size">inherit</xsl:attribute>
-        <xsl:attribute name="margin-top">18pt</xsl:attribute>
-        <xsl:attribute name="margin-bottom">18pt</xsl:attribute>
-        <xsl:attribute name="space-before">0pt</xsl:attribute>
-        <xsl:attribute name="space-after">0pt</xsl:attribute>
-        <xsl:if test="$doctype = 'service-publication'">
-          <xsl:attribute name="margin-top">24pt</xsl:attribute>
-          <xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-          <xsl:attribute name="font-size">12pt</xsl:attribute>
-        </xsl:if>
-      </xsl:if>
-      
+			<xsl:if test="$level = 1">
+				<xsl:if test="ancestor::mn:annex">
+					<xsl:attribute name="font-size">14pt</xsl:attribute>
+					<xsl:attribute name="text-align">center</xsl:attribute>
+					<xsl:attribute name="space-before">0pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="ancestor::mn:preface">
+				<xsl:attribute name="font-size">inherit</xsl:attribute>
+				<xsl:attribute name="margin-top">18pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
+				<xsl:attribute name="space-before">0pt</xsl:attribute>
+				<xsl:attribute name="space-after">0pt</xsl:attribute>
+				<xsl:if test="$doctype = 'service-publication'">
+					<xsl:attribute name="margin-top">24pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+					<xsl:attribute name="font-size">12pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<xsl:if test="$element-name = 'fo:inline'">
 				<xsl:attribute name="padding-right">
 					<xsl:choose>
@@ -1003,6 +1003,20 @@
 					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			
+			<xsl:if test="ancestor::mn:preface">
+				<xsl:attribute name="font-size">12pt</xsl:attribute>
+				<xsl:attribute name="text-align">center</xsl:attribute>
+				<xsl:attribute name="space-before">12pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+				<xsl:attribute name="color"><xsl:value-of select="$color"/></xsl:attribute>
+				<xsl:attribute name="margin-left">0mm</xsl:attribute>
+				<xsl:attribute name="padding-top">0mm</xsl:attribute>
+				<xsl:if test="parent::mn:acknowledgements">
+					<xsl:attribute name="space-before">18pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
 			<!-- $namespace = 'nist-cswp' -->
 		</xsl:if>
 		
@@ -1038,6 +1052,27 @@
 					<xsl:attribute name="space-before">6pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			
+			<xsl:if test="ancestor::mn:preface and not(ancestor::mn:introduction)">
+				<xsl:attribute name="font-family">Arial</xsl:attribute>
+				<xsl:attribute name="font-size">12pt</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<xsl:attribute name="text-align">center</xsl:attribute>
+				<xsl:attribute name="space-before">12pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+				<xsl:attribute name="margin-left">0mm</xsl:attribute>
+				<xsl:attribute name="padding-top">0mm</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="ancestor::mn:executivesummary">
+				<xsl:attribute name="font-family">Arial</xsl:attribute>
+				<xsl:attribute name="font-size">12pt</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<xsl:attribute name="text-align">left</xsl:attribute>
+				<xsl:attribute name="margin-left">4mm</xsl:attribute>
+				<xsl:attribute name="padding-top">1mm</xsl:attribute>
+			</xsl:if>
+			
 			<!-- $namespace = 'nist-sp' -->
 		</xsl:if>
 		
