@@ -4210,22 +4210,6 @@
 	<!-- title      -->
 	<!-- ====== -->
 	
-	<xsl:template match="mn:annex/mn:fmt-title">
-		<xsl:choose>
-			<xsl:when test="$doctype = 'amendment'">
-				<xsl:call-template name="titleAmendment"/>				
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:block xsl:use-attribute-sets="annex-title-style">
-					<xsl:call-template name="refine_annex-title-style"/>
-					
-					<xsl:apply-templates />
-					<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
-				</fo:block>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	
 	<!-- Bibliography -->
 	<xsl:template match="mn:references[not(@normative='true')]/mn:fmt-title">
 		<xsl:choose>
