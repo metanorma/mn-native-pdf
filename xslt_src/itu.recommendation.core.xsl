@@ -2146,29 +2146,6 @@
 		</xsl:if>
 		<xsl:apply-templates />
 	</xsl:template>
-	
-	<xsl:template match="mn:preface//mn:fmt-title" priority="3">
-		<!-- <xsl:if test="$doctype = 'service-publication'">
-			<fo:block>&#xa0;</fo:block>
-			<fo:block>&#xa0;</fo:block>
-		</xsl:if> -->
-		<xsl:variable name="level">
-			<xsl:call-template name="getLevel"/>
-		</xsl:variable>
-		<xsl:variable name="doctype" select="ancestor::mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
-		<fo:block font-weight="bold" margin-top="18pt" margin-bottom="18pt" keep-with-next="always" role="H{$level}">
-			<xsl:if test="$doctype = 'service-publication'">
-				<xsl:attribute name="margin-top">24pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-				<xsl:attribute name="font-size">12pt</xsl:attribute>
-			</xsl:if>
-			<xsl:apply-templates />
-			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
-		</fo:block>
-		<!-- <xsl:if test="$doctype = 'service-publication'">
-			<fo:block keep-with-next="always">&#xa0;</fo:block>
-		</xsl:if> -->
-	</xsl:template>
 	<!-- ============================= -->
 	<!-- ============================= -->
 	

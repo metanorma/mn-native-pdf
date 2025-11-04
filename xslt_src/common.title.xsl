@@ -825,10 +825,22 @@
       <xsl:if test="$level = 1">
         <xsl:if test="ancestor::mn:annex">
           <xsl:attribute name="font-size">14pt</xsl:attribute>
-          <xsl:attribute name="font-weight">bold</xsl:attribute>
           <xsl:attribute name="text-align">center</xsl:attribute>
           <xsl:attribute name="space-before">0pt</xsl:attribute>
           <xsl:attribute name="margin-bottom">18pt</xsl:attribute>
+        </xsl:if>
+      </xsl:if>
+      
+      <xsl:if test="ancestor::mn:preface">
+        <xsl:attribute name="font-size">inherit</xsl:attribute>
+        <xsl:attribute name="margin-top">18pt</xsl:attribute>
+        <xsl:attribute name="margin-bottom">18pt</xsl:attribute>
+        <xsl:attribute name="space-before">0pt</xsl:attribute>
+        <xsl:attribute name="space-after">0pt</xsl:attribute>
+        <xsl:if test="$doctype = 'service-publication'">
+          <xsl:attribute name="margin-top">24pt</xsl:attribute>
+          <xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+          <xsl:attribute name="font-size">12pt</xsl:attribute>
         </xsl:if>
       </xsl:if>
       
