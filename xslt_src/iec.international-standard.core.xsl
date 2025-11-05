@@ -1858,25 +1858,14 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 	<!-- ====== -->
 	<!-- title      -->
 	<!-- ====== -->
-	<xsl:template match="mn:introduction/mn:fmt-title">
-		<fo:block font-size="12pt" text-align="center" margin-bottom="12pt" role="H1">
-			<xsl:apply-templates />
-			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
-		</fo:block>
-	</xsl:template>
+	<!-- Introduction title text spacing -->
 	<xsl:template match="mn:introduction/mn:fmt-title/text()">
 		<xsl:call-template name="addLetterSpacing">
 			<xsl:with-param name="text" select="."/>
 		</xsl:call-template>			
 	</xsl:template>
 	
-	
-	<!-- Bibliography -->
-	<xsl:template match="mn:references[not(@normative='true')]/mn:fmt-title">
-		<fo:block xsl:use-attribute-sets="references-non-normative-title-style">
-			<xsl:apply-templates />			
-		</fo:block>
-	</xsl:template>
+	<!-- Bibliography title text spacing -->
 	<xsl:template match="mn:references[not(@normative='true')]/mn:fmt-title/text()">
 		<xsl:call-template name="addLetterSpacing">
 			<xsl:with-param name="text" select="."/>

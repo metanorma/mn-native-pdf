@@ -22,13 +22,6 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'iec'">
-			<xsl:attribute name="font-size">12pt</xsl:attribute>
-			<xsl:attribute name="text-align">center</xsl:attribute>
-			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			<xsl:attribute name="role">H1</xsl:attribute>
-		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="margin-left">-15mm</xsl:attribute>
 			<xsl:attribute name="role">H1</xsl:attribute>
