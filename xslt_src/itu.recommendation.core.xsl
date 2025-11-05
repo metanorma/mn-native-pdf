@@ -2226,12 +2226,6 @@
 	<!-- renders in the annex/title template -->
 	<xsl:template match="mn:annex/mn:p[preceding-sibling::*[1][self::mn:fmt-title or self::mn:variant-title]][starts-with(normalize-space(), '(')]" priority="3"/>
 	
-	<!-- Bibliography -->
-	<xsl:template match="mn:references[not(@normative='true')]/mn:fmt-title">
-		<fo:block xsl:use-attribute-sets="references-non-normative-title-style">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
 	
 	<xsl:template match="mn:fmt-title" name="title">
 		

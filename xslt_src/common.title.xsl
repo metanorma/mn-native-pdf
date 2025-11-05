@@ -822,15 +822,6 @@
 				<xsl:attribute name="text-align">start</xsl:attribute>
 			</xsl:if>
 			
-			<xsl:if test="$level = 1">
-				<xsl:if test="ancestor::mn:annex">
-					<xsl:attribute name="font-size">14pt</xsl:attribute>
-					<xsl:attribute name="text-align">center</xsl:attribute>
-					<xsl:attribute name="space-before">0pt</xsl:attribute>
-					<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
-			
 			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
 				<xsl:attribute name="margin-top">18pt</xsl:attribute>
@@ -841,6 +832,27 @@
 					<xsl:attribute name="margin-top">24pt</xsl:attribute>
 					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 					<xsl:attribute name="font-size">12pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="ancestor::mn:annex">
+				<xsl:if test="$level = 1">
+					<xsl:attribute name="font-size">14pt</xsl:attribute>
+					<xsl:attribute name="text-align">center</xsl:attribute>
+					<xsl:attribute name="space-before">0pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="parent::mn:references[not(@normative='true')]">
+				<xsl:attribute name="font-size">14pt</xsl:attribute>
+				<xsl:attribute name="text-align">center</xsl:attribute>
+				<xsl:attribute name="space-before">0pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
+				<xsl:if test="$doctype = 'implementers-guide'">
+					<xsl:attribute name="text-align">left</xsl:attribute>
+					<xsl:attribute name="font-size">12pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			
