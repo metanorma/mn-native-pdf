@@ -4202,29 +4202,11 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
-
 
 	
 	<!-- ====== -->
 	<!-- title      -->
 	<!-- ====== -->
-	
-	<!-- Bibliography -->
-	<xsl:template match="mn:references[not(@normative='true')]/mn:fmt-title">
-		<xsl:choose>
-			<xsl:when test="$doctype = 'amendment'">
-				<xsl:call-template name="titleAmendment"/>				
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:block xsl:use-attribute-sets="references-non-normative-title-style">
-					<xsl:call-template name="refine_references-non-normative-title-style"/>
-					
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 	
 	<xsl:template match="mn:fmt-title" name="title">
 		<xsl:param name="without_number">false</xsl:param>
@@ -4387,19 +4369,6 @@
 				</xsl:call-template>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>
-	
-	<xsl:template name="titleAmendment">
-		<!-- <xsl:variable name="id">
-			<xsl:call-template name="getId"/>
-		</xsl:variable> id="{$id}"  -->
-		<fo:block font-size="11pt" font-style="italic" margin-bottom="12pt" keep-with-next="always">
-			<xsl:call-template name="setIDforNamedDestination"/>
-			<!-- <xsl:if test="$layoutVersion = '2024'">
-				<xsl:attribute name="font-size">10.5pt</xsl:attribute>
-			</xsl:if> -->
-			<xsl:apply-templates />
-		</fo:block>
 	</xsl:template>
 	
 	<!-- ====== -->

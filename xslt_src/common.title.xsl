@@ -765,20 +765,35 @@
 				</xsl:choose>
 			</xsl:attribute>
 			
-			<xsl:if test="$level = 1">
-				<xsl:if test="ancestor::mn:annex">
-					<xsl:attribute name="font-size">16pt</xsl:attribute>
-					<xsl:attribute name="font-weight">normal</xsl:attribute>
-					<xsl:attribute name="text-align">center</xsl:attribute>
-					<xsl:attribute name="space-before">0pt</xsl:attribute>
-					<xsl:attribute name="margin-bottom">48pt</xsl:attribute>
-					<xsl:if test="$layoutVersion = '2024'">
-						<xsl:attribute name="line-height">1.1</xsl:attribute>
-						<!-- <xsl:attribute name="margin-bottom">52pt</xsl:attribute> -->
-					</xsl:if>
-					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
-						<xsl:attribute name="span">all</xsl:attribute>
-					</xsl:if>
+			<xsl:if test="parent::mn:annex"><!-- Annex title -->
+				<xsl:attribute name="font-size">16pt</xsl:attribute>
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+				<xsl:attribute name="text-align">center</xsl:attribute>
+				<xsl:attribute name="space-before">0pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">48pt</xsl:attribute>
+				<xsl:if test="$layoutVersion = '2024'">
+					<xsl:attribute name="line-height">1.1</xsl:attribute>
+					<!-- <xsl:attribute name="margin-bottom">52pt</xsl:attribute> -->
+				</xsl:if>
+				<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+					<xsl:attribute name="span">all</xsl:attribute>
+				</xsl:if>
+			</xsl:if>
+			
+			<xsl:if test="parent::mn:references[not(@normative='true')]">
+				<xsl:attribute name="font-size">16pt</xsl:attribute>
+				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<xsl:attribute name="text-align">center</xsl:attribute>
+				<xsl:attribute name="space-before">0pt</xsl:attribute>
+				<xsl:attribute name="margin-top">0pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">30pt</xsl:attribute>
+				<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
+					<xsl:attribute name="font-size">14pt</xsl:attribute>
+					<xsl:attribute name="span">all</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="$layoutVersion != '2024'">
+					<xsl:attribute name="margin-top">6pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">36pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
 			<!-- $namespace = 'iso' -->
