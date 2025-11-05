@@ -2332,23 +2332,6 @@
 	<!-- title      -->
 	<!-- ====== -->
 	
-	<!-- <xsl:template match="mn:annex/mn:title">
-		<fo:block font-size="16pt" text-align="center" margin-bottom="48pt" keep-with-next="always">
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template> -->
-	
-	<!-- Bibliography -->
-	<xsl:template match="mn:references[not(@normative='true')]/mn:fmt-title">
-		<fo:block xsl:use-attribute-sets="references-non-normative-title-style">
-			
-			<xsl:call-template name="refine_references-non-normative-title-style"/>
-		
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
-	
 	<!-- <xsl:template match="mn:fmt-title[@inline-header = 'true'][following-sibling::*[1][self::mn:p] or following-sibling::*[1][self::mn:clause] or not(following-sibling::*)]" priority="3"> -->
 	<xsl:template match="mn:fmt-title[../@inline-header = 'true'][following-sibling::*[1][self::mn:p] or following-sibling::*[1][self::mn:clause] or not(following-sibling::*)]" priority="3">
 		<fo:block>
@@ -2421,7 +2404,8 @@
 		
 		
 		<xsl:choose>
-			<xsl:when test="string-length($section) != 0 and $element-name = 'fo:block' and ($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report')">
+			<xsl:when test="string-length($section) != 0 and $element-name = 'fo:block' and ($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') and
+			not(parent::mn:references[not(@normative='true')])">
 				<fo:list-block>
 					<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
 				
