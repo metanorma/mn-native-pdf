@@ -1309,6 +1309,12 @@
 				<xsl:attribute name="space-before">8pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="self::mn:references[not(@normative='true')]">
+				<xsl:attribute name="margin-left">-15mm</xsl:attribute>
+				<xsl:attribute name="font-size">22pt</xsl:attribute>
+				<xsl:attribute name="space-before">0pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
+			</xsl:if>
 			<!-- $namespace = 'rsd' -->
 		</xsl:if>
 		<xsl:attribute name="role">H<xsl:value-of select="$level"/></xsl:attribute>

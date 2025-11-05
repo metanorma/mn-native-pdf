@@ -12,12 +12,6 @@
 											extension-element-prefixes="redirect"
 											version="1.0">
 	
-	<xsl:attribute-set name="references-non-normative-title-style">
-	</xsl:attribute-set>
-	
-	<xsl:template name="refine_references-non-normative-title-style">
-	</xsl:template>
-	
 	<!-- bibitem in Normative References (references/@normative="true") -->
 	<xsl:attribute-set name="bibitem-normative-style">
 		<xsl:if test="$namespace = 'bipm'">

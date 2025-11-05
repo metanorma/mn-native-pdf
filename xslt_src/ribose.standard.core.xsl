@@ -1032,7 +1032,8 @@
 					<!-- repeat table header on each page -->
 					<fo:table-row role="SKIP">
 						<fo:table-cell text-align="left" role="SKIP">
-							<fo:block xsl:use-attribute-sets="references-non-normative-title-style"> <!-- Bibliography section title -->
+							<fo:block xsl:use-attribute-sets="title-style"> <!-- Bibliography section title -->
+								<xsl:call-template name="refine_title-style"/>
 								<xsl:apply-templates select="mn:fmt-title/node()"/>
 							</fo:block>
 						</fo:table-cell>
