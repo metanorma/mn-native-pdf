@@ -598,6 +598,14 @@
 			<xsl:if test="../@id = '_document_history' or . = 'Document History'">
 				<xsl:attribute name="text-align">center</xsl:attribute>
 			</xsl:if>
+			
+			<xsl:if test="parent::mn:references[not(@normative='true')] and ancestor::mn:bibliography">
+				<xsl:attribute name="font-size">16pt</xsl:attribute>
+				<xsl:attribute name="text-align">center</xsl:attribute>
+				<xsl:attribute name="margin-top">6pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">36pt</xsl:attribute>
+			</xsl:if>
+			
 			<!-- $namespace = 'iho' -->
 		</xsl:if>
 		
