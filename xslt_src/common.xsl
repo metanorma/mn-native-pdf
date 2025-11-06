@@ -311,6 +311,8 @@
 
 	<xsl:include href="./common.ruby.xsl"/>
 	
+	<xsl:include href="./common.annex.xsl"/>
+	
 	<xsl:include href="./common.p.xsl"/>
 	
 	<xsl:include href="./common.title.xsl"/>

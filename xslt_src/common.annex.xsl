@@ -13,11 +13,22 @@
 											version="1.0">
 	
 	<xsl:attribute-set name="annex-title-style">
+		<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="font-size">18pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="margin-left">-10mm</xsl:attribute>
+			<xsl:attribute name="space-before">4.5mm</xsl:attribute>
+			<xsl:attribute name="space-after">6mm</xsl:attribute>
+			<xsl:attribute name="line-height">1.15</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="keep-with-next">auto</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="color">black</xsl:attribute>
 			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
@@ -27,7 +38,18 @@
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="space-before">0</xsl:attribute>
 			<xsl:attribute name="margin-bottom">32pt</xsl:attribute>
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="space-before">0</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
@@ -36,16 +58,6 @@
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="space-before">0pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">48pt</xsl:attribute>
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			<xsl:attribute name="role">H1</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="font-size">12pt</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-			<xsl:attribute name="text-align">center</xsl:attribute>
-			<xsl:attribute name="space-before">0</xsl:attribute>
-			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
@@ -55,6 +67,24 @@
 			<xsl:attribute name="space-before">0pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
 			<xsl:attribute name="role">H1</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="font-size">15pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="space-before">0pt</xsl:attribute>
+			<xsl:attribute name="space-after">30pt</xsl:attribute>
+			<xsl:attribute name="line-height">130%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-size">14pt</xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-size">14pt</xsl:attribute>
+			<xsl:attribute name="text-align">center</xsl:attribute>
+			<xsl:attribute name="space-before">0mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- annex-title-style -->
 	
@@ -67,6 +97,13 @@
 			</xsl:if>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="span">all</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="preceding-sibling::mn:annex[1][@commentary = 'true']">
+				<xsl:attribute name="font-size">16pt</xsl:attribute>
+				<xsl:attribute name="space-before">1mm</xsl:attribute>
+				<xsl:attribute name="margin-bottom">7mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>

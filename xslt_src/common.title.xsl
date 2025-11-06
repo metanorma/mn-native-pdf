@@ -240,10 +240,10 @@
 					<xsl:attribute name="font-size">14pt</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="@ancestor = 'annex'">
-					<xsl:attribute name="font-size">18pt</xsl:attribute>
-					<xsl:attribute name="margin-left">-10mm</xsl:attribute>
-					<xsl:attribute name="line-height">1.15</xsl:attribute>
-					<xsl:attribute name="space-after">6mm</xsl:attribute>
+					<xsl:variable name="annex_title_styles">
+						<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
+					</xsl:variable>
+					<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 				</xsl:if>
 				<xsl:if test="@ancestor = 'bibliography'">
 					<xsl:attribute name="font-size">13pt</xsl:attribute>
@@ -364,6 +364,12 @@
 					<xsl:attribute name="font-weight">300</xsl:attribute>
 					<xsl:attribute name="margin-bottom">13mm</xsl:attribute>
 				</xsl:if>
+				<xsl:if test="@ancestor = 'annex'">
+					<xsl:variable name="annex_title_styles">
+						<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
+					</xsl:variable>
+					<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="following-sibling::mn:p[1][@align = 'span' or @columns = '1']">
 				<xsl:attribute name="span">all</xsl:attribute>
@@ -439,6 +445,12 @@
 			</xsl:if>
 			<xsl:if test="ancestor::mn:sections">
 				<xsl:attribute name="margin-top">13.5pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="parent::mn:annex"><!-- Annex title -->
+				<xsl:variable name="annex_title_styles">
+					<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 			</xsl:if>
 			<!-- $namespace = 'csd' -->
 		</xsl:if>
@@ -539,15 +551,18 @@
 						<xsl:if test="ancestor::mn:acknowledgements">
 							<xsl:attribute name="font-size">11pt</xsl:attribute>
 						</xsl:if>
-						<xsl:if test="ancestor::mn:annex">
-							<xsl:attribute name="font-weight">normal</xsl:attribute>
-						</xsl:if>
 						<xsl:if test="not(following-sibling::*[1][self::mn:clause])">
 							<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 						</xsl:if>
 						<xsl:if test="ancestor::mn:preface or ancestor::mn:introduction or ancestor::mn:acknowledgements">
 							<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 						</xsl:if>
+					</xsl:if>
+					<xsl:if test="parent::mn:annex"><!-- Annex title -->
+						<xsl:variable name="annex_title_styles">
+							<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
+						</xsl:variable>
+						<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 					</xsl:if>
 					<xsl:if test="$level &gt;= 2">
 						<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -900,11 +915,6 @@
 		
 		<xsl:if test="$namespace = 'jcgm'">
 			
-			<xsl:if test="$level = 1">
-				<xsl:if test="parent::mn:annex">
-					<xsl:attribute name="space-before">0pt</xsl:attribute>
-				</xsl:if>
-			</xsl:if>
 			<xsl:if test="$level = 2">
 				<xsl:attribute name="font-size">11.5pt</xsl:attribute>
 				<xsl:attribute name="space-before">18pt</xsl:attribute>
@@ -923,10 +933,7 @@
 				<xsl:attribute name="font-size">15pt</xsl:attribute>
 				<xsl:attribute name="space-after">12pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="parent::mn:annex">
-				<xsl:attribute name="font-size">15pt</xsl:attribute>
-				<xsl:attribute name="space-after">30pt</xsl:attribute>
-			</xsl:if>
+			
 			<xsl:if test="$element-name = 'fo:inline'">
 				<xsl:attribute name="padding-right">
 					<xsl:choose>
@@ -935,11 +942,12 @@
 					</xsl:choose>
 				</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="parent::mn:annex">
-				<xsl:attribute name="text-align">center</xsl:attribute>
-				<xsl:attribute name="line-height">130%</xsl:attribute>
+			<xsl:if test="parent::mn:annex"><!-- Annex title -->
+				<xsl:variable name="annex_title_styles">
+					<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 			</xsl:if>
-			
 			<!-- $namespace = 'jcgm' -->
 		</xsl:if>
 		
@@ -963,14 +971,11 @@
 					<xsl:attribute name="space-before">9mm</xsl:attribute>
 					<xsl:attribute name="margin-bottom">9mm</xsl:attribute>
 				</xsl:if>
-				<xsl:if test="@ancestor = 'annex'">
-					<xsl:attribute name="font-size">14pt</xsl:attribute>
-					<xsl:attribute name="text-align">center</xsl:attribute>
-					<xsl:if test="preceding-sibling::mn:annex[1][@commentary = 'true']">
-						<xsl:attribute name="font-size">16pt</xsl:attribute>
-						<xsl:attribute name="space-before">1mm</xsl:attribute>
-						<xsl:attribute name="margin-bottom">7mm</xsl:attribute>
-					</xsl:if>
+				<xsl:if test="@ancestor = 'annex'"><!-- Annex title -->
+					<xsl:variable name="annex_title_styles">
+						<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
+					</xsl:variable>
+					<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 				</xsl:if>
 			</xsl:if>
 			
@@ -1058,6 +1063,7 @@
 					<xsl:attribute name="space-before">18pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
+			
 			<xsl:if test="parent::mn:references">
 				<xsl:attribute name="font-size">12pt</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -1068,6 +1074,12 @@
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
 			
+			<xsl:if test="parent::mn:annex"><!-- Annex title -->
+				<xsl:variable name="annex_title_styles">
+					<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
+			</xsl:if>
 			<!-- $namespace = 'nist-cswp' -->
 		</xsl:if>
 		
@@ -1131,6 +1143,13 @@
 				<xsl:attribute name="margin-top">0pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 			</xsl:if>
+			
+			<xsl:if test="parent::mn:annex"><!-- Annex title -->
+				<xsl:variable name="annex_title_styles">
+					<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
+			</xsl:if>
 			<!-- $namespace = 'nist-sp' -->
 		</xsl:if>
 		
@@ -1166,6 +1185,13 @@
 			<xsl:if test="$level &gt;= 5">
 				<xsl:attribute name="font-size">11pt</xsl:attribute>
 			</xsl:if>
+			
+			<xsl:if test="parent::mn:annex"><!-- Annex title -->
+				<xsl:variable name="annex_title_styles">
+					<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
+			</xsl:if>
 			<!-- $namespace = 'ogc' -->
 		</xsl:if>
 		
@@ -1190,6 +1216,13 @@
 				<xsl:attribute name="color">rgb(21, 43, 77)</xsl:attribute>
 				<xsl:attribute name="margin-top">6pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="parent::mn:annex"><!-- Annex title -->
+				<xsl:variable name="annex_title_styles">
+					<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 			</xsl:if>
 			<!-- 'ogc-white-paper' -->
 		</xsl:if>
@@ -1222,11 +1255,6 @@
 					<xsl:attribute name="text-align">center</xsl:attribute>
 					<xsl:attribute name="space-before">9mm</xsl:attribute>
 					<xsl:attribute name="margin-bottom">9mm</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="ancestor::mn:annex">
-					<xsl:attribute name="font-size">14pt</xsl:attribute>
-					<xsl:attribute name="text-align">center</xsl:attribute>
-					<xsl:attribute name="space-before">0mm</xsl:attribute>
 				</xsl:if>
 				<xsl:if test="$doctype = 'technical-report'">
 					<xsl:attribute name="font-size">16pt</xsl:attribute>
@@ -1288,6 +1316,13 @@
 				</xsl:if>
 			</xsl:if>
 			
+			<xsl:if test="parent::mn:annex"><!-- Annex title -->
+				<xsl:variable name="annex_title_styles">
+					<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
+			</xsl:if>
+			
 			<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
 				<xsl:copy-of select="@id"/>
 			</xsl:if>
@@ -1315,6 +1350,12 @@
 				<xsl:attribute name="font-size">22pt</xsl:attribute>
 				<xsl:attribute name="space-before">0pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="parent::mn:annex"><!-- Annex title -->
+				<xsl:variable name="annex_title_styles">
+					<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 			</xsl:if>
 			<!-- $namespace = 'rsd' -->
 		</xsl:if>
