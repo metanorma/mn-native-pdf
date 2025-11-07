@@ -947,26 +947,7 @@
 	<!-- ====== -->
 	<!-- title      -->
 	<!-- ====== -->
-	
-	<xsl:template match="mn:annex/mn:fmt-title" name="annex_title">
-		<fo:block xsl:use-attribute-sets="annex-title-style">
 		
-			<xsl:call-template name="refine_annex-title-style"/>
-			
-			<xsl:apply-templates />
-			<xsl:apply-templates select="following-sibling::*[1][mn:variant-title][@type = 'sub']" mode="subtitle"/>
-		</fo:block>
-	</xsl:template>
-		
-	<xsl:template match="mn:bibliography/mn:references[not(@normative='true')]/mn:fmt-title">
-		<fo:block xsl:use-attribute-sets="references-non-normative-title-style">
-		
-			<xsl:call-template name="refine_references-non-normative-title-style"/>
-		
-			<xsl:apply-templates />
-		</fo:block>
-	</xsl:template>
-	
 	<xsl:template match="mn:clause" priority="3">
 		<xsl:if test="parent::mn:preface or (parent::mn:page_sequence and local-name(../..) = 'preface')">
 			<fo:block break-after="page"/>
