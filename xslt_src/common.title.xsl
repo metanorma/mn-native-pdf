@@ -231,6 +231,9 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'bsi'">
+			<xsl:if test="preceding-sibling::mn:references">
+				<xsl:attribute name="font-size">11.5pt</xsl:attribute>
+			</xsl:if>
 			<xsl:if test="$level = 1">
 				<xsl:if test="@ancestor = 'foreword' or @ancestor = 'executivesummary' or @ancestor = 'introduction'">
 					<xsl:attribute name="font-size">18pt</xsl:attribute>
@@ -246,10 +249,10 @@
 					<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 				</xsl:if>
 				<xsl:if test="@ancestor = 'bibliography'">
-					<xsl:attribute name="font-size">13pt</xsl:attribute>
-					<xsl:if test="preceding-sibling::mn:references">
-						<xsl:attribute name="font-size">11.5pt</xsl:attribute>
-					</xsl:if>
+					<xsl:variable name="bibliography_title_styles">
+						<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+					</xsl:variable>
+					<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
 				</xsl:if>
 			</xsl:if>
 			
@@ -370,6 +373,12 @@
 					</xsl:variable>
 					<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 				</xsl:if>
+				<xsl:if test="@ancestor = 'bibliography'">
+					<xsl:variable name="bibliography_title_styles">
+						<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+					</xsl:variable>
+					<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="following-sibling::mn:p[1][@align = 'span' or @columns = '1']">
 				<xsl:attribute name="span">all</xsl:attribute>
@@ -430,6 +439,12 @@
 				</xsl:variable>
 				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 			</xsl:if>
+			<xsl:if test="parent::mn:references[not(@normative='true')]"><!-- Bibliography section title -->
+				<xsl:variable name="bibliography_title_styles">
+					<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
+			</xsl:if>
 			<!-- $namespace = 'csa' -->
 		</xsl:if>
 		
@@ -452,6 +467,13 @@
 				</xsl:variable>
 				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 			</xsl:if>
+			<xsl:if test="parent::mn:references[not(@normative='true')]"><!-- Bibliography section title -->
+				<xsl:variable name="bibliography_title_styles">
+					<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
+			</xsl:if>
+			
 			<!-- $namespace = 'csd' -->
 		</xsl:if>
 		
@@ -485,13 +507,11 @@
 					<xsl:attribute name="space-before">5pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="parent::mn:references[not(@normative='true')]">
-				<xsl:attribute name="font-size">12pt</xsl:attribute>
-				<xsl:attribute name="font-weight">normal</xsl:attribute>
-				<xsl:attribute name="text-align">center</xsl:attribute>
-				<xsl:attribute name="space-before">0pt</xsl:attribute>
-				<xsl:attribute name="margin-top">0pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:if test="parent::mn:references[not(@normative='true')]"><!-- Bibliography section title -->
+				<xsl:variable name="bibliography_title_styles">
+					<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
 			</xsl:if>
 			<xsl:if test="parent::mn:annex"><!-- Annex title -->
 				<xsl:variable name="annex_title_styles">
@@ -582,12 +602,11 @@
 			<xsl:attribute name="space-before"><xsl:value-of select="$space_before"/></xsl:attribute>
 			<xsl:if test="ancestor::mn:introduction"><xsl:attribute name="margin-top"><xsl:value-of select="$space_before"/></xsl:attribute></xsl:if>
 			
-			<xsl:if test="parent::mn:references[not(@normative='true')]">
-				<xsl:attribute name="font-size">16pt</xsl:attribute>
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
-				<xsl:attribute name="margin-top">6pt</xsl:attribute>
-				<xsl:attribute name="space-before">0pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">36pt</xsl:attribute>
+			<xsl:if test="parent::mn:references[not(@normative='true')]"><!-- Bibliography section title -->
+				<xsl:variable name="bibliography_title_styles">
+					<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
 			</xsl:if>
 			
 			<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
@@ -625,18 +644,18 @@
 				<xsl:attribute name="text-align">center</xsl:attribute>
 			</xsl:if>
 			
-			<xsl:if test="parent::mn:references[not(@normative='true')] and ancestor::mn:bibliography">
-				<xsl:attribute name="font-size">16pt</xsl:attribute>
-				<xsl:attribute name="text-align">center</xsl:attribute>
-				<xsl:attribute name="margin-top">6pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">36pt</xsl:attribute>
-			</xsl:if>
-			
 			<xsl:if test="parent::mn:annex"><!-- Annex title -->
 				<xsl:variable name="annex_title_styles">
 					<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
 				</xsl:variable>
 				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
+			</xsl:if>
+			
+			<xsl:if test="parent::mn:references[not(@normative='true')] and ancestor::mn:bibliography">
+				<xsl:variable name="bibliography_title_styles">
+					<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
 			</xsl:if>
 			<!-- $namespace = 'iho' -->
 		</xsl:if>
@@ -812,21 +831,11 @@
 				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 			</xsl:if>
 			
-			<xsl:if test="parent::mn:references[not(@normative='true')]">
-				<xsl:attribute name="font-size">16pt</xsl:attribute>
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
-				<xsl:attribute name="text-align">center</xsl:attribute>
-				<xsl:attribute name="space-before">0pt</xsl:attribute>
-				<xsl:attribute name="margin-top">0pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">30pt</xsl:attribute>
-				<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
-					<xsl:attribute name="font-size">14pt</xsl:attribute>
-					<xsl:attribute name="span">all</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="$layoutVersion != '2024'">
-					<xsl:attribute name="margin-top">6pt</xsl:attribute>
-					<xsl:attribute name="margin-bottom">36pt</xsl:attribute>
-				</xsl:if>
+			<xsl:if test="parent::mn:references[not(@normative='true')]"><!-- Bibliography section title -->
+				<xsl:variable name="bibliography_title_styles">
+					<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
 			</xsl:if>
 			<!-- $namespace = 'iso' -->
 		</xsl:if>
@@ -889,16 +898,11 @@
 				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 			</xsl:if>
 			
-			<xsl:if test="parent::mn:references[not(@normative='true')]">
-				<xsl:attribute name="font-size">14pt</xsl:attribute>
-				<xsl:attribute name="text-align">center</xsl:attribute>
-				<xsl:attribute name="space-before">0pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
-				<xsl:if test="$doctype = 'implementers-guide'">
-					<xsl:attribute name="text-align">left</xsl:attribute>
-					<xsl:attribute name="font-size">12pt</xsl:attribute>
-					<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-				</xsl:if>
+			<xsl:if test="parent::mn:references[not(@normative='true')]"><!-- Bibliography section title -->
+				<xsl:variable name="bibliography_title_styles">
+					<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
 			</xsl:if>
 			
 			<xsl:if test="$element-name = 'fo:inline'">
@@ -948,6 +952,12 @@
 				</xsl:variable>
 				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 			</xsl:if>
+			<xsl:if test="parent::mn:references[not(@normative='true')]"><!-- Bibliography section title -->
+				<xsl:variable name="bibliography_title_styles">
+					<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
+			</xsl:if>
 			<!-- $namespace = 'jcgm' -->
 		</xsl:if>
 		
@@ -976,6 +986,12 @@
 						<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
 					</xsl:variable>
 					<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
+				</xsl:if>
+				<xsl:if test="@ancestor = 'bibliography'"><!-- Bibliography section title -->
+					<xsl:variable name="bibliography_title_styles">
+						<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+					</xsl:variable>
+					<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
 				</xsl:if>
 			</xsl:if>
 			
@@ -1065,13 +1081,10 @@
 			</xsl:if>
 			
 			<xsl:if test="parent::mn:references">
-				<xsl:attribute name="font-size">12pt</xsl:attribute>
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
-				<xsl:attribute name="text-align">left</xsl:attribute>
-				<xsl:attribute name="margin-left">1mm</xsl:attribute>
-				<xsl:attribute name="padding-top">0.3mm</xsl:attribute>
-				<xsl:attribute name="margin-top">0pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+				<xsl:variable name="bibliography_title_styles">
+					<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
 			</xsl:if>
 			
 			<xsl:if test="parent::mn:annex"><!-- Annex title -->
@@ -1135,13 +1148,10 @@
 			</xsl:if>
 			
 			<xsl:if test="parent::mn:references">
-				<xsl:attribute name="font-size">12pt</xsl:attribute>
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
-				<xsl:attribute name="text-align">left</xsl:attribute>
-				<xsl:attribute name="margin-left">1mm</xsl:attribute>
-				<xsl:attribute name="padding-top">0.3mm</xsl:attribute>
-				<xsl:attribute name="margin-top">0pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+				<xsl:variable name="bibliography_title_styles">
+					<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
 			</xsl:if>
 			
 			<xsl:if test="parent::mn:annex"><!-- Annex title -->
@@ -1192,6 +1202,13 @@
 				</xsl:variable>
 				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 			</xsl:if>
+			
+			<xsl:if test="parent::mn:references[not(@normative='true')]"><!-- Bibliography section title -->
+				<xsl:variable name="bibliography_title_styles">
+					<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
+			</xsl:if>
 			<!-- $namespace = 'ogc' -->
 		</xsl:if>
 		
@@ -1223,6 +1240,13 @@
 					<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
 				</xsl:variable>
 				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
+			</xsl:if>
+			
+			<xsl:if test="parent::mn:references[not(@normative='true')]"><!-- Bibliography section title -->
+				<xsl:variable name="bibliography_title_styles">
+					<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
 			</xsl:if>
 			<!-- 'ogc-white-paper' -->
 		</xsl:if>
@@ -1323,6 +1347,13 @@
 				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
 			</xsl:if>
 			
+			<xsl:if test="parent::mn:references[not(@normative='true')]"><!-- Bibliography section title -->
+				<xsl:variable name="bibliography_title_styles">
+					<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
+			</xsl:if>
+			
 			<xsl:if test="@type = 'floating-title' or @type = 'section-title'">
 				<xsl:copy-of select="@id"/>
 			</xsl:if>
@@ -1345,17 +1376,17 @@
 				<xsl:attribute name="space-before">8pt</xsl:attribute>
 				<xsl:attribute name="margin-bottom">4pt</xsl:attribute>
 			</xsl:if>
-			<xsl:if test="self::mn:references[not(@normative='true')]">
-				<xsl:attribute name="margin-left">-15mm</xsl:attribute>
-				<xsl:attribute name="font-size">22pt</xsl:attribute>
-				<xsl:attribute name="space-before">0pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">16pt</xsl:attribute>
-			</xsl:if>
 			<xsl:if test="parent::mn:annex"><!-- Annex title -->
 				<xsl:variable name="annex_title_styles">
 					<styles xsl:use-attribute-sets="annex-title-style"><xsl:call-template name="refine_annex-title-style"/></styles>
 				</xsl:variable>
 				<xsl:copy-of select="xalan:nodeset($annex_title_styles)/styles/@*"/>
+			</xsl:if>
+			<xsl:if test="self::mn:references[not(@normative='true')]">
+				<xsl:variable name="bibliography_title_styles">
+					<styles xsl:use-attribute-sets="bibliography-title-style"><xsl:call-template name="refine_bibliography-title-style"/></styles>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($bibliography_title_styles)/styles/@*"/>
 			</xsl:if>
 			<!-- $namespace = 'rsd' -->
 		</xsl:if>
