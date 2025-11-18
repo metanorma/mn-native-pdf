@@ -779,9 +779,9 @@
 								<xsl:if test="normalize-space(translate($biblio_tag_first_part, '[] 1234567890', '')) != ''">
 									<xsl:attribute name="margin-left">8mm</xsl:attribute>
 									<xsl:attribute name="text-indent">-8mm</xsl:attribute>
-									<xsl:if test="not(contains($biblio_tag_first_part, '['))">[</xsl:if>
+									<!-- <xsl:if test="not(contains($biblio_tag_first_part, '['))">[</xsl:if> -->
 									<xsl:value-of select="$biblio_tag_first_part"/>
-									<xsl:if test="not(contains($biblio_tag_first_part, '['))">]</xsl:if>
+									<!-- <xsl:if test="not(contains($biblio_tag_first_part, '['))">]</xsl:if> -->
 									<xsl:text>&#xa0;</xsl:text>
 								</xsl:if>
 								<xsl:apply-templates select="mn:biblio-tag">
