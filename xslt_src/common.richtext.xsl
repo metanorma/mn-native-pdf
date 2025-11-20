@@ -83,7 +83,7 @@
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd'">
 			<xsl:attribute name="font-family"><xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'm3d' or 
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'm3d' or 
 										 $namespace = 'ogc-white-paper' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 		</xsl:if>
@@ -102,7 +102,12 @@
 			<xsl:if test="$namespace = 'iso'">9</xsl:if> <!-- inherit -->
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">10</xsl:if>
 			<xsl:if test="$namespace = 'jcgm'">10</xsl:if>
-			<xsl:if test="$namespace = 'itu'"></xsl:if>
+			<xsl:if test="$namespace = 'itu'">
+				<xsl:choose>
+					<xsl:when test="ancestor::mn:fmt-title">11</xsl:when>
+					<xsl:otherwise>10</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
 			<xsl:if test="$namespace = 'm3d'">
 				<xsl:choose>
 					<xsl:when test="not(ancestor::mn:note)">10</xsl:when>
