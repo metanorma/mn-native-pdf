@@ -961,6 +961,7 @@
 	<xsl:template match="text()[not(ancestor::mn:bibdata or 
 				ancestor::mn:fmt-link[not(contains(normalize-space(),' '))] or 
 				ancestor::mn:sourcecode or 
+				(ancestor::mn:tt and ancestor::mn:table and string-length() &gt; 20) or
 				ancestor::*[local-name() = 'math'] or
 				ancestor::*[local-name() = 'svg'] or
 				ancestor::mn:name or ancestor::mn:fmt-name or
