@@ -857,18 +857,7 @@
 				</xsl:choose>
 			</xsl:when>
 			<xsl:when test="$namespace = 'jcgm'"></xsl:when>
-			<xsl:when test="$namespace = 'itu'">
-				<xsl:variable name="doctype"><xsl:call-template name="get_doctype"/></xsl:variable>
-				<xsl:choose>
-					<xsl:when test="$doctype = 'contribution' and self::mn:abstract">
-						<!-- https://github.com/metanorma/metanorma-itu/issues/730:
-						Contribution abstract should flow normally (not in a separate page) -->
-					</xsl:when>
-					<xsl:otherwise>
-						<fo:block break-after="page"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:when>
+			<xsl:when test="$namespace = 'itu'"></xsl:when>
 			<xsl:otherwise>
 				<fo:block break-after="page"/>
 			</xsl:otherwise>
