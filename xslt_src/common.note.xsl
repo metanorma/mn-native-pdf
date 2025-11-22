@@ -201,9 +201,15 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:if test="ancestor::mn:ul or ancestor::mn:ol and not(ancestor::mn:note[1]/following-sibling::*)">
-				<xsl:attribute name="margin-top">6pt</xsl:attribute>
-				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			<xsl:if test="ancestor::mn:ul or ancestor::mn:ol">
+				<xsl:attribute name="font-size">10pt</xsl:attribute>
+				<xsl:if test="ancestor::mn:table">
+					<xsl:attribute name="font-size">8pt</xsl:attribute>
+				</xsl:if>
+				<xsl:if test="not(ancestor::mn:note[1]/following-sibling::*)">
+					<xsl:attribute name="margin-top">6pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 		</xsl:if>
 	
@@ -261,7 +267,7 @@
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
-			<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
+			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- note-name-style -->
 	

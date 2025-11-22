@@ -227,7 +227,7 @@
 			<xsl:attribute name="padding-right">4mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="padding-right">0.5mm</xsl:attribute>
+			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		</xsl:if>
 	</xsl:template>
 	
