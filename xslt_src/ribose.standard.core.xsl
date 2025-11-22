@@ -964,15 +964,13 @@
 	
 	
 	<xsl:template match="mn:ul/mn:note | mn:ol/mn:note" priority="2">
-		<fo:list-item font-size="10pt">
-			<xsl:if test="ancestor::mn:table">
-				<xsl:attribute name="font-size">8pt</xsl:attribute>
-			</xsl:if>
+		<fo:list-item xsl:use-attribute-sets="note-style">
+			<xsl:call-template name="refine_note-style"/>
+			
 			<fo:list-item-label><fo:block></fo:block></fo:list-item-label>
 			<fo:list-item-body>
 				<fo:block>
-					<xsl:apply-templates select="mn:fmt-name" />
-					<xsl:apply-templates select="node()[not(parent::mn:fmt-name)]" />
+					<xsl:call-template name="note"/>
 				</fo:block>
 			</fo:list-item-body>
 		</fo:list-item>
