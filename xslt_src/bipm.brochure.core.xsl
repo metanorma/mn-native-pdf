@@ -1823,6 +1823,9 @@
 				<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-BIPM))}" width="35mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo"/> -->
 				<fo:instream-foreign-object content-width="37mm" fox:alt-text="Image Logo">
 					<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'publisher']/mn:organization/mn:logo[@type = 'full']/mn:image/*[local-name() = 'svg']"/>
+					<xsl:if test="not(/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'publisher']/mn:organization/mn:logo[@type = 'full']/mn:image/*[local-name() = 'svg'])">
+						<xsl:copy-of select="$svg_empty"/>
+					</xsl:if>
 				</fo:instream-foreign-object>
 			</fo:block>
 		</fo:block-container>
@@ -1834,11 +1837,7 @@
 					<!-- <xsl:copy-of select="$Image-Logo-SI"/> -->
 					<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:depiction[@type = 'si-aspect']/mn:image/*[local-name() = 'svg']"/>
 					<xsl:if test="not(/mn:metanorma/mn:bibdata/mn:depiction[@type = 'si-aspect']/mn:image/*[local-name() = 'svg'])">
-						<!-- empty -->
-						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
-						viewBox="0 0 2 2">
-							<rect x="0" y="0" width="2" height="2" style="fill:#fff;fill-opacity:0;stroke:none"/>
-						</svg>
+						<xsl:copy-of select="$svg_empty"/>
 					</xsl:if>
 				</fo:instream-foreign-object>	
 			</fo:block>
@@ -3835,6 +3834,14 @@
 				</fo:block>
 			</fo:block-container>
 	</xsl:template>
+	
+	<xsl:variable name="svg_empty">
+		<!-- empty -->
+		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
+		viewBox="0 0 2 2">
+			<rect x="0" y="0" width="2" height="2" style="fill:#fff;fill-opacity:0;stroke:none"/>
+		</svg>
+	</xsl:variable>
 	
 	<xsl:template name="splitTitle">
 		<xsl:param name="pText" select="."/>
