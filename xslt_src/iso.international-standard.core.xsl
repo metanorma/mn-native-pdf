@@ -309,26 +309,14 @@
 	<xsl:variable name="ISO_title_ru">МЕЖДУНАРОДНАЯ ОРГАНИЗАЦИЯ ПО СТАНДАРТИЗАЦИИ</xsl:variable>
 	<xsl:variable name="ISO_title_fr">ORGANISATION INTERNATIONALE DE NORMALISATION</xsl:variable>
 
-	<xsl:variable name="i18n_reference_number_abbrev"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number_abbrev</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_reference_number"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_descriptors"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Descriptor.pl</xsl:with-param></xsl:call-template></xsl:variable>	
-	<xsl:variable name="i18n_voting_begins_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">voting_begins_on</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_voting_terminates_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">voting_terminates_on</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_price_based_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">price_based_on</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_price"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">price</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_date_first_printing"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">date_first_printing</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_date_printing"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">date_printing</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_corrected_version"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">corrected_version</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_fast_track_procedure"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">fast-track-procedure</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_iso_cen_parallel"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">iso-cen-parallel</xsl:with-param></xsl:call-template></xsl:variable>
+	
+	
 	<xsl:variable name="i18n_all_rights_reserved"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">all_rights_reserved</xsl:with-param></xsl:call-template></xsl:variable>	
-	<xsl:variable name="i18n_locality_page"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.page</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_locality_part"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_secretariat"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">secretariat</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_classification_UDC"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">classification-UDC</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_draft_comment_1"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_1</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_draft_comment_2"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_2</xsl:with-param></xsl:call-template></xsl:variable>
-	<xsl:variable name="i18n_draft_comment_3"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_3</xsl:with-param></xsl:call-template></xsl:variable>
+	
+	
+	
+	
+	
 	
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
@@ -371,100 +359,6 @@
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
-	<xsl:variable name="lang_other">
-		<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:title[@language != $lang]">
-			<xsl:if test="not(preceding-sibling::mn:title[@language = current()/@language])">
-				<xsl:element name="lang" namespace="{$namespace_mn_xsl}"><xsl:value-of select="@language"/></xsl:element>
-			</xsl:if>
-		</xsl:for-each>
-	</xsl:variable>
-	
-	<xsl:variable name="approvalgroup_">
-		<!-- Example: ISO/TC 46/SC 2 -->
-		<!-- ISO/SG SMART/SG TS/AG 1 -->
-		<!-- <xsl:variable name="approvalgroup" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:approvalgroup/@identifier)"/> -->
-		<xsl:variable name="contributor_authorizer_">
-			<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'authorizer']/mn:description = 'committee']"/>
-		</xsl:variable>
-		<xsl:variable name="contributor_authorizer" select="xalan:nodeset($contributor_authorizer_)"/>
-		<xsl:variable name="organization_abbreviation" select="normalize-space($contributor_authorizer/mn:contributor/mn:organization/mn:abbreviation)"/>
-		<xsl:variable name="approvalgroup">
-			<xsl:if test="$organization_abbreviation = 'ISO' or 
-				contains($organization_abbreviation, 'ISO/') or
-				contains($organization_abbreviation, '/ISO')"><xsl:value-of select="concat($organization_abbreviation, '/')"/></xsl:if>
-			<xsl:value-of select="normalize-space($contributor_authorizer/mn:contributor/mn:organization/mn:subdivision/mn:identifier[@type = 'full'])"/>
-		</xsl:variable>
-		<xsl:variable name="parts_by_slash">
-			<xsl:call-template name="split">
-				<xsl:with-param name="pText" select="$approvalgroup"/>
-				<xsl:with-param name="sep" select="'/'"/>
-				<xsl:with-param name="normalize-space">false</xsl:with-param>
-				<xsl:with-param name="keep_sep">true</xsl:with-param>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:variable name="parts_with_subparts">
-			<xsl:for-each select="xalan:nodeset($parts_by_slash)//mnx:item">
-				<xsl:element name="subitem" namespace="{$namespace_mn_xsl}">
-					<xsl:call-template name="split">
-						<xsl:with-param name="pText" select="."/>
-						<xsl:with-param name="sep" select="' '"/>
-						<xsl:with-param name="normalize-space">false</xsl:with-param>
-						<xsl:with-param name="keep_sep">true</xsl:with-param>
-					</xsl:call-template>
-				</xsl:element>
-			</xsl:for-each>
-		</xsl:variable>
-		<xsl:for-each select="xalan:nodeset($parts_with_subparts)//mnx:subitem">
-			<xsl:choose>
-				<xsl:when test="position() = 1">
-					<xsl:value-of select="."/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:for-each select="mnx:item">
-						<xsl:choose>
-							<xsl:when test="position() = last()">
-								<fo:inline font-weight="bold"><xsl:value-of select="."/></fo:inline>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="."/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:for-each>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:for-each>
-	</xsl:variable>
-	<xsl:variable name="approvalgroup" select="xalan:nodeset($approvalgroup_)" />
-	
-	<xsl:variable name="secretariat_">
-		<!-- <xsl:variable name="value" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:secretariat)"/> -->
-		<xsl:variable name="value" select="normalize-space(/mn:metanorma/mn:bibdata/mn:contributor[mn:role/mn:description = 'secretariat']/mn:organization/mn:subdivision)"/>
-		<xsl:if test="$value != ''">
-			<xsl:value-of select="concat($i18n_secretariat, ': ')"/>
-			<fo:inline font-weight="bold"><xsl:value-of select="$value"/></fo:inline>
-		</xsl:if>
-	</xsl:variable>
-	<xsl:variable name="secretariat" select="xalan:nodeset($secretariat_)" />
-	
-	<xsl:variable name="ics_">
-		<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:ext/mn:ics/mn:code">
-			<xsl:if test="position() = 1"><fo:inline>ICS: </fo:inline></xsl:if>
-			<xsl:value-of select="."/>
-			<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>
-		</xsl:for-each>
-	</xsl:variable>
-	<xsl:variable name="ics" select="xalan:nodeset($ics_)"/>
-	<xsl:variable name="udc">
-		<xsl:variable name="classification_udc" select="normalize-space(/mn:metanorma/mn:bibdata/mn:classification[@type = 'UDC'])"/>
-		<xsl:choose>
-			<xsl:when test="$classification_udc != ''">
-				<xsl:value-of select="concat($i18n_classification_UDC, '&#xa0;')"/>
-				<xsl:value-of select="java:replaceAll(java:java.lang.String.new($classification_udc),'(:)',' $1 ')"/>
-			</xsl:when>
-			<xsl:otherwise>&#xa0;</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-
 	<xsl:variable name="revision_date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:version/mn:revision-date)"/>
 	<xsl:variable name="revision_date_num" select="number(translate($revision_date,'-',''))"/>
 	
@@ -478,13 +372,6 @@
 	<xsl:variable name="layoutVersion" select="normalize-space($layoutVersion_)"/>
 	<xsl:variable name="cover_page_border">0.5pt solid black</xsl:variable>
 	<xsl:variable name="color_red">rgb(237, 28, 36)</xsl:variable>
-	<xsl:variable name="color_secondary_value" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-secondary)"/>
-	<xsl:variable name="color_secondary">
-		<xsl:choose>
-			<xsl:when test="$color_secondary_value != ''"><xsl:value-of select="$color_secondary_value"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="$color_red"/></xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
 	
 	<xsl:variable name="XML" select="/"/>
 	
@@ -1015,9 +902,11 @@
 										<xsl:call-template name="insertSingleLine"/>
 										<fo:block font-size="11pt" font-weight="bold" text-align-last="justify" margin-top="0.5mm" margin-right="1mm">
 											<fo:inline keep-together.within-line="always" role="SKIP">
+												<xsl:variable name="udc"><xsl:call-template name="get_udc"/></xsl:variable>
 												<xsl:value-of select="$udc"/>
 												<fo:leader leader-pattern="space"/>
 												<fo:inline role="SKIP">
+													<xsl:variable name="i18n_reference_number_abbrev"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number_abbrev</xsl:with-param></xsl:call-template></xsl:variable>
 													<xsl:value-of select="concat($i18n_reference_number_abbrev, '&#xa0;', $ISOnumber)"/>
 												</fo:inline>
 											</fo:inline>
@@ -1025,6 +914,7 @@
 										
 										<xsl:if test="/mn:metanorma/mn:bibdata/mn:keyword">
 											<fo:block margin-top="6pt">
+												<xsl:variable name="i18n_descriptors"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Descriptor.pl</xsl:with-param></xsl:call-template></xsl:variable>	
 												<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/> : </fo:inline>
 												<xsl:call-template name="insertKeywords">
 													<xsl:with-param name="sorting">no</xsl:with-param>
@@ -1114,13 +1004,14 @@
 												
 											</xsl:when>
 											<xsl:otherwise>
+												<xsl:variable name="lang_other"><xsl:call-template name="get_lang_other"/></xsl:variable>
 												<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
-													<xsl:variable name="lang_other" select="."/>
+													<xsl:variable name="lang_other_" select="."/>
 													<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
 													<fo:block role="H1" font-style="italic" line-height="1.2">
 														<!-- Example: title-intro fr -->
 														<xsl:call-template name="insertTitlesLangOther">
-															<xsl:with-param name="lang_other" select="$lang_other"/>
+															<xsl:with-param name="lang_other" select="$lang_other_"/>
 														</xsl:call-template>
 													</fo:block>
 												</xsl:for-each>
@@ -1535,6 +1426,103 @@
 	<xsl:template name="cover-page">
 		<xsl:param name="num"/>
 		<xsl:if test="$isGenerateTableIF = 'false'"> <!-- no need cover page for auto-layout algorithm -->
+		
+			<xsl:variable name="color_secondary_value" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-secondary)"/>
+			<xsl:variable name="color_secondary">
+				<xsl:choose>
+					<xsl:when test="$color_secondary_value != ''"><xsl:value-of select="$color_secondary_value"/></xsl:when>
+					<xsl:otherwise><xsl:value-of select="$color_red"/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+		
+			<xsl:variable name="lang_other"><xsl:call-template name="get_lang_other"/></xsl:variable>
+			
+			<xsl:variable name="i18n_reference_number_abbrev"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number_abbrev</xsl:with-param></xsl:call-template></xsl:variable>
+			<xsl:variable name="i18n_reference_number"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number</xsl:with-param></xsl:call-template></xsl:variable>
+	
+			<xsl:variable name="i18n_voting_begins_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">voting_begins_on</xsl:with-param></xsl:call-template></xsl:variable>
+			<xsl:variable name="i18n_voting_terminates_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">voting_terminates_on</xsl:with-param></xsl:call-template></xsl:variable>
+			<xsl:variable name="i18n_corrected_version"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">corrected_version</xsl:with-param></xsl:call-template></xsl:variable>
+		
+			<xsl:variable name="approvalgroup_">
+				<!-- Example: ISO/TC 46/SC 2 -->
+				<!-- ISO/SG SMART/SG TS/AG 1 -->
+				<!-- <xsl:variable name="approvalgroup" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:approvalgroup/@identifier)"/> -->
+				<xsl:variable name="contributor_authorizer_">
+					<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'authorizer']/mn:description = 'committee']"/>
+				</xsl:variable>
+				<xsl:variable name="contributor_authorizer" select="xalan:nodeset($contributor_authorizer_)"/>
+				<xsl:variable name="organization_abbreviation" select="normalize-space($contributor_authorizer/mn:contributor/mn:organization/mn:abbreviation)"/>
+				<xsl:variable name="approvalgroup">
+					<xsl:if test="$organization_abbreviation = 'ISO' or 
+						contains($organization_abbreviation, 'ISO/') or
+						contains($organization_abbreviation, '/ISO')"><xsl:value-of select="concat($organization_abbreviation, '/')"/></xsl:if>
+					<xsl:value-of select="normalize-space($contributor_authorizer/mn:contributor/mn:organization/mn:subdivision/mn:identifier[@type = 'full'])"/>
+				</xsl:variable>
+				<xsl:variable name="parts_by_slash">
+					<xsl:call-template name="split">
+						<xsl:with-param name="pText" select="$approvalgroup"/>
+						<xsl:with-param name="sep" select="'/'"/>
+						<xsl:with-param name="normalize-space">false</xsl:with-param>
+						<xsl:with-param name="keep_sep">true</xsl:with-param>
+					</xsl:call-template>
+				</xsl:variable>
+				<xsl:variable name="parts_with_subparts">
+					<xsl:for-each select="xalan:nodeset($parts_by_slash)//mnx:item">
+						<xsl:element name="subitem" namespace="{$namespace_mn_xsl}">
+							<xsl:call-template name="split">
+								<xsl:with-param name="pText" select="."/>
+								<xsl:with-param name="sep" select="' '"/>
+								<xsl:with-param name="normalize-space">false</xsl:with-param>
+								<xsl:with-param name="keep_sep">true</xsl:with-param>
+							</xsl:call-template>
+						</xsl:element>
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:for-each select="xalan:nodeset($parts_with_subparts)//mnx:subitem">
+					<xsl:choose>
+						<xsl:when test="position() = 1">
+							<xsl:value-of select="."/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:for-each select="mnx:item">
+								<xsl:choose>
+									<xsl:when test="position() = last()">
+										<fo:inline font-weight="bold"><xsl:value-of select="."/></fo:inline>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:value-of select="."/>
+									</xsl:otherwise>
+								</xsl:choose>
+							</xsl:for-each>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:variable name="approvalgroup" select="xalan:nodeset($approvalgroup_)" />
+		
+			<xsl:variable name="secretariat_">
+				<!-- <xsl:variable name="value" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:secretariat)"/> -->
+				<xsl:variable name="value" select="normalize-space(/mn:metanorma/mn:bibdata/mn:contributor[mn:role/mn:description = 'secretariat']/mn:organization/mn:subdivision)"/>
+				<xsl:if test="$value != ''">
+					<xsl:variable name="i18n_secretariat"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">secretariat</xsl:with-param></xsl:call-template></xsl:variable>
+					<xsl:value-of select="concat($i18n_secretariat, ': ')"/>
+					<fo:inline font-weight="bold"><xsl:value-of select="$value"/></fo:inline>
+				</xsl:if>
+			</xsl:variable>
+			<xsl:variable name="secretariat" select="xalan:nodeset($secretariat_)" />
+		
+			<xsl:variable name="ics_">
+				<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:ext/mn:ics/mn:code">
+					<xsl:if test="position() = 1"><fo:inline>ICS: </fo:inline></xsl:if>
+					<xsl:value-of select="."/>
+					<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>
+				</xsl:for-each>
+			</xsl:variable>
+			<xsl:variable name="ics" select="xalan:nodeset($ics_)"/>
+		
+			<xsl:variable name="udc"><xsl:call-template name="get_udc"/></xsl:variable>
+		
 			<xsl:variable name="fo_cover_page">
 			<!-- cover page -->
 			<xsl:choose>
@@ -1654,6 +1642,7 @@
 							
 							<xsl:if test="/mn:metanorma/mn:bibdata/mn:keyword">
 								<fo:block margin-top="10pt">
+									<xsl:variable name="i18n_descriptors"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Descriptor.pl</xsl:with-param></xsl:call-template></xsl:variable>	
 									<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/> : </fo:inline>
 									<xsl:call-template name="insertKeywords">
 										<xsl:with-param name="sorting">no</xsl:with-param>
@@ -1759,11 +1748,11 @@
 							</fo:block>
 							
 							<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
-								<xsl:variable name="lang_other" select="."/>
+								<xsl:variable name="lang_other_" select="."/>
 								<fo:block font-size="8pt" font-style="italic" line-height="1.1" role="H1">
 									<!-- Example: title-intro fr -->
 									<xsl:call-template name="insertTitlesLangOther">
-										<xsl:with-param name="lang_other" select="$lang_other"/>
+										<xsl:with-param name="lang_other" select="$lang_other_"/>
 									</xsl:call-template>
 								</fo:block>
 							</xsl:for-each>
@@ -1846,11 +1835,11 @@
 										</fo:block>
 										
 										<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
-											<xsl:variable name="lang_other" select="."/>
+											<xsl:variable name="lang_other_" select="."/>
 											<fo:block font-size="8pt" font-style="italic" line-height="1.1" role="H1">
 												<!-- Example: title-intro fr -->
 												<xsl:call-template name="insertTitlesLangOther">
-													<xsl:with-param name="lang_other" select="$lang_other"/>
+													<xsl:with-param name="lang_other" select="$lang_other_"/>
 												</xsl:call-template>
 											</fo:block>
 										</xsl:for-each>
@@ -2016,12 +2005,12 @@
 																
 													<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')"> <!--  or $stage-abbreviation = 'PRF' -->
 														<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
-															<xsl:variable name="lang_other" select="."/>
+															<xsl:variable name="lang_other_" select="."/>
 															<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
 															<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
 																<!-- Example: title-intro fr -->
 																<xsl:call-template name="insertTitlesLangOther">
-																	<xsl:with-param name="lang_other" select="$lang_other"/>
+																	<xsl:with-param name="lang_other" select="$lang_other_"/>
 																</xsl:call-template>
 															</fo:block>
 														</xsl:for-each>
@@ -2462,7 +2451,7 @@
 												
 												
 												<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
-													<xsl:variable name="lang_other" select="."/>
+													<xsl:variable name="lang_other_" select="."/>
 												
 													<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
 													<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
@@ -2471,7 +2460,7 @@
 														</xsl:if>
 														<!-- Example: title-intro fr -->
 														<xsl:call-template name="insertTitlesLangOther">
-															<xsl:with-param name="lang_other" select="$lang_other"/>
+															<xsl:with-param name="lang_other" select="$lang_other_"/>
 														</xsl:call-template>
 													</fo:block>
 												</xsl:for-each>
@@ -2736,7 +2725,7 @@
 																	<xsl:otherwise>
 																		<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')">
 																			<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
-																				<xsl:variable name="lang_other" select="."/>
+																				<xsl:variable name="lang_other_" select="."/>
 																				
 																				<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
 																				<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
@@ -2745,7 +2734,7 @@
 																					</xsl:if>
 																					<!-- Example: title-intro fr -->
 																					<xsl:call-template name="insertTitlesLangOther">
-																						<xsl:with-param name="lang_other" select="$lang_other"/>
+																						<xsl:with-param name="lang_other" select="$lang_other_"/>
 																					</xsl:call-template>
 																				</fo:block>
 																			</xsl:for-each>
@@ -2869,7 +2858,7 @@
 										</fo:block>
 											
 										<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
-											<xsl:variable name="lang_other" select="."/>
+											<xsl:variable name="lang_other_" select="."/>
 											
 											<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
 											<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
@@ -2878,7 +2867,7 @@
 												</xsl:if>
 												<!-- Example: title-intro fr -->
 												<xsl:call-template name="insertTitlesLangOther">
-													<xsl:with-param name="lang_other" select="$lang_other"/>
+													<xsl:with-param name="lang_other" select="$lang_other_"/>
 												</xsl:call-template>
 											</fo:block>
 										</xsl:for-each>
@@ -2949,13 +2938,13 @@
 									</fo:block>
 									
 									<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
-										<xsl:variable name="lang_other" select="."/>
+										<xsl:variable name="lang_other_" select="."/>
 									
 										<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
 										<fo:block role="H1">
 											<!-- Example: title-intro fr -->
 											<xsl:call-template name="insertTitlesLangOther">
-												<xsl:with-param name="lang_other" select="$lang_other"/>
+												<xsl:with-param name="lang_other" select="$lang_other_"/>
 											</xsl:call-template>
 										</fo:block>
 										
@@ -3415,6 +3404,9 @@
 	</xsl:template>
 	
 	<xsl:template name="insertDraftComments">
+		<xsl:variable name="i18n_draft_comment_1"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_1</xsl:with-param></xsl:call-template></xsl:variable>
+		<xsl:variable name="i18n_draft_comment_2"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_2</xsl:with-param></xsl:call-template></xsl:variable>
+		<xsl:variable name="i18n_draft_comment_3"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_3</xsl:with-param></xsl:call-template></xsl:variable>
 		<xsl:if test="$stagename_abbreviation = 'DIS' or 
 											$stage-abbreviation = 'DIS' or 
 											$stage-abbreviation = 'DAMD' or 
@@ -3524,6 +3516,7 @@
 							</xsl:if>
 							<fo:block>
 								<!-- <xsl:text>FAST TRACK PROCEDURE</xsl:text>  -->
+								<xsl:variable name="i18n_fast_track_procedure"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">fast-track-procedure</xsl:with-param></xsl:call-template></xsl:variable>
 								<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($i18n_fast_track_procedure))"/>
 							</fo:block>
 						</fo:block-container>
@@ -3548,6 +3541,7 @@
 							</xsl:if>
 							<fo:block>
 								<!-- <xsl:text>ISO/CEN PARALLEL PROCESSING</xsl:text>  -->
+								<xsl:variable name="i18n_iso_cen_parallel"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">iso-cen-parallel</xsl:with-param></xsl:call-template></xsl:variable>
 								<xsl:call-template name="add-letter-spacing">
 									<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($i18n_iso_cen_parallel))"/>
 									<xsl:with-param name="letter-spacing" select="0.13"/>
@@ -3756,6 +3750,7 @@
 						<xsl:attribute name="font-size">9.6pt</xsl:attribute>
 					</xsl:if> -->
 					<!-- Page -->
+					<xsl:variable name="i18n_locality_page"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.page</xsl:with-param></xsl:call-template></xsl:variable>
 					<xsl:value-of select="$i18n_locality_page"/>
 				</fo:inline>
 			</fo:inline>
@@ -3859,6 +3854,7 @@
 				<xsl:variable name="part-word">
 					<xsl:choose>
 						<xsl:when test="$isMainLang = 'true'">
+							<xsl:variable name="i18n_locality_part"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template></xsl:variable>
 							<xsl:value-of select="concat($i18n_locality_part, ' ', $part, ':')"/>
 						</xsl:when>
 						<xsl:otherwise>
@@ -5342,10 +5338,12 @@
 										<xsl:variable name="date_number_printing">
 											<xsl:choose>
 												<xsl:when test="$number_printing != $date_printing">
+													<!-- <xsl:variable name="i18n_date_printing"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">date_printing</xsl:with-param></xsl:call-template></xsl:variable> -->
 													<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($i18n_date_printing), '%', $number_printing)"/> -->
 													<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:date-printing"/>
 												</xsl:when>
 												<xsl:otherwise>
+													<xsl:variable name="i18n_date_first_printing"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">date_first_printing</xsl:with-param></xsl:call-template></xsl:variable>
 													<xsl:value-of select="$i18n_date_first_printing"/>
 												</xsl:otherwise>
 											</xsl:choose>
@@ -5376,6 +5374,7 @@
 										<xsl:choose>
 											<xsl:when test="$price != ''">
 												<!-- Example: Price: Sw. fr. 3.- -->
+												<xsl:variable name="i18n_price"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">price</xsl:with-param></xsl:call-template></xsl:variable>
 												<xsl:value-of select="concat($i18n_price, ': ', $price)"/>
 											</xsl:when>
 											<xsl:otherwise>
@@ -5449,6 +5448,7 @@
 	
 	
 	<xsl:variable name="price_based_on_items">
+		<xsl:variable name="i18n_price_based_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">price_based_on</xsl:with-param></xsl:call-template></xsl:variable>
 		<xsl:call-template name="split">
 			<xsl:with-param name="pText" select="$i18n_price_based_on"/>
 			<xsl:with-param name="sep" select="'%'"/>
@@ -5555,6 +5555,7 @@
 							</xsl:if>
 							<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
 								<fo:block margin-bottom="6pt">
+									<xsl:variable name="udc"><xsl:call-template name="get_udc"/></xsl:variable>
 									<xsl:value-of select="$udc"/>
 								</fo:block>
 							</xsl:if>
@@ -5577,6 +5578,7 @@
 						</fo:block>
 						<xsl:if test="/mn:metanorma/mn:bibdata/mn:keyword">
 							<fo:block font-size="{$font-size_footer_copyright}" margin-bottom="6pt">
+								<xsl:variable name="i18n_descriptors"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Descriptor.pl</xsl:with-param></xsl:call-template></xsl:variable>	
 								<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/>: </fo:inline>
 								<xsl:call-template name="insertKeywords">
 									<xsl:with-param name="sorting">no</xsl:with-param>
@@ -6010,6 +6012,26 @@
 			</xsl:if>
 			<fo:block id="firstpage_id_{$num}">&#xa0;</fo:block>
 		</fo:block-container>
+	</xsl:template>
+
+	<xsl:template name="get_lang_other">
+		<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:title[@language != $lang]">
+			<xsl:if test="not(preceding-sibling::mn:title[@language = current()/@language])">
+				<xsl:element name="lang" namespace="{$namespace_mn_xsl}"><xsl:value-of select="@language"/></xsl:element>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+		
+	<xsl:template name="get_udc">
+		<xsl:variable name="classification_udc" select="normalize-space(/mn:metanorma/mn:bibdata/mn:classification[@type = 'UDC'])"/>
+		<xsl:choose>
+			<xsl:when test="$classification_udc != ''">
+				<xsl:variable name="i18n_classification_UDC"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">classification-UDC</xsl:with-param></xsl:call-template></xsl:variable>
+				<xsl:value-of select="concat($i18n_classification_UDC, '&#xa0;')"/>
+				<xsl:value-of select="java:replaceAll(java:java.lang.String.new($classification_udc),'(:)',' $1 ')"/>
+			</xsl:when>
+			<xsl:otherwise>&#xa0;</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:include href="./common.xsl"/>
