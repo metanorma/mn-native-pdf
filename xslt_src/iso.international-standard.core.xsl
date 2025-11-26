@@ -335,14 +335,39 @@
 		<item id="term-script" display="false">3.2</item>
 	-->
 	<xsl:variable name="contents_">
-		<mnx:contents>
-			<xsl:if test="$isGenerateTableIF = 'false'">
-				<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
-				<xsl:call-template name="processMainSectionsDefault_Contents"/>
-				<xsl:apply-templates select="//mn:indexsect" mode="contents"/>
-				<xsl:call-template name="processTablesFigures_Contents"/>
-			</xsl:if>
-		</mnx:contents>
+		<xsl:variable name="bundle" select="count(//mn:metanorma) &gt; 1"/>
+		
+		<!-- <xsl:if test="normalize-space($bundle) = 'true'">
+			<collection firstpage_id="firstpage_id_0"/>
+		</xsl:if> -->
+		
+		<xsl:for-each select="//mn:metanorma">
+			<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
+			<xsl:variable name="docidentifier"><xsl:value-of select="mn:bibdata/mn:docidentifier[@type = 'ITU']"/></xsl:variable>
+			<xsl:variable name="docnumber_">
+				<xsl:value-of select="$docidentifier"/>
+				<xsl:if test="normalize-space($docidentifier) = ''">
+					<xsl:value-of select="mn:bibdata/mn:docidentifier[1]"/>
+				</xsl:if>
+			</xsl:variable>
+			<xsl:variable name="docnumber" select="normalize-space($docnumber_)"/>
+			<xsl:variable name="current_document">
+				<xsl:copy-of select="."/>
+			</xsl:variable>
+			
+			<xsl:for-each select="xalan:nodeset($current_document)">
+				<mnx:doc num="{$num}" firstpage_id="firstpage_id_{$num}" title-part="{$docnumber}" bundle="{$bundle}"> <!-- 'bundle' means several different documents (not language versions) in one xml -->
+					<mnx:contents>
+						<xsl:if test="$isGenerateTableIF = 'false'">
+							<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
+							<xsl:call-template name="processMainSectionsDefault_Contents"/>
+							<xsl:apply-templates select="//mn:indexsect" mode="contents"/>
+							<xsl:call-template name="processTablesFigures_Contents"/>
+						</xsl:if>
+					</mnx:contents>
+				</mnx:doc>
+			</xsl:for-each>
+		</xsl:for-each>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
@@ -891,8 +916,6 @@
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
 			
-			<xsl:call-template name="cover-page"/>
-			
 			<xsl:if test="$debug = 'true'">
 				<xsl:message>START updated_xml</xsl:message>
 			</xsl:if>
@@ -910,480 +933,512 @@
 				<xsl:message>DEBUG: processing time <xsl:value-of select="java:getTime(java:java.util.Date.new()) - $startTime0"/> msec.</xsl:message>
 			</xsl:if>
 			
-			<xsl:for-each select="xalan:nodeset($updated_xml)/*">
+			<!-- <xsl:for-each select="xalan:nodeset($updated_xml)/*"> -->
 			
-				<xsl:if test="$debug = 'true'">
-					<xsl:message>START updated_xml_with_pages</xsl:message>
-				</xsl:if>
-				<xsl:variable name="startTimeA" select="java:getTime(java:java.util.Date.new())"/>
+			<xsl:for-each select="xalan:nodeset($updated_xml)//mn:metanorma">
+				<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
 				
-				<xsl:variable name="updated_xml_with_pages">
-					<xsl:call-template name="processPrefaceAndMainSectionsISO_items"/>
+				<xsl:variable name="current_document">
+					<xsl:copy-of select="."/>
 				</xsl:variable>
 				
-				<xsl:if test="$debug = 'true'">
-					<xsl:message>END updated_xml_with_pages</xsl:message>
-					<xsl:message>DEBUG: processing time <xsl:value-of select="java:getTime(java:java.util.Date.new()) - $startTimeA"/> msec.</xsl:message>
-				</xsl:if>
-			
-				<xsl:choose>
-					<xsl:when test="$layoutVersion = '1951'">
-						<fo:page-sequence master-reference="document{$document-master-reference_addon}" initial-page-number="auto" force-page-count="no-force">
-							
-							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
-							
-							<xsl:call-template name="insertHeaderFooter">
-								<xsl:with-param name="is_header">false</xsl:with-param>
-								<xsl:with-param name="insert_footer_last">false</xsl:with-param>
-							</xsl:call-template>
-							<fo:flow flow-name="xsl-region-body">
-								<fo:block>
-									<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
-									<!-- Introduction will be showed in the main section -->
-									<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition or self::mn:introduction)]">
-										<xsl:sort select="@displayorder" data-type="number"/>
-										<xsl:apply-templates select="."/>
-									</xsl:for-each>
-									
-									<fo:block span="all" text-align="center" margin-top="15mm" keep-with-next="always" role="SKIP">
-										<fo:leader leader-pattern="rule" leader-length="22mm"/>
-									</fo:block>
-									
-								</fo:block>
-							</fo:flow>
-						</fo:page-sequence>
-					</xsl:when><!-- END: preface sections (Foreword, Brief history for layout 1951 ($layoutVersion = '1951') -->
+				<xsl:for-each select="xalan:nodeset($current_document)">
 					
-					<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))">
-						<fo:page-sequence master-reference="preface-1987_TR"  format="i" force-page-count="no-force">
-							
-							<xsl:call-template name="insertHeaderFooter">
-								<xsl:with-param name="font-weight">normal</xsl:with-param>
-								<xsl:with-param name="is_footer">false</xsl:with-param>
-							</xsl:call-template>
-							
-							<fo:static-content flow-name="left-region-first_1987_TR" role="artifact">
-								<fo:block-container reference-orientation="90">
-									<fo:block font-size="8pt" margin-left="5mm" margin-top="8mm">
-										<xsl:value-of select="$ISOnumber"/>
-									</fo:block>
-								</fo:block-container>
-							</fo:static-content>
-							
-							<fo:static-content flow-name="footer-preface-first_1987_TR" role="artifact">
-								<fo:block-container font-size="8pt" margin-bottom="3mm">
-									<xsl:call-template name="insertSingleLine"/>
-									<fo:block font-size="11pt" font-weight="bold" text-align-last="justify" margin-top="0.5mm" margin-right="1mm">
-										<fo:inline keep-together.within-line="always" role="SKIP">
-											<xsl:value-of select="$udc"/>
-											<fo:leader leader-pattern="space"/>
-											<fo:inline role="SKIP">
-												<xsl:value-of select="concat($i18n_reference_number_abbrev, '&#xa0;', $ISOnumber)"/>
-											</fo:inline>
-										</fo:inline>
-									</fo:block>
-									
-									<xsl:if test="/mn:metanorma/mn:bibdata/mn:keyword">
-										<fo:block margin-top="6pt">
-											<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/> : </fo:inline>
-											<xsl:call-template name="insertKeywords">
-												<xsl:with-param name="sorting">no</xsl:with-param>
-												<xsl:with-param name="charDelim" select="',  '"/>
-											</xsl:call-template>
-										</fo:block>
-									</xsl:if>
+					<xsl:call-template name="cover-page">
+						<xsl:with-param name="num" select="$num"/>
+					</xsl:call-template>
+			
+					<xsl:if test="$debug = 'true'">
+						<xsl:message>START updated_xml_with_pages</xsl:message>
+					</xsl:if>
+					<xsl:variable name="startTimeA" select="java:getTime(java:java.util.Date.new())"/>
+					
+					<xsl:variable name="updated_xml_with_pages">
+						<xsl:call-template name="processPrefaceAndMainSectionsISO_items"/>
+					</xsl:variable>
+					
+					<xsl:if test="$debug = 'true'">
+						<xsl:message>END updated_xml_with_pages</xsl:message>
+						<xsl:message>DEBUG: processing time <xsl:value-of select="java:getTime(java:java.util.Date.new()) - $startTimeA"/> msec.</xsl:message>
+					</xsl:if>
+				
+					<xsl:choose>
+						<xsl:when test="$layoutVersion = '1951'">
+							<fo:page-sequence master-reference="document{$document-master-reference_addon}" initial-page-number="auto" force-page-count="no-force">
 								
-									<fo:table table-layout="fixed" width="100%" margin-top="14pt" font-size="7.5pt">
+								<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+								
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="num" select="$num"/>
+									<xsl:with-param name="is_header">false</xsl:with-param>
+									<xsl:with-param name="insert_footer_last">false</xsl:with-param>
+								</xsl:call-template>
+								<fo:flow flow-name="xsl-region-body">
+									<fo:block>
+										<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
+										<!-- Introduction will be showed in the main section -->
+										<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition or self::mn:introduction)]">
+											<xsl:sort select="@displayorder" data-type="number"/>
+											<xsl:apply-templates select=".">
+												<xsl:with-param name="num" select="$num"/>
+											</xsl:apply-templates>
+										</xsl:for-each>
+										
+										<fo:block span="all" text-align="center" margin-top="15mm" keep-with-next="always" role="SKIP">
+											<fo:leader leader-pattern="rule" leader-length="22mm"/>
+										</fo:block>
+										
+									</fo:block>
+								</fo:flow>
+							</fo:page-sequence>
+						</xsl:when><!-- END: preface sections (Foreword, Brief history for layout 1951 ($layoutVersion = '1951') -->
+						
+						<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))">
+							<fo:page-sequence master-reference="preface-1987_TR"  format="i" force-page-count="no-force">
+								
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="num" select="$num"/>
+									<xsl:with-param name="font-weight">normal</xsl:with-param>
+									<xsl:with-param name="is_footer">false</xsl:with-param>
+								</xsl:call-template>
+								
+								<fo:static-content flow-name="left-region-first_1987_TR" role="artifact">
+									<fo:block-container reference-orientation="90">
+										<fo:block font-size="8pt" margin-left="5mm" margin-top="8mm">
+											<xsl:value-of select="$ISOnumber"/>
+										</fo:block>
+									</fo:block-container>
+								</fo:static-content>
+								
+								<fo:static-content flow-name="footer-preface-first_1987_TR" role="artifact">
+									<fo:block-container font-size="8pt" margin-bottom="3mm">
+										<xsl:call-template name="insertSingleLine"/>
+										<fo:block font-size="11pt" font-weight="bold" text-align-last="justify" margin-top="0.5mm" margin-right="1mm">
+											<fo:inline keep-together.within-line="always" role="SKIP">
+												<xsl:value-of select="$udc"/>
+												<fo:leader leader-pattern="space"/>
+												<fo:inline role="SKIP">
+													<xsl:value-of select="concat($i18n_reference_number_abbrev, '&#xa0;', $ISOnumber)"/>
+												</fo:inline>
+											</fo:inline>
+										</fo:block>
+										
+										<xsl:if test="/mn:metanorma/mn:bibdata/mn:keyword">
+											<fo:block margin-top="6pt">
+												<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/> : </fo:inline>
+												<xsl:call-template name="insertKeywords">
+													<xsl:with-param name="sorting">no</xsl:with-param>
+													<xsl:with-param name="charDelim" select="',  '"/>
+												</xsl:call-template>
+											</fo:block>
+										</xsl:if>
+									
+										<fo:table table-layout="fixed" width="100%" margin-top="14pt" font-size="7.5pt">
+											<fo:table-body>
+												<fo:table-row>
+													<fo:table-cell>
+														<fo:block>
+															<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
+														</fo:block>
+													</fo:table-cell>
+													<fo:table-cell display-align="after" text-align="right">
+														<fo:block>
+															<xsl:call-template name="insertPriceBasedOn">
+																<xsl:with-param name="num" select="$num"/>
+															</xsl:call-template>
+														</fo:block>
+													</fo:table-cell>
+												</fo:table-row>
+											</fo:table-body>
+										</fo:table>
+									</fo:block-container>
+								</fo:static-content> <!-- footer-preface-first_1987_TR -->
+								
+								<fo:flow flow-name="xsl-region-body">
+									<fo:table table-layout="fixed" width="100%">
+										<fo:table-column column-width="proportional-column-width(68)"/>
+										<fo:table-column column-width="proportional-column-width(112)"/>
 										<fo:table-body>
 											<fo:table-row>
-												<fo:table-cell>
-													<fo:block>
-														<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
+												<fo:table-cell number-rows-spanned="2">
+													<fo:block font-size="0">
+														<xsl:variable name="content-height">25</xsl:variable>
+														<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1987))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
 													</fo:block>
 												</fo:table-cell>
-												<fo:table-cell display-align="after" text-align="right">
+												<fo:table-cell font-size="11pt" font-weight="bold">
 													<fo:block>
-														<xsl:call-template name="insertPriceBasedOn"/>
+														<xsl:choose>
+															<xsl:when test="$doctype = 'addendum'">
+																<xsl:variable name="doctype_international_standard">
+																	<xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.international-standard</xsl:with-param></xsl:call-template>
+																</xsl:variable>
+																<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($doctype_international_standard))"/>
+																<xsl:text>&#xa0;</xsl:text>
+																<xsl:value-of select="translate(substring-before($docidentifier_undated, '/'),':','-')"/>
+																<xsl:text>/</xsl:text>
+																<xsl:value-of select="$doctype_localized"/>
+																<xsl:text>&#xa0;</xsl:text>
+																<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@addendum"/>
+															</xsl:when>
+															<xsl:otherwise>
+																<xsl:value-of select="$doctype_uppercased"/>&#xa0;<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docnumber"/>
+															</xsl:otherwise>
+														</xsl:choose>
 													</fo:block>
+												</fo:table-cell>
+											</fo:table-row>
+											<fo:table-row display-align="after">
+												<fo:table-cell>
+													<fo:block margin-bottom="-1mm">Published <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']"/></fo:block>
 												</fo:table-cell>
 											</fo:table-row>
 										</fo:table-body>
 									</fo:table>
-								</fo:block-container>
-							</fo:static-content> <!-- footer-preface-first_1987_TR -->
+									
+									<fo:block font-size="6pt" margin-top="8mm" margin-bottom="18mm" text-align-last="justify"><xsl:value-of select="$ISO_title_en"/>&#x25cf;<xsl:value-of select="$ISO_title_ru"/>&#x25cf;<xsl:value-of select="$ISO_title_fr"/></fo:block>
+									
+									<fo:block-container margin-bottom="22mm" role="SKIP">
+										<fo:block font-size="18pt" font-weight="bold" role="H1" line-height="1.05">
+											<xsl:call-template name="insertTitlesLangMain"/>
+										</fo:block>
+										<xsl:choose>
+											<xsl:when test="$doctype = 'addendum'">
+												<fo:block font-size="12pt" font-weight="bold" role="H2" line-height="1.05" margin-top="6pt">
+													<xsl:call-template name="printAddendumTitle"/>
+												</fo:block>
+												
+												<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:clause[@type = 'provenance']">
+													<xsl:with-param name="process">true</xsl:with-param>
+												</xsl:apply-templates>
+												
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
+													<xsl:variable name="lang_other" select="."/>
+													<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
+													<fo:block role="H1" font-style="italic" line-height="1.2">
+														<!-- Example: title-intro fr -->
+														<xsl:call-template name="insertTitlesLangOther">
+															<xsl:with-param name="lang_other" select="$lang_other"/>
+														</xsl:call-template>
+													</fo:block>
+												</xsl:for-each>
+											</xsl:otherwise>
+										</xsl:choose>
+									</fo:block-container>
+									
+									<xsl:if test="$doctype = 'addendum'">
+										<fo:block break-after="page"/>
+									</xsl:if>
+									
+									<!-- ToC, Foreword, Introduction -->					
+									<xsl:call-template name="processPrefaceSectionsDefault"/>
+									
+								</fo:flow>
+							</fo:page-sequence>
+						</xsl:when> <!-- (($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum')) -->
+						<xsl:otherwise>
+						
+							<!-- <xsl:variable name="copyright-statement">
+								<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
+							</xsl:variable> -->
 							
-							<fo:flow flow-name="xsl-region-body">
-								<fo:table table-layout="fixed" width="100%">
-									<fo:table-column column-width="proportional-column-width(68)"/>
-									<fo:table-column column-width="proportional-column-width(112)"/>
-									<fo:table-body>
-										<fo:table-row>
-											<fo:table-cell number-rows-spanned="2">
-												<fo:block font-size="0">
-													<xsl:variable name="content-height">25</xsl:variable>
-													<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1987))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
-												</fo:block>
-											</fo:table-cell>
-											<fo:table-cell font-size="11pt" font-weight="bold">
-												<fo:block>
-													<xsl:choose>
-														<xsl:when test="$doctype = 'addendum'">
-															<xsl:variable name="doctype_international_standard">
-																<xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.international-standard</xsl:with-param></xsl:call-template>
-															</xsl:variable>
-															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($doctype_international_standard))"/>
-															<xsl:text>&#xa0;</xsl:text>
-															<xsl:value-of select="translate(substring-before($docidentifier_undated, '/'),':','-')"/>
-															<xsl:text>/</xsl:text>
-															<xsl:value-of select="$doctype_localized"/>
-															<xsl:text>&#xa0;</xsl:text>
-															<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@addendum"/>
-														</xsl:when>
-														<xsl:otherwise>
-															<xsl:value-of select="$doctype_uppercased"/>&#xa0;<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docnumber"/>
-														</xsl:otherwise>
-													</xsl:choose>
-												</fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-										<fo:table-row display-align="after">
-											<fo:table-cell>
-												<fo:block margin-bottom="-1mm">Published <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']"/></fo:block>
-											</fo:table-cell>
-										</fo:table-row>
-									</fo:table-body>
-								</fo:table>
+							<xsl:choose>
+								<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"><!-- copyright renders in the footer footer-preface-first_1987-1998--></xsl:when>
+								<xsl:otherwise>
 								
-								<fo:block font-size="6pt" margin-top="8mm" margin-bottom="18mm" text-align-last="justify"><xsl:value-of select="$ISO_title_en"/>&#x25cf;<xsl:value-of select="$ISO_title_ru"/>&#x25cf;<xsl:value-of select="$ISO_title_fr"/></fo:block>
+									<xsl:call-template name="inner-cover-page">
+										<xsl:with-param name="num" select="$num"/>
+									</xsl:call-template>
+									
+								</xsl:otherwise>
+							</xsl:choose>
+							
+							<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
+							
+								<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 								
-								<fo:block-container margin-bottom="22mm" role="SKIP">
-									<fo:block font-size="18pt" font-weight="bold" role="H1" line-height="1.05">
-										<xsl:call-template name="insertTitlesLangMain"/>
-									</fo:block>
-									<xsl:choose>
-										<xsl:when test="$doctype = 'addendum'">
-											<fo:block font-size="12pt" font-weight="bold" role="H2" line-height="1.05" margin-top="6pt">
-												<xsl:call-template name="printAddendumTitle"/>
-											</fo:block>
+									<fo:page-sequence format="i" force-page-count="no-force">
+									
+										<xsl:attribute name="master-reference">
+											<xsl:value-of select="concat('preface',$document-master-reference_addon)"/>
+											<xsl:call-template name="getPageSequenceOrientation"/>
+										</xsl:attribute>
+									
+										<xsl:if test="position() = last()">
+											<xsl:attribute name="force-page-count"><xsl:value-of select="$force-page-count-preface"/></xsl:attribute> <!-- to prevent empty pages -->
+										</xsl:if>
+									
+										<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
+											<xsl:attribute name="master-reference">preface-1972-1998</xsl:attribute>
+										</xsl:if>
+										<xsl:if test="$layoutVersion = '2024'">
+											<fo:static-content flow-name="xsl-footnote-separator" role="artifact">
+												<fo:block margin-bottom="6pt">
+													<fo:leader leader-pattern="rule" leader-length="51mm" rule-thickness="0.5pt"/>
+												</fo:block>
+											</fo:static-content>
+										</xsl:if>
+										<xsl:call-template name="insertHeaderFooter">
+											<xsl:with-param name="num" select="$num"/>
+											<xsl:with-param name="font-weight">normal</xsl:with-param>
+											<xsl:with-param name="is_footer">true</xsl:with-param>
+										</xsl:call-template>
+										<fo:flow flow-name="xsl-region-body" line-height="115%" role="SKIP">
 											
-											<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:clause[@type = 'provenance']">
-												<xsl:with-param name="process">true</xsl:with-param>
+											<!-- ToC, Foreword, Introduction -->					
+											<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
+											
+											<xsl:apply-templates>
+												<xsl:with-param name="num" select="$num"/>
 											</xsl:apply-templates>
 											
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
-												<xsl:variable name="lang_other" select="."/>
-												<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
-												<fo:block role="H1" font-style="italic" line-height="1.2">
-													<!-- Example: title-intro fr -->
-													<xsl:call-template name="insertTitlesLangOther">
-														<xsl:with-param name="lang_other" select="$lang_other"/>
-													</xsl:call-template>
-												</fo:block>
-											</xsl:for-each>
-										</xsl:otherwise>
-									</xsl:choose>
-								</fo:block-container>
+											<fo:block/> <!-- for prevent empty preface -->
+										</fo:flow>
+									</fo:page-sequence>
 								
-								<xsl:if test="$doctype = 'addendum'">
-									<fo:block break-after="page"/>
-								</xsl:if>
-								
-								<!-- ToC, Foreword, Introduction -->					
-								<xsl:call-template name="processPrefaceSectionsDefault"/>
-								
-							</fo:flow>
-						</fo:page-sequence>
-					</xsl:when> <!-- (($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum')) -->
-					<xsl:otherwise>
-					
-						<!-- <xsl:variable name="copyright-statement">
-							<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
-						</xsl:variable> -->
-						
-						<xsl:choose>
-							<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"><!-- copyright renders in the footer footer-preface-first_1987-1998--></xsl:when>
-							<xsl:otherwise>
-							
-								<xsl:call-template name="inner-cover-page"/>
-								
-							</xsl:otherwise>
-						</xsl:choose>
-						
-						<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
-						
-							<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
-							
-								<fo:page-sequence format="i" force-page-count="no-force">
-								
-									<xsl:attribute name="master-reference">
-										<xsl:value-of select="concat('preface',$document-master-reference_addon)"/>
-										<xsl:call-template name="getPageSequenceOrientation"/>
-									</xsl:attribute>
-								
-									<xsl:if test="position() = last()">
-										<xsl:attribute name="force-page-count"><xsl:value-of select="$force-page-count-preface"/></xsl:attribute> <!-- to prevent empty pages -->
-									</xsl:if>
-								
-									<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
-										<xsl:attribute name="master-reference">preface-1972-1998</xsl:attribute>
-									</xsl:if>
-									<xsl:if test="$layoutVersion = '2024'">
-										<fo:static-content flow-name="xsl-footnote-separator" role="artifact">
-											<fo:block margin-bottom="6pt">
-												<fo:leader leader-pattern="rule" leader-length="51mm" rule-thickness="0.5pt"/>
-											</fo:block>
-										</fo:static-content>
-									</xsl:if>
-									<xsl:call-template name="insertHeaderFooter">
-										<xsl:with-param name="font-weight">normal</xsl:with-param>
-										<xsl:with-param name="is_footer">true</xsl:with-param>
-									</xsl:call-template>
-									<fo:flow flow-name="xsl-region-body" line-height="115%" role="SKIP">
-										
-										<!-- ToC, Foreword, Introduction -->					
-										<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
-										
-										<xsl:apply-templates />
-										
-										<fo:block/> <!-- for prevent empty preface -->
-									</fo:flow>
-								</fo:page-sequence>
-							
+								</xsl:for-each>
 							</xsl:for-each>
-						</xsl:for-each>
-						
-					</xsl:otherwise>
-				</xsl:choose>
-				
-				
-				<!-- for layout 1951 -->
-				<xsl:variable name="preface_introduction">
-					<xsl:apply-templates select="/*/mn:preface/mn:introduction"/>
-				</xsl:variable>
-		
-		
-				<xsl:if test="$debug = 'true'">
-					<xsl:message>START xalan:nodeset($updated_xml_with_pages) for sections</xsl:message>
-				</xsl:if>
-				<xsl:variable name="startTimeC" select="java:getTime(java:java.util.Date.new())"/>
-				
-				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to sections, if top element in 'sections' -->
-				
-					<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
-				
-						<!-- BODY -->
-						<fo:page-sequence force-page-count="no-force">
-						
-							<!-- Example: msster-reference document-landscape_first_sequence -->
-							<xsl:attribute name="master-reference">
-								<xsl:value-of select="concat('document',$document-master-reference_addon)"/>
-								<!-- <xsl:variable name="previous_orientation" select="preceding-sibling::page_sequence[@orientation][1]/@orientation"/>
-								<xsl:if test="(@orientation = 'landscape' or $previous_orientation = 'landscape') and not(@orientation = 'portrait')">-<xsl:value-of select="@orientation"/></xsl:if> -->
-								<xsl:call-template name="getPageSequenceOrientation"/>
-								<xsl:if test="position() = 1">
-									<xsl:if test="normalize-space($document-master-reference_addon) = ''">_first_sequence</xsl:if>
-								</xsl:if>
-							</xsl:attribute>
-							<xsl:if test="position() = 1">
-								<xsl:attribute name="initial-page-number">1</xsl:attribute>
-							</xsl:if>
-							<xsl:if test="$layoutVersion = '1951'">
-								<xsl:attribute name="initial-page-number">auto</xsl:attribute>
-								<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
-							</xsl:if>
-							<xsl:if test="position() = last() and normalize-space($force-page-count-main_sections) != ''">
-								<xsl:attribute name="force-page-count"><xsl:value-of select="$force-page-count-main_sections"/></xsl:attribute>
-							</xsl:if>
-							<fo:static-content flow-name="xsl-footnote-separator" role="artifact">
-								<fo:block>
-									<xsl:if test="$layoutVersion = '2024'">
-										<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+							
+						</xsl:otherwise>
+					</xsl:choose>
+					
+					
+					<!-- for layout 1951 -->
+					<xsl:variable name="preface_introduction">
+						<xsl:apply-templates select="/*/mn:preface/mn:introduction"/>
+					</xsl:variable>
+			
+			
+					<xsl:if test="$debug = 'true'">
+						<xsl:message>START xalan:nodeset($updated_xml_with_pages) for sections</xsl:message>
+					</xsl:if>
+					<xsl:variable name="startTimeC" select="java:getTime(java:java.util.Date.new())"/>
+					
+					<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to sections, if top element in 'sections' -->
+					
+						<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
+					
+							<!-- BODY -->
+							<fo:page-sequence force-page-count="no-force">
+							
+								<!-- Example: msster-reference document-landscape_first_sequence -->
+								<xsl:attribute name="master-reference">
+									<xsl:value-of select="concat('document',$document-master-reference_addon)"/>
+									<!-- <xsl:variable name="previous_orientation" select="preceding-sibling::page_sequence[@orientation][1]/@orientation"/>
+									<xsl:if test="(@orientation = 'landscape' or $previous_orientation = 'landscape') and not(@orientation = 'portrait')">-<xsl:value-of select="@orientation"/></xsl:if> -->
+									<xsl:call-template name="getPageSequenceOrientation"/>
+									<xsl:if test="position() = 1">
+										<xsl:if test="normalize-space($document-master-reference_addon) = ''">_first_sequence</xsl:if>
 									</xsl:if>
-									<fo:leader leader-pattern="rule" leader-length="30%">
+								</xsl:attribute>
+								<xsl:if test="position() = 1">
+									<xsl:attribute name="initial-page-number">1</xsl:attribute>
+								</xsl:if>
+								<xsl:if test="$layoutVersion = '1951'">
+									<xsl:attribute name="initial-page-number">auto</xsl:attribute>
+									<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
+								</xsl:if>
+								<xsl:if test="position() = last() and normalize-space($force-page-count-main_sections) != ''">
+									<xsl:attribute name="force-page-count"><xsl:value-of select="$force-page-count-main_sections"/></xsl:attribute>
+								</xsl:if>
+								<fo:static-content flow-name="xsl-footnote-separator" role="artifact">
+									<fo:block>
 										<xsl:if test="$layoutVersion = '2024'">
-											<xsl:attribute name="leader-length">51mm</xsl:attribute>
-											<xsl:attribute name="rule-thickness">0.5pt</xsl:attribute>
+											<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 										</xsl:if>
-									</fo:leader>
-								</fo:block>
-							</fo:static-content>
-							
-							<xsl:variable name="border_around_page"><xsl:if test="$layoutVersion = '1951'">true</xsl:if></xsl:variable>
-							<xsl:call-template name="insertHeaderFooter">
-								<xsl:with-param name="border_around_page" select="$border_around_page"/>
-								<xsl:with-param name="insert_header_first" select="normalize-space(position() = 1)"/>
-							</xsl:call-template>
-							<fo:flow flow-name="xsl-region-body" role="SKIP">
-							
+										<fo:leader leader-pattern="rule" leader-length="30%">
+											<xsl:if test="$layoutVersion = '2024'">
+												<xsl:attribute name="leader-length">51mm</xsl:attribute>
+												<xsl:attribute name="rule-thickness">0.5pt</xsl:attribute>
+											</xsl:if>
+										</fo:leader>
+									</fo:block>
+								</fo:static-content>
 								
-								<!-- Information and documentation — Codes for transcription systems -->
-								<!-- <fo:block-container>
+								<xsl:variable name="border_around_page"><xsl:if test="$layoutVersion = '1951'">true</xsl:if></xsl:variable>
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="num" select="$num"/>
+									<xsl:with-param name="border_around_page" select="$border_around_page"/>
+									<xsl:with-param name="insert_header_first" select="normalize-space(position() = 1)"/>
+								</xsl:call-template>
+								<fo:flow flow-name="xsl-region-body" role="SKIP">
+								
 									
-									<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="H1">
-									
-										<fo:block role="SKIP">
+									<!-- Information and documentation — Codes for transcription systems -->
+									<!-- <fo:block-container>
 										
-											<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-intro']"/>
+										<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="H1">
+										
+											<fo:block role="SKIP">
 											
-											<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-main']"/>
+												<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-intro']"/>
+												
+												<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-main']"/>
+												
+												<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']">
+													<xsl:with-param name="isMainLang">true</xsl:with-param>
+													<xsl:with-param name="isMainBody">true</xsl:with-param>
+												</xsl:apply-templates>
+												
+											</fo:block>
+											<fo:block role="SKIP">
+												<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']/node()"/>
+											</fo:block>
 											
-											<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']">
+											<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-amd']">
 												<xsl:with-param name="isMainLang">true</xsl:with-param>
 												<xsl:with-param name="isMainBody">true</xsl:with-param>
 											</xsl:apply-templates>
 											
 										</fo:block>
-										<fo:block role="SKIP">
-											<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']/node()"/>
-										</fo:block>
-										
-										<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-amd']">
-											<xsl:with-param name="isMainLang">true</xsl:with-param>
-											<xsl:with-param name="isMainBody">true</xsl:with-param>
-										</xsl:apply-templates>
-										
-									</fo:block>
-								
-								</fo:block-container> -->
-								<!-- Clause(s) -->
-								<!-- <fo:block> -->
 									
-								<xsl:if test="position() = 1 and $layoutVersion = '1951'">
-									<!-- first page header -->
-									<!-- Example: ISO Recommendation R 453 November 1965 -->
-									<fo:block-container margin-top="-8mm" margin-left="-12mm" margin-right="-12mm">
-										<xsl:if test="$revision_date_num &gt;= 19690101">
-											<xsl:attribute name="margin-top">-9mm</xsl:attribute>
-											<xsl:attribute name="margin-left">-12.5mm</xsl:attribute>
-											<xsl:attribute name="margin-right">-12.5mm</xsl:attribute>
-										</xsl:if>
-										<fo:block-container margin-left="0" margin-right="0" border-bottom="1.25pt solid black">
-											<fo:table table-layout="fixed" width="100%" font-family="Arial" font-size="13pt">
-												<xsl:if test="$revision_date_num &gt;= 19690101">
-													<xsl:attribute name="font-size">10pt</xsl:attribute>
-												</xsl:if>
-												<fo:table-column column-width="proportional-column-width(9.5)"/>
-												<fo:table-column column-width="proportional-column-width(65)"/>
-												<fo:table-column column-width="proportional-column-width(34)"/>
-												<fo:table-column column-width="proportional-column-width(50)"/>
-												<fo:table-column column-width="proportional-column-width(9.5)"/>
-												<fo:table-body>
-													<fo:table-row height="10mm">
-														<xsl:if test="$revision_date_num &gt;= 19690101">
-															<xsl:attribute name="height">7mm</xsl:attribute>
-														</xsl:if>
-														<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
-														<fo:table-cell>
-															<fo:block>
-																<xsl:value-of select="$doctype_localized"/>
-															</fo:block>
-														</fo:table-cell>
-														<fo:table-cell text-align="center"><fo:block><xsl:value-of select="$docnumber_with_prefix"/></fo:block></fo:table-cell>
-														<fo:table-cell text-align="right">
-															<fo:block>
-																<xsl:call-template name="convertDate">
-																	<xsl:with-param name="date" select="$revision_date"/>
-																</xsl:call-template>
-															</fo:block>
-														</fo:table-cell>
-														<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
-													</fo:table-row>
-												</fo:table-body>
-											</fo:table>
+									</fo:block-container> -->
+									<!-- Clause(s) -->
+									<!-- <fo:block> -->
+										
+									<xsl:if test="position() = 1 and $layoutVersion = '1951'">
+										<!-- first page header -->
+										<!-- Example: ISO Recommendation R 453 November 1965 -->
+										<fo:block-container margin-top="-8mm" margin-left="-12mm" margin-right="-12mm">
+											<xsl:if test="$revision_date_num &gt;= 19690101">
+												<xsl:attribute name="margin-top">-9mm</xsl:attribute>
+												<xsl:attribute name="margin-left">-12.5mm</xsl:attribute>
+												<xsl:attribute name="margin-right">-12.5mm</xsl:attribute>
+											</xsl:if>
+											<fo:block-container margin-left="0" margin-right="0" border-bottom="1.25pt solid black">
+												<fo:table table-layout="fixed" width="100%" font-family="Arial" font-size="13pt">
+													<xsl:if test="$revision_date_num &gt;= 19690101">
+														<xsl:attribute name="font-size">10pt</xsl:attribute>
+													</xsl:if>
+													<fo:table-column column-width="proportional-column-width(9.5)"/>
+													<fo:table-column column-width="proportional-column-width(65)"/>
+													<fo:table-column column-width="proportional-column-width(34)"/>
+													<fo:table-column column-width="proportional-column-width(50)"/>
+													<fo:table-column column-width="proportional-column-width(9.5)"/>
+													<fo:table-body>
+														<fo:table-row height="10mm">
+															<xsl:if test="$revision_date_num &gt;= 19690101">
+																<xsl:attribute name="height">7mm</xsl:attribute>
+															</xsl:if>
+															<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
+															<fo:table-cell>
+																<fo:block>
+																	<xsl:value-of select="$doctype_localized"/>
+																</fo:block>
+															</fo:table-cell>
+															<fo:table-cell text-align="center"><fo:block><xsl:value-of select="$docnumber_with_prefix"/></fo:block></fo:table-cell>
+															<fo:table-cell text-align="right">
+																<fo:block>
+																	<xsl:call-template name="convertDate">
+																		<xsl:with-param name="date" select="$revision_date"/>
+																	</xsl:call-template>
+																</fo:block>
+															</fo:table-cell>
+															<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
+														</fo:table-row>
+													</fo:table-body>
+												</fo:table>
+											</fo:block-container>
 										</fo:block-container>
-									</fo:block-container>
-									
-									<!-- Show Introduction in the main section -->
-									<!-- <xsl:apply-templates select="/*/mn:preface/mn:introduction"/> -->
-									<xsl:copy-of select="$preface_introduction"/>
-								</xsl:if> <!-- $layoutVersion = '1951' -->
-									
-									<!-- <xsl:choose>
-										<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
-											<xsl:choose>
-												<xsl:when test="$doctype = 'amendment'">
-													<xsl:variable name="flatxml">
-														<xsl:apply-templates select="/mn:metanorma/mn:sections/*" mode="flatxml"/>
-													</xsl:variable>
-													<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
-												</xsl:when>
-												<xsl:otherwise>
-													<xsl:call-template name="processMainSectionsDefault_flatxml"/>
-												</xsl:otherwise>
-											</xsl:choose>
-										</xsl:when> ($layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1 
-										<xsl:otherwise>
-											<xsl:choose>
-												<xsl:when test="$doctype = 'amendment'">
-													<xsl:apply-templates select="/mn:metanorma/mn:sections/*"/>
-												</xsl:when>
-												<xsl:otherwise>  -->
-													<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
-													<!-- 	<xsl:apply-templates />
-												</xsl:otherwise>
-											</xsl:choose>
-										</xsl:otherwise>
-									</xsl:choose> -->
-									
-									<xsl:apply-templates />
-									
-									<xsl:if test="position() = last()">
-										<xsl:call-template name="insertSmallHorizontalLine"/>
-										<xsl:call-template name="insertLastBlock"/>
-									</xsl:if>
-									
-							</fo:flow>
-						</fo:page-sequence>
-				
+										
+										<!-- Show Introduction in the main section -->
+										<!-- <xsl:apply-templates select="/*/mn:preface/mn:introduction"/> -->
+										<xsl:copy-of select="$preface_introduction"/>
+									</xsl:if> <!-- $layoutVersion = '1951' -->
+										
+										<!-- <xsl:choose>
+											<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
+												<xsl:choose>
+													<xsl:when test="$doctype = 'amendment'">
+														<xsl:variable name="flatxml">
+															<xsl:apply-templates select="/mn:metanorma/mn:sections/*" mode="flatxml"/>
+														</xsl:variable>
+														<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
+													</xsl:when>
+													<xsl:otherwise>
+														<xsl:call-template name="processMainSectionsDefault_flatxml"/>
+													</xsl:otherwise>
+												</xsl:choose>
+											</xsl:when> ($layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1 
+											<xsl:otherwise>
+												<xsl:choose>
+													<xsl:when test="$doctype = 'amendment'">
+														<xsl:apply-templates select="/mn:metanorma/mn:sections/*"/>
+													</xsl:when>
+													<xsl:otherwise>  -->
+														<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
+														<!-- 	<xsl:apply-templates />
+													</xsl:otherwise>
+												</xsl:choose>
+											</xsl:otherwise>
+										</xsl:choose> -->
+										
+										<xsl:apply-templates />
+										
+										<xsl:if test="position() = last()">
+											<xsl:call-template name="insertSmallHorizontalLine"/>
+											<xsl:call-template name="insertLastBlock">
+												<xsl:with-param name="num" select="$num"/>
+											</xsl:call-template>
+										</xsl:if>
+										
+								</fo:flow>
+							</fo:page-sequence>
+					
+						</xsl:for-each>
 					</xsl:for-each>
-				</xsl:for-each>
-				
-				<xsl:if test="$debug = 'true'">
-					<xsl:message>END  xalan:nodeset($updated_xml_with_pages) for sections</xsl:message>
-					<xsl:message>DEBUG: processing time <xsl:value-of select="java:getTime(java:java.util.Date.new()) - $startTimeC"/> msec.</xsl:message>
-				</xsl:if>
-				
-				
-				<!-- Index -->
-				<!-- <xsl:message>START current_document_index_id</xsl:message> -->
-				
-				<xsl:variable name="docid">
-					<xsl:call-template name="getDocumentId"/>
-				</xsl:variable>
-		
-				<xsl:variable name="current_document_index_id">
-					<xsl:apply-templates select="//mn:indexsect" mode="index_add_id">
-						<xsl:with-param name="docid" select="$docid"/>
+					
+					<xsl:if test="$debug = 'true'">
+						<xsl:message>END  xalan:nodeset($updated_xml_with_pages) for sections</xsl:message>
+						<xsl:message>DEBUG: processing time <xsl:value-of select="java:getTime(java:java.util.Date.new()) - $startTimeC"/> msec.</xsl:message>
+					</xsl:if>
+					
+					
+					<!-- Index -->
+					<!-- <xsl:message>START current_document_index_id</xsl:message> -->
+					
+					<xsl:variable name="docid">
+						<xsl:call-template name="getDocumentId"/>
+					</xsl:variable>
+			
+					<xsl:variable name="current_document_index_id">
+						<xsl:apply-templates select="//mn:indexsect" mode="index_add_id">
+							<xsl:with-param name="docid" select="$docid"/>
+						</xsl:apply-templates>
+					</xsl:variable>
+					<!-- <xsl:message>END current_document_index_id</xsl:message> -->
+					
+					<!-- <xsl:message>START current_document_index</xsl:message> -->
+					<xsl:variable name="startTime1" select="java:getTime(java:java.util.Date.new())"/>
+					<xsl:variable name="current_document_index">
+						<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
+					</xsl:variable>
+					<!-- <xsl:variable name="endTime1" select="java:getTime(java:java.util.Date.new())"/>
+					<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime1 - $startTime1"/> msec.</xsl:message>
+					<xsl:message>END current_document_index</xsl:message> -->
+					
+					
+					<!-- <xsl:variable name="startTime2" select="java:getTime(java:java.util.Date.new())"/>
+					<xsl:message>START xalan:nodeset</xsl:message> -->
+					<!-- <xsl:apply-templates select="//mn:indexsect" mode="index"/> -->
+					<xsl:apply-templates select="xalan:nodeset($current_document_index)" mode="index">
+						<xsl:with-param name="num" select="$num"/>
 					</xsl:apply-templates>
-				</xsl:variable>
-				<!-- <xsl:message>END current_document_index_id</xsl:message> -->
-				
-				<!-- <xsl:message>START current_document_index</xsl:message> -->
-				<xsl:variable name="startTime1" select="java:getTime(java:java.util.Date.new())"/>
-				<xsl:variable name="current_document_index">
-					<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
-				</xsl:variable>
-				<!-- <xsl:variable name="endTime1" select="java:getTime(java:java.util.Date.new())"/>
-				<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime1 - $startTime1"/> msec.</xsl:message>
-				<xsl:message>END current_document_index</xsl:message> -->
-				
-				
-				<!-- <xsl:variable name="startTime2" select="java:getTime(java:java.util.Date.new())"/>
-				<xsl:message>START xalan:nodeset</xsl:message> -->
-				<!-- <xsl:apply-templates select="//mn:indexsect" mode="index"/> -->
-				<xsl:apply-templates select="xalan:nodeset($current_document_index)" mode="index"/>
-				<!-- <xsl:variable name="endTime2" select="java:getTime(java:java.util.Date.new())"/>
-				<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime2 - $startTime2"/> msec.</xsl:message>
-				<xsl:message>END xalan:nodeset</xsl:message> -->
-				
-				<xsl:call-template name="back-page"/>
-				
+					<!-- <xsl:variable name="endTime2" select="java:getTime(java:java.util.Date.new())"/>
+					<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime2 - $startTime2"/> msec.</xsl:message>
+					<xsl:message>END xalan:nodeset</xsl:message> -->
+					
+					<xsl:call-template name="back-page">
+						<xsl:with-param name="num" select="$num"/>
+					</xsl:call-template>
+					
+				</xsl:for-each>
 			</xsl:for-each>
 		</fo:root>
 		
-	</xsl:template>
+	</xsl:template> <!-- END: / -->
 	
 
 	<xsl:template name="printAddendumTitle">
@@ -1478,6 +1533,7 @@
 	</xsl:template> <!-- END: processPrefaceAndMainSectionsISO_items -->
 
 	<xsl:template name="cover-page">
+		<xsl:param name="num"/>
 		<xsl:if test="$isGenerateTableIF = 'false'"> <!-- no need cover page for auto-layout algorithm -->
 			<xsl:variable name="fo_cover_page">
 			<!-- cover page -->
@@ -1512,6 +1568,9 @@
 							</fo:block>
 						</fo:static-content>
 						<fo:flow flow-name="xsl-region-body">
+							
+							<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
+							
 							<fo:block text-align="center" font-family="Arial" margin-top="14mm">
 								<fo:block>
 									<fo:instream-foreign-object content-width="23mm" fox:alt-text="Image ISO Logo">
@@ -1604,7 +1663,9 @@
 							</xsl:if>
 							<fo:block-container position="absolute" left="0mm" top="0mm" height="25mm" text-align="right" display-align="after" role="SKIP">
 								<fo:block>
-									<xsl:call-template name="insertPriceBasedOn"/>
+									<xsl:call-template name="insertPriceBasedOn">
+										<xsl:with-param name="num" select="$num"/>
+									</xsl:call-template>
 								</fo:block>
 							</fo:block-container>
 						</fo:static-content>
@@ -1616,6 +1677,9 @@
 							</fo:block-container>
 						</fo:static-content>
 						<fo:flow flow-name="xsl-region-body">
+						
+							<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
+						
 							<xsl:variable name="docnumber">
 								<xsl:variable name="value" select="/mn:metanorma/mn:bibdata/mn:docnumber"/>
 								<xsl:value-of select="$value"/>
@@ -1744,6 +1808,9 @@
 							</fo:block-container>
 						</fo:static-content>
 						<fo:flow flow-name="xsl-region-body">
+						
+							<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
+						
 							<fo:block-container height="99.5%" border="1.25pt solid black">
 								<fo:block-container margin-left="11mm" margin-top="16mm" margin-right="10.5mm">
 									<fo:block-container margin-left="0" margin-top="0" margin-right="0">
@@ -1798,6 +1865,9 @@
 				<xsl:when test="$layoutVersion = '2024'">
 					<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
 						<fo:flow flow-name="xsl-region-body">
+							
+							<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
+							
 							<fo:table table-layout="fixed" width="100%">
 								<xsl:call-template name="insertInterFont"/>
 								<fo:table-column column-width="proportional-column-width(113.8)"/>
@@ -2313,6 +2383,9 @@
 							<!-- COVER PAGE for DIS document only -->
 							<xsl:when test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or $stagename_abbreviation = 'DIS'">
 								<fo:flow flow-name="xsl-region-body">
+								
+									<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
+								
 									<fo:block-container role="SKIP">
 										<fo:block margin-top="-1mm" font-size="20pt" text-align="right">
 											<xsl:value-of select="$stage-fullname-uppercased"/>
@@ -2419,6 +2492,9 @@
 						
 								<!-- COVER PAGE  for all documents except DIS, DAMD and DAM -->
 								<fo:flow flow-name="xsl-region-body">
+									
+									<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
+									
 									<fo:block-container role="SKIP">
 										<fo:table table-layout="fixed" width="100%" font-size="24pt" line-height="1" role="SKIP"> <!-- margin-bottom="35mm" -->
 											<xsl:if test="$layoutVersion = '1989'">
@@ -2747,6 +2823,9 @@
 							</fo:table>
 						</fo:static-content>
 						<fo:flow flow-name="xsl-region-body">
+							
+							<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
+							
 							<fo:block-container role="SKIP">
 								<fo:table table-layout="fixed" width="100%" font-size="24pt" line-height="1" margin-bottom="35mm" role="SKIP">
 									<xsl:if test="$layoutVersion = '1989'">
@@ -2819,6 +2898,9 @@
 							</fo:block-container>
 						</fo:static-content>
 						<fo:flow flow-name="xsl-region-body">
+							
+							<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
+							
 							<fo:block-container text-align="right" role="SKIP">
 								<xsl:choose>
 									<xsl:when test="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'iso-tc']">
@@ -2915,6 +2997,7 @@
 		
 	<!-- copyright-statement -->
 	<xsl:template name="inner-cover-page">
+		<xsl:param name="num"/>
 		<xsl:if test="normalize-space(/mn:metanorma/mn:boilerplate/mn:copyright-statement) != ''">
 		
 			<fo:page-sequence format="i" force-page-count="no-force">
@@ -2923,6 +3006,7 @@
 				</xsl:attribute>
 				
 				<xsl:call-template name="insertHeaderFooter">
+					<xsl:with-param name="num" select="$num"/>
 					<xsl:with-param name="font-weight">normal</xsl:with-param>
 					<xsl:with-param name="is_footer">true</xsl:with-param>
 				</xsl:call-template>
@@ -3478,6 +3562,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" name="toc" priority="3">
+		<xsl:param name="num"/>
 		<xsl:choose>
 			<xsl:when test="$isGenerateTableIF = 'true'"/>
 			<xsl:when test="$toc_level = 0"/>
@@ -3506,7 +3591,7 @@
 							
 							<xsl:variable name="margin-left">12</xsl:variable>
 							
-							<xsl:for-each select="$contents//mnx:item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
+							<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']"><!-- [not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
 								
 								<xsl:if test="$layoutVersion = '1987'">
 									<xsl:if test="@type = 'annex'	and @level = 1 and not(preceding-sibling::mnx:item[@type = 'annex' and @level = 1])">
@@ -3617,7 +3702,7 @@
 							</xsl:for-each>
 							
 							<!-- List of Tables -->
-							<xsl:for-each select="$contents//mnx:tables/mnx:table">
+							<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:tables/mnx:table">
 								<xsl:if test="position() = 1">
 									<xsl:call-template name="insertListOf_Title">
 										<xsl:with-param name="title" select="$title-list-tables"/>
@@ -3627,7 +3712,7 @@
 							</xsl:for-each>
 							
 							<!-- List of Figures -->
-							<xsl:for-each select="$contents//mnx:figures/mnx:figure">
+							<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:figures/mnx:figure">
 								<xsl:if test="position() = 1">
 									<xsl:call-template name="insertListOf_Title">
 										<xsl:with-param name="title" select="$title-list-figures"/>
@@ -4693,7 +4778,7 @@
 	
 	<xsl:template match="mn:indexsect" />
 	<xsl:template match="mn:indexsect" mode="index">
-	
+		<xsl:param name="num"/>
 		<fo:page-sequence master-reference="index" force-page-count="no-force">
 			<!-- <xsl:variable name="header-title">
 				<xsl:choose>
@@ -4707,6 +4792,7 @@
 			</xsl:variable> -->
 			<xsl:call-template name="insertHeaderFooter">
 				<!-- <xsl:with-param name="header-title" select="$header-title"/> -->
+				<xsl:with-param name="num" select="$num"/>
 				<xsl:with-param name="font-weight">normal</xsl:with-param>
 			</xsl:call-template>
 			
@@ -4807,6 +4893,7 @@
 	</xsl:template> -->
 	
 	<xsl:template name="insertHeaderFooter">
+		<xsl:param name="num" />
 		<xsl:param name="font-weight" select="'bold'"/>
 		<xsl:param name="is_footer">false</xsl:param>
 		<xsl:param name="is_header">true</xsl:param>
@@ -4820,6 +4907,7 @@
 			<xsl:with-param name="insert_header_first" select="$insert_header_first"/>
 		</xsl:call-template>
 		<xsl:call-template name="insertFooter">
+			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="font-weight" select="$font-weight"/>
 			<xsl:with-param name="is_footer" select="$is_footer"/>
 			<xsl:with-param name="insert_footer_last" select="$insert_footer_last"/>
@@ -4847,6 +4935,7 @@
 	</xsl:template>
 	
 	<xsl:template name="insertFooter">
+		<xsl:param name="num"/>
 		<xsl:param name="font-weight" select="'bold'"/>
 		<xsl:param name="is_footer">false</xsl:param>
 		<xsl:param name="insert_footer_last">true</xsl:param>
@@ -4856,10 +4945,12 @@
 			</xsl:call-template>
 		</xsl:if>
 		<xsl:call-template name="insertFooterEven">
+			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="font-weight" select="$font-weight"/>
 			<xsl:with-param name="insert_footer_last" select="$insert_footer_last"/>
 		</xsl:call-template>
 		<xsl:call-template name="insertFooterOdd">
+			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="font-weight" select="$font-weight"/>
 		</xsl:call-template>
 	</xsl:template>
@@ -5113,13 +5204,16 @@
 		</fo:static-content>
 	</xsl:template>
 	<xsl:template name="insertFooterEven">
+		<xsl:param name="num" />
 		<xsl:param name="font-weight" select="'bold'"/>
 		<xsl:param name="insert_footer_last">true</xsl:param>
 		<fo:static-content flow-name="footer-even" role="artifact">
 			<fo:block-container>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
-						<xsl:call-template name="insertFooter1951"/>
+						<xsl:call-template name="insertFooter1951">
+							<xsl:with-param name="num" select="$num"/>
+						</xsl:call-template>
 					</xsl:when>
 					<xsl:when test="$layoutVersion = '2024'">
 						<xsl:call-template name="insertFooter2024">
@@ -5167,18 +5261,22 @@
 				<fo:block-container>
 					<xsl:call-template name="insertFooter1951">
 						<xsl:with-param name="insert_footer_last" select="$insert_footer_last"/>
+						<xsl:with-param name="num" select="$num"/>
 					</xsl:call-template>
 				</fo:block-container>
 			</fo:static-content>
 		</xsl:if>
 	</xsl:template>
 	<xsl:template name="insertFooterOdd">
+		<xsl:param name="num"/>
 		<xsl:param name="font-weight" select="'bold'"/>
 		<fo:static-content flow-name="footer-odd" role="artifact">
 			<fo:block-container>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
-						<xsl:call-template name="insertFooter1951"/>
+						<xsl:call-template name="insertFooter1951">
+							<xsl:with-param name="num" select="$num"/>
+						</xsl:call-template>
 					</xsl:when>
 					<xsl:when test="$layoutVersion = '2024'">
 						<xsl:call-template name="insertFooter2024">
@@ -5222,6 +5320,7 @@
 		</fo:static-content>
 	</xsl:template>
 	<xsl:template name="insertFooter1951">
+		<xsl:param name="num"/>
 		<xsl:param name="insert_footer_last">false</xsl:param>
 		<xsl:attribute name="height"><xsl:value-of select="$marginBottom - 2"/>mm</xsl:attribute>
 		<xsl:attribute name="display-align">after</xsl:attribute>
@@ -5282,7 +5381,9 @@
 											<xsl:otherwise>
 												<xsl:attribute name="font-size">7pt</xsl:attribute>
 												<xsl:attribute name="font-weight">normal</xsl:attribute>
-												<xsl:call-template name="insertPriceBasedOn"/>
+												<xsl:call-template name="insertPriceBasedOn">
+													<xsl:with-param name="num" select="$num"/>
+												</xsl:call-template>
 											</xsl:otherwise>
 										</xsl:choose>
 									</xsl:if>
@@ -5356,15 +5457,17 @@
 	</xsl:variable>
 	
 	<xsl:template name="insertPriceBasedOn">
+		<xsl:param name="num"/>
 		<xsl:for-each select="xalan:nodeset($price_based_on_items)/mnx:item">
 			<xsl:value-of select="."/>
 			<xsl:if test="position() != last()">
-				<fo:page-number-citation ref-id="lastBlock"/>
+				<fo:page-number-citation ref-id="lastBlock{$num}"/>
 			</xsl:if>										
 		</xsl:for-each>
 	</xsl:template>
 	
 	<xsl:template name="back-page">
+		<xsl:param name="num"/>
 		<xsl:choose>
 			<xsl:when test="$isGenerateTableIF = 'true'"><!-- skip last page --></xsl:when>
 			<xsl:when test="$layoutVersion = '1951'"/>
@@ -5372,17 +5475,22 @@
 			<xsl:when test="$layoutVersion = '1979'"/>
 			<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))"><!-- UDC, Keywords and Price renders on the first page for technical-report --></xsl:when>
 			<xsl:when test="$layoutVersion = '2024'">
-				<xsl:call-template name="insertLastPage_2024"/>
+				<xsl:call-template name="insertLastPage_2024">
+					<xsl:with-param name="num" select="$num"/>
+				</xsl:call-template>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:if test="$isPublished = 'true'">
-				<xsl:call-template name="insertLastPage"/>
+				<xsl:call-template name="insertLastPage">
+					<xsl:with-param name="num" select="$num"/>
+				</xsl:call-template>
 				</xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template name="insertLastPage">
+		<xsl:param name="num"/>
 		<fo:page-sequence master-reference="back-page" force-page-count="no-force">
 			<xsl:call-template name="insertHeaderEven"/>
 			<fo:static-content flow-name="back-page-footer" font-size="10pt">
@@ -5477,7 +5585,9 @@
 						</xsl:if>
 						<!-- Price based on ... pages -->
 						<fo:block font-size="{$font-size_footer_copyright}">
-							<xsl:call-template name="insertPriceBasedOn"/>
+							<xsl:call-template name="insertPriceBasedOn">
+								<xsl:with-param name="num" select="$num"/>
+							</xsl:call-template>
 						</fo:block>
 						<xsl:if test="$layoutVersion = '1989' and $revision_date_num &gt;= 19990101">
 							<fo:block>&#xa0;</fo:block>
@@ -5497,6 +5607,7 @@
 	</xsl:template> <!-- END: insertLastPage -->
 	
 	<xsl:template name="insertLastPage_2024">
+		<xsl:param name="num"/>
 		<fo:page-sequence master-reference="back-page_2024" force-page-count="no-force">
 			<fo:flow flow-name="xsl-region-body">
 				<xsl:variable name="fo_last_page">
@@ -5536,7 +5647,9 @@
 								<!-- Price based on ... pages -->
 								<fo:block font-size="9pt" space-before="2pt">
 									<fo:block>
-										<xsl:call-template name="insertPriceBasedOn"/>
+										<xsl:call-template name="insertPriceBasedOn">
+											<xsl:with-param name="num" select="$num"/>
+										</xsl:call-template>
 									</fo:block>
 									<fo:block margin-top="18pt" margin-bottom="-1mm" line-height="1.1"><xsl:value-of select="$copyrightTextLastPage2024"/></fo:block>
 								</fo:block>
@@ -5885,7 +5998,18 @@
 	</xsl:template>
 
 	<xsl:template name="insertLastBlock">
-		<fo:block id="lastBlock" font-size="1pt" keep-with-previous="always" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
+		<xsl:param name="num"/>
+		<fo:block id="lastBlock{$num}" font-size="1pt" keep-with-previous="always" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
+	</xsl:template>
+
+	<xsl:template name="insert_firstpage_id">
+		<xsl:param name="num"/>
+		<fo:block-container absolute-position="fixed" top="1mm">
+			<xsl:if test="$num = 1">
+				<xsl:attribute name="id">firstpage_id_0</xsl:attribute>
+			</xsl:if>
+			<fo:block id="firstpage_id_{$num}">&#xa0;</fo:block>
+		</fo:block-container>
 	</xsl:template>
 
 	<xsl:include href="./common.xsl"/>
