@@ -69,47 +69,7 @@
 		</xsl:if>
 	</xsl:variable>
 
-	<xsl:variable name="copyrightYear" select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
-	<xsl:variable name="copyrightAbbr__">
-		<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization[normalize-space(mn:abbreviation) != 'IEEE']">
-			<abbr>
-				<xsl:choose>
-					<xsl:when test="mn:abbreviation"><xsl:value-of select="mn:abbreviation"/></xsl:when>
-					<xsl:otherwise><xsl:value-of select="mn:name"/></xsl:otherwise>
-				</xsl:choose>
-			</abbr>
-		</xsl:for-each>
-	</xsl:variable>
-	<xsl:variable name="copyrightAbbr_">
-		<xsl:for-each select="xalan:nodeset($copyrightAbbr__)//*">
-			<xsl:value-of select="."/>
-			<xsl:if test="position() != last()">
-				<xsl:choose>
-					<xsl:when test="following-sibling::*[1]/text() = 'IDF'"> and </xsl:when>
-					<xsl:otherwise>/</xsl:otherwise>
-				</xsl:choose>
-			</xsl:if>
-		</xsl:for-each>
-	</xsl:variable>
-	<xsl:variable name="copyrightAbbr" select="normalize-space($copyrightAbbr_)"/>
-	<xsl:variable name="copyrightAbbrIEEE" select="normalize-space(/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:abbreviation[. = 'IEEE'])"/>
-	<xsl:variable name="copyrightText">
-		<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear ,' – ', $i18n_all_rights_reserved)"/>
-		<xsl:if test="$copyrightAbbrIEEE != ''">
-			<xsl:value-of select="$linebreak"/>
-			<xsl:value-of select="concat('© ', $copyrightAbbrIEEE, ' ', $copyrightYear ,' – ', $i18n_all_rights_reserved)"/>
-		</xsl:if>
-	</xsl:variable>
 	
-	<xsl:variable name="copyrightTextLastPage2024">
-		<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear)"/>
-		<xsl:if test="$copyrightAbbrIEEE != ''">
-			<xsl:value-of select="$linebreak"/>
-			<xsl:value-of select="concat('© ', $copyrightAbbrIEEE, ' ', $copyrightYear)"/>
-		</xsl:if>
-		<xsl:value-of select="$linebreak"/>
-		<xsl:value-of select="$i18n_all_rights_reserved"/>
-	</xsl:variable>
 
 	<xsl:variable name="iso_reference_" select="normalize-space(/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'iso-reference'])"/>
 	<xsl:variable name="iso_reference"><xsl:value-of select="$iso_reference_"/><xsl:if test="$iso_reference_ = ''"><xsl:value-of select="$docidentifier_iso"/></xsl:if></xsl:variable>
@@ -159,7 +119,7 @@
 		<xsl:value-of select="$anotherNumbers"/>
 	</xsl:variable>
 
-	<xsl:variable name="part" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@part)"/>
+	
 	
 	<xsl:variable name="doctype" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/>	 
 	<xsl:variable name="doctype_localized_" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype[@language = $lang]"/>
@@ -271,22 +231,7 @@
 	<item name="PRF">PROOF</item> -->
 	
 	
-	<!-- 
-		<status>
-    <stage>30</stage>
-    <substage>92</substage>
-  </status>
-	  The <stage> and <substage> values are well defined, 
-		as the International Harmonized Stage Codes (https://www.iso.org/stage-codes.html):
-		stage 60 means published, everything before is a Draft (90 means withdrawn, but the document doesn't change anymore) -->
-	<xsl:variable name="isPublished">
-		<xsl:choose>
-			<xsl:when test="string($stage) = 'NaN'">false</xsl:when>
-			<xsl:when test="$stage &gt;=60">true</xsl:when>
-			<xsl:when test="normalize-space($stage-abbreviation) != ''">true</xsl:when>
-			<xsl:otherwise>false</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
+	
 	
 	<xsl:variable name="document-master-reference_addon"><xsl:if test="$stage-abbreviation = ''">-nonpublished</xsl:if></xsl:variable>
 
@@ -311,7 +256,7 @@
 
 	
 	
-	<xsl:variable name="i18n_all_rights_reserved"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">all_rights_reserved</xsl:with-param></xsl:call-template></xsl:variable>	
+	
 	
 	
 	
@@ -831,8 +776,55 @@
 				
 				<xsl:for-each select="xalan:nodeset($current_document)">
 					
+					<xsl:variable name="copyrightYear" select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
+					<xsl:variable name="copyrightAbbr__">
+						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization[normalize-space(mn:abbreviation) != 'IEEE']">
+							<abbr>
+								<xsl:choose>
+									<xsl:when test="mn:abbreviation"><xsl:value-of select="mn:abbreviation"/></xsl:when>
+									<xsl:otherwise><xsl:value-of select="mn:name"/></xsl:otherwise>
+								</xsl:choose>
+							</abbr>
+						</xsl:for-each>
+					</xsl:variable>
+					<xsl:variable name="copyrightAbbr_">
+						<xsl:for-each select="xalan:nodeset($copyrightAbbr__)//*">
+							<xsl:value-of select="."/>
+							<xsl:if test="position() != last()">
+								<xsl:choose>
+									<xsl:when test="following-sibling::*[1]/text() = 'IDF'"> and </xsl:when>
+									<xsl:otherwise>/</xsl:otherwise>
+								</xsl:choose>
+							</xsl:if>
+						</xsl:for-each>
+					</xsl:variable>
+					<xsl:variable name="copyrightAbbr" select="normalize-space($copyrightAbbr_)"/>
+					<xsl:variable name="copyrightAbbrIEEE" select="normalize-space(/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:abbreviation[. = 'IEEE'])"/>
+					<xsl:variable name="i18n_all_rights_reserved"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">all_rights_reserved</xsl:with-param></xsl:call-template></xsl:variable>	
+					<xsl:variable name="copyrightText">
+						<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear ,' – ', $i18n_all_rights_reserved)"/>
+						<xsl:if test="$copyrightAbbrIEEE != ''">
+							<xsl:value-of select="$linebreak"/>
+							<xsl:value-of select="concat('© ', $copyrightAbbrIEEE, ' ', $copyrightYear ,' – ', $i18n_all_rights_reserved)"/>
+						</xsl:if>
+					</xsl:variable>
+					
+					
+					
+					<xsl:variable name="isPublished">
+						<xsl:call-template name="get_isPublished">
+							<xsl:with-param name="stage" select="$stage"/>
+							<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
+						</xsl:call-template>
+					</xsl:variable>
+					
 					<xsl:call-template name="cover-page">
 						<xsl:with-param name="num" select="$num"/>
+						<xsl:with-param name="isPublished" select="$isPublished"/>
+						<xsl:with-param name="copyrightText" select="$copyrightText"/>
+						<xsl:with-param name="copyrightYear" select="$copyrightYear"/>
+						<xsl:with-param name="copyrightAbbr" select="$copyrightAbbr"/>
+						<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 					</xsl:call-template>
 			
 					<xsl:if test="$debug = 'true'">
@@ -849,6 +841,8 @@
 						<xsl:message>DEBUG: processing time <xsl:value-of select="java:getTime(java:java.util.Date.new()) - $startTimeA"/> msec.</xsl:message>
 					</xsl:if>
 				
+					
+				
 					<xsl:choose>
 						<xsl:when test="$layoutVersion = '1951'">
 							<fo:page-sequence master-reference="document{$document-master-reference_addon}" initial-page-number="auto" force-page-count="no-force">
@@ -859,6 +853,8 @@
 									<xsl:with-param name="num" select="$num"/>
 									<xsl:with-param name="is_header">false</xsl:with-param>
 									<xsl:with-param name="insert_footer_last">false</xsl:with-param>
+									<xsl:with-param name="copyrightText" select="$copyrightText"/>
+									<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 								</xsl:call-template>
 								<fo:flow flow-name="xsl-region-body">
 									<fo:block>
@@ -887,6 +883,8 @@
 									<xsl:with-param name="num" select="$num"/>
 									<xsl:with-param name="font-weight">normal</xsl:with-param>
 									<xsl:with-param name="is_footer">false</xsl:with-param>
+									<xsl:with-param name="copyrightText" select="$copyrightText"/>
+									<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 								</xsl:call-template>
 								
 								<fo:static-content flow-name="left-region-first_1987_TR" role="artifact">
@@ -965,6 +963,9 @@
 																</xsl:variable>
 																<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($doctype_international_standard))"/>
 																<xsl:text>&#xa0;</xsl:text>
+																
+																
+																
 																<xsl:value-of select="translate(substring-before($docidentifier_undated, '/'),':','-')"/>
 																<xsl:text>/</xsl:text>
 																<xsl:value-of select="$doctype_localized"/>
@@ -1041,6 +1042,8 @@
 								
 									<xsl:call-template name="inner-cover-page">
 										<xsl:with-param name="num" select="$num"/>
+										<xsl:with-param name="copyrightText" select="$copyrightText"/>
+										<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 									</xsl:call-template>
 									
 								</xsl:otherwise>
@@ -1075,6 +1078,8 @@
 											<xsl:with-param name="num" select="$num"/>
 											<xsl:with-param name="font-weight">normal</xsl:with-param>
 											<xsl:with-param name="is_footer">true</xsl:with-param>
+											<xsl:with-param name="copyrightText" select="$copyrightText"/>
+											<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 										</xsl:call-template>
 										<fo:flow flow-name="xsl-region-body" line-height="115%" role="SKIP">
 											
@@ -1153,6 +1158,8 @@
 									<xsl:with-param name="num" select="$num"/>
 									<xsl:with-param name="border_around_page" select="$border_around_page"/>
 									<xsl:with-param name="insert_header_first" select="normalize-space(position() = 1)"/>
+									<xsl:with-param name="copyrightText" select="$copyrightText"/>
+									<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 								</xsl:call-template>
 								<fo:flow flow-name="xsl-region-body" role="SKIP">
 								
@@ -1316,6 +1323,8 @@
 					<!-- <xsl:apply-templates select="//mn:indexsect" mode="index"/> -->
 					<xsl:apply-templates select="xalan:nodeset($current_document_index)" mode="index">
 						<xsl:with-param name="num" select="$num"/>
+						<xsl:with-param name="copyrightText" select="$copyrightText"/>
+						<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 					</xsl:apply-templates>
 					<!-- <xsl:variable name="endTime2" select="java:getTime(java:java.util.Date.new())"/>
 					<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime2 - $startTime2"/> msec.</xsl:message>
@@ -1323,6 +1332,11 @@
 					
 					<xsl:call-template name="back-page">
 						<xsl:with-param name="num" select="$num"/>
+						<xsl:with-param name="isPublished" select="$isPublished"/>
+						<xsl:with-param name="copyrightText" select="$copyrightText"/>
+						<xsl:with-param name="copyrightAbbr" select="$copyrightAbbr"/>
+						<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
+						<xsl:with-param name="copyrightYear" select="$copyrightYear"/>
 					</xsl:call-template>
 					
 				</xsl:for-each>
@@ -1425,6 +1439,12 @@
 
 	<xsl:template name="cover-page">
 		<xsl:param name="num"/>
+		<xsl:param name="isPublished"/>
+		<xsl:param name="copyrightText"/>
+		<xsl:param name="copyrightYear"/>
+		<xsl:param name="copyrightAbbr"/>
+		<xsl:param name="copyrightAbbrIEEE"/>
+		
 		<xsl:if test="$isGenerateTableIF = 'false'"> <!-- no need cover page for auto-layout algorithm -->
 		
 			<xsl:variable name="color_secondary_value" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-secondary)"/>
@@ -1436,6 +1456,8 @@
 			</xsl:variable>
 		
 			<xsl:variable name="lang_other"><xsl:call-template name="get_lang_other"/></xsl:variable>
+			
+			<xsl:variable name="part" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@part)"/>
 			
 			<xsl:variable name="i18n_reference_number_abbrev"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number_abbrev</xsl:with-param></xsl:call-template></xsl:variable>
 			<xsl:variable name="i18n_reference_number"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number</xsl:with-param></xsl:call-template></xsl:variable>
@@ -1869,7 +1891,9 @@
 										<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}">
 											<fo:block-container height="44mm">
 												<fo:block>
-													<xsl:call-template name="insertLogoImages2024"/>
+													<xsl:call-template name="insertLogoImages2024">
+														<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
+													</xsl:call-template>
 												</fo:block>
 											</fo:block-container>
 										</fo:table-cell>
@@ -2332,6 +2356,7 @@
 																	
 																	<xsl:call-template name="insertLogoImages">
 																		<xsl:with-param name="content-height" select="$content-height"/>
+																		<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 																	</xsl:call-template>
 																	
 																</fo:block>
@@ -2987,6 +3012,8 @@
 	<!-- copyright-statement -->
 	<xsl:template name="inner-cover-page">
 		<xsl:param name="num"/>
+		<xsl:param name="copyrightText"/>
+		<xsl:param name="copyrightAbbrIEEE"/>
 		<xsl:if test="normalize-space(/mn:metanorma/mn:boilerplate/mn:copyright-statement) != ''">
 		
 			<fo:page-sequence format="i" force-page-count="no-force">
@@ -2998,6 +3025,8 @@
 					<xsl:with-param name="num" select="$num"/>
 					<xsl:with-param name="font-weight">normal</xsl:with-param>
 					<xsl:with-param name="is_footer">true</xsl:with-param>
+					<xsl:with-param name="copyrightText" select="$copyrightText"/>
+					<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 				</xsl:call-template>
 				<fo:flow flow-name="xsl-region-body" role="SKIP"> <!-- line-height="115%"  -->
 				
@@ -3116,6 +3145,7 @@
 		
 	<xsl:template name="insertLogoImages">
 		<xsl:param name="content-height"/>
+		<xsl:param name="copyrightAbbrIEEE"/>
 		<xsl:choose>
 			<xsl:when test="mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization">
 				<xsl:for-each select="mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization">
@@ -3153,7 +3183,7 @@
 				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE-Logo))}" content-height="11mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
 			</fo:block>
 		</xsl:if>
-	</xsl:template>
+	</xsl:template> <!-- END: insertLogoImages -->
 	
 	<xsl:template name="split_abbreviation">
 		<xsl:variable name="items">
@@ -3213,6 +3243,7 @@
 		
 	<xsl:template name="insertLogoImages2024">
 		<xsl:variable name="content-height">20</xsl:variable>
+		<xsl:variable name="copyrightAbbrIEEE"/>
 		<xsl:choose>
 			<xsl:when test="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization[mn:abbreviation]">
 				<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization[mn:abbreviation]">
@@ -3844,6 +3875,7 @@
 	<xsl:template match="mn:bibdata/mn:title[@type = 'title-part']">
 		<xsl:param name="curr_lang" select="$lang"/>
 		<xsl:param name="isMainLang">false</xsl:param>
+		<xsl:variable name="part" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@part)"/>
 		<xsl:choose>
 			<xsl:when test="$part != ''">
 				<!-- <xsl:text> — </xsl:text> -->
@@ -4775,6 +4807,8 @@
 	<xsl:template match="mn:indexsect" />
 	<xsl:template match="mn:indexsect" mode="index">
 		<xsl:param name="num"/>
+		<xsl:param name="copyrightText"/>
+		<xsl:param name="copyrightAbbrIEEE"/>
 		<fo:page-sequence master-reference="index" force-page-count="no-force">
 			<!-- <xsl:variable name="header-title">
 				<xsl:choose>
@@ -4790,6 +4824,8 @@
 				<!-- <xsl:with-param name="header-title" select="$header-title"/> -->
 				<xsl:with-param name="num" select="$num"/>
 				<xsl:with-param name="font-weight">normal</xsl:with-param>
+				<xsl:with-param name="copyrightText" select="$copyrightText"/>
+				<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 			</xsl:call-template>
 			
 			<fo:flow flow-name="xsl-region-body">
@@ -4801,7 +4837,7 @@
 				</fo:block>
 			</fo:flow>
 		</fo:page-sequence>
-	</xsl:template>
+	</xsl:template> <!-- END: mn:indexsect mode="index" -->
 	
 	
 	<xsl:template match="mn:xref | mn:fmt-xref" priority="2">
@@ -4896,6 +4932,8 @@
 		<xsl:param name="border_around_page">false</xsl:param>
 		<xsl:param name="insert_header_first">true</xsl:param>
 		<xsl:param name="insert_footer_last">true</xsl:param>
+		<xsl:param name="copyrightText"/>
+		<xsl:param name="copyrightAbbrIEEE"/>
 		
 		<xsl:call-template name="insertHeader">
 			<xsl:with-param name="is_header" select="$is_header"/>
@@ -4907,8 +4945,10 @@
 			<xsl:with-param name="font-weight" select="$font-weight"/>
 			<xsl:with-param name="is_footer" select="$is_footer"/>
 			<xsl:with-param name="insert_footer_last" select="$insert_footer_last"/>
+			<xsl:with-param name="copyrightText" select="$copyrightText"/>
+			<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 		</xsl:call-template>
-	</xsl:template>
+	</xsl:template> <!-- END: insertHeaderFooter -->
 	
 	<xsl:template name="insertHeader">
 		<xsl:param name="is_header">true</xsl:param>
@@ -4928,28 +4968,35 @@
 			<xsl:with-param name="border_around_page" select="$border_around_page"/>
 			<xsl:with-param name="is_header" select="$is_header"/>
 		</xsl:call-template>
-	</xsl:template>
+	</xsl:template> <!-- END: insertHeader -->
 	
 	<xsl:template name="insertFooter">
 		<xsl:param name="num"/>
 		<xsl:param name="font-weight" select="'bold'"/>
 		<xsl:param name="is_footer">false</xsl:param>
 		<xsl:param name="insert_footer_last">true</xsl:param>
+		<xsl:param name="copyrightText"/>
+		<xsl:param name="copyrightAbbrIEEE"/>
 		<xsl:if test="($layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and $is_footer = 'true'">
 			<xsl:call-template name="insertFooterFirst1972_1998">
 				<xsl:with-param name="font-weight" select="$font-weight"/>
+				<xsl:with-param name="copyrightText" select="$copyrightText"/>
 			</xsl:call-template>
 		</xsl:if>
 		<xsl:call-template name="insertFooterEven">
 			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="font-weight" select="$font-weight"/>
 			<xsl:with-param name="insert_footer_last" select="$insert_footer_last"/>
+			<xsl:with-param name="copyrightText" select="$copyrightText"/>
+			<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 		</xsl:call-template>
 		<xsl:call-template name="insertFooterOdd">
 			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="font-weight" select="$font-weight"/>
+			<xsl:with-param name="copyrightText" select="$copyrightText"/>
+			<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 		</xsl:call-template>
-	</xsl:template>
+	</xsl:template> <!-- END: insertFooter -->
 	
 	
 	<xsl:variable name="font-size_header">
@@ -4992,7 +5039,7 @@
 				</xsl:choose>
 			</fo:block-container>
 		</fo:static-content>
-	</xsl:template>
+	</xsl:template> <!-- END: insertHeaderEven -->
 	<xsl:template name="insertHeaderFirst">
 		<fo:static-content flow-name="header-first" role="artifact">
 			<xsl:choose>
@@ -5076,7 +5123,7 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</fo:static-content>
-	</xsl:template>
+	</xsl:template> <!-- END: insertHeaderFirst -->
 	<xsl:template name="insertHeaderOdd">
 		<xsl:param name="is_header">true</xsl:param>
 		<xsl:param name="border_around_page">false</xsl:param>
@@ -5111,7 +5158,7 @@
 				</xsl:choose>
 			</fo:block-container>
 		</fo:static-content>
-	</xsl:template>
+	</xsl:template> <!-- END: insertHeaderOdd -->
 	
 	<xsl:template name="insertHeader1951">
 		<xsl:param name="is_header"/>
@@ -5149,7 +5196,7 @@
 				</fo:table>
 			</fo:block-container>
 		</fo:block-container>
-	</xsl:template>
+	</xsl:template> <!-- END: insertHeader1951 -->
 	
 	<xsl:variable name="font-size_footer_copyright">
 		<xsl:choose>
@@ -5159,6 +5206,7 @@
 	</xsl:variable>
 	<xsl:template name="insertFooterFirst1972_1998">
 		<xsl:param name="font-weight" select="'bold'"/>
+		<xsl:param name="copyrightText"/>
 		<fo:static-content flow-name="footer-preface-first_1972-1998" role="artifact">
 			<fo:block-container display-align="after" height="86mm">
 				
@@ -5198,11 +5246,13 @@
 				</fo:table>
 			</fo:block-container>
 		</fo:static-content>
-	</xsl:template>
+	</xsl:template> <!-- insertFooterFirst1972_1998 -->
 	<xsl:template name="insertFooterEven">
 		<xsl:param name="num" />
 		<xsl:param name="font-weight" select="'bold'"/>
 		<xsl:param name="insert_footer_last">true</xsl:param>
+		<xsl:param name="copyrightText"/>
+		<xsl:param name="copyrightAbbrIEEE"/>
 		<fo:static-content flow-name="footer-even" role="artifact">
 			<fo:block-container>
 				<xsl:choose>
@@ -5214,6 +5264,8 @@
 					<xsl:when test="$layoutVersion = '2024'">
 						<xsl:call-template name="insertFooter2024">
 							<xsl:with-param name="font-weight" select="$font-weight"/>
+							<xsl:with-param name="copyrightText" select="$copyrightText"/>
+							<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 						</xsl:call-template>
 					</xsl:when>
 					<xsl:otherwise>
@@ -5262,10 +5314,12 @@
 				</fo:block-container>
 			</fo:static-content>
 		</xsl:if>
-	</xsl:template>
+	</xsl:template> <!-- END: insertFooterEven -->
 	<xsl:template name="insertFooterOdd">
 		<xsl:param name="num"/>
 		<xsl:param name="font-weight" select="'bold'"/>
+		<xsl:param name="copyrightText"/>
+		<xsl:param name="copyrightAbbrIEEE"/>
 		<fo:static-content flow-name="footer-odd" role="artifact">
 			<fo:block-container>
 				<xsl:choose>
@@ -5277,6 +5331,7 @@
 					<xsl:when test="$layoutVersion = '2024'">
 						<xsl:call-template name="insertFooter2024">
 							<xsl:with-param name="font-weight" select="$font-weight"/>
+							<xsl:with-param name="copyrightText" select="$copyrightText"/>
 						</xsl:call-template>
 					</xsl:when>
 					<xsl:otherwise>
@@ -5314,7 +5369,7 @@
 				</xsl:choose>
 			</fo:block-container>
 		</fo:static-content>
-	</xsl:template>
+	</xsl:template> <!-- END: insertFooterOdd -->
 	<xsl:template name="insertFooter1951">
 		<xsl:param name="num"/>
 		<xsl:param name="insert_footer_last">false</xsl:param>
@@ -5396,6 +5451,8 @@
 	</xsl:template><!-- END: insertFooter1951 -->
 	<xsl:template name="insertFooter2024">
 		<xsl:param name="font-weight" select="'bold'"/>
+		<xsl:param name="copyrightText"/>
+		<xsl:param name="copyrightAbbrIEEE"/>
 		<xsl:attribute name="text-align">center</xsl:attribute>
 		<xsl:attribute name="line-height">1.1</xsl:attribute>
 		<xsl:if test="$stage-abbreviation = 'PRF'">
@@ -5414,7 +5471,7 @@
 			</xsl:if>
 			<fo:page-number/>
 		</fo:block>
-	</xsl:template>
+	</xsl:template> <!-- END: insertFooter2024 -->
 	<xsl:template name="insertLayoutVersionAttributesTop">
 		<xsl:param name="odd_or_even"/>
 		<xsl:if test="$layoutVersion = '1951'">
@@ -5444,7 +5501,7 @@
 			<xsl:attribute name="padding-top">12.2mm</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 		</xsl:if>
-	</xsl:template>
+	</xsl:template> <!-- END: insertLayoutVersionAttributesTop -->
 	
 	
 	<xsl:variable name="price_based_on_items">
@@ -5468,6 +5525,11 @@
 	
 	<xsl:template name="back-page">
 		<xsl:param name="num"/>
+		<xsl:param name="isPublished"/>
+		<xsl:param name="copyrightText"/>
+		<xsl:param name="copyrightAbbr"/>
+		<xsl:param name="copyrightAbbrIEEE"/>
+		<xsl:param name="copyrightYear"/>
 		<xsl:choose>
 			<xsl:when test="$isGenerateTableIF = 'true'"><!-- skip last page --></xsl:when>
 			<xsl:when test="$layoutVersion = '1951'"/>
@@ -5477,12 +5539,16 @@
 			<xsl:when test="$layoutVersion = '2024'">
 				<xsl:call-template name="insertLastPage_2024">
 					<xsl:with-param name="num" select="$num"/>
+					<xsl:with-param name="copyrightAbbr" select="$copyrightAbbr"/>
+					<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
+					<xsl:with-param name="copyrightYear" select="$copyrightYear"/>
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:if test="$isPublished = 'true'">
 				<xsl:call-template name="insertLastPage">
 					<xsl:with-param name="num" select="$num"/>
+					<xsl:with-param name="copyrightText" select="$copyrightText"/>
 				</xsl:call-template>
 				</xsl:if>
 			</xsl:otherwise>
@@ -5491,6 +5557,7 @@
 	
 	<xsl:template name="insertLastPage">
 		<xsl:param name="num"/>
+		<xsl:param name="copyrightText"/>
 		<fo:page-sequence master-reference="back-page" force-page-count="no-force">
 			<xsl:call-template name="insertHeaderEven"/>
 			<fo:static-content flow-name="back-page-footer" font-size="10pt">
@@ -5610,6 +5677,9 @@
 	
 	<xsl:template name="insertLastPage_2024">
 		<xsl:param name="num"/>
+		<xsl:param name="copyrightAbbr"/>
+		<xsl:param name="copyrightAbbrIEEE"/>
+		<xsl:param name="copyrightYear"/>
 		<fo:page-sequence master-reference="back-page_2024" force-page-count="no-force">
 			<fo:flow flow-name="xsl-region-body">
 				<xsl:variable name="fo_last_page">
@@ -5623,7 +5693,9 @@
 						<fo:table-row height="91.8mm">
 							<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}">
 								<fo:block>
-									<xsl:call-template name="insertLogoImages2024"/>
+									<xsl:call-template name="insertLogoImages2024">
+										<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
+									</xsl:call-template>
 								</fo:block>
 							</fo:table-cell>
 							<fo:table-cell number-columns-spanned="2"><fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block></fo:table-cell>
@@ -5653,6 +5725,16 @@
 											<xsl:with-param name="num" select="$num"/>
 										</xsl:call-template>
 									</fo:block>
+									<xsl:variable name="copyrightTextLastPage2024">
+										<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear)"/>
+										<xsl:if test="$copyrightAbbrIEEE != ''">
+											<xsl:value-of select="$linebreak"/>
+											<xsl:value-of select="concat('© ', $copyrightAbbrIEEE, ' ', $copyrightYear)"/>
+										</xsl:if>
+										<xsl:value-of select="$linebreak"/>
+										<xsl:variable name="i18n_all_rights_reserved"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">all_rights_reserved</xsl:with-param></xsl:call-template></xsl:variable>	
+										<xsl:value-of select="$i18n_all_rights_reserved"/>
+									</xsl:variable>
 									<fo:block margin-top="18pt" margin-bottom="-1mm" line-height="1.1"><xsl:value-of select="$copyrightTextLastPage2024"/></fo:block>
 								</fo:block>
 							</fo:table-cell>
@@ -6014,6 +6096,25 @@
 		</fo:block-container>
 	</xsl:template>
 
+	<!-- 
+		<status>
+		<stage>30</stage>
+		<substage>92</substage>
+	</status>
+		The <stage> and <substage> values are well defined, 
+		as the International Harmonized Stage Codes (https://www.iso.org/stage-codes.html):
+		stage 60 means published, everything before is a Draft (90 means withdrawn, but the document doesn't change anymore) -->
+	<xsl:template name="get_isPublished">
+		<xsl:param name="stage"/>
+		<xsl:param name="stage-abbreviation"/>
+		<xsl:choose>
+			<xsl:when test="string($stage) = 'NaN'">false</xsl:when>
+			<xsl:when test="$stage &gt;=60">true</xsl:when>
+			<xsl:when test="normalize-space($stage-abbreviation) != ''">true</xsl:when>
+			<xsl:otherwise>false</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template name="get_lang_other">
 		<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:title[@language != $lang]">
 			<xsl:if test="not(preceding-sibling::mn:title[@language = current()/@language])">
