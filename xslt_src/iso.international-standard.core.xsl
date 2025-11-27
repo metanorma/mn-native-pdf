@@ -80,44 +80,7 @@
 	<xsl:variable name="lang-1st-letter_tmp" select="substring-before(substring-after($docidentifier_iso_with_lang, '('), ')')"/>
 	<xsl:variable name="lang-1st-letter" select="concat('(', $lang-1st-letter_tmp , ')')"/>
   
-	<xsl:variable name="anotherNumbers">
-		<xsl:variable name="year_iso_reference" select="concat(':',substring-after($iso_reference,':'))"/> 
-		<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type != '' and @type != 'ISO' and not(starts-with(@type, 'iso-')) and @type != 'URN']">
-			<xsl:value-of select="$linebreak"/><xsl:value-of select="concat(., $year_iso_reference)"/>
-		</xsl:for-each>
-	</xsl:variable>
-	<xsl:variable name="ISOnumber">
-		<xsl:choose>
-			<xsl:when test="$layoutVersion = '2024' and $docidentifier_iso_with_lang != ''">
-				<xsl:value-of select="$docidentifier_iso_with_lang"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<!-- part separator '-' replace to '/' -->
-				<xsl:variable name="iso_reference_tmp" select="java:replaceAll(java:java.lang.String.new($iso_reference),'-','/')"/>
-				<xsl:choose>
-					<!-- year separator replace to '-' -->
-					<xsl:when test="$layoutVersion = '1951'">
-						<xsl:variable name="iso_reference_tmp_" select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':',' - ')"/>
-						<!-- insert space before ( -->
-						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp_),'\(',' \(')"/>
-					</xsl:when>
-					<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979'">
-						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':','-')"/>
-					</xsl:when>
-					<xsl:when test="$layoutVersion = '1987'">
-						<!-- insert space around : -->
-						<xsl:variable name="iso_reference_tmp_" select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':',' : ')"/>
-						<!-- insert space before ( -->
-						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp_),'\(',' \(')"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="$iso_reference"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:otherwise>
-		</xsl:choose>
-		<xsl:value-of select="$anotherNumbers"/>
-	</xsl:variable>
+	
 
 	
 	
@@ -188,36 +151,9 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="stage-fullname-uppercased" select="java:toUpperCase(java:java.lang.String.new($stage-fullname))"/>
 	
-	<xsl:variable name="stagename-header-firstpage">
-		<xsl:choose>
-			<!-- $stage-abbreviation = 'PRF'  -->
-			<xsl:when test="$stagename_abbreviation = 'PRF'"><xsl:value-of select="$doctype_localized"/></xsl:when>
-			<!-- https://github.com/metanorma/metanorma-taste/issues/22#issuecomment-3156059344 -->
-			<xsl:when test="$doctype_localized != '' and 
-					count(/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'author'][mn:organization/mn:abbreviation = 'ISO']) = 0"><xsl:value-of select="$doctype_localized"/></xsl:when>
-			<xsl:when test="$layoutVersion = '2024' and $stagename_localized != ''">
-				<xsl:value-of select="$stagename_localized"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$stage-fullname"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-	<xsl:variable name="stagename-header-firstpage-uppercased" select="java:toUpperCase(java:java.lang.String.new($stagename-header-firstpage))"/>
-		
-	<xsl:variable name="stagename-header-coverpage">
-		<xsl:choose>
-			<xsl:when test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or starts-with($stage-abbreviation, 'DTS') or starts-with($stage-abbreviation, 'DTR') or $stagename_abbreviation = 'DIS'">DRAFT</xsl:when>
-			<xsl:when test="$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or starts-with($stage-abbreviation, 'FDTS') or starts-with($stage-abbreviation, 'FDTR') or $stagename_abbreviation = 'FDIS'">FINAL DRAFT</xsl:when>
-			<xsl:when test="$stage-abbreviation = 'PRF'"></xsl:when>
-			<xsl:when test="$stage-abbreviation = 'IS'"></xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$stage-fullname-uppercased"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
+	
+	
 	
 	<!-- UPPERCASED stage name -->	
 	<!-- <item name="NWIP" show="true" header="PRELIMINARY WORK ITEM" shortname="NEW WORK ITEM PROPOSAL">NEW WORK ITEM PROPOSAL</item>
@@ -776,6 +712,46 @@
 				
 				<xsl:for-each select="xalan:nodeset($current_document)">
 					
+					
+					<xsl:variable name="anotherNumbers">
+						<xsl:variable name="year_iso_reference" select="concat(':',substring-after($iso_reference,':'))"/> 
+						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type != '' and @type != 'ISO' and not(starts-with(@type, 'iso-')) and @type != 'URN']">
+							<xsl:value-of select="$linebreak"/><xsl:value-of select="concat(., $year_iso_reference)"/>
+						</xsl:for-each>
+					</xsl:variable>
+					<xsl:variable name="ISOnumber">
+						<xsl:choose>
+							<xsl:when test="$layoutVersion = '2024' and $docidentifier_iso_with_lang != ''">
+								<xsl:value-of select="$docidentifier_iso_with_lang"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<!-- part separator '-' replace to '/' -->
+								<xsl:variable name="iso_reference_tmp" select="java:replaceAll(java:java.lang.String.new($iso_reference),'-','/')"/>
+								<xsl:choose>
+									<!-- year separator replace to '-' -->
+									<xsl:when test="$layoutVersion = '1951'">
+										<xsl:variable name="iso_reference_tmp_" select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':',' - ')"/>
+										<!-- insert space before ( -->
+										<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp_),'\(',' \(')"/>
+									</xsl:when>
+									<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979'">
+										<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':','-')"/>
+									</xsl:when>
+									<xsl:when test="$layoutVersion = '1987'">
+										<!-- insert space around : -->
+										<xsl:variable name="iso_reference_tmp_" select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':',' : ')"/>
+										<!-- insert space before ( -->
+										<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp_),'\(',' \(')"/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:value-of select="$iso_reference"/>
+									</xsl:otherwise>
+								</xsl:choose>
+							</xsl:otherwise>
+						</xsl:choose>
+						<xsl:value-of select="$anotherNumbers"/>
+					</xsl:variable>
+					
 					<xsl:variable name="copyrightYear" select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
 					<xsl:variable name="copyrightAbbr__">
 						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization[normalize-space(mn:abbreviation) != 'IEEE']">
@@ -821,6 +797,7 @@
 					<xsl:call-template name="cover-page">
 						<xsl:with-param name="num" select="$num"/>
 						<xsl:with-param name="isPublished" select="$isPublished"/>
+						<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 						<xsl:with-param name="copyrightText" select="$copyrightText"/>
 						<xsl:with-param name="copyrightYear" select="$copyrightYear"/>
 						<xsl:with-param name="copyrightAbbr" select="$copyrightAbbr"/>
@@ -853,6 +830,7 @@
 									<xsl:with-param name="num" select="$num"/>
 									<xsl:with-param name="is_header">false</xsl:with-param>
 									<xsl:with-param name="insert_footer_last">false</xsl:with-param>
+									<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 									<xsl:with-param name="copyrightText" select="$copyrightText"/>
 									<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 								</xsl:call-template>
@@ -883,6 +861,7 @@
 									<xsl:with-param name="num" select="$num"/>
 									<xsl:with-param name="font-weight">normal</xsl:with-param>
 									<xsl:with-param name="is_footer">false</xsl:with-param>
+									<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 									<xsl:with-param name="copyrightText" select="$copyrightText"/>
 									<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 								</xsl:call-template>
@@ -1042,6 +1021,7 @@
 								
 									<xsl:call-template name="inner-cover-page">
 										<xsl:with-param name="num" select="$num"/>
+										<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 										<xsl:with-param name="copyrightText" select="$copyrightText"/>
 										<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 									</xsl:call-template>
@@ -1078,6 +1058,7 @@
 											<xsl:with-param name="num" select="$num"/>
 											<xsl:with-param name="font-weight">normal</xsl:with-param>
 											<xsl:with-param name="is_footer">true</xsl:with-param>
+											<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 											<xsl:with-param name="copyrightText" select="$copyrightText"/>
 											<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 										</xsl:call-template>
@@ -1158,6 +1139,7 @@
 									<xsl:with-param name="num" select="$num"/>
 									<xsl:with-param name="border_around_page" select="$border_around_page"/>
 									<xsl:with-param name="insert_header_first" select="normalize-space(position() = 1)"/>
+									<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 									<xsl:with-param name="copyrightText" select="$copyrightText"/>
 									<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 								</xsl:call-template>
@@ -1323,6 +1305,7 @@
 					<!-- <xsl:apply-templates select="//mn:indexsect" mode="index"/> -->
 					<xsl:apply-templates select="xalan:nodeset($current_document_index)" mode="index">
 						<xsl:with-param name="num" select="$num"/>
+						<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 						<xsl:with-param name="copyrightText" select="$copyrightText"/>
 						<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 					</xsl:apply-templates>
@@ -1333,6 +1316,7 @@
 					<xsl:call-template name="back-page">
 						<xsl:with-param name="num" select="$num"/>
 						<xsl:with-param name="isPublished" select="$isPublished"/>
+						<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 						<xsl:with-param name="copyrightText" select="$copyrightText"/>
 						<xsl:with-param name="copyrightAbbr" select="$copyrightAbbr"/>
 						<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
@@ -1440,6 +1424,7 @@
 	<xsl:template name="cover-page">
 		<xsl:param name="num"/>
 		<xsl:param name="isPublished"/>
+		<xsl:param name="ISOnumber"/>
 		<xsl:param name="copyrightText"/>
 		<xsl:param name="copyrightYear"/>
 		<xsl:param name="copyrightAbbr"/>
@@ -1456,6 +1441,19 @@
 			</xsl:variable>
 		
 			<xsl:variable name="lang_other"><xsl:call-template name="get_lang_other"/></xsl:variable>
+			
+			<xsl:variable name="stage-fullname-uppercased" select="java:toUpperCase(java:java.lang.String.new($stage-fullname))"/>
+			<xsl:variable name="stagename-header-coverpage">
+				<xsl:choose>
+					<xsl:when test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or starts-with($stage-abbreviation, 'DTS') or starts-with($stage-abbreviation, 'DTR') or $stagename_abbreviation = 'DIS'">DRAFT</xsl:when>
+					<xsl:when test="$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or starts-with($stage-abbreviation, 'FDTS') or starts-with($stage-abbreviation, 'FDTR') or $stagename_abbreviation = 'FDIS'">FINAL DRAFT</xsl:when>
+					<xsl:when test="$stage-abbreviation = 'PRF'"></xsl:when>
+					<xsl:when test="$stage-abbreviation = 'IS'"></xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$stage-fullname-uppercased"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
 			
 			<xsl:variable name="part" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@part)"/>
 			
@@ -3012,6 +3010,7 @@
 	<!-- copyright-statement -->
 	<xsl:template name="inner-cover-page">
 		<xsl:param name="num"/>
+		<xsl:param name="ISOnumber"/>
 		<xsl:param name="copyrightText"/>
 		<xsl:param name="copyrightAbbrIEEE"/>
 		<xsl:if test="normalize-space(/mn:metanorma/mn:boilerplate/mn:copyright-statement) != ''">
@@ -3025,6 +3024,7 @@
 					<xsl:with-param name="num" select="$num"/>
 					<xsl:with-param name="font-weight">normal</xsl:with-param>
 					<xsl:with-param name="is_footer">true</xsl:with-param>
+					<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 					<xsl:with-param name="copyrightText" select="$copyrightText"/>
 					<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 				</xsl:call-template>
@@ -4807,6 +4807,7 @@
 	<xsl:template match="mn:indexsect" />
 	<xsl:template match="mn:indexsect" mode="index">
 		<xsl:param name="num"/>
+		<xsl:param name="ISOnumber"/>
 		<xsl:param name="copyrightText"/>
 		<xsl:param name="copyrightAbbrIEEE"/>
 		<fo:page-sequence master-reference="index" force-page-count="no-force">
@@ -4824,6 +4825,7 @@
 				<!-- <xsl:with-param name="header-title" select="$header-title"/> -->
 				<xsl:with-param name="num" select="$num"/>
 				<xsl:with-param name="font-weight">normal</xsl:with-param>
+				<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 				<xsl:with-param name="copyrightText" select="$copyrightText"/>
 				<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 			</xsl:call-template>
@@ -4932,6 +4934,7 @@
 		<xsl:param name="border_around_page">false</xsl:param>
 		<xsl:param name="insert_header_first">true</xsl:param>
 		<xsl:param name="insert_footer_last">true</xsl:param>
+		<xsl:param name="ISOnumber"/>
 		<xsl:param name="copyrightText"/>
 		<xsl:param name="copyrightAbbrIEEE"/>
 		
@@ -4939,6 +4942,7 @@
 			<xsl:with-param name="is_header" select="$is_header"/>
 			<xsl:with-param name="border_around_page" select="$border_around_page"/>
 			<xsl:with-param name="insert_header_first" select="$insert_header_first"/>
+			<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 		</xsl:call-template>
 		<xsl:call-template name="insertFooter">
 			<xsl:with-param name="num" select="$num"/>
@@ -4954,19 +4958,24 @@
 		<xsl:param name="is_header">true</xsl:param>
 		<xsl:param name="border_around_page">false</xsl:param>
 		<xsl:param name="insert_header_first">true</xsl:param>
+		<xsl:param name="ISOnumber"/>
 		<xsl:call-template name="insertHeaderEven">
 			<xsl:with-param name="border_around_page" select="$border_around_page"/>
 			<xsl:with-param name="is_header" select="$is_header"/>
+			<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 		</xsl:call-template>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'"></xsl:when>
 			<xsl:when test="not((($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))) and $insert_header_first = 'true'">
-				<xsl:call-template name="insertHeaderFirst"/>
+				<xsl:call-template name="insertHeaderFirst">
+					<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
+				</xsl:call-template>
 			</xsl:when>
 		</xsl:choose>
 		<xsl:call-template name="insertHeaderOdd">
 			<xsl:with-param name="border_around_page" select="$border_around_page"/>
 			<xsl:with-param name="is_header" select="$is_header"/>
+			<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 		</xsl:call-template>
 	</xsl:template> <!-- END: insertHeader -->
 	
@@ -5008,6 +5017,7 @@
 	<xsl:template name="insertHeaderEven">
 		<xsl:param name="is_header">true</xsl:param>
 		<xsl:param name="border_around_page">false</xsl:param>
+		<xsl:param name="ISOnumber"/>
 		<fo:static-content flow-name="header-even" role="artifact">
 			<xsl:if test="$layoutVersion = '1951' and $border_around_page = 'true'">
 				<!-- box around page -->
@@ -5024,6 +5034,7 @@
 						<xsl:call-template name="insertHeader1951">
 							<xsl:with-param name="is_header" select="$is_header"/>
 							<xsl:with-param name="odd_or_even">even</xsl:with-param>
+							<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 						</xsl:call-template>
 					</xsl:when>
 					<xsl:otherwise>
@@ -5041,6 +5052,7 @@
 		</fo:static-content>
 	</xsl:template> <!-- END: insertHeaderEven -->
 	<xsl:template name="insertHeaderFirst">
+		<xsl:param name="ISOnumber"/>
 		<fo:static-content flow-name="header-first" role="artifact">
 			<xsl:choose>
 				<xsl:when test="$stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM'">
@@ -5095,6 +5107,23 @@
 									</xsl:if>
 									<fo:table-cell>
 										<fo:block>
+											<xsl:variable name="stagename-header-firstpage">
+												<xsl:choose>
+													<!-- $stage-abbreviation = 'PRF'  -->
+													<xsl:when test="$stagename_abbreviation = 'PRF'"><xsl:value-of select="$doctype_localized"/></xsl:when>
+													<!-- https://github.com/metanorma/metanorma-taste/issues/22#issuecomment-3156059344 -->
+													<xsl:when test="$doctype_localized != '' and 
+															count(/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'author'][mn:organization/mn:abbreviation = 'ISO']) = 0"><xsl:value-of select="$doctype_localized"/></xsl:when>
+													<xsl:when test="$layoutVersion = '2024' and $stagename_localized != ''">
+														<xsl:value-of select="$stagename_localized"/>
+													</xsl:when>
+													<xsl:otherwise>
+														<xsl:value-of select="$stage-fullname"/>
+													</xsl:otherwise>
+												</xsl:choose>
+											</xsl:variable>
+											<xsl:variable name="stagename-header-firstpage-uppercased" select="java:toUpperCase(java:java.lang.String.new($stagename-header-firstpage))"/>
+										
 											<xsl:choose>
 												<xsl:when test="$layoutVersion = '2024'">
 													<xsl:choose>
@@ -5127,6 +5156,7 @@
 	<xsl:template name="insertHeaderOdd">
 		<xsl:param name="is_header">true</xsl:param>
 		<xsl:param name="border_around_page">false</xsl:param>
+		<xsl:param name="ISOnumber"/>
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<xsl:if test="$layoutVersion = '1951' and $border_around_page = 'true'">
 				<!-- box around page -->
@@ -5143,6 +5173,7 @@
 						<xsl:call-template name="insertHeader1951">
 							<xsl:with-param name="is_header" select="$is_header"/>
 							<xsl:with-param name="odd_or_even">odd</xsl:with-param>
+							<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 						</xsl:call-template>
 					</xsl:when>
 					<xsl:otherwise>
@@ -5163,6 +5194,7 @@
 	<xsl:template name="insertHeader1951">
 		<xsl:param name="is_header"/>
 		<xsl:param name="odd_or_even"/>
+		<xsl:param name="ISOnumber"/>
 		<fo:block-container font-size="{$font-size_header}" font-weight="bold" text-align="right" padding-top="12.5mm" line-height="1.1">
 			<xsl:call-template name="insertLayoutVersionAttributesTop">
 				<xsl:with-param name="odd_or_even" select="$odd_or_even"/>
@@ -5526,6 +5558,7 @@
 	<xsl:template name="back-page">
 		<xsl:param name="num"/>
 		<xsl:param name="isPublished"/>
+		<xsl:param name="ISOnumber"/>
 		<xsl:param name="copyrightText"/>
 		<xsl:param name="copyrightAbbr"/>
 		<xsl:param name="copyrightAbbrIEEE"/>
@@ -5549,6 +5582,7 @@
 				<xsl:call-template name="insertLastPage">
 					<xsl:with-param name="num" select="$num"/>
 					<xsl:with-param name="copyrightText" select="$copyrightText"/>
+					<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 				</xsl:call-template>
 				</xsl:if>
 			</xsl:otherwise>
@@ -5558,8 +5592,11 @@
 	<xsl:template name="insertLastPage">
 		<xsl:param name="num"/>
 		<xsl:param name="copyrightText"/>
+		<xsl:param name="ISOnumber"/>
 		<fo:page-sequence master-reference="back-page" force-page-count="no-force">
-			<xsl:call-template name="insertHeaderEven"/>
+			<xsl:call-template name="insertHeaderEven">
+				<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
+			</xsl:call-template>
 			<fo:static-content flow-name="back-page-footer" font-size="10pt">
 				<fo:table table-layout="fixed" width="100%">
 					<fo:table-column column-width="33%"/>
