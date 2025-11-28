@@ -461,7 +461,7 @@
 								<fo:inline font-weight="bold"><xsl:value-of select="$value"/></fo:inline>
 							</xsl:if>
 						</xsl:variable>
-						<secretariat><xsl:value-of select="xalan:nodeset($secretariat_)" /></secretariat>
+						<secretariat><xsl:copy-of select="xalan:nodeset($secretariat_)" /></secretariat>
 						
 						<xsl:variable name="ics_">
 							<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:ext/mn:ics/mn:code">
@@ -470,7 +470,7 @@
 								<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>
 							</xsl:for-each>
 						</xsl:variable>
-						<ics><xsl:value-of select="xalan:nodeset($ics_)"/></ics>
+						<ics><xsl:copy-of select="xalan:nodeset($ics_)"/></ics>
 						
 						<udc>
 							<xsl:variable name="classification_udc" select="normalize-space(/mn:metanorma/mn:bibdata/mn:classification[@type = 'UDC'])"/>
@@ -1641,7 +1641,7 @@
 			<xsl:variable name="ISOnumber" select="$variables/mnx:doc[@num = $num]/ISOnumber"/>
 			<xsl:variable name="part" select="$variables/mnx:doc[@num = $num]/part"/>
 			<xsl:variable name="udc" select="$variables/mnx:doc[@num = $num]/udc"/>
-			<xsl:variable name="ics" select="$variables/mnx:doc[@num = $num]/ics"/>
+			<xsl:variable name="ics"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/ics/node()"/></xsl:variable>
 			<xsl:variable name="secretariat"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/secretariat/node()"/></xsl:variable>
 			<xsl:variable name="approvalgroup"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/approvalgroup/node()"/></xsl:variable>
 			<xsl:variable name="stage" select="$variables/mnx:doc[@num = $num]/stage"/>
