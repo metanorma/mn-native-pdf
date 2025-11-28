@@ -1678,7 +1678,7 @@
 				</xsl:when>
 				
 				<xsl:when test="$layoutVersion = '1951'">
-					<fo:page-sequence master-reference="cover-page_1951" force-page-count="no-force">
+					<fo:page-sequence master-reference="cover-page_1951" force-page-count="no-force" initial-page-number="1">
 						<fo:static-content flow-name="cover-page-header" font-family="Times New Roman" font-size="8.5pt" font-weight="bold">
 							<xsl:if test="$revision_date_num &lt; 19680101">
 								<xsl:attribute name="font-family">Arial</xsl:attribute>
@@ -1772,7 +1772,7 @@
 				</xsl:when> <!-- END: $layoutVersion = '1951' -->
 				
 				<xsl:when test="$layoutVersion = '1972' or ($layoutVersion = '1979' and not($doctype = 'addendum'))">
-					<fo:page-sequence master-reference="cover-page_1972" force-page-count="no-force">
+					<fo:page-sequence master-reference="cover-page_1972" force-page-count="no-force" initial-page-number="1">
 						<fo:static-content flow-name="cover-page-footer" font-size="7pt">
 							<xsl:call-template name="insertSingleLine"/>
 							<fo:block font-size="11pt" font-weight="bold" text-align-last="justify" margin-right="1mm">
@@ -1910,7 +1910,7 @@
 				</xsl:when> <!-- END: $layoutVersion = '1972' or ($layoutVersion = '1979' and not($doctype = 'addendum')) -->
 				<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))"><!-- see preface pages below --></xsl:when>
 				<xsl:when test="$layoutVersion = '1987'">
-					<fo:page-sequence master-reference="cover-page_1987" force-page-count="no-force">
+					<fo:page-sequence master-reference="cover-page_1987" force-page-count="no-force" initial-page-number="1">
 						<fo:static-content flow-name="right-region" >
 							<fo:block-container height="50%">
 								<fo:block-container margin-top="8mm" margin-left="2mm">
@@ -1994,7 +1994,7 @@
 				</xsl:when> <!-- END: $layoutVersion = '1987' -->
 			
 				<xsl:when test="$layoutVersion = '2024'">
-					<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
+					<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force" initial-page-number="1">
 						<fo:flow flow-name="xsl-region-body">
 							<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 							
@@ -2400,7 +2400,7 @@
 				</xsl:when> <!-- END: $layoutVersion = '2024' -->
 				
 				<xsl:when test="$stage-abbreviation != ''">
-					<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
+					<fo:page-sequence master-reference="cover-page" force-page-count="no-force" initial-page-number="1">
 						<fo:static-content flow-name="cover-page-footer" font-size="10pt">
 							<xsl:if test="$layoutVersion = '1989'">
 								<xsl:attribute name="font-size">9pt</xsl:attribute>
@@ -2920,7 +2920,7 @@
 				</xsl:when> <!-- $stage-abbreviation != '' -->
 					
 				<xsl:when test="$isPublished = 'true'">
-					<fo:page-sequence master-reference="cover-page-published" force-page-count="no-force">
+					<fo:page-sequence master-reference="cover-page-published" force-page-count="no-force" initial-page-number="1">
 						<fo:static-content flow-name="cover-page-footer" font-size="10pt">
 							<xsl:call-template name="insertTripleLine"/>
 							<fo:table table-layout="fixed" width="100%" margin-bottom="3mm" role="SKIP">
@@ -3021,7 +3021,7 @@
 					</fo:page-sequence>
 				</xsl:when> <!-- $isPublished = 'true' -->
 				<xsl:otherwise>
-					<fo:page-sequence master-reference="cover-page-nonpublished" force-page-count="no-force">
+					<fo:page-sequence master-reference="cover-page-nonpublished" force-page-count="no-force" initial-page-number="1">
 						<fo:static-content flow-name="cover-page-header" font-size="10pt">
 							<fo:block-container height="24mm" display-align="before">
 								<fo:block padding-top="12.5mm">
