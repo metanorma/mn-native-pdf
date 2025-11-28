@@ -28,15 +28,499 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="column_gap">8.5mm</xsl:variable>
-
+	<xsl:variable name="revision_date" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:version/mn:revision-date)"/>
+	<xsl:variable name="revision_date_num" select="number(translate($revision_date,'-',''))"/>
+	
+	<!-- TO DO: move inside 'variables' -->
+	<xsl:variable name="layoutVersion_">
+		<xsl:choose>
+			<xsl:when test="$document_scheme = ''">2024</xsl:when>
+			<xsl:when test="$document_scheme = '1951' or $document_scheme = '1972' or $document_scheme = '1979' or $document_scheme = '1987' or $document_scheme = '1989' or $document_scheme = '2012' or $document_scheme = '2013' or $document_scheme = '2024'"><xsl:value-of select="$document_scheme"/></xsl:when>
+			<xsl:otherwise>default</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="layoutVersion" select="normalize-space($layoutVersion_)"/>
+	
 	<xsl:variable name="doctype" select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:doctype"/>
 	
-	<xsl:variable name="proof-text">PROOF/ÉPREUVE</xsl:variable>
+	<xsl:variable name="variables_">
+		<xsl:for-each select="//mn:metanorma">
+			<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
+			
+			<xsl:variable name="current_document">
+				<xsl:copy-of select="."/>
+			</xsl:variable>
+			
+			<xsl:for-each select="xalan:nodeset($current_document)">
+				<mnx:doc num="{$num}">
+					<!-- <mnx:variables> -->
+					
+						<i18n_reference_number_abbrev><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number_abbrev</xsl:with-param></xsl:call-template></i18n_reference_number_abbrev>
+						<i18n_reference_number><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number</xsl:with-param></xsl:call-template></i18n_reference_number>
+						<i18n_descriptors><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Descriptor.pl</xsl:with-param></xsl:call-template></i18n_descriptors>
+						<i18n_voting_begins_on><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">voting_begins_on</xsl:with-param></xsl:call-template></i18n_voting_begins_on>
+						<i18n_voting_terminates_on><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">voting_terminates_on</xsl:with-param></xsl:call-template></i18n_voting_terminates_on>
+						<i18n_price_based_on><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">price_based_on</xsl:with-param></xsl:call-template></i18n_price_based_on>
+						<i18n_price><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">price</xsl:with-param></xsl:call-template></i18n_price>
+						<i18n_date_first_printing><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">date_first_printing</xsl:with-param></xsl:call-template></i18n_date_first_printing>
+						<i18n_date_printing><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">date_printing</xsl:with-param></xsl:call-template></i18n_date_printing>
+						<i18n_corrected_version><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">corrected_version</xsl:with-param></xsl:call-template></i18n_corrected_version>
+						<i18n_fast_track_procedure><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">fast-track-procedure</xsl:with-param></xsl:call-template></i18n_fast_track_procedure>
+						<i18n_iso_cen_parallel><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">iso-cen-parallel</xsl:with-param></xsl:call-template></i18n_iso_cen_parallel>
+						<xsl:variable name="i18n_all_rights_reserved"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">all_rights_reserved</xsl:with-param></xsl:call-template></xsl:variable>
+						<i18n_locality_page><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.page</xsl:with-param></xsl:call-template></i18n_locality_page>
+						<i18n_locality_part><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template></i18n_locality_part>
+						<xsl:variable name="i18n_secretariat"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">secretariat</xsl:with-param></xsl:call-template></xsl:variable>
+						<xsl:variable name="i18n_classification_UDC"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">classification-UDC</xsl:with-param></xsl:call-template></xsl:variable>
+						<i18n_draft_comment_1><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_1</xsl:with-param></xsl:call-template></i18n_draft_comment_1>
+						<i18n_draft_comment_2><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_2</xsl:with-param></xsl:call-template></i18n_draft_comment_2>
+						<i18n_draft_comment_3><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_3</xsl:with-param></xsl:call-template></i18n_draft_comment_3>
+					
+						<xsl:variable name="docidentifier_iso" select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'iso'] | /mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'ISO']"/>
+						<xsl:variable name="docidentifier_undated_" select="normalize-space(/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'iso-undated'])"/>
+						
+						<docidentifier_undated><xsl:value-of select="$docidentifier_undated_"/><xsl:if test="$docidentifier_undated_ = ''"><xsl:value-of select="$docidentifier_iso"/></xsl:if></docidentifier_undated>
+						
+						<!-- https://github.com/metanorma/metanorma-csa/issues/329 -->
+						<!-- if stage >= 60 -->
+						<xsl:variable name="stage_published" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:semantic-metadata/mn:stage-published)"/>
+						<stage_published><xsl:value-of select="$stage_published"/></stage_published>
+						
+						<xsl:variable name="abbreviation" select="normalize-space(/mn:metanorma/mn:bibdata/mn:status/mn:stage/@abbreviation)"/>
+						<abbreviation><xsl:value-of select="$abbreviation"/></abbreviation>
+						
+						<xsl:variable name="abbreviation_uppercased" select="java:toUpperCase(java:java.lang.String.new($abbreviation))"/>
+						<abbreviation_uppercased><xsl:value-of select="$abbreviation_uppercased"/></abbreviation_uppercased>
+						
+						<xsl:variable name="stage" select="number(/mn:metanorma/mn:bibdata/mn:status/mn:stage)"/>
+						<stage><xsl:value-of select="$stage"/></stage>
+						
+						<xsl:variable name="substage" select="number(/mn:metanorma/mn:bibdata/mn:status/mn:substage)"/>	
+						<substage><xsl:value-of select="$substage"/></substage>
+						
+						<xsl:variable name="stage-abbreviation">
+							<xsl:choose>
+								<xsl:when test="$abbreviation_uppercased != ''">
+									<xsl:value-of select="$abbreviation_uppercased"/>
+								</xsl:when>
+								<xsl:when test="$stage = 0 and $substage = 0">PWI</xsl:when>
+								<xsl:when test="$stage = 0">NWIP</xsl:when> <!-- NWIP (NP) -->
+								<xsl:when test="$stage = 10">AWI</xsl:when>
+								<xsl:when test="$stage = 20">WD</xsl:when>
+								<xsl:when test="$stage = 30">CD</xsl:when>
+								<xsl:when test="$stage = 40">DIS</xsl:when>
+								<xsl:when test="$stage = 50">FDIS</xsl:when>
+								<xsl:when test="$stage = 60 and $substage = 0">PRF</xsl:when>
+								<xsl:when test="$stage = 60 and $substage = 60">IS</xsl:when>
+								<xsl:when test="$stage &gt;=60">published</xsl:when>
+								<xsl:otherwise></xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<stage-abbreviation><xsl:value-of select="$stage-abbreviation"/></stage-abbreviation>
+						
+						<xsl:variable name="docidentifierISO_undated_">
+							<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM')">
+								<xsl:value-of select="$docidentifier_undated_"/>
+							</xsl:if>
+						</xsl:variable>
+						<xsl:variable name="docidentifierISO_undated" select="normalize-space($docidentifierISO_undated_)"/>
+						<docidentifierISO_undated><xsl:value-of select="$docidentifierISO_undated"/></docidentifierISO_undated>
+						
+						<xsl:variable name="docidentifierISO_">
+							<xsl:value-of select="$docidentifierISO_undated"/>
+							<xsl:if test="$docidentifierISO_undated = ''">
+								<xsl:value-of select="$docidentifier_iso"/>
+							</xsl:if>
+						</xsl:variable>
+						<xsl:variable name="docidentifierISO" select="normalize-space($docidentifierISO_)"/>
+						<docidentifierISO><xsl:value-of select="$docidentifierISO"/></docidentifierISO>
+						
+						<xsl:variable name="docidentifierISO_with_break_" select="java:replaceAll(java:java.lang.String.new($docidentifierISO),'^([^\d]+) (\d)', concat('$1', $linebreak, '$2'))"/> <!-- add line break before 1st sequence 'space digit' -->
+						<docidentifierISO_with_break>
+							<xsl:choose>
+								<xsl:when test="contains($docidentifierISO_with_break_, ' ') or contains($docidentifierISO_with_break_, $linebreak)"><xsl:value-of select="$docidentifierISO_with_break_"/></xsl:when>
+								<xsl:otherwise><xsl:value-of select="java:replaceAll(java:java.lang.String.new($docidentifierISO_with_break_), '(\/)(\d{3,})', concat('$1', $zero_width_space, '$2'))"/></xsl:otherwise>
+							</xsl:choose>
+						</docidentifierISO_with_break>
 
-	<xsl:variable name="ISO_title_en">INTERNATIONAL ORGANIZATION FOR STANDARDIZATION</xsl:variable>
-	<xsl:variable name="ISO_title_ru">МЕЖДУНАРОДНАЯ ОРГАНИЗАЦИЯ ПО СТАНДАРТИЗАЦИИ</xsl:variable>
-	<xsl:variable name="ISO_title_fr">ORGANISATION INTERNATIONALE DE NORMALISATION</xsl:variable>
+						<xsl:variable name="docidentifier_another_">
+							<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type != '' and @type != 'ISO' and not(starts-with(@type, 'iso-')) and @type != 'URN']">
+								<xsl:value-of select="."/>
+								<xsl:if test="position() != last()"><xsl:value-of select="$linebreak"/></xsl:if>
+							</xsl:for-each>
+						</xsl:variable>
+						<docidentifier_another>
+							<xsl:if test="normalize-space($docidentifier_another_) != ''">
+								<fo:block margin-top="12pt">
+									<xsl:value-of select="java:replaceAll(java:java.lang.String.new($docidentifier_another_),'^([^\d]+) (\d)', concat('$1', $linebreak, '$2'))"/>
+								</fo:block>
+							</xsl:if>
+						</docidentifier_another>
+
+						<xsl:variable name="copyrightYear" select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
+						<copyrightYear><xsl:value-of select="$copyrightYear"/></copyrightYear>
+						
+						<xsl:variable name="copyrightAbbr__">
+							<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization[normalize-space(mn:abbreviation) != 'IEEE']">
+								<abbr>
+									<xsl:choose>
+										<xsl:when test="mn:abbreviation"><xsl:value-of select="mn:abbreviation"/></xsl:when>
+										<xsl:otherwise><xsl:value-of select="mn:name"/></xsl:otherwise>
+									</xsl:choose>
+								</abbr>
+							</xsl:for-each>
+						</xsl:variable>
+						<xsl:variable name="copyrightAbbr_">
+							<xsl:for-each select="xalan:nodeset($copyrightAbbr__)//*">
+								<xsl:value-of select="."/>
+								<xsl:if test="position() != last()">
+									<xsl:choose>
+										<xsl:when test="following-sibling::*[1]/text() = 'IDF'"> and </xsl:when>
+										<xsl:otherwise>/</xsl:otherwise>
+									</xsl:choose>
+								</xsl:if>
+							</xsl:for-each>
+						</xsl:variable>
+						<xsl:variable name="copyrightAbbr" select="normalize-space($copyrightAbbr_)"/>
+						<copyrightAbbr><xsl:value-of select="$copyrightAbbr"/></copyrightAbbr>
+						
+						<xsl:variable name="copyrightAbbrIEEE" select="normalize-space(/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:abbreviation[. = 'IEEE'])"/>
+						<copyrightAbbrIEEE><xsl:value-of select="$copyrightAbbrIEEE"/></copyrightAbbrIEEE>
+						
+						<copyrightText>
+							<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear ,' – ', $i18n_all_rights_reserved)"/>
+							<xsl:if test="$copyrightAbbrIEEE != ''">
+								<xsl:value-of select="$linebreak"/>
+								<xsl:value-of select="concat('© ', $copyrightAbbrIEEE, ' ', $copyrightYear ,' – ', $i18n_all_rights_reserved)"/>
+							</xsl:if>
+						</copyrightText>
+						
+						<copyrightTextLastPage2024>
+							<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear)"/>
+							<xsl:if test="$copyrightAbbrIEEE != ''">
+								<xsl:value-of select="$linebreak"/>
+								<xsl:value-of select="concat('© ', $copyrightAbbrIEEE, ' ', $copyrightYear)"/>
+							</xsl:if>
+							<xsl:value-of select="$linebreak"/>
+							<xsl:value-of select="$i18n_all_rights_reserved"/>
+						</copyrightTextLastPage2024>
+
+						<xsl:variable name="iso_reference_" select="normalize-space(/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'iso-reference'])"/>
+						<xsl:variable name="iso_reference"><xsl:value-of select="$iso_reference_"/><xsl:if test="$iso_reference_ = ''"><xsl:value-of select="$docidentifier_iso"/></xsl:if></xsl:variable>
+						<iso_reference><xsl:value-of select="$iso_reference"/></iso_reference>
+						
+						<xsl:variable name="docidentifier_iso_with_lang_" select="normalize-space(/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'iso-with-lang'])"/>
+						<xsl:variable name="docidentifier_iso_with_lang"><xsl:value-of select="$docidentifier_iso_with_lang_"/><xsl:if test="$docidentifier_iso_with_lang_ = ''"><xsl:value-of select="$iso_reference"/></xsl:if></xsl:variable>
+						<docidentifier_iso_with_lang><xsl:value-of select="$docidentifier_iso_with_lang"/></docidentifier_iso_with_lang>
+						
+						<xsl:variable name="lang-1st-letter_tmp" select="substring-before(substring-after($docidentifier_iso_with_lang, '('), ')')"/>
+						<lang-1st-letter><xsl:value-of select="concat('(', $lang-1st-letter_tmp , ')')"/></lang-1st-letter>
+						
+						<xsl:variable name="anotherNumbers">
+							<xsl:variable name="year_iso_reference" select="concat(':',substring-after($iso_reference,':'))"/> 
+							<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type != '' and @type != 'ISO' and not(starts-with(@type, 'iso-')) and @type != 'URN']">
+								<xsl:value-of select="$linebreak"/><xsl:value-of select="concat(., $year_iso_reference)"/>
+							</xsl:for-each>
+						</xsl:variable>
+						<ISOnumber>
+							<xsl:choose>
+								<xsl:when test="$layoutVersion = '2024' and $docidentifier_iso_with_lang != ''">
+									<xsl:value-of select="$docidentifier_iso_with_lang"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<!-- part separator '-' replace to '/' -->
+									<xsl:variable name="iso_reference_tmp" select="java:replaceAll(java:java.lang.String.new($iso_reference),'-','/')"/>
+									<xsl:choose>
+										<!-- year separator replace to '-' -->
+										<xsl:when test="$layoutVersion = '1951'">
+											<xsl:variable name="iso_reference_tmp_" select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':',' - ')"/>
+											<!-- insert space before ( -->
+											<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp_),'\(',' \(')"/>
+										</xsl:when>
+										<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979'">
+											<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':','-')"/>
+										</xsl:when>
+										<xsl:when test="$layoutVersion = '1987'">
+											<!-- insert space around : -->
+											<xsl:variable name="iso_reference_tmp_" select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':',' : ')"/>
+											<!-- insert space before ( -->
+											<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp_),'\(',' \(')"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="$iso_reference"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:otherwise>
+							</xsl:choose>
+							<xsl:value-of select="$anotherNumbers"/>
+						</ISOnumber>
+
+						<part><xsl:value-of select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@part)"/></part>
+						
+						<xsl:variable name="doctype" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/>	 
+						<doctype><xsl:value-of select="$doctype"/></doctype>
+						
+						<xsl:variable name="doctype_localized_" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype[@language = $lang]"/>
+						<xsl:variable name="doctype_localized">
+							<xsl:choose>
+								<xsl:when test="$doctype_localized_ != ''">
+									<xsl:value-of select="translate(normalize-space($doctype_localized_),'-',' ')"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="translate(normalize-space($doctype),'-',' ')"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<doctype_localized><xsl:value-of select="$doctype_localized"/></doctype_localized>
+						
+						<doctype_uppercased><xsl:value-of select="java:toUpperCase(java:java.lang.String.new($doctype_localized))"/></doctype_uppercased>
+						
+						<xsl:variable name="stagename" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:stagename)"/>
+						<stagename><xsl:value-of select="$stagename"/></stagename>
+						
+						<xsl:variable name="stagename_abbreviation" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:stagename/@abbreviation)"/>
+						<stagename_abbreviation><xsl:value-of select="$stagename_abbreviation"/></stagename_abbreviation>
+						
+						<xsl:variable name="stagename_localized" select="normalize-space(/mn:metanorma/mn:bibdata/mn:status/mn:stage[@language = $lang])"/>
+						<stagename_localized><xsl:value-of select="$stagename_localized"/></stagename_localized>
+						
+						<stagename_localized_coverpage><xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:status/mn:stage[@language = $lang and @type = 'coverpage']/node()"/></stagename_localized_coverpage>
+						<stagename_localized_firstpage><xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:status/mn:stage[@language = $lang and @type = 'firstpage']/node()"/></stagename_localized_firstpage>
+						
+						
+						
+						
+
+						<xsl:variable name="stage-fullname">
+							<xsl:choose>
+								<xsl:when test="$stagename_localized != ''"> <!--  and $layoutVersion != '2024' -->
+									<xsl:value-of select="$stagename_localized"/>
+								</xsl:when>
+								<xsl:when test="$stagename != ''">
+									<xsl:value-of select="$stagename"/>
+								</xsl:when>
+								<xsl:when test="$stage-abbreviation = 'NWIP' or
+																				$stage-abbreviation = 'NP'">NEW WORK ITEM PROPOSAL</xsl:when>
+								<xsl:when test="$stage-abbreviation = 'PWI'">PRELIMINARY WORK ITEM</xsl:when>
+								<xsl:when test="$stage-abbreviation = 'AWI'">APPROVED WORK ITEM</xsl:when>
+								<xsl:when test="$stage-abbreviation = 'WD'">WORKING DRAFT</xsl:when>
+								<xsl:when test="$stage-abbreviation = 'CD'">COMMITTEE DRAFT</xsl:when>
+								<xsl:when test="$stage-abbreviation = 'DIS'">DRAFT INTERNATIONAL STANDARD</xsl:when>
+								<xsl:when test="$stage-abbreviation = 'FDIS'">FINAL DRAFT INTERNATIONAL STANDARD</xsl:when>
+								<xsl:otherwise><xsl:value-of select="$doctype_localized"/></xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<stage-fullname><xsl:value-of select="$stage-fullname"/></stage-fullname>
+						
+						<xsl:variable name="stage-fullname-uppercased" select="java:toUpperCase(java:java.lang.String.new($stage-fullname))"/>
+						<stage-fullname-uppercased><xsl:value-of select="$stage-fullname-uppercased"/></stage-fullname-uppercased>
+						
+						<xsl:variable name="stagename-header-firstpage">
+							<xsl:choose>
+								<!-- $stage-abbreviation = 'PRF'  -->
+								<xsl:when test="$stagename_abbreviation = 'PRF'"><xsl:value-of select="$doctype_localized"/></xsl:when>
+								<!-- https://github.com/metanorma/metanorma-taste/issues/22#issuecomment-3156059344 -->
+								<xsl:when test="$doctype_localized != '' and 
+										count(/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'author'][mn:organization/mn:abbreviation = 'ISO']) = 0"><xsl:value-of select="$doctype_localized"/></xsl:when>
+								<xsl:when test="$layoutVersion = '2024' and $stagename_localized != ''">
+									<xsl:value-of select="$stagename_localized"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$stage-fullname"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<stagename-header-firstpage><xsl:value-of select="$stagename-header-firstpage"/></stagename-header-firstpage>
+						<stagename-header-firstpage-uppercased><xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename-header-firstpage))"/></stagename-header-firstpage-uppercased>
+							
+						<stagename-header-coverpage>
+							<xsl:choose>
+								<xsl:when test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or starts-with($stage-abbreviation, 'DTS') or starts-with($stage-abbreviation, 'DTR') or $stagename_abbreviation = 'DIS'">DRAFT</xsl:when>
+								<xsl:when test="$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or starts-with($stage-abbreviation, 'FDTS') or starts-with($stage-abbreviation, 'FDTR') or $stagename_abbreviation = 'FDIS'">FINAL DRAFT</xsl:when>
+								<xsl:when test="$stage-abbreviation = 'PRF'"></xsl:when>
+								<xsl:when test="$stage-abbreviation = 'IS'"></xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$stage-fullname-uppercased"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</stagename-header-coverpage>
+						
+						<!-- UPPERCASED stage name -->	
+						<!-- <item name="NWIP" show="true" header="PRELIMINARY WORK ITEM" shortname="NEW WORK ITEM PROPOSAL">NEW WORK ITEM PROPOSAL</item>
+						<item name="PWI" show="true" header="PRELIMINARY WORK ITEM" shortname="PRELIMINARY WORK ITEM">PRELIMINARY WORK ITEM</item>		
+						<item name="NP" show="true" header="PRELIMINARY WORK ITEM" shortname="NEW WORK ITEM PROPOSAL">NEW WORK ITEM PROPOSAL</item>
+						<item name="AWI" show="true" header="APPROVED WORK ITEM" shortname="APPROVED WORK ITEM">APPROVED WORK ITEM</item>
+						<item name="WD" show="true" header="WORKING DRAFT" shortname="WORKING DRAFT">WORKING DRAFT</item>
+						<item name="CD" show="true" header="COMMITTEE DRAFT" shortname="COMMITTEE DRAFT">COMMITTEE DRAFT</item>
+						<item name="DIS" show="true" header="DRAFT INTERNATIONAL STANDARD" shortname="DRAFT">DRAFT INTERNATIONAL STANDARD</item>
+						<item name="FDIS" show="true" header="FINAL DRAFT INTERNATIONAL STANDARD" shortname="FINAL DRAFT">FINAL DRAFT INTERNATIONAL STANDARD</item>
+						<item name="PRF">PROOF</item> -->
+						
+						
+						<!-- 
+							<status>
+							<stage>30</stage>
+							<substage>92</substage>
+						</status>
+							The <stage> and <substage> values are well defined, 
+							as the International Harmonized Stage Codes (https://www.iso.org/stage-codes.html):
+							stage 60 means published, everything before is a Draft (90 means withdrawn, but the document doesn't change anymore) -->
+						<isPublished>
+							<xsl:choose>
+								<xsl:when test="string($stage) = 'NaN'">false</xsl:when>
+								<xsl:when test="$stage &gt;=60">true</xsl:when>
+								<xsl:when test="normalize-space($stage-abbreviation) != ''">true</xsl:when>
+								<xsl:otherwise>false</xsl:otherwise>
+							</xsl:choose>
+						</isPublished>
+						
+						<xsl:variable name="document-master-reference_addon"><xsl:if test="$stage-abbreviation = ''">-nonpublished</xsl:if></xsl:variable>
+						<document-master-reference_addon><xsl:value-of select="$document-master-reference_addon"/></document-master-reference_addon>
+
+						<force-page-count-preface>
+							<xsl:choose>
+								<xsl:when test="$document-master-reference_addon = ''">end-on-even</xsl:when>
+								<xsl:otherwise>no-force</xsl:otherwise>
+							</xsl:choose>
+						</force-page-count-preface>
+						
+						<force-page-count-main_sections/>
+
+						<docnumber_with_prefix><xsl:if test="$doctype = 'recommendation'">R&#xa0;</xsl:if><xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docnumber"/></docnumber_with_prefix>
+
+						<lang_other>
+							<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:title[@language != $lang]">
+								<xsl:if test="not(preceding-sibling::mn:title[@language = current()/@language])">
+									<xsl:element name="lang" namespace="{$namespace_mn_xsl}"><xsl:value-of select="@language"/></xsl:element>
+								</xsl:if>
+							</xsl:for-each>
+						</lang_other>
+						
+						<xsl:variable name="approvalgroup_">
+							<!-- Example: ISO/TC 46/SC 2 -->
+							<!-- ISO/SG SMART/SG TS/AG 1 -->
+							<!-- <xsl:variable name="approvalgroup" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:approvalgroup/@identifier)"/> -->
+							<xsl:variable name="contributor_authorizer_">
+								<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'authorizer']/mn:description = 'committee']"/>
+							</xsl:variable>
+							<xsl:variable name="contributor_authorizer" select="xalan:nodeset($contributor_authorizer_)"/>
+							<xsl:variable name="organization_abbreviation" select="normalize-space($contributor_authorizer/mn:contributor/mn:organization/mn:abbreviation)"/>
+							<xsl:variable name="approvalgroup">
+								<xsl:if test="$organization_abbreviation = 'ISO' or 
+									contains($organization_abbreviation, 'ISO/') or
+									contains($organization_abbreviation, '/ISO')"><xsl:value-of select="concat($organization_abbreviation, '/')"/></xsl:if>
+								<xsl:value-of select="normalize-space($contributor_authorizer/mn:contributor/mn:organization/mn:subdivision/mn:identifier[@type = 'full'])"/>
+							</xsl:variable>
+							<xsl:variable name="parts_by_slash">
+								<xsl:call-template name="split">
+									<xsl:with-param name="pText" select="$approvalgroup"/>
+									<xsl:with-param name="sep" select="'/'"/>
+									<xsl:with-param name="normalize-space">false</xsl:with-param>
+									<xsl:with-param name="keep_sep">true</xsl:with-param>
+								</xsl:call-template>
+							</xsl:variable>
+							<xsl:variable name="parts_with_subparts">
+								<xsl:for-each select="xalan:nodeset($parts_by_slash)//mnx:item">
+									<xsl:element name="subitem" namespace="{$namespace_mn_xsl}">
+										<xsl:call-template name="split">
+											<xsl:with-param name="pText" select="."/>
+											<xsl:with-param name="sep" select="' '"/>
+											<xsl:with-param name="normalize-space">false</xsl:with-param>
+											<xsl:with-param name="keep_sep">true</xsl:with-param>
+										</xsl:call-template>
+									</xsl:element>
+								</xsl:for-each>
+							</xsl:variable>
+							<xsl:for-each select="xalan:nodeset($parts_with_subparts)//mnx:subitem">
+								<xsl:choose>
+									<xsl:when test="position() = 1">
+										<xsl:value-of select="."/>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:for-each select="mnx:item">
+											<xsl:choose>
+												<xsl:when test="position() = last()">
+													<fo:inline font-weight="bold"><xsl:value-of select="."/></fo:inline>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:value-of select="."/>
+												</xsl:otherwise>
+											</xsl:choose>
+										</xsl:for-each>
+									</xsl:otherwise>
+								</xsl:choose>
+							</xsl:for-each>
+						</xsl:variable>
+						<approvalgroup><xsl:copy-of select="xalan:nodeset($approvalgroup_)" /></approvalgroup>
+						
+						<xsl:variable name="secretariat_">
+							<!-- <xsl:variable name="value" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:secretariat)"/> -->
+							<xsl:variable name="value" select="normalize-space(/mn:metanorma/mn:bibdata/mn:contributor[mn:role/mn:description = 'secretariat']/mn:organization/mn:subdivision)"/>
+							<xsl:if test="$value != ''">
+								<xsl:value-of select="concat($i18n_secretariat, ': ')"/>
+								<fo:inline font-weight="bold"><xsl:value-of select="$value"/></fo:inline>
+							</xsl:if>
+						</xsl:variable>
+						<secretariat><xsl:value-of select="xalan:nodeset($secretariat_)" /></secretariat>
+						
+						<xsl:variable name="ics_">
+							<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:ext/mn:ics/mn:code">
+								<xsl:if test="position() = 1"><fo:inline>ICS: </fo:inline></xsl:if>
+								<xsl:value-of select="."/>
+								<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>
+							</xsl:for-each>
+						</xsl:variable>
+						<ics><xsl:value-of select="xalan:nodeset($ics_)"/></ics>
+						
+						<udc>
+							<xsl:variable name="classification_udc" select="normalize-space(/mn:metanorma/mn:bibdata/mn:classification[@type = 'UDC'])"/>
+							<xsl:choose>
+								<xsl:when test="$classification_udc != ''">
+									<xsl:value-of select="concat($i18n_classification_UDC, '&#xa0;')"/>
+									<xsl:value-of select="java:replaceAll(java:java.lang.String.new($classification_udc),'(:)',' $1 ')"/>
+								</xsl:when>
+								<xsl:otherwise>&#xa0;</xsl:otherwise>
+							</xsl:choose>
+						</udc>
+
+						<xsl:variable name="revision_date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:version/mn:revision-date)"/>
+						<revision_date><xsl:value-of select="$revision_date"/></revision_date>
+						<revision_date_num><xsl:value-of select="number(translate($revision_date,'-',''))"/></revision_date_num>
+						
+						<xsl:variable name="layoutVersion_">
+							<xsl:choose>
+								<xsl:when test="$document_scheme = ''">2024</xsl:when>
+								<xsl:when test="$document_scheme = '1951' or $document_scheme = '1972' or $document_scheme = '1979' or $document_scheme = '1987' or $document_scheme = '1989' or $document_scheme = '2012' or $document_scheme = '2013' or $document_scheme = '2024'"><xsl:value-of select="$document_scheme"/></xsl:when>
+								<xsl:otherwise>default</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<layoutVersion><xsl:value-of select="normalize-space($layoutVersion_)"/></layoutVersion>
+						
+						<xsl:variable name="color_secondary_value" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-secondary)"/>
+						<color_secondary>
+							<xsl:choose>
+								<xsl:when test="$color_secondary_value != ''"><xsl:value-of select="$color_secondary_value"/></xsl:when>
+								<xsl:otherwise><xsl:value-of select="$COVER_RED"/></xsl:otherwise>
+							</xsl:choose>
+						</color_secondary>
+	
+					<!-- </mnx:variables> -->
+				</mnx:doc>
+			</xsl:for-each>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:variable name="variables" select="xalan:nodeset($variables_)"/>
+	
+	<xsl:variable name="COLUMN_GAP">8.5mm</xsl:variable>
+	
+	<xsl:variable name="PROOF_TEXT">PROOF/ÉPREUVE</xsl:variable>
+	
+	<xsl:variable name="ISO_TITLE_EN">INTERNATIONAL ORGANIZATION FOR STANDARDIZATION</xsl:variable>
+	<xsl:variable name="ISO_TITLE_RU">МЕЖДУНАРОДНАЯ ОРГАНИЗАЦИЯ ПО СТАНДАРТИЗАЦИИ</xsl:variable>
+	<xsl:variable name="ISO_TITLE_FR">ORGANISATION INTERNATIONALE DE NORMALISATION</xsl:variable>
+	
+	<xsl:variable name="COVER_PAGE_BORDER">0.5pt solid black</xsl:variable>
+	<xsl:variable name="COVER_RED">rgb(237, 28, 36)</xsl:variable>
 	
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
@@ -51,7 +535,7 @@
 		
 		<xsl:for-each select="//mn:metanorma">
 			<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
-			<xsl:variable name="docidentifier"><xsl:value-of select="mn:bibdata/mn:docidentifier[@type = 'ITU']"/></xsl:variable>
+			<xsl:variable name="docidentifier"><xsl:value-of select="mn:bibdata/mn:docidentifier[@type = 'ISO']"/></xsl:variable>
 			<xsl:variable name="docnumber_">
 				<xsl:value-of select="$docidentifier"/>
 				<xsl:if test="normalize-space($docidentifier) = ''">
@@ -76,22 +560,9 @@
 				</mnx:doc>
 			</xsl:for-each>
 		</xsl:for-each>
-	</xsl:variable>
+	</xsl:variable> <!-- END: contents_ -->
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
-	<xsl:variable name="revision_date" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:version/mn:revision-date)"/>
-	<xsl:variable name="revision_date_num" select="number(translate($revision_date,'-',''))"/>
-	
-	<xsl:variable name="layoutVersion_">
-		<xsl:choose>
-			<xsl:when test="$document_scheme = ''">2024</xsl:when>
-			<xsl:when test="$document_scheme = '1951' or $document_scheme = '1972' or $document_scheme = '1979' or $document_scheme = '1987' or $document_scheme = '1989' or $document_scheme = '2012' or $document_scheme = '2013' or $document_scheme = '2024'"><xsl:value-of select="$document_scheme"/></xsl:when>
-			<xsl:otherwise>default</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-	<xsl:variable name="layoutVersion" select="normalize-space($layoutVersion_)"/>
-	<xsl:variable name="cover_page_border">0.5pt solid black</xsl:variable>
-	<xsl:variable name="color_red">rgb(237, 28, 36)</xsl:variable>
 	
 	<xsl:variable name="XML" select="/"/>
 	
@@ -273,7 +744,7 @@
 			
 			<!-- first page -->
 			<fo:simple-page-master master-name="firstpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$COLUMN_GAP}"/>
 				<fo:region-before region-name="header-first" extent="{$marginTop}mm">
 					<xsl:if test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))">
 						<xsl:attribute name="region-name">header-odd</xsl:attribute>
@@ -285,7 +756,7 @@
 			</fo:simple-page-master>
 			<!-- odd pages -->
 			<fo:simple-page-master master-name="odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$COLUMN_GAP}"/>
 				<fo:region-before region-name="header-odd" extent="{$marginTop}mm">
 					<xsl:if test="$layoutVersion = '1951'">
 						<xsl:attribute name="precedence">true</xsl:attribute>
@@ -297,7 +768,7 @@
 			</fo:simple-page-master>
 			
 			<fo:simple-page-master master-name="odd-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" column-count="{$layout_columns}" column-gap="{$COLUMN_GAP}"/>
 				<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> <!--   display-align="center" -->
 				<fo:region-after region-name="footer-odd" extent="{$marginBottom - 2}mm"/>
 				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
@@ -305,7 +776,7 @@
 			</fo:simple-page-master>
 			<!-- even pages -->
 			<fo:simple-page-master master-name="even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm" column-count="{$layout_columns}" column-gap="{$COLUMN_GAP}"/>
 				<fo:region-before region-name="header-even" extent="{$marginTop}mm">
 					<xsl:if test="$layoutVersion = '1951'">
 						<xsl:attribute name="precedence">true</xsl:attribute>
@@ -318,7 +789,7 @@
 			
 			<!-- for 1951 layout only -->
 			<fo:simple-page-master master-name="even-last" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
-				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm" column-count="{$layout_columns}" column-gap="{$COLUMN_GAP}"/>
 				<fo:region-before region-name="header-even" extent="{$marginTop}mm" precedence="true"/>
 				<fo:region-after region-name="footer-even-last" extent="{$marginBottom - 2}mm"/>
 				<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
@@ -326,7 +797,7 @@
 			</fo:simple-page-master>
 			
 			<fo:simple-page-master master-name="even-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
-				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm" column-count="{$layout_columns}" column-gap="{$column_gap}"/>
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm" column-count="{$layout_columns}" column-gap="{$COLUMN_GAP}"/>
 				<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
 				<fo:region-after region-name="footer-even" extent="{$marginBottom - 2}mm"/>
 				<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
@@ -541,775 +1012,526 @@
 			</xsl:if>
 			
 			<!-- <xsl:for-each select="xalan:nodeset($updated_xml)/*"> -->
-			
 			<xsl:for-each select="xalan:nodeset($updated_xml)//mn:metanorma">
 				<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
-				
+			
 				<xsl:variable name="current_document">
 					<xsl:copy-of select="."/>
 				</xsl:variable>
 				
 				<xsl:for-each select="xalan:nodeset($current_document)">
-					
-					<xsl:variable name="abbreviation" select="normalize-space(/mn:metanorma/mn:bibdata/mn:status/mn:stage/@abbreviation)"/>
-					<xsl:variable name="abbreviation_uppercased" select="java:toUpperCase(java:java.lang.String.new($abbreviation))"/>
-					
-					<xsl:variable name="stage" select="number(/mn:metanorma/mn:bibdata/mn:status/mn:stage)"/>
-					<xsl:variable name="substage" select="number(/mn:metanorma/mn:bibdata/mn:status/mn:substage)"/>	
-					
-					<xsl:variable name="stage-abbreviation">
-						<xsl:choose>
-							<xsl:when test="$abbreviation_uppercased != ''">
-								<xsl:value-of select="$abbreviation_uppercased"/>
-							</xsl:when>
-							<xsl:when test="$stage = 0 and $substage = 0">PWI</xsl:when>
-							<xsl:when test="$stage = 0">NWIP</xsl:when> <!-- NWIP (NP) -->
-							<xsl:when test="$stage = 10">AWI</xsl:when>
-							<xsl:when test="$stage = 20">WD</xsl:when>
-							<xsl:when test="$stage = 30">CD</xsl:when>
-							<xsl:when test="$stage = 40">DIS</xsl:when>
-							<xsl:when test="$stage = 50">FDIS</xsl:when>
-							<xsl:when test="$stage = 60 and $substage = 0">PRF</xsl:when>
-							<xsl:when test="$stage = 60 and $substage = 60">IS</xsl:when>
-							<xsl:when test="$stage &gt;=60">published</xsl:when>
-							<xsl:otherwise></xsl:otherwise>
-						</xsl:choose>
-					</xsl:variable>
-					
-					<xsl:variable name="stagename_localized" select="normalize-space(/mn:metanorma/mn:bibdata/mn:status/mn:stage[@language = $lang])"/>
-					
-					<xsl:variable name="stagename" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:stagename)"/>
-					
-					<!-- https://github.com/metanorma/metanorma-csa/issues/329 -->
-					<!-- if stage >= 60 -->
-					<xsl:variable name="stage_published" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:semantic-metadata/mn:stage-published)"/>
-					
-					<xsl:variable name="doctype_localized_" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype[@language = $lang]"/>
-					<xsl:variable name="doctype_localized">
-						<xsl:choose>
-							<xsl:when test="$doctype_localized_ != ''">
-								<xsl:value-of select="translate(normalize-space($doctype_localized_),'-',' ')"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="translate(normalize-space($doctype),'-',' ')"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:variable>
-					
-					<xsl:variable name="stage-fullname">
-						<xsl:choose>
-							<xsl:when test="$stagename_localized != ''"> <!--  and $layoutVersion != '2024' -->
-								<xsl:value-of select="$stagename_localized"/>
-							</xsl:when>
-							<xsl:when test="$stagename != ''">
-								<xsl:value-of select="$stagename"/>
-							</xsl:when>
-							<xsl:when test="$stage-abbreviation = 'NWIP' or
-																			$stage-abbreviation = 'NP'">NEW WORK ITEM PROPOSAL</xsl:when>
-							<xsl:when test="$stage-abbreviation = 'PWI'">PRELIMINARY WORK ITEM</xsl:when>
-							<xsl:when test="$stage-abbreviation = 'AWI'">APPROVED WORK ITEM</xsl:when>
-							<xsl:when test="$stage-abbreviation = 'WD'">WORKING DRAFT</xsl:when>
-							<xsl:when test="$stage-abbreviation = 'CD'">COMMITTEE DRAFT</xsl:when>
-							<xsl:when test="$stage-abbreviation = 'DIS'">DRAFT INTERNATIONAL STANDARD</xsl:when>
-							<xsl:when test="$stage-abbreviation = 'FDIS'">FINAL DRAFT INTERNATIONAL STANDARD</xsl:when>
-							<xsl:otherwise><xsl:value-of select="$doctype_localized"/></xsl:otherwise>
-						</xsl:choose>
-					</xsl:variable>
-					
-					<xsl:variable name="stagename_abbreviation" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:stagename/@abbreviation)"/>
-					
-					<xsl:variable name="docidentifier_iso" select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'iso'] | /mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'ISO']"/>
-	
-					<xsl:variable name="docidentifier_undated_" select="normalize-space(/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'iso-undated'])"/>
-					<xsl:variable name="docidentifier_undated"><xsl:value-of select="$docidentifier_undated_"/><xsl:if test="$docidentifier_undated_ = ''"><xsl:value-of select="$docidentifier_iso"/></xsl:if></xsl:variable>
+
+				<xsl:call-template name="cover-page">
+					<xsl:with-param name="num" select="$num"/>
+				</xsl:call-template>
 			
-					<xsl:variable name="iso_reference_" select="normalize-space(/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'iso-reference'])"/>
-					<xsl:variable name="iso_reference"><xsl:value-of select="$iso_reference_"/><xsl:if test="$iso_reference_ = ''"><xsl:value-of select="$docidentifier_iso"/></xsl:if></xsl:variable>
-					
-					<xsl:variable name="docidentifier_iso_with_lang_" select="normalize-space(/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'iso-with-lang'])"/>
-					<xsl:variable name="docidentifier_iso_with_lang"><xsl:value-of select="$docidentifier_iso_with_lang_"/><xsl:if test="$docidentifier_iso_with_lang_ = ''"><xsl:value-of select="$iso_reference"/></xsl:if></xsl:variable>
-					
-					<xsl:variable name="anotherNumbers">
-						<xsl:variable name="year_iso_reference" select="concat(':',substring-after($iso_reference,':'))"/> 
-						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type != '' and @type != 'ISO' and not(starts-with(@type, 'iso-')) and @type != 'URN']">
-							<xsl:value-of select="$linebreak"/><xsl:value-of select="concat(., $year_iso_reference)"/>
-						</xsl:for-each>
-					</xsl:variable>
-					<xsl:variable name="ISOnumber">
-						<xsl:choose>
-							<xsl:when test="$layoutVersion = '2024' and $docidentifier_iso_with_lang != ''">
-								<xsl:value-of select="$docidentifier_iso_with_lang"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<!-- part separator '-' replace to '/' -->
-								<xsl:variable name="iso_reference_tmp" select="java:replaceAll(java:java.lang.String.new($iso_reference),'-','/')"/>
-								<xsl:choose>
-									<!-- year separator replace to '-' -->
-									<xsl:when test="$layoutVersion = '1951'">
-										<xsl:variable name="iso_reference_tmp_" select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':',' - ')"/>
-										<!-- insert space before ( -->
-										<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp_),'\(',' \(')"/>
-									</xsl:when>
-									<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979'">
-										<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':','-')"/>
-									</xsl:when>
-									<xsl:when test="$layoutVersion = '1987'">
-										<!-- insert space around : -->
-										<xsl:variable name="iso_reference_tmp_" select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp),':',' : ')"/>
-										<!-- insert space before ( -->
-										<xsl:value-of select="java:replaceAll(java:java.lang.String.new($iso_reference_tmp_),'\(',' \(')"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:value-of select="$iso_reference"/>
-									</xsl:otherwise>
-								</xsl:choose>
-							</xsl:otherwise>
-						</xsl:choose>
-						<xsl:value-of select="$anotherNumbers"/>
-					</xsl:variable>
-					
-					<xsl:variable name="copyrightYear" select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
-					<xsl:variable name="copyrightAbbr__">
-						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization[normalize-space(mn:abbreviation) != 'IEEE']">
-							<abbr>
-								<xsl:choose>
-									<xsl:when test="mn:abbreviation"><xsl:value-of select="mn:abbreviation"/></xsl:when>
-									<xsl:otherwise><xsl:value-of select="mn:name"/></xsl:otherwise>
-								</xsl:choose>
-							</abbr>
-						</xsl:for-each>
-					</xsl:variable>
-					<xsl:variable name="copyrightAbbr_">
-						<xsl:for-each select="xalan:nodeset($copyrightAbbr__)//*">
-							<xsl:value-of select="."/>
-							<xsl:if test="position() != last()">
-								<xsl:choose>
-									<xsl:when test="following-sibling::*[1]/text() = 'IDF'"> and </xsl:when>
-									<xsl:otherwise>/</xsl:otherwise>
-								</xsl:choose>
-							</xsl:if>
-						</xsl:for-each>
-					</xsl:variable>
-					<xsl:variable name="copyrightAbbr" select="normalize-space($copyrightAbbr_)"/>
-					<xsl:variable name="copyrightAbbrIEEE" select="normalize-space(/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:abbreviation[. = 'IEEE'])"/>
-					<xsl:variable name="i18n_all_rights_reserved"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">all_rights_reserved</xsl:with-param></xsl:call-template></xsl:variable>	
-					<xsl:variable name="copyrightText">
-						<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear ,' – ', $i18n_all_rights_reserved)"/>
-						<xsl:if test="$copyrightAbbrIEEE != ''">
-							<xsl:value-of select="$linebreak"/>
-							<xsl:value-of select="concat('© ', $copyrightAbbrIEEE, ' ', $copyrightYear ,' – ', $i18n_all_rights_reserved)"/>
-						</xsl:if>
-					</xsl:variable>
-					
-					<xsl:variable name="isPublished">
-						<xsl:call-template name="get_isPublished">
-							<xsl:with-param name="stage" select="$stage"/>
-							<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-						</xsl:call-template>
-					</xsl:variable>
-					
-					<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new($doctype_localized))"/>
-					
-					<xsl:variable name="docnumber_with_prefix">
-						<xsl:if test="$doctype = 'recommendation'">R&#xa0;</xsl:if><xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docnumber"/>
-					</xsl:variable>
-					
-					<xsl:call-template name="cover-page">
-						<xsl:with-param name="num" select="$num"/>
-						<xsl:with-param name="isPublished" select="$isPublished"/>
-						<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
-						<xsl:with-param name="docidentifier_iso" select="$docidentifier_iso"/>
-						<xsl:with-param name="docidentifier_iso_with_lang" select="$docidentifier_iso_with_lang"/>
-						<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
-						<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-						<xsl:with-param name="docnumber_with_prefix" select="$docnumber_with_prefix"/>
-						<xsl:with-param name="stage" select="$stage"/>
-						<xsl:with-param name="stagename" select="$stagename"/>
-						<xsl:with-param name="stage-fullname" select="$stage-fullname"/>
-						<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-						<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-						<xsl:with-param name="stage_published" select="$stage_published"/>
-						<xsl:with-param name="substage" select="$substage"/>
-						<xsl:with-param name="abbreviation_uppercased" select="$abbreviation_uppercased"/>
-						<xsl:with-param name="copyrightText" select="$copyrightText"/>
-						<xsl:with-param name="copyrightYear" select="$copyrightYear"/>
-						<xsl:with-param name="copyrightAbbr" select="$copyrightAbbr"/>
-						<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
-					</xsl:call-template>
+				<xsl:if test="$debug = 'true'">
+					<xsl:message>START updated_xml_with_pages</xsl:message>
+				</xsl:if>
+				<xsl:variable name="startTimeA" select="java:getTime(java:java.util.Date.new())"/>
+				
+				<xsl:variable name="updated_xml_with_pages">
+					<xsl:call-template name="processPrefaceAndMainSectionsISO_items"/>
+				</xsl:variable>
+				
+				<xsl:if test="$debug = 'true'">
+					<xsl:message>END updated_xml_with_pages</xsl:message>
+					<xsl:message>DEBUG: processing time <xsl:value-of select="java:getTime(java:java.util.Date.new()) - $startTimeA"/> msec.</xsl:message>
+				</xsl:if>
 			
-					<xsl:variable name="document-master-reference_addon"><xsl:if test="$stage-abbreviation = ''">-nonpublished</xsl:if></xsl:variable>
-					<xsl:variable name="force-page-count-preface">
-						<xsl:choose>
-							<xsl:when test="$document-master-reference_addon = ''">end-on-even</xsl:when>
-							<xsl:otherwise>no-force</xsl:otherwise>
-						</xsl:choose>
-					</xsl:variable>
-					<xsl:variable name="force-page-count-main_sections"/>
-					
-					
-					
-					<xsl:if test="$debug = 'true'">
-						<xsl:message>START updated_xml_with_pages</xsl:message>
-					</xsl:if>
-					<xsl:variable name="startTimeA" select="java:getTime(java:java.util.Date.new())"/>
-					
-					<xsl:variable name="updated_xml_with_pages">
-						<xsl:call-template name="processPrefaceAndMainSectionsISO_items"/>
-					</xsl:variable>
-					
-					<xsl:if test="$debug = 'true'">
-						<xsl:message>END updated_xml_with_pages</xsl:message>
-						<xsl:message>DEBUG: processing time <xsl:value-of select="java:getTime(java:java.util.Date.new()) - $startTimeA"/> msec.</xsl:message>
-					</xsl:if>
-				
-					
-				
-					<xsl:choose>
-						<xsl:when test="$layoutVersion = '1951'">
-							<fo:page-sequence master-reference="document{$document-master-reference_addon}" initial-page-number="auto" force-page-count="no-force">
-								
-								<xsl:call-template name="insertFootnoteSeparatorCommon"/>
-								
-								<xsl:call-template name="insertHeaderFooter">
-									<xsl:with-param name="num" select="$num"/>
-									<xsl:with-param name="is_header">false</xsl:with-param>
-									<xsl:with-param name="insert_footer_last">false</xsl:with-param>
-									<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
-									<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-									<xsl:with-param name="stage-fullname" select="$stage-fullname"/>
-									<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-									<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-									<xsl:with-param name="stagename_localized" select="$stagename_localized"/>
-									<xsl:with-param name="copyrightText" select="$copyrightText"/>
-									<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
-								</xsl:call-template>
-								<fo:flow flow-name="xsl-region-body">
-									<fo:block>
-										<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
-										<!-- Introduction will be showed in the main section -->
-										<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition or self::mn:introduction)]">
-											<xsl:sort select="@displayorder" data-type="number"/>
-											<xsl:apply-templates select=".">
-												<xsl:with-param name="num" select="$num"/>
-											</xsl:apply-templates>
-										</xsl:for-each>
-										
-										<fo:block span="all" text-align="center" margin-top="15mm" keep-with-next="always" role="SKIP">
-											<fo:leader leader-pattern="rule" leader-length="22mm"/>
-										</fo:block>
-										
-									</fo:block>
-								</fo:flow>
-							</fo:page-sequence>
-						</xsl:when><!-- END: preface sections (Foreword, Brief history for layout 1951 ($layoutVersion = '1951') -->
-						
-						<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))">
-							<fo:page-sequence master-reference="preface-1987_TR"  format="i" force-page-count="no-force">
-								
-								<xsl:call-template name="insertHeaderFooter">
-									<xsl:with-param name="num" select="$num"/>
-									<xsl:with-param name="font-weight">normal</xsl:with-param>
-									<xsl:with-param name="is_footer">false</xsl:with-param>
-									<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
-									<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-									<xsl:with-param name="stage-fullname" select="$stage-fullname"/>
-									<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-									<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-									<xsl:with-param name="stagename_localized" select="$stagename_localized"/>
-									<xsl:with-param name="copyrightText" select="$copyrightText"/>
-									<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
-								</xsl:call-template>
-								
-								<fo:static-content flow-name="left-region-first_1987_TR" role="artifact">
-									<fo:block-container reference-orientation="90">
-										<fo:block font-size="8pt" margin-left="5mm" margin-top="8mm">
-											<xsl:value-of select="$ISOnumber"/>
-										</fo:block>
-									</fo:block-container>
-								</fo:static-content>
-								
-								<fo:static-content flow-name="footer-preface-first_1987_TR" role="artifact">
-									<fo:block-container font-size="8pt" margin-bottom="3mm">
-										<xsl:call-template name="insertSingleLine"/>
-										<fo:block font-size="11pt" font-weight="bold" text-align-last="justify" margin-top="0.5mm" margin-right="1mm">
-											<fo:inline keep-together.within-line="always" role="SKIP">
-												<xsl:variable name="udc"><xsl:call-template name="get_udc"/></xsl:variable>
-												<xsl:value-of select="$udc"/>
-												<fo:leader leader-pattern="space"/>
-												<fo:inline role="SKIP">
-													<xsl:variable name="i18n_reference_number_abbrev"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number_abbrev</xsl:with-param></xsl:call-template></xsl:variable>
-													<xsl:value-of select="concat($i18n_reference_number_abbrev, '&#xa0;', $ISOnumber)"/>
-												</fo:inline>
-											</fo:inline>
-										</fo:block>
-										
-										<xsl:if test="/mn:metanorma/mn:bibdata/mn:keyword">
-											<fo:block margin-top="6pt">
-												<xsl:variable name="i18n_descriptors"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Descriptor.pl</xsl:with-param></xsl:call-template></xsl:variable>	
-												<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/> : </fo:inline>
-												<xsl:call-template name="insertKeywords">
-													<xsl:with-param name="sorting">no</xsl:with-param>
-													<xsl:with-param name="charDelim" select="',  '"/>
-												</xsl:call-template>
-											</fo:block>
-										</xsl:if>
+				<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+				<xsl:variable name="revision_date" select="$variables/mnx:doc[@num = $num]/revision_date"/>
+				<xsl:variable name="revision_date_num" select="$variables/mnx:doc[@num = $num]/revision_date_num"/>
+				<xsl:variable name="ISOnumber" select="$variables/mnx:doc[@num = $num]/ISOnumber"/>
+				<xsl:variable name="doctype_uppercased" select="$variables/mnx:doc[@num = $num]/doctype_uppercased"/>
+				<xsl:variable name="doctype_localized" select="$variables/mnx:doc[@num = $num]/doctype_localized"/>
+				<xsl:variable name="docnumber_with_prefix" select="$variables/mnx:doc[@num = $num]/docnumber_with_prefix"/>
+				<xsl:variable name="docidentifier_undated" select="$variables/mnx:doc[@num = $num]/docidentifier_undated"/>
+				<xsl:variable name="i18n_reference_number_abbrev" select="$variables/mnx:doc[@num = $num]/i18n_reference_number_abbrev"/>
+				<xsl:variable name="i18n_descriptors" select="$variables/mnx:doc[@num = $num]/i18n_descriptors"/>
+				<xsl:variable name="document-master-reference_addon" select="$variables/mnx:doc[@num = $num]/document-master-reference_addon"/>
+				<xsl:variable name="lang_other"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/lang_other/node()"/></xsl:variable>
+				<xsl:variable name="udc"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/udc/node()"/></xsl:variable>
+				<xsl:variable name="stage-abbreviation"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/stage-abbreviation/node()"/></xsl:variable>
+				<xsl:variable name="stage_published"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/stage_published/node()"/></xsl:variable>
+				<xsl:variable name="force-page-count-preface" select="$variables/mnx:doc[@num = $num]/force-page-count-preface"/>
+				<xsl:variable name="force-page-count-main_sections" select="$variables/mnx:doc[@num = $num]/force-page-count-main_sections"/>
+			
+				<xsl:choose>
+					<xsl:when test="$layoutVersion = '1951'">
+						<fo:page-sequence master-reference="document{$document-master-reference_addon}" initial-page-number="auto" force-page-count="no-force">
+							
+							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
+							
+							<xsl:call-template name="insertHeaderFooter">
+								<xsl:with-param name="num" select="$num"/>
+								<xsl:with-param name="is_header">false</xsl:with-param>
+								<xsl:with-param name="insert_footer_last">false</xsl:with-param>
+							</xsl:call-template>
+							<fo:flow flow-name="xsl-region-body">
+								<fo:block>
+									<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
+									<!-- Introduction will be showed in the main section -->
+									<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition or self::mn:introduction)]">
+										<xsl:sort select="@displayorder" data-type="number"/>
+										<xsl:apply-templates select=".">
+											<xsl:with-param name="num" select="$num"/>
+										</xsl:apply-templates>
+									</xsl:for-each>
 									
-										<fo:table table-layout="fixed" width="100%" margin-top="14pt" font-size="7.5pt">
-											<fo:table-body>
-												<fo:table-row>
-													<fo:table-cell>
-														<fo:block>
-															<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
-														</fo:block>
-													</fo:table-cell>
-													<fo:table-cell display-align="after" text-align="right">
-														<fo:block>
-															<xsl:call-template name="insertPriceBasedOn">
-																<xsl:with-param name="num" select="$num"/>
-															</xsl:call-template>
-														</fo:block>
-													</fo:table-cell>
-												</fo:table-row>
-											</fo:table-body>
-										</fo:table>
-									</fo:block-container>
-								</fo:static-content> <!-- footer-preface-first_1987_TR -->
+									<fo:block span="all" text-align="center" margin-top="15mm" keep-with-next="always" role="SKIP">
+										<fo:leader leader-pattern="rule" leader-length="22mm"/>
+									</fo:block>
+									
+								</fo:block>
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:when><!-- END: preface sections (Foreword, Brief history for layout 1951 ($layoutVersion = '1951') -->
+					
+					<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))">
+						<fo:page-sequence master-reference="preface-1987_TR"  format="i" force-page-count="no-force">
+							
+							<xsl:call-template name="insertHeaderFooter">
+								<xsl:with-param name="num" select="$num"/>
+								<xsl:with-param name="font-weight">normal</xsl:with-param>
+								<xsl:with-param name="is_footer">false</xsl:with-param>
+							</xsl:call-template>
+							
+							<fo:static-content flow-name="left-region-first_1987_TR" role="artifact">
+								<fo:block-container reference-orientation="90">
+									<fo:block font-size="8pt" margin-left="5mm" margin-top="8mm">
+										<xsl:value-of select="$ISOnumber"/>
+									</fo:block>
+								</fo:block-container>
+							</fo:static-content>
+							
+							<fo:static-content flow-name="footer-preface-first_1987_TR" role="artifact">
+								<fo:block-container font-size="8pt" margin-bottom="3mm">
+									<xsl:call-template name="insertSingleLine"/>
+									<fo:block font-size="11pt" font-weight="bold" text-align-last="justify" margin-top="0.5mm" margin-right="1mm">
+										<fo:inline keep-together.within-line="always" role="SKIP">
+											<xsl:value-of select="$udc"/>
+											<fo:leader leader-pattern="space"/>
+											<fo:inline role="SKIP">
+												<xsl:value-of select="concat($i18n_reference_number_abbrev, '&#xa0;', $ISOnumber)"/>
+											</fo:inline>
+										</fo:inline>
+									</fo:block>
+									
+									<xsl:if test="/mn:metanorma/mn:bibdata/mn:keyword">
+										<fo:block margin-top="6pt">
+											<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/> : </fo:inline>
+											<xsl:call-template name="insertKeywords">
+												<xsl:with-param name="sorting">no</xsl:with-param>
+												<xsl:with-param name="charDelim" select="',  '"/>
+											</xsl:call-template>
+										</fo:block>
+									</xsl:if>
 								
-								<fo:flow flow-name="xsl-region-body">
-									<fo:table table-layout="fixed" width="100%">
-										<fo:table-column column-width="proportional-column-width(68)"/>
-										<fo:table-column column-width="proportional-column-width(112)"/>
+									<fo:table table-layout="fixed" width="100%" margin-top="14pt" font-size="7.5pt">
 										<fo:table-body>
 											<fo:table-row>
-												<fo:table-cell number-rows-spanned="2">
-													<fo:block font-size="0">
-														<xsl:variable name="content-height">25</xsl:variable>
-														<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1987))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
-													</fo:block>
-												</fo:table-cell>
-												<fo:table-cell font-size="11pt" font-weight="bold">
-													<fo:block>
-														<xsl:choose>
-															<xsl:when test="$doctype = 'addendum'">
-																<xsl:variable name="doctype_international_standard">
-																	<xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.international-standard</xsl:with-param></xsl:call-template>
-																</xsl:variable>
-																<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($doctype_international_standard))"/>
-																<xsl:text>&#xa0;</xsl:text>
-																
-																
-																
-																<xsl:value-of select="translate(substring-before($docidentifier_undated, '/'),':','-')"/>
-																<xsl:text>/</xsl:text>
-																<xsl:value-of select="$doctype_localized"/>
-																<xsl:text>&#xa0;</xsl:text>
-																<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@addendum"/>
-															</xsl:when>
-															<xsl:otherwise>
-																<xsl:value-of select="$doctype_uppercased"/>&#xa0;<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docnumber"/>
-															</xsl:otherwise>
-														</xsl:choose>
-													</fo:block>
-												</fo:table-cell>
-											</fo:table-row>
-											<fo:table-row display-align="after">
 												<fo:table-cell>
-													<fo:block margin-bottom="-1mm">Published <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']"/></fo:block>
+													<fo:block>
+														<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
+													</fo:block>
+												</fo:table-cell>
+												<fo:table-cell display-align="after" text-align="right">
+													<fo:block>
+														<xsl:call-template name="insertPriceBasedOn"><xsl:with-param name="num" select="$num"/></xsl:call-template>
+													</fo:block>
 												</fo:table-cell>
 											</fo:table-row>
 										</fo:table-body>
 									</fo:table>
-									
-									<fo:block font-size="6pt" margin-top="8mm" margin-bottom="18mm" text-align-last="justify"><xsl:value-of select="$ISO_title_en"/>&#x25cf;<xsl:value-of select="$ISO_title_ru"/>&#x25cf;<xsl:value-of select="$ISO_title_fr"/></fo:block>
-									
-									<fo:block-container margin-bottom="22mm" role="SKIP">
-										<fo:block font-size="18pt" font-weight="bold" role="H1" line-height="1.05">
-											<xsl:call-template name="insertTitlesLangMain">
-												<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-												<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
-											</xsl:call-template>
-										</fo:block>
-										<xsl:choose>
-											<xsl:when test="$doctype = 'addendum'">
-												<fo:block font-size="12pt" font-weight="bold" role="H2" line-height="1.05" margin-top="6pt">
-													<xsl:call-template name="printAddendumTitle"/>
+								</fo:block-container>
+							</fo:static-content> <!-- footer-preface-first_1987_TR -->
+							
+							<fo:flow flow-name="xsl-region-body">
+								<fo:table table-layout="fixed" width="100%">
+									<fo:table-column column-width="proportional-column-width(68)"/>
+									<fo:table-column column-width="proportional-column-width(112)"/>
+									<fo:table-body>
+										<fo:table-row>
+											<fo:table-cell number-rows-spanned="2">
+												<fo:block font-size="0">
+													<xsl:variable name="content-height">25</xsl:variable>
+													<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-ISO-Logo-1987))}" content-height="{$content-height}mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image ISO Logo"/>
 												</fo:block>
-												
-												<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:clause[@type = 'provenance']">
-													<xsl:with-param name="process">true</xsl:with-param>
-												</xsl:apply-templates>
-												
-											</xsl:when>
-											<xsl:otherwise>
-												<xsl:variable name="lang_other"><xsl:call-template name="get_lang_other"/></xsl:variable>
-												<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
-													<xsl:variable name="lang_other_" select="."/>
-													<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
-													<fo:block role="H1" font-style="italic" line-height="1.2">
-														<!-- Example: title-intro fr -->
-														<xsl:call-template name="insertTitlesLangOther">
-															<xsl:with-param name="lang_other" select="$lang_other_"/>
-															<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-															<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
-														</xsl:call-template>
-													</fo:block>
-												</xsl:for-each>
-											</xsl:otherwise>
-										</xsl:choose>
-									</fo:block-container>
-									
-									<xsl:if test="$doctype = 'addendum'">
-										<fo:block break-after="page"/>
-									</xsl:if>
-									
-									<!-- ToC, Foreword, Introduction -->					
-									<xsl:call-template name="processPrefaceSectionsDefault"/>
-									
-								</fo:flow>
-							</fo:page-sequence>
-						</xsl:when> <!-- (($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum')) -->
-						<xsl:otherwise>
-						
-							<!-- <xsl:variable name="copyright-statement">
-								<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
-							</xsl:variable> -->
-							
-							<xsl:choose>
-								<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"><!-- copyright renders in the footer footer-preface-first_1987-1998--></xsl:when>
-								<xsl:otherwise>
-								
-									<xsl:call-template name="inner-cover-page">
-										<xsl:with-param name="num" select="$num"/>
-										<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
-										<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-										<xsl:with-param name="stage-fullname" select="$stage-fullname"/>
-										<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-										<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-										<xsl:with-param name="stagename_localized" select="$stagename_localized"/>
-										<xsl:with-param name="copyrightText" select="$copyrightText"/>
-										<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
-										<xsl:with-param name="document-master-reference_addon" select="$document-master-reference_addon"/>
-									</xsl:call-template>
-									
-								</xsl:otherwise>
-							</xsl:choose>
-							
-							<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
-							
-								<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
-								
-									<fo:page-sequence format="i" force-page-count="no-force">
-									
-										<xsl:attribute name="master-reference">
-											<xsl:value-of select="concat('preface',$document-master-reference_addon)"/>
-											<xsl:call-template name="getPageSequenceOrientation"/>
-										</xsl:attribute>
-									
-										<xsl:if test="position() = last()">
-											<xsl:attribute name="force-page-count"><xsl:value-of select="$force-page-count-preface"/></xsl:attribute> <!-- to prevent empty pages -->
-										</xsl:if>
-									
-										<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
-											<xsl:attribute name="master-reference">preface-1972-1998</xsl:attribute>
-										</xsl:if>
-										<xsl:if test="$layoutVersion = '2024'">
-											<fo:static-content flow-name="xsl-footnote-separator" role="artifact">
-												<fo:block margin-bottom="6pt">
-													<fo:leader leader-pattern="rule" leader-length="51mm" rule-thickness="0.5pt"/>
+											</fo:table-cell>
+											<fo:table-cell font-size="11pt" font-weight="bold">
+												<fo:block>
+													<xsl:choose>
+														<xsl:when test="$doctype = 'addendum'">
+															<xsl:variable name="doctype_international_standard">
+																<xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.international-standard</xsl:with-param></xsl:call-template>
+															</xsl:variable>
+															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($doctype_international_standard))"/>
+															<xsl:text>&#xa0;</xsl:text>
+															<xsl:value-of select="translate(substring-before($docidentifier_undated, '/'),':','-')"/>
+															<xsl:text>/</xsl:text>
+															<xsl:value-of select="$doctype_localized"/>
+															<xsl:text>&#xa0;</xsl:text>
+															<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@addendum"/>
+														</xsl:when>
+														<xsl:otherwise>
+															<xsl:value-of select="concat($doctype_uppercased, '&#xa0;', /mn:metanorma/mn:bibdata/mn:docnumber)"/>
+														</xsl:otherwise>
+													</xsl:choose>
 												</fo:block>
-											</fo:static-content>
-										</xsl:if>
-										<xsl:call-template name="insertHeaderFooter">
-											<xsl:with-param name="num" select="$num"/>
-											<xsl:with-param name="font-weight">normal</xsl:with-param>
-											<xsl:with-param name="is_footer">true</xsl:with-param>
-											<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
-											<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-											<xsl:with-param name="stage-fullname" select="$stage-fullname"/>
-											<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-											<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-											<xsl:with-param name="stagename_localized" select="$stagename_localized"/>
-											<xsl:with-param name="copyrightText" select="$copyrightText"/>
-											<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
-										</xsl:call-template>
-										<fo:flow flow-name="xsl-region-body" line-height="115%" role="SKIP">
+											</fo:table-cell>
+										</fo:table-row>
+										<fo:table-row display-align="after">
+											<fo:table-cell>
+												<fo:block margin-bottom="-1mm">Published <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']"/></fo:block>
+											</fo:table-cell>
+										</fo:table-row>
+									</fo:table-body>
+								</fo:table>
+								
+								<fo:block font-size="6pt" margin-top="8mm" margin-bottom="18mm" text-align-last="justify"><xsl:value-of select="$ISO_TITLE_EN"/>&#x25cf;<xsl:value-of select="$ISO_TITLE_RU"/>&#x25cf;<xsl:value-of select="$ISO_TITLE_FR"/></fo:block>
+								
+								<fo:block-container margin-bottom="22mm" role="SKIP">
+									<fo:block font-size="18pt" font-weight="bold" role="H1" line-height="1.05">
+										<xsl:call-template name="insertTitlesLangMain"><xsl:with-param name="num" select="$num"/></xsl:call-template>
+									</fo:block>
+									<xsl:choose>
+										<xsl:when test="$doctype = 'addendum'">
+											<fo:block font-size="12pt" font-weight="bold" role="H2" line-height="1.05" margin-top="6pt">
+												<xsl:call-template name="printAddendumTitle"/>
+											</fo:block>
 											
-											<!-- ToC, Foreword, Introduction -->					
-											<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
-											
-											<xsl:apply-templates>
-												<xsl:with-param name="num" select="$num"/>
+											<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:clause[@type = 'provenance']">
+												<xsl:with-param name="process">true</xsl:with-param>
 											</xsl:apply-templates>
 											
-											<fo:block/> <!-- for prevent empty preface -->
-										</fo:flow>
-									</fo:page-sequence>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
+												<xsl:variable name="lang_other_" select="."/>
+												<fo:block font-size="12pt" role="SKIP"><xsl:value-of select="$linebreak"/></fo:block>
+												<fo:block role="H1" font-style="italic" line-height="1.2">
+													<!-- Example: title-intro fr -->
+													<xsl:call-template name="insertTitlesLangOther">
+														<xsl:with-param name="num" select="$num"/>
+														<xsl:with-param name="lang_other" select="$lang_other_"/>
+													</xsl:call-template>
+												</fo:block>
+											</xsl:for-each>
+										</xsl:otherwise>
+									</xsl:choose>
+								</fo:block-container>
 								
-								</xsl:for-each>
-							</xsl:for-each>
-							
-						</xsl:otherwise>
-					</xsl:choose>
-					
-					
-					<!-- for layout 1951 -->
-					<xsl:variable name="preface_introduction">
-						<xsl:apply-templates select="/*/mn:preface/mn:introduction"/>
-					</xsl:variable>
-			
-			
-					<xsl:if test="$debug = 'true'">
-						<xsl:message>START xalan:nodeset($updated_xml_with_pages) for sections</xsl:message>
-					</xsl:if>
-					<xsl:variable name="startTimeC" select="java:getTime(java:java.util.Date.new())"/>
-					
-					<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to sections, if top element in 'sections' -->
-					
-						<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
-					
-							<!-- BODY -->
-							<fo:page-sequence force-page-count="no-force">
-							
-								<!-- Example: msster-reference document-landscape_first_sequence -->
-								<xsl:attribute name="master-reference">
-									<xsl:value-of select="concat('document',$document-master-reference_addon)"/>
-									<!-- <xsl:variable name="previous_orientation" select="preceding-sibling::page_sequence[@orientation][1]/@orientation"/>
-									<xsl:if test="(@orientation = 'landscape' or $previous_orientation = 'landscape') and not(@orientation = 'portrait')">-<xsl:value-of select="@orientation"/></xsl:if> -->
-									<xsl:call-template name="getPageSequenceOrientation"/>
-									<xsl:if test="position() = 1">
-										<xsl:if test="normalize-space($document-master-reference_addon) = ''">_first_sequence</xsl:if>
-									</xsl:if>
-								</xsl:attribute>
-								<xsl:if test="position() = 1">
-									<xsl:attribute name="initial-page-number">1</xsl:attribute>
+								<xsl:if test="$doctype = 'addendum'">
+									<fo:block break-after="page"/>
 								</xsl:if>
-								<xsl:if test="$layoutVersion = '1951'">
-									<xsl:attribute name="initial-page-number">auto</xsl:attribute>
-									<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
-								</xsl:if>
-								<xsl:if test="position() = last() and normalize-space($force-page-count-main_sections) != ''">
-									<xsl:attribute name="force-page-count"><xsl:value-of select="$force-page-count-main_sections"/></xsl:attribute>
-								</xsl:if>
-								<fo:static-content flow-name="xsl-footnote-separator" role="artifact">
-									<fo:block>
-										<xsl:if test="$layoutVersion = '2024'">
-											<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-										</xsl:if>
-										<fo:leader leader-pattern="rule" leader-length="30%">
-											<xsl:if test="$layoutVersion = '2024'">
-												<xsl:attribute name="leader-length">51mm</xsl:attribute>
-												<xsl:attribute name="rule-thickness">0.5pt</xsl:attribute>
-											</xsl:if>
-										</fo:leader>
-									</fo:block>
-								</fo:static-content>
 								
-								<xsl:variable name="border_around_page"><xsl:if test="$layoutVersion = '1951'">true</xsl:if></xsl:variable>
-								<xsl:call-template name="insertHeaderFooter">
+								<!-- ToC, Foreword, Introduction -->					
+								<xsl:call-template name="processPrefaceSectionsDefault">
 									<xsl:with-param name="num" select="$num"/>
-									<xsl:with-param name="border_around_page" select="$border_around_page"/>
-									<xsl:with-param name="insert_header_first" select="normalize-space(position() = 1)"/>
-									<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
-									<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-									<xsl:with-param name="stage-fullname" select="$stage-fullname"/>
-									<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-									<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-									<xsl:with-param name="stagename_localized" select="$stagename_localized"/>
-									<xsl:with-param name="copyrightText" select="$copyrightText"/>
-									<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 								</xsl:call-template>
-								<fo:flow flow-name="xsl-region-body" role="SKIP">
 								
+							</fo:flow>
+						</fo:page-sequence>
+					</xsl:when> <!-- (($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum')) -->
+					<xsl:otherwise>
+					
+						<!-- <xsl:variable name="copyright-statement">
+							<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
+						</xsl:variable> -->
+						
+						<xsl:choose>
+							<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"><!-- copyright renders in the footer footer-preface-first_1987-1998--></xsl:when>
+							<xsl:otherwise>
+							
+								<xsl:call-template name="inner-cover-page">
+									<xsl:with-param name="num" select="$num"/>
+								</xsl:call-template>
+								
+							</xsl:otherwise>
+						</xsl:choose>
+						
+						<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
+						
+							<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
+							
+								<fo:page-sequence format="i" force-page-count="no-force">
+								
+									<xsl:attribute name="master-reference">
+										<xsl:value-of select="concat('preface',$document-master-reference_addon)"/>
+										<xsl:call-template name="getPageSequenceOrientation"/>
+									</xsl:attribute>
+								
+									<xsl:if test="position() = last()">
+										<xsl:attribute name="force-page-count"><xsl:value-of select="$force-page-count-preface"/></xsl:attribute> <!-- to prevent empty pages -->
+									</xsl:if>
+								
+									<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
+										<xsl:attribute name="master-reference">preface-1972-1998</xsl:attribute>
+									</xsl:if>
+									<xsl:if test="$layoutVersion = '2024'">
+										<fo:static-content flow-name="xsl-footnote-separator" role="artifact">
+											<fo:block margin-bottom="6pt">
+												<fo:leader leader-pattern="rule" leader-length="51mm" rule-thickness="0.5pt"/>
+											</fo:block>
+										</fo:static-content>
+									</xsl:if>
+									<xsl:call-template name="insertHeaderFooter">
+										<xsl:with-param name="num" select="$num"/>
+										<xsl:with-param name="font-weight">normal</xsl:with-param>
+										<xsl:with-param name="is_footer">true</xsl:with-param>
+									</xsl:call-template>
+									<fo:flow flow-name="xsl-region-body" line-height="115%" role="SKIP">
+										
+										<!-- ToC, Foreword, Introduction -->					
+										<!-- <xsl:call-template name="processPrefaceSectionsDefault"/> -->
+										
+										<xsl:apply-templates>
+											<xsl:with-param name="num" select="$num"/>
+										</xsl:apply-templates>
+										
+										<fo:block/> <!-- for prevent empty preface -->
+									</fo:flow>
+								</fo:page-sequence>
+							
+							</xsl:for-each>
+						</xsl:for-each>
+						
+					</xsl:otherwise>
+				</xsl:choose>
+				
+				
+				<!-- for layout 1951 -->
+				<xsl:variable name="preface_introduction">
+					<xsl:apply-templates select="/*/mn:preface/mn:introduction"/>
+				</xsl:variable>
+		
+		
+				<xsl:if test="$debug = 'true'">
+					<xsl:message>START xalan:nodeset($updated_xml_with_pages) for sections</xsl:message>
+				</xsl:if>
+				<xsl:variable name="startTimeC" select="java:getTime(java:java.util.Date.new())"/>
+				
+				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to sections, if top element in 'sections' -->
+				
+					<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
+				
+						<!-- BODY -->
+						<fo:page-sequence force-page-count="no-force">
+						
+							<!-- Example: msster-reference document-landscape_first_sequence -->
+							<xsl:attribute name="master-reference">
+								<xsl:value-of select="concat('document',$document-master-reference_addon)"/>
+								<!-- <xsl:variable name="previous_orientation" select="preceding-sibling::page_sequence[@orientation][1]/@orientation"/>
+								<xsl:if test="(@orientation = 'landscape' or $previous_orientation = 'landscape') and not(@orientation = 'portrait')">-<xsl:value-of select="@orientation"/></xsl:if> -->
+								<xsl:call-template name="getPageSequenceOrientation"/>
+								<xsl:if test="position() = 1">
+									<xsl:if test="normalize-space($document-master-reference_addon) = ''">_first_sequence</xsl:if>
+								</xsl:if>
+							</xsl:attribute>
+							<xsl:if test="position() = 1">
+								<xsl:attribute name="initial-page-number">1</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="$layoutVersion = '1951'">
+								<xsl:attribute name="initial-page-number">auto</xsl:attribute>
+								<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
+							</xsl:if>
+							
+							<xsl:if test="position() = last() and normalize-space($force-page-count-main_sections) != ''">
+								<xsl:attribute name="force-page-count"><xsl:value-of select="$force-page-count-main_sections"/></xsl:attribute>
+							</xsl:if>
+							<fo:static-content flow-name="xsl-footnote-separator" role="artifact">
+								<fo:block>
+									<xsl:if test="$layoutVersion = '2024'">
+										<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+									</xsl:if>
+									<fo:leader leader-pattern="rule" leader-length="30%">
+										<xsl:if test="$layoutVersion = '2024'">
+											<xsl:attribute name="leader-length">51mm</xsl:attribute>
+											<xsl:attribute name="rule-thickness">0.5pt</xsl:attribute>
+										</xsl:if>
+									</fo:leader>
+								</fo:block>
+							</fo:static-content>
+							
+							<xsl:variable name="border_around_page"><xsl:if test="$layoutVersion = '1951'">true</xsl:if></xsl:variable>
+							<xsl:call-template name="insertHeaderFooter">
+								<xsl:with-param name="num" select="$num"/>
+								<xsl:with-param name="border_around_page" select="$border_around_page"/>
+								<xsl:with-param name="insert_header_first" select="normalize-space(position() = 1)"/>
+							</xsl:call-template>
+							<fo:flow flow-name="xsl-region-body" role="SKIP">
+							
+								
+								<!-- Information and documentation — Codes for transcription systems -->
+								<!-- <fo:block-container>
 									
-									<!-- Information and documentation — Codes for transcription systems -->
-									<!-- <fo:block-container>
+									<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="H1">
+									
+										<fo:block role="SKIP">
 										
-										<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="H1">
-										
-											<fo:block role="SKIP">
+											<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-intro']"/>
 											
-												<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-intro']"/>
-												
-												<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-main']"/>
-												
-												<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']">
-													<xsl:with-param name="isMainLang">true</xsl:with-param>
-													<xsl:with-param name="isMainBody">true</xsl:with-param>
-												</xsl:apply-templates>
-												
-											</fo:block>
-											<fo:block role="SKIP">
-												<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']/node()"/>
-											</fo:block>
+											<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-main']"/>
 											
-											<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-amd']">
+											<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']">
 												<xsl:with-param name="isMainLang">true</xsl:with-param>
 												<xsl:with-param name="isMainBody">true</xsl:with-param>
 											</xsl:apply-templates>
 											
 										</fo:block>
+										<fo:block role="SKIP">
+											<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']/node()"/>
+										</fo:block>
+										
+										<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-amd']">
+											<xsl:with-param name="isMainLang">true</xsl:with-param>
+											<xsl:with-param name="isMainBody">true</xsl:with-param>
+										</xsl:apply-templates>
+										
+									</fo:block>
+								
+								</fo:block-container> -->
+								<!-- Clause(s) -->
+								<!-- <fo:block> -->
 									
-									</fo:block-container> -->
-									<!-- Clause(s) -->
-									<!-- <fo:block> -->
-										
-									<xsl:if test="position() = 1 and $layoutVersion = '1951'">
-										<!-- first page header -->
-										<!-- Example: ISO Recommendation R 453 November 1965 -->
-										<fo:block-container margin-top="-8mm" margin-left="-12mm" margin-right="-12mm">
-											<xsl:if test="$revision_date_num &gt;= 19690101">
-												<xsl:attribute name="margin-top">-9mm</xsl:attribute>
-												<xsl:attribute name="margin-left">-12.5mm</xsl:attribute>
-												<xsl:attribute name="margin-right">-12.5mm</xsl:attribute>
-											</xsl:if>
-											<fo:block-container margin-left="0" margin-right="0" border-bottom="1.25pt solid black">
-												<fo:table table-layout="fixed" width="100%" font-family="Arial" font-size="13pt">
-													<xsl:if test="$revision_date_num &gt;= 19690101">
-														<xsl:attribute name="font-size">10pt</xsl:attribute>
-													</xsl:if>
-													<fo:table-column column-width="proportional-column-width(9.5)"/>
-													<fo:table-column column-width="proportional-column-width(65)"/>
-													<fo:table-column column-width="proportional-column-width(34)"/>
-													<fo:table-column column-width="proportional-column-width(50)"/>
-													<fo:table-column column-width="proportional-column-width(9.5)"/>
-													<fo:table-body>
-														<fo:table-row height="10mm">
-															<xsl:if test="$revision_date_num &gt;= 19690101">
-																<xsl:attribute name="height">7mm</xsl:attribute>
-															</xsl:if>
-															<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
-															<fo:table-cell>
-																<fo:block>
-																	<xsl:value-of select="$doctype_localized"/>
-																</fo:block>
-															</fo:table-cell>
-															<fo:table-cell text-align="center"><fo:block><xsl:value-of select="$docnumber_with_prefix"/></fo:block></fo:table-cell>
-															<fo:table-cell text-align="right">
-																<fo:block>
-																	<xsl:call-template name="convertDate">
-																		<xsl:with-param name="date" select="$revision_date"/>
-																	</xsl:call-template>
-																</fo:block>
-															</fo:table-cell>
-															<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
-														</fo:table-row>
-													</fo:table-body>
-												</fo:table>
-											</fo:block-container>
-										</fo:block-container>
-										
-										<!-- Show Introduction in the main section -->
-										<!-- <xsl:apply-templates select="/*/mn:preface/mn:introduction"/> -->
-										<xsl:copy-of select="$preface_introduction"/>
-									</xsl:if> <!-- $layoutVersion = '1951' -->
-										
-										<!-- <xsl:choose>
-											<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
-												<xsl:choose>
-													<xsl:when test="$doctype = 'amendment'">
-														<xsl:variable name="flatxml">
-															<xsl:apply-templates select="/mn:metanorma/mn:sections/*" mode="flatxml"/>
-														</xsl:variable>
-														<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
-													</xsl:when>
-													<xsl:otherwise>
-														<xsl:call-template name="processMainSectionsDefault_flatxml"/>
-													</xsl:otherwise>
-												</xsl:choose>
-											</xsl:when> ($layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1 
-											<xsl:otherwise>
-												<xsl:choose>
-													<xsl:when test="$doctype = 'amendment'">
-														<xsl:apply-templates select="/mn:metanorma/mn:sections/*"/>
-													</xsl:when>
-													<xsl:otherwise>  -->
-														<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
-														<!-- 	<xsl:apply-templates />
-													</xsl:otherwise>
-												</xsl:choose>
-											</xsl:otherwise>
-										</xsl:choose> -->
-										
-										<xsl:apply-templates />
-										
-										<xsl:if test="position() = last()">
-											<xsl:call-template name="insertSmallHorizontalLine"/>
-											<xsl:call-template name="insertLastBlock">
-												<xsl:with-param name="num" select="$num"/>
-											</xsl:call-template>
+								<xsl:if test="position() = 1 and $layoutVersion = '1951'">
+									<!-- first page header -->
+									<!-- Example: ISO Recommendation R 453 November 1965 -->
+									<fo:block-container margin-top="-8mm" margin-left="-12mm" margin-right="-12mm">
+										<xsl:if test="$revision_date_num &gt;= 19690101">
+											<xsl:attribute name="margin-top">-9mm</xsl:attribute>
+											<xsl:attribute name="margin-left">-12.5mm</xsl:attribute>
+											<xsl:attribute name="margin-right">-12.5mm</xsl:attribute>
 										</xsl:if>
-										
-								</fo:flow>
-							</fo:page-sequence>
-					
-						</xsl:for-each>
+										<fo:block-container margin-left="0" margin-right="0" border-bottom="1.25pt solid black">
+											<fo:table table-layout="fixed" width="100%" font-family="Arial" font-size="13pt">
+												<xsl:if test="$revision_date_num &gt;= 19690101">
+													<xsl:attribute name="font-size">10pt</xsl:attribute>
+												</xsl:if>
+												<fo:table-column column-width="proportional-column-width(9.5)"/>
+												<fo:table-column column-width="proportional-column-width(65)"/>
+												<fo:table-column column-width="proportional-column-width(34)"/>
+												<fo:table-column column-width="proportional-column-width(50)"/>
+												<fo:table-column column-width="proportional-column-width(9.5)"/>
+												<fo:table-body>
+													<fo:table-row height="10mm">
+														<xsl:if test="$revision_date_num &gt;= 19690101">
+															<xsl:attribute name="height">7mm</xsl:attribute>
+														</xsl:if>
+														<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
+														<fo:table-cell>
+															<fo:block>
+																<xsl:value-of select="$doctype_localized"/>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell text-align="center"><fo:block><xsl:value-of select="$docnumber_with_prefix"/></fo:block></fo:table-cell>
+														<fo:table-cell text-align="right">
+															<fo:block>
+																<xsl:call-template name="convertDate">
+																	<xsl:with-param name="date" select="$revision_date"/>
+																</xsl:call-template>
+															</fo:block>
+														</fo:table-cell>
+														<fo:table-cell><fo:block>&#xa0;</fo:block></fo:table-cell>
+													</fo:table-row>
+												</fo:table-body>
+											</fo:table>
+										</fo:block-container>
+									</fo:block-container>
+									
+									<!-- Show Introduction in the main section -->
+									<!-- <xsl:apply-templates select="/*/mn:preface/mn:introduction"/> -->
+									<xsl:copy-of select="$preface_introduction"/>
+								</xsl:if> <!-- $layoutVersion = '1951' -->
+									
+									<!-- <xsl:choose>
+										<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
+											<xsl:choose>
+												<xsl:when test="$doctype = 'amendment'">
+													<xsl:variable name="flatxml">
+														<xsl:apply-templates select="/mn:metanorma/mn:sections/*" mode="flatxml"/>
+													</xsl:variable>
+													<xsl:apply-templates select="xalan:nodeset($flatxml)/*"/>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:call-template name="processMainSectionsDefault_flatxml"/>
+												</xsl:otherwise>
+											</xsl:choose>
+										</xsl:when> ($layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1 
+										<xsl:otherwise>
+											<xsl:choose>
+												<xsl:when test="$doctype = 'amendment'">
+													<xsl:apply-templates select="/mn:metanorma/mn:sections/*"/>
+												</xsl:when>
+												<xsl:otherwise>  -->
+													<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
+													<!-- 	<xsl:apply-templates />
+												</xsl:otherwise>
+											</xsl:choose>
+										</xsl:otherwise>
+									</xsl:choose> -->
+									
+									<xsl:apply-templates />
+									
+									<xsl:if test="position() = last()">
+										<xsl:call-template name="insertSmallHorizontalLine"><xsl:with-param name="num" select="$num"/></xsl:call-template>
+										<xsl:call-template name="insertLastBlock"><xsl:with-param name="num" select="$num"/></xsl:call-template>
+									</xsl:if>
+									
+							</fo:flow>
+						</fo:page-sequence>
+				
 					</xsl:for-each>
-					
-					<xsl:if test="$debug = 'true'">
-						<xsl:message>END  xalan:nodeset($updated_xml_with_pages) for sections</xsl:message>
-						<xsl:message>DEBUG: processing time <xsl:value-of select="java:getTime(java:java.util.Date.new()) - $startTimeC"/> msec.</xsl:message>
-					</xsl:if>
-					
-					
-					<!-- Index -->
-					<!-- <xsl:message>START current_document_index_id</xsl:message> -->
-					
-					<xsl:variable name="docid">
-						<xsl:call-template name="getDocumentId"/>
-					</xsl:variable>
-			
-					<xsl:variable name="current_document_index_id">
-						<xsl:apply-templates select="//mn:indexsect" mode="index_add_id">
-							<xsl:with-param name="docid" select="$docid"/>
-						</xsl:apply-templates>
-					</xsl:variable>
-					<!-- <xsl:message>END current_document_index_id</xsl:message> -->
-					
-					<!-- <xsl:message>START current_document_index</xsl:message> -->
-					<xsl:variable name="startTime1" select="java:getTime(java:java.util.Date.new())"/>
-					<xsl:variable name="current_document_index">
-						<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
-					</xsl:variable>
-					<!-- <xsl:variable name="endTime1" select="java:getTime(java:java.util.Date.new())"/>
-					<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime1 - $startTime1"/> msec.</xsl:message>
-					<xsl:message>END current_document_index</xsl:message> -->
-					
-					
-					<!-- <xsl:variable name="startTime2" select="java:getTime(java:java.util.Date.new())"/>
-					<xsl:message>START xalan:nodeset</xsl:message> -->
-					<!-- <xsl:apply-templates select="//mn:indexsect" mode="index"/> -->
-					<xsl:apply-templates select="xalan:nodeset($current_document_index)" mode="index">
-						<xsl:with-param name="num" select="$num"/>
-						<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
-						<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-						<xsl:with-param name="stage-fullname" select="$stage-fullname"/>
-						<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-						<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-						<xsl:with-param name="stagename_localized" select="$stagename_localized"/>
-						<xsl:with-param name="copyrightText" select="$copyrightText"/>
-						<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
-					</xsl:apply-templates>
-					<!-- <xsl:variable name="endTime2" select="java:getTime(java:java.util.Date.new())"/>
-					<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime2 - $startTime2"/> msec.</xsl:message>
-					<xsl:message>END xalan:nodeset</xsl:message> -->
-					
-					<xsl:call-template name="back-page">
-						<xsl:with-param name="num" select="$num"/>
-						<xsl:with-param name="isPublished" select="$isPublished"/>
-						<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
-						<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-						<xsl:with-param name="stage_published" select="$stage_published"/>
-						<xsl:with-param name="substage" select="$substage"/>
-						<xsl:with-param name="copyrightText" select="$copyrightText"/>
-						<xsl:with-param name="copyrightAbbr" select="$copyrightAbbr"/>
-						<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
-						<xsl:with-param name="copyrightYear" select="$copyrightYear"/>
-					</xsl:call-template>
-					
 				</xsl:for-each>
+				
+				<xsl:if test="$debug = 'true'">
+					<xsl:message>END  xalan:nodeset($updated_xml_with_pages) for sections</xsl:message>
+					<xsl:message>DEBUG: processing time <xsl:value-of select="java:getTime(java:java.util.Date.new()) - $startTimeC"/> msec.</xsl:message>
+				</xsl:if>
+				
+				
+				<!-- Index -->
+				<!-- <xsl:message>START current_document_index_id</xsl:message> -->
+				
+				<xsl:variable name="docid">
+					<xsl:call-template name="getDocumentId"/>
+				</xsl:variable>
+		
+				<xsl:variable name="current_document_index_id">
+					<xsl:apply-templates select="//mn:indexsect" mode="index_add_id">
+						<xsl:with-param name="docid" select="$docid"/>
+					</xsl:apply-templates>
+				</xsl:variable>
+				<!-- <xsl:message>END current_document_index_id</xsl:message> -->
+				
+				<!-- <xsl:message>START current_document_index</xsl:message> -->
+				<xsl:variable name="startTime1" select="java:getTime(java:java.util.Date.new())"/>
+				<xsl:variable name="current_document_index">
+					<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
+				</xsl:variable>
+				<!-- <xsl:variable name="endTime1" select="java:getTime(java:java.util.Date.new())"/>
+				<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime1 - $startTime1"/> msec.</xsl:message>
+				<xsl:message>END current_document_index</xsl:message> -->
+				
+				
+				<!-- <xsl:variable name="startTime2" select="java:getTime(java:java.util.Date.new())"/>
+				<xsl:message>START xalan:nodeset</xsl:message> -->
+				<!-- <xsl:apply-templates select="//mn:indexsect" mode="index"/> -->
+				<xsl:apply-templates select="xalan:nodeset($current_document_index)" mode="index">
+					<xsl:with-param name="num" select="$num"/>
+				</xsl:apply-templates>
+				<!-- <xsl:variable name="endTime2" select="java:getTime(java:java.util.Date.new())"/>
+				<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime2 - $startTime2"/> msec.</xsl:message>
+				<xsl:message>END xalan:nodeset</xsl:message> -->
+				
+				<xsl:call-template name="back-page">
+					<xsl:with-param name="num" select="$num"/>
+				</xsl:call-template>
+				
+			</xsl:for-each>
 			</xsl:for-each>
 		</fo:root>
-		
 	</xsl:template> <!-- END: / -->
 	
 
@@ -1406,194 +1628,46 @@
 
 	<xsl:template name="cover-page">
 		<xsl:param name="num"/>
-		<xsl:param name="isPublished"/>
-		<xsl:param name="ISOnumber"/>
-		<xsl:param name="docidentifier_iso"/>
-		<xsl:param name="docidentifier_iso_with_lang"/>
-		<xsl:param name="doctype_uppercased"/>
-		<xsl:param name="doctype_localized"/>
-		<xsl:param name="docnumber_with_prefix"/>
-		<xsl:param name="stage"/>
-		<xsl:param name="stagename"/>
-		<xsl:param name="stage-fullname"/>
-		<xsl:param name="stage-abbreviation"/>
-		<xsl:param name="stagename_abbreviation"/>
-		<xsl:param name="stage_published"/>
-		<xsl:param name="substage"/>
-		<xsl:param name="abbreviation_uppercased"/>
-		<xsl:param name="copyrightText"/>
-		<xsl:param name="copyrightYear"/>
-		<xsl:param name="copyrightAbbr"/>
-		<xsl:param name="copyrightAbbrIEEE"/>
-		
 		<xsl:if test="$isGenerateTableIF = 'false'"> <!-- no need cover page for auto-layout algorithm -->
 		
-			<xsl:variable name="color_secondary_value" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-secondary)"/>
-			<xsl:variable name="color_secondary">
-				<xsl:choose>
-					<xsl:when test="$color_secondary_value != ''"><xsl:value-of select="$color_secondary_value"/></xsl:when>
-					<xsl:otherwise><xsl:value-of select="$color_red"/></xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-		
+			<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+			<xsl:variable name="revision_date_num" select="$variables/mnx:doc[@num = $num]/revision_date_num"/>
+			<xsl:variable name="docnumber_with_prefix" select="$variables/mnx:doc[@num = $num]/docnumber_with_prefix"/>
+			<xsl:variable name="docidentifierISO" select="$variables/mnx:doc[@num = $num]/docidentifierISO"/>
+			<xsl:variable name="docidentifierISO_with_break" select="$variables/mnx:doc[@num = $num]/docidentifierISO_with_break"/>
+			<xsl:variable name="docidentifier_another"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/docidentifier_another/node()"/></xsl:variable>
+			<xsl:variable name="doctype_uppercased" select="$variables/mnx:doc[@num = $num]/doctype_uppercased"/>
+			<xsl:variable name="doctype_localized" select="$variables/mnx:doc[@num = $num]/doctype_localized"/>
+			<xsl:variable name="ISOnumber" select="$variables/mnx:doc[@num = $num]/ISOnumber"/>
+			<xsl:variable name="part" select="$variables/mnx:doc[@num = $num]/part"/>
+			<xsl:variable name="udc" select="$variables/mnx:doc[@num = $num]/udc"/>
+			<xsl:variable name="ics" select="$variables/mnx:doc[@num = $num]/ics"/>
+			<xsl:variable name="secretariat"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/secretariat/node()"/></xsl:variable>
+			<xsl:variable name="approvalgroup"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/approvalgroup/node()"/></xsl:variable>
+			<xsl:variable name="stage" select="$variables/mnx:doc[@num = $num]/stage"/>
+			<xsl:variable name="substage" select="$variables/mnx:doc[@num = $num]/substage"/>
+			<xsl:variable name="stagename" select="$variables/mnx:doc[@num = $num]/stagename"/>
+			<xsl:variable name="stage_published" select="$variables/mnx:doc[@num = $num]/stage_published"/>
+			<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
+			<xsl:variable name="stagename_abbreviation" select="$variables/mnx:doc[@num = $num]/stagename_abbreviation"/>
+			<xsl:variable name="stagename-header-coverpage" select="$variables/mnx:doc[@num = $num]/stagename-header-coverpage"/>
+			<xsl:variable name="stagename_localized_coverpage" select="$variables/mnx:doc[@num = $num]/stagename_localized_coverpage"/>
+			<xsl:variable name="stage-fullname-uppercased" select="$variables/mnx:doc[@num = $num]/stage-fullname-uppercased"/>
+			<xsl:variable name="isPublished" select="$variables/mnx:doc[@num = $num]/isPublished"/>
+			<xsl:variable name="copyrightYear" select="$variables/mnx:doc[@num = $num]/copyrightYear"/>
+			<xsl:variable name="copyrightAbbr" select="$variables/mnx:doc[@num = $num]/copyrightAbbr"/>
+			<xsl:variable name="copyrightAbbrIEEE" select="$variables/mnx:doc[@num = $num]/copyrightAbbrIEEE"/>
+			<xsl:variable name="copyrightText" select="$variables/mnx:doc[@num = $num]/copyrightText"/>
+			<xsl:variable name="lang-1st-letter" select="$variables/mnx:doc[@num = $num]/lang-1st-letter"/>
+			<xsl:variable name="lang_other"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/lang_other/node()"/></xsl:variable>
 			
-			
-			<xsl:variable name="lang-1st-letter_tmp" select="substring-before(substring-after($docidentifier_iso_with_lang, '('), ')')"/>
-			<xsl:variable name="lang-1st-letter" select="concat('(', $lang-1st-letter_tmp , ')')"/>
-		
-				
-			
-			<xsl:variable name="docidentifierISO_undated_">
-				<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM')">
-					<xsl:variable name="docidentifier_undated_" select="normalize-space(/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'iso-undated'])"/>
-					<xsl:value-of select="$docidentifier_undated_"/>
-				</xsl:if>
-			</xsl:variable>
-			<xsl:variable name="docidentifierISO_undated" select="normalize-space($docidentifierISO_undated_)"/>
-			<xsl:variable name="docidentifierISO_">
-				<xsl:value-of select="$docidentifierISO_undated"/>
-				<xsl:if test="$docidentifierISO_undated = ''">
-					<xsl:value-of select="$docidentifier_iso"/>
-				</xsl:if>
-			</xsl:variable>
-			<xsl:variable name="docidentifierISO" select="normalize-space($docidentifierISO_)"/>
-			<xsl:variable name="docidentifierISO_with_break_" select="java:replaceAll(java:java.lang.String.new($docidentifierISO),'^([^\d]+) (\d)', concat('$1', $linebreak, '$2'))"/> <!-- add line break before 1st sequence 'space digit' -->
-			<xsl:variable name="docidentifierISO_with_break">
-				<xsl:choose>
-					<xsl:when test="contains($docidentifierISO_with_break_, ' ') or contains($docidentifierISO_with_break_, $linebreak)"><xsl:value-of select="$docidentifierISO_with_break_"/></xsl:when>
-					<xsl:otherwise><xsl:value-of select="java:replaceAll(java:java.lang.String.new($docidentifierISO_with_break_), '(\/)(\d{3,})', concat('$1', $zero_width_space, '$2'))"/></xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-
-
-			
-			<!-- UPPERCASED stage name -->	
-			<!-- <item name="NWIP" show="true" header="PRELIMINARY WORK ITEM" shortname="NEW WORK ITEM PROPOSAL">NEW WORK ITEM PROPOSAL</item>
-			<item name="PWI" show="true" header="PRELIMINARY WORK ITEM" shortname="PRELIMINARY WORK ITEM">PRELIMINARY WORK ITEM</item>		
-			<item name="NP" show="true" header="PRELIMINARY WORK ITEM" shortname="NEW WORK ITEM PROPOSAL">NEW WORK ITEM PROPOSAL</item>
-			<item name="AWI" show="true" header="APPROVED WORK ITEM" shortname="APPROVED WORK ITEM">APPROVED WORK ITEM</item>
-			<item name="WD" show="true" header="WORKING DRAFT" shortname="WORKING DRAFT">WORKING DRAFT</item>
-			<item name="CD" show="true" header="COMMITTEE DRAFT" shortname="COMMITTEE DRAFT">COMMITTEE DRAFT</item>
-			<item name="DIS" show="true" header="DRAFT INTERNATIONAL STANDARD" shortname="DRAFT">DRAFT INTERNATIONAL STANDARD</item>
-			<item name="FDIS" show="true" header="FINAL DRAFT INTERNATIONAL STANDARD" shortname="FINAL DRAFT">FINAL DRAFT INTERNATIONAL STANDARD</item>
-			<item name="PRF">PROOF</item> -->
-
-			<xsl:variable name="docidentifier_another_">
-				<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type != '' and @type != 'ISO' and not(starts-with(@type, 'iso-')) and @type != 'URN']">
-					<xsl:value-of select="."/>
-					<xsl:if test="position() != last()"><xsl:value-of select="$linebreak"/></xsl:if>
-				</xsl:for-each>
-			</xsl:variable>
-			<xsl:variable name="docidentifier_another">
-				<xsl:if test="normalize-space($docidentifier_another_) != ''">
-					<fo:block margin-top="12pt">
-						<xsl:value-of select="java:replaceAll(java:java.lang.String.new($docidentifier_another_),'^([^\d]+) (\d)', concat('$1', $linebreak, '$2'))"/>
-					</fo:block>
-				</xsl:if>
-			</xsl:variable>
-		
-			<xsl:variable name="lang_other"><xsl:call-template name="get_lang_other"/></xsl:variable>
-			
-			<xsl:variable name="stage-fullname-uppercased" select="java:toUpperCase(java:java.lang.String.new($stage-fullname))"/>
-			<xsl:variable name="stagename-header-coverpage">
-				<xsl:choose>
-					<xsl:when test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or starts-with($stage-abbreviation, 'DTS') or starts-with($stage-abbreviation, 'DTR') or $stagename_abbreviation = 'DIS'">DRAFT</xsl:when>
-					<xsl:when test="$stage-abbreviation = 'FDIS' or $stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or starts-with($stage-abbreviation, 'FDTS') or starts-with($stage-abbreviation, 'FDTR') or $stagename_abbreviation = 'FDIS'">FINAL DRAFT</xsl:when>
-					<xsl:when test="$stage-abbreviation = 'PRF'"></xsl:when>
-					<xsl:when test="$stage-abbreviation = 'IS'"></xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="$stage-fullname-uppercased"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			
-			<xsl:variable name="part" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@part)"/>
-			
-			<xsl:variable name="i18n_reference_number_abbrev"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number_abbrev</xsl:with-param></xsl:call-template></xsl:variable>
-			<xsl:variable name="i18n_reference_number"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number</xsl:with-param></xsl:call-template></xsl:variable>
-	
-			<xsl:variable name="i18n_voting_begins_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">voting_begins_on</xsl:with-param></xsl:call-template></xsl:variable>
-			<xsl:variable name="i18n_voting_terminates_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">voting_terminates_on</xsl:with-param></xsl:call-template></xsl:variable>
-			<xsl:variable name="i18n_corrected_version"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">corrected_version</xsl:with-param></xsl:call-template></xsl:variable>
-		
-			<xsl:variable name="approvalgroup_">
-				<!-- Example: ISO/TC 46/SC 2 -->
-				<!-- ISO/SG SMART/SG TS/AG 1 -->
-				<!-- <xsl:variable name="approvalgroup" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:approvalgroup/@identifier)"/> -->
-				<xsl:variable name="contributor_authorizer_">
-					<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'authorizer']/mn:description = 'committee']"/>
-				</xsl:variable>
-				<xsl:variable name="contributor_authorizer" select="xalan:nodeset($contributor_authorizer_)"/>
-				<xsl:variable name="organization_abbreviation" select="normalize-space($contributor_authorizer/mn:contributor/mn:organization/mn:abbreviation)"/>
-				<xsl:variable name="approvalgroup">
-					<xsl:if test="$organization_abbreviation = 'ISO' or 
-						contains($organization_abbreviation, 'ISO/') or
-						contains($organization_abbreviation, '/ISO')"><xsl:value-of select="concat($organization_abbreviation, '/')"/></xsl:if>
-					<xsl:value-of select="normalize-space($contributor_authorizer/mn:contributor/mn:organization/mn:subdivision/mn:identifier[@type = 'full'])"/>
-				</xsl:variable>
-				<xsl:variable name="parts_by_slash">
-					<xsl:call-template name="split">
-						<xsl:with-param name="pText" select="$approvalgroup"/>
-						<xsl:with-param name="sep" select="'/'"/>
-						<xsl:with-param name="normalize-space">false</xsl:with-param>
-						<xsl:with-param name="keep_sep">true</xsl:with-param>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:variable name="parts_with_subparts">
-					<xsl:for-each select="xalan:nodeset($parts_by_slash)//mnx:item">
-						<xsl:element name="subitem" namespace="{$namespace_mn_xsl}">
-							<xsl:call-template name="split">
-								<xsl:with-param name="pText" select="."/>
-								<xsl:with-param name="sep" select="' '"/>
-								<xsl:with-param name="normalize-space">false</xsl:with-param>
-								<xsl:with-param name="keep_sep">true</xsl:with-param>
-							</xsl:call-template>
-						</xsl:element>
-					</xsl:for-each>
-				</xsl:variable>
-				<xsl:for-each select="xalan:nodeset($parts_with_subparts)//mnx:subitem">
-					<xsl:choose>
-						<xsl:when test="position() = 1">
-							<xsl:value-of select="."/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:for-each select="mnx:item">
-								<xsl:choose>
-									<xsl:when test="position() = last()">
-										<fo:inline font-weight="bold"><xsl:value-of select="."/></fo:inline>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:value-of select="."/>
-									</xsl:otherwise>
-								</xsl:choose>
-							</xsl:for-each>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:for-each>
-			</xsl:variable>
-			<xsl:variable name="approvalgroup" select="xalan:nodeset($approvalgroup_)" />
-		
-			<xsl:variable name="secretariat_">
-				<!-- <xsl:variable name="value" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:secretariat)"/> -->
-				<xsl:variable name="value" select="normalize-space(/mn:metanorma/mn:bibdata/mn:contributor[mn:role/mn:description = 'secretariat']/mn:organization/mn:subdivision)"/>
-				<xsl:if test="$value != ''">
-					<xsl:variable name="i18n_secretariat"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">secretariat</xsl:with-param></xsl:call-template></xsl:variable>
-					<xsl:value-of select="concat($i18n_secretariat, ': ')"/>
-					<fo:inline font-weight="bold"><xsl:value-of select="$value"/></fo:inline>
-				</xsl:if>
-			</xsl:variable>
-			<xsl:variable name="secretariat" select="xalan:nodeset($secretariat_)" />
-		
-			<xsl:variable name="ics_">
-				<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:ext/mn:ics/mn:code">
-					<xsl:if test="position() = 1"><fo:inline>ICS: </fo:inline></xsl:if>
-					<xsl:value-of select="."/>
-					<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>
-				</xsl:for-each>
-			</xsl:variable>
-			<xsl:variable name="ics" select="xalan:nodeset($ics_)"/>
-		
-			<xsl:variable name="udc"><xsl:call-template name="get_udc"/></xsl:variable>
+			<xsl:variable name="i18n_reference_number" select="$variables/mnx:doc[@num = $num]/i18n_reference_number"/>
+			<xsl:variable name="i18n_descriptors" select="$variables/mnx:doc[@num = $num]/i18n_descriptors"/>
+			<xsl:variable name="i18n_corrected_version" select="$variables/mnx:doc[@num = $num]/i18n_corrected_version"/>
+			<xsl:variable name="i18n_voting_begins_on" select="$variables/mnx:doc[@num = $num]/i18n_voting_begins_on"/>
+			<xsl:variable name="i18n_voting_terminates_on" select="$variables/mnx:doc[@num = $num]/i18n_voting_terminates_on"/>
+			<xsl:variable name="i18n_reference_number_abbrev" select="$variables/mnx:doc[@num = $num]/i18n_reference_number_abbrev"/>
+			<xsl:variable name="color_secondary" select="$variables/mnx:doc[@num = $num]/color_secondary"/>
 		
 			<xsl:variable name="fo_cover_page">
 			<!-- cover page -->
@@ -1628,7 +1702,6 @@
 							</fo:block>
 						</fo:static-content>
 						<fo:flow flow-name="xsl-region-body">
-							
 							<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 							
 							<fo:block text-align="center" font-family="Arial" margin-top="14mm">
@@ -1714,7 +1787,6 @@
 							
 							<xsl:if test="/mn:metanorma/mn:bibdata/mn:keyword">
 								<fo:block margin-top="10pt">
-									<xsl:variable name="i18n_descriptors"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Descriptor.pl</xsl:with-param></xsl:call-template></xsl:variable>	
 									<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/> : </fo:inline>
 									<xsl:call-template name="insertKeywords">
 										<xsl:with-param name="sorting">no</xsl:with-param>
@@ -1724,9 +1796,7 @@
 							</xsl:if>
 							<fo:block-container position="absolute" left="0mm" top="0mm" height="25mm" text-align="right" display-align="after" role="SKIP">
 								<fo:block>
-									<xsl:call-template name="insertPriceBasedOn">
-										<xsl:with-param name="num" select="$num"/>
-									</xsl:call-template>
+									<xsl:call-template name="insertPriceBasedOn"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 								</fo:block>
 							</fo:block-container>
 						</fo:static-content>
@@ -1738,9 +1808,8 @@
 							</fo:block-container>
 						</fo:static-content>
 						<fo:flow flow-name="xsl-region-body">
-						
 							<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
-						
+							
 							<xsl:variable name="docnumber">
 								<xsl:variable name="value" select="/mn:metanorma/mn:bibdata/mn:docnumber"/>
 								<xsl:value-of select="$value"/>
@@ -1803,23 +1872,20 @@
 									</fo:table-row>
 									<fo:table-row border-top="2pt solid black" height="4.5mm" display-align="center">
 										<fo:table-cell number-columns-spanned="3" font-size="5.6pt" text-align-last="justify">
-											<!-- <fo:block><xsl:value-of select="$ISO_title_en"/>&#x25cf;<xsl:value-of select="$ISO_title_ru"/>&#x25cf;<xsl:value-of select="$ISO_title_fr"/></fo:block> -->
+											<!-- <fo:block><xsl:value-of select="$ISO_TITLE_EN"/>&#x25cf;<xsl:value-of select="$ISO_TITLE_RU"/>&#x25cf;<xsl:value-of select="$ISO_TITLE_FR"/></fo:block> -->
 											<fo:block>
-												<xsl:value-of select="$ISO_title_en"/>
+												<xsl:value-of select="$ISO_TITLE_EN"/>
 												<xsl:call-template name="insertBlackCircle"/>
-												<xsl:value-of select="$ISO_title_ru"/>
+												<xsl:value-of select="$ISO_TITLE_RU"/>
 												<xsl:call-template name="insertBlackCircle"/>
-												<xsl:value-of select="$ISO_title_fr"/></fo:block>
+												<xsl:value-of select="$ISO_TITLE_FR"/></fo:block>
 										</fo:table-cell>
 									</fo:table-row>
 								</fo:table-body>
 							</fo:table>
 							
 							<fo:block font-size="18pt" font-family="Univers" font-weight="bold" margin-top="44mm" margin-bottom="6mm" role="H1">
-								<xsl:call-template name="insertTitlesLangMain">
-									<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-									<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
-								</xsl:call-template>
+								<xsl:call-template name="insertTitlesLangMain"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 							</fo:block>
 							
 							<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
@@ -1827,9 +1893,8 @@
 								<fo:block font-size="8pt" font-style="italic" line-height="1.1" role="H1">
 									<!-- Example: title-intro fr -->
 									<xsl:call-template name="insertTitlesLangOther">
+										<xsl:with-param name="num" select="$num"/>
 										<xsl:with-param name="lang_other" select="$lang_other_"/>
-										<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-										<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
 									</xsl:call-template>
 								</fo:block>
 							</xsl:for-each>
@@ -1874,9 +1939,8 @@
 							</fo:block-container>
 						</fo:static-content>
 						<fo:flow flow-name="xsl-region-body">
-						
 							<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
-						
+							
 							<fo:block-container height="99.5%" border="1.25pt solid black">
 								<fo:block-container margin-left="11mm" margin-top="16mm" margin-right="10.5mm">
 									<fo:block-container margin-left="0" margin-top="0" margin-right="0">
@@ -1899,19 +1963,16 @@
 														</fo:block>
 													</fo:table-cell>
 													<fo:table-cell font-size="7.5pt" border-top="0.5pt solid black" border-bottom="0.5pt solid black" text-align-last="justify" display-align="center" line-height="1.6" padding-left="32mm">
-														<fo:block><xsl:value-of select="$ISO_title_en"/></fo:block>
-														<fo:block><xsl:value-of select="$ISO_title_fr"/></fo:block>
-														<fo:block><xsl:value-of select="$ISO_title_ru"/></fo:block>
+														<fo:block><xsl:value-of select="$ISO_TITLE_EN"/></fo:block>
+														<fo:block><xsl:value-of select="$ISO_TITLE_FR"/></fo:block>
+														<fo:block><xsl:value-of select="$ISO_TITLE_RU"/></fo:block>
 													</fo:table-cell>
 												</fo:table-row>
 											</fo:table-body>
 										</fo:table>
 										
 										<fo:block font-size="13pt" font-weight="bold" margin-top="32mm" margin-bottom="9mm" role="H1">
-											<xsl:call-template name="insertTitlesLangMain">
-												<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-												<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
-											</xsl:call-template>
+											<xsl:call-template name="insertTitlesLangMain"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 										</fo:block>
 										
 										<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
@@ -1919,9 +1980,8 @@
 											<fo:block font-size="8pt" font-style="italic" line-height="1.1" role="H1">
 												<!-- Example: title-intro fr -->
 												<xsl:call-template name="insertTitlesLangOther">
+													<xsl:with-param name="num" select="$num"/>
 													<xsl:with-param name="lang_other" select="$lang_other_"/>
-													<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-													<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
 												</xsl:call-template>
 											</fo:block>
 										</xsl:for-each>
@@ -1936,7 +1996,6 @@
 				<xsl:when test="$layoutVersion = '2024'">
 					<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force">
 						<fo:flow flow-name="xsl-region-body">
-							
 							<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 							
 							<fo:table table-layout="fixed" width="100%">
@@ -1948,14 +2007,10 @@
 								<fo:table-body>
 								
 									<fo:table-row>
-										<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}">
+										<fo:table-cell number-columns-spanned="2" border-right="{$COVER_PAGE_BORDER}">
 											<fo:block-container height="44mm">
 												<fo:block>
-													<xsl:call-template name="insertLogoImages2024">
-														<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
-														<xsl:with-param name="stage_published" select="$stage_published"/>
-														<xsl:with-param name="substage" select="$substage"/>
-													</xsl:call-template>
+													<xsl:call-template name="insertLogoImages2024"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 												</fo:block>
 											</fo:block-container>
 										</fo:table-cell>
@@ -1981,8 +2036,6 @@
 															</xsl:otherwise>
 														</xsl:choose>
 													</xsl:variable>
-													
-													<xsl:variable name="stagename_localized_coverpage"><xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:status/mn:stage[@language = $lang and @type = 'coverpage']/node()"/></xsl:variable>
 													
 													<xsl:choose>
 														<xsl:when test="$stage-abbreviation = 'DIS'"> <!--  or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' -->
@@ -2050,7 +2103,7 @@
 									</fo:table-row>
 									
 									<fo:table-row height="46mm">
-										<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}">
+										<fo:table-cell number-columns-spanned="2" border-right="{$COVER_PAGE_BORDER}">
 											<fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
 										</fo:table-cell>
 										<fo:table-cell number-columns-spanned="2" display-align="after" padding-left="6mm">
@@ -2074,24 +2127,21 @@
 									</fo:table-row>
 									
 									<fo:table-row height="1.4mm" font-size="0pt">
-										<fo:table-cell border-bottom="{$cover_page_border}"><fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block></fo:table-cell>
+										<fo:table-cell border-bottom="{$COVER_PAGE_BORDER}"><fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block></fo:table-cell>
 										<fo:table-cell number-columns-spanned="2"><fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block></fo:table-cell>
-										<fo:table-cell border-bottom="{$cover_page_border}"><fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block></fo:table-cell>
+										<fo:table-cell border-bottom="{$COVER_PAGE_BORDER}"><fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block></fo:table-cell>
 									</fo:table-row>
 									<fo:table-row height="1.4mm" font-size="0pt">
 										<fo:table-cell number-columns-spanned="4"><fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block></fo:table-cell>
 									</fo:table-row>
 									
 									<fo:table-row>
-										<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" padding-right="4mm">
+										<fo:table-cell number-columns-spanned="2" border-right="{$COVER_PAGE_BORDER}" padding-right="4mm">
 										
 											<fo:block-container font-family="Cambria" line-height="1.1" role="SKIP" height="110mm">
 												<fo:block margin-right="3.5mm" role="SKIP">
 													<fo:block font-size="18pt" font-weight="bold" margin-top="2.5mm" role="H1">
-														<xsl:call-template name="insertTitlesLangMain">
-															<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-															<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
-														</xsl:call-template>
+														<xsl:call-template name="insertTitlesLangMain"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 													</fo:block>
 																
 													<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')"> <!--  or $stage-abbreviation = 'PRF' -->
@@ -2101,9 +2151,8 @@
 															<fo:block font-size="11pt" font-style="italic" line-height="1.1" role="H1">
 																<!-- Example: title-intro fr -->
 																<xsl:call-template name="insertTitlesLangOther">
+																	<xsl:with-param name="num" select="$num"/>
 																	<xsl:with-param name="lang_other" select="$lang_other_"/>
-																	<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-																	<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
 																</xsl:call-template>
 															</fo:block>
 														</xsl:for-each>
@@ -2131,11 +2180,7 @@
 											
 																<xsl:if test="not($stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM')">
 																	<xsl:variable name="edition_and_date">
-																		<xsl:call-template name="insertEditionAndDate">
-																			<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-																			<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-																			<xsl:with-param name="stage_published" select="$stage_published"/>
-																		</xsl:call-template>
+																		<xsl:call-template name="insertEditionAndDate"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 																	</xsl:variable>
 																	<xsl:if test="normalize-space($edition_and_date) != ''">
 																		<fo:block font-size="18pt" font-weight="bold" margin-bottom="3mm">
@@ -2245,10 +2290,7 @@
 																<xsl:if test="$lang = 'ru'">
 																	<xsl:attribute name="margin-right">10mm</xsl:attribute>
 																</xsl:if>
-																<xsl:call-template name="insertDraftComments">
-																	<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-																	<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-																</xsl:call-template>
+																<xsl:call-template name="insertDraftComments"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 															</fo:block>
 														</fo:table-cell>
 													</fo:table-row>
@@ -2259,13 +2301,10 @@
 									</fo:table-row>
 									
 									<fo:table-row height="60mm">
-										<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" display-align="after" padding-right="4mm">
+										<fo:table-cell number-columns-spanned="2" border-right="{$COVER_PAGE_BORDER}" display-align="after" padding-right="4mm">
 										
 											<xsl:variable name="additionalNotes">
-												<xsl:call-template name="insertCoverPageAdditionalNotes">
-													<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-													<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-												</xsl:call-template>
+												<xsl:call-template name="insertCoverPageAdditionalNotes"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 											</xsl:variable>
 											
 											<xsl:variable name="feedback_link" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:semantic-metadata/mn:feedback-link)"/>
@@ -2283,7 +2322,7 @@
 														<xsl:attribute name="margin-bottom">3.5mm</xsl:attribute>
 													</xsl:if>
 													<xsl:call-template name="add-letter-spacing">
-														<xsl:with-param name="text" select="$proof-text"/>
+														<xsl:with-param name="text" select="$PROOF_TEXT"/>
 														<xsl:with-param name="letter-spacing" select="0.65"/>
 													</xsl:call-template>
 												</fo:block>
@@ -2335,7 +2374,7 @@
 									</fo:table-row>
 									
 									<fo:table-row height="13mm">
-										<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}" display-align="after" padding-bottom="-1mm" line-height="1.1">>
+										<fo:table-cell number-columns-spanned="2" border-right="{$COVER_PAGE_BORDER}" display-align="after" padding-bottom="-1mm" line-height="1.1">>
 											<fo:block font-size="10pt">
 												<!-- Reference number -->
 												<xsl:value-of select="$i18n_reference_number"/>
@@ -2381,10 +2420,7 @@
 											</fo:block> -->
 											<fo:block-container position="absolute" top="-47mm" width="52mm" height="100mm" role="SKIP">
 												<fo:block>
-													<xsl:call-template name="insertDraftComments">
-														<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-														<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-													</xsl:call-template>
+													<xsl:call-template name="insertDraftComments"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 												</fo:block>
 											</fo:block-container>
 										</fo:table-cell>
@@ -2405,10 +2441,7 @@
 												</xsl:if>
 												
 												<fo:block>
-													<xsl:call-template name="insertCoverPageAdditionalNotes">
-														<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-														<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-													</xsl:call-template>
+													<xsl:call-template name="insertCoverPageAdditionalNotes"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 												</fo:block>
 											</fo:block-container>
 											<fo:block role="SKIP">
@@ -2440,8 +2473,8 @@
 																	</xsl:variable>
 																	
 																	<xsl:call-template name="insertLogoImages">
+																		<xsl:with-param name="num" select="$num"/>
 																		<xsl:with-param name="content-height" select="$content-height"/>
-																		<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 																	</xsl:call-template>
 																	
 																</fo:block>
@@ -2482,9 +2515,8 @@
 							<!-- COVER PAGE for DIS document only -->
 							<xsl:when test="$stage-abbreviation = 'DIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or $stagename_abbreviation = 'DIS'">
 								<fo:flow flow-name="xsl-region-body">
-								
 									<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
-								
+									
 									<fo:block-container role="SKIP">
 										<fo:block margin-top="-1mm" font-size="20pt" text-align="right">
 											<xsl:value-of select="$stage-fullname-uppercased"/>
@@ -2556,10 +2588,7 @@
 													<xsl:if test="$layoutVersion = '1989'">
 														<xsl:attribute name="font-size">16pt</xsl:attribute>
 													</xsl:if>
-													<xsl:call-template name="insertTitlesLangMain">
-														<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-														<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
-													</xsl:call-template>
+													<xsl:call-template name="insertTitlesLangMain"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 												</fo:block>
 												
 												
@@ -2573,9 +2602,8 @@
 														</xsl:if>
 														<!-- Example: title-intro fr -->
 														<xsl:call-template name="insertTitlesLangOther">
+															<xsl:with-param name="num" select="$num"/>
 															<xsl:with-param name="lang_other" select="$lang_other_"/>
-															<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-															<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
 														</xsl:call-template>
 													</fo:block>
 												</xsl:for-each>
@@ -2596,7 +2624,6 @@
 						
 								<!-- COVER PAGE  for all documents except DIS, DAMD and DAM -->
 								<fo:flow flow-name="xsl-region-body">
-									
 									<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 									
 									<fo:block-container role="SKIP">
@@ -2692,11 +2719,7 @@
 															<xsl:attribute name="font-size">9pt</xsl:attribute>
 														</xsl:if>
 														<fo:block text-align="right">
-															<xsl:call-template name="insertEditionAndDate">
-																<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-																<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-																<xsl:with-param name="stage_published" select="$stage_published"/>
-															</xsl:call-template>
+															<xsl:call-template name="insertEditionAndDate"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 														</fo:block>
 														<!-- <xsl:value-of select="$linebreak"/>
 														<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:version/mn:revision-date"/> -->
@@ -2826,10 +2849,7 @@
 																	</xsl:choose>
 																</xsl:variable>
 																<fo:block font-size="{$font_size}" font-weight="bold" margin-top="12pt" role="H1">
-																	<xsl:call-template name="insertTitlesLangMain">
-																		<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-																		<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
-																	</xsl:call-template>
+																	<xsl:call-template name="insertTitlesLangMain"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 																</fo:block>
 																
 																<xsl:choose>
@@ -2856,9 +2876,8 @@
 																					</xsl:if>
 																					<!-- Example: title-intro fr -->
 																					<xsl:call-template name="insertTitlesLangOther">
+																						<xsl:with-param name="num" select="$num"/>
 																						<xsl:with-param name="lang_other" select="$lang_other_"/>
-																						<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-																						<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
 																					</xsl:call-template>
 																				</fo:block>
 																			</xsl:for-each>
@@ -2885,7 +2904,7 @@
 											<xsl:if test="$stage-abbreviation = 'PRF'">
 												<fo:block font-size="36pt" font-weight="bold" margin-left="1mm">
 													<xsl:call-template name="add-letter-spacing">
-														<xsl:with-param name="text" select="$proof-text"/>
+														<xsl:with-param name="text" select="$PROOF_TEXT"/>
 														<xsl:with-param name="letter-spacing" select="0.65"/>
 													</xsl:call-template>
 												</fo:block>
@@ -2936,7 +2955,6 @@
 							</fo:table>
 						</fo:static-content>
 						<fo:flow flow-name="xsl-region-body">
-							
 							<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 							
 							<fo:block-container role="SKIP">
@@ -2978,10 +2996,7 @@
 											<xsl:if test="$layoutVersion = '1989'">
 												<xsl:attribute name="font-size">16pt</xsl:attribute>
 											</xsl:if>
-											<xsl:call-template name="insertTitlesLangMain">
-												<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-												<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
-											</xsl:call-template>
+											<xsl:call-template name="insertTitlesLangMain"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 										</fo:block>
 											
 										<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
@@ -2994,9 +3009,8 @@
 												</xsl:if>
 												<!-- Example: title-intro fr -->
 												<xsl:call-template name="insertTitlesLangOther">
+													<xsl:with-param name="num" select="$num"/>
 													<xsl:with-param name="lang_other" select="$lang_other_"/>
-													<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-													<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
 												</xsl:call-template>
 											</fo:block>
 										</xsl:for-each>
@@ -3016,7 +3030,6 @@
 							</fo:block-container>
 						</fo:static-content>
 						<fo:flow flow-name="xsl-region-body">
-							
 							<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 							
 							<fo:block-container text-align="right" role="SKIP">
@@ -3063,10 +3076,7 @@
 							<fo:block-container font-size="16pt" role="SKIP">
 								<!-- Information and documentation — Codes for transcription systems  -->
 									<fo:block font-weight="bold" role="H1">
-										<xsl:call-template name="insertTitlesLangMain">
-											<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-											<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
-										</xsl:call-template>
+										<xsl:call-template name="insertTitlesLangMain"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 									</fo:block>
 									
 									<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
@@ -3076,9 +3086,8 @@
 										<fo:block role="H1">
 											<!-- Example: title-intro fr -->
 											<xsl:call-template name="insertTitlesLangOther">
+												<xsl:with-param name="num" select="$num"/>
 												<xsl:with-param name="lang_other" select="$lang_other_"/>
-												<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-												<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
 											</xsl:call-template>
 										</fo:block>
 										
@@ -3121,19 +3130,12 @@
 	<!-- copyright-statement -->
 	<xsl:template name="inner-cover-page">
 		<xsl:param name="num"/>
-		<xsl:param name="ISOnumber"/>
-		<xsl:param name="doctype_localized"/>
-		<xsl:param name="stage-fullname"/>
-		<xsl:param name="stage-abbreviation"/>
-		<xsl:param name="stagename_abbreviation"/>
-		<xsl:param name="stagename_localized"/>
-		<xsl:param name="copyrightText"/>
-		<xsl:param name="copyrightAbbrIEEE"/>
-		<xsl:param name="document-master-reference_addon"/>
+		
 		<xsl:if test="normalize-space(/mn:metanorma/mn:boilerplate/mn:copyright-statement) != ''">
 		
 			<fo:page-sequence format="i" force-page-count="no-force">
 				<xsl:attribute name="master-reference">
+					<xsl:variable name="document-master-reference_addon" select="$variables/mnx:doc[@num = $num]/document-master-reference_addon"/>
 					<xsl:value-of select="concat('preface',$document-master-reference_addon)"/>
 				</xsl:attribute>
 				
@@ -3141,14 +3143,6 @@
 					<xsl:with-param name="num" select="$num"/>
 					<xsl:with-param name="font-weight">normal</xsl:with-param>
 					<xsl:with-param name="is_footer">true</xsl:with-param>
-					<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
-					<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-					<xsl:with-param name="stage-fullname" select="$stage-fullname"/>
-					<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-					<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-					<xsl:with-param name="stagename_localized" select="$stagename_localized"/>
-					<xsl:with-param name="copyrightText" select="$copyrightText"/>
-					<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 				</xsl:call-template>
 				<fo:flow flow-name="xsl-region-body" role="SKIP"> <!-- line-height="115%"  -->
 				
@@ -3220,6 +3214,7 @@
 	
 	
 	<xsl:template match="mn:preface/mn:introduction" mode="update_xml_step1" priority="3">
+		<xsl:param name="num"/>
 		<xsl:param name="process">false</xsl:param>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'">
@@ -3266,8 +3261,8 @@
 	</xsl:template>
 		
 	<xsl:template name="insertLogoImages">
+		<xsl:param name="num"/>
 		<xsl:param name="content-height"/>
-		<xsl:param name="copyrightAbbrIEEE"/>
 		<xsl:choose>
 			<xsl:when test="mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization">
 				<xsl:for-each select="mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization">
@@ -3278,6 +3273,7 @@
 				
 					<xsl:for-each select="xalan:nodeset($items)//mnx:item">
 						<xsl:call-template name="insertLogoImage">
+							<xsl:with-param name="num" select="$num"/>
 							<xsl:with-param name="content-height" select="$content-height"/>
 						</xsl:call-template>
 						<xsl:if test="position() != last()">
@@ -3292,6 +3288,7 @@
 			<xsl:otherwise>
 				<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization">
 					<xsl:call-template name="insertLogoImage">
+						<xsl:with-param name="num" select="$num"/>
 						<xsl:with-param name="content-height" select="$content-height"/>
 					</xsl:call-template>
 					<xsl:if test="position() != last()">
@@ -3300,7 +3297,7 @@
 				</xsl:for-each>
 			</xsl:otherwise>
 		</xsl:choose>
-		<xsl:if test="$copyrightAbbrIEEE != ''">
+		<xsl:if test="$variables/mnx:doc[@num = $num]/copyrightAbbrIEEE != ''">
 			<fo:block>
 				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE-Logo))}" content-height="11mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/>
 			</fo:block>
@@ -3330,6 +3327,7 @@
 	</xsl:template>
 	
 	<xsl:template name="insertLogoImage">
+		<xsl:param name="num"/>
 		<xsl:param name="content-height"/>
 		<xsl:choose>
 			<xsl:when test="mn:logo/mn:image">
@@ -3361,12 +3359,10 @@
 			</xsl:when>
 			<xsl:otherwise></xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>
+	</xsl:template> <!-- END: insertLogoImage -->
 		
 	<xsl:template name="insertLogoImages2024">
-		<xsl:param name="copyrightAbbrIEEE"/>
-		<xsl:param name="stage_published"/>
-		<xsl:param name="substage"/>
+		<xsl:param name="num"/>
 		<xsl:variable name="content-height">20</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization[mn:abbreviation]">
@@ -3377,9 +3373,8 @@
 					
 					<xsl:for-each select="xalan:nodeset($items)//mnx:item">
 						<xsl:call-template name="insertLogoImage2024">
+							<xsl:with-param name="num" select="$num"/>
 							<xsl:with-param name="content-height" select="$content-height"/>
-							<xsl:with-param name="stage_published" select="$stage_published"/>
-							<xsl:with-param name="substage" select="$substage"/>
 						</xsl:call-template>
 						<xsl:if test="position() != last()">
 							<fo:inline padding-right="1mm" role="SKIP">&#xA0;</fo:inline>
@@ -3393,9 +3388,8 @@
 			<xsl:otherwise>
 				<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization">
 					<xsl:call-template name="insertLogoImage2024">
+						<xsl:with-param name="num" select="$num"/>
 						<xsl:with-param name="content-height" select="$content-height"/>
-						<xsl:with-param name="stage_published" select="$stage_published"/>
-						<xsl:with-param name="substage" select="$substage"/>
 					</xsl:call-template>
 					<xsl:if test="position() != last()">
 						<fo:inline padding-right="1mm" role="SKIP">&#xA0;</fo:inline>
@@ -3403,22 +3397,19 @@
 				</xsl:for-each>
 			</xsl:otherwise>
 		</xsl:choose>
-		<xsl:if test="$copyrightAbbrIEEE != ''">
+		<xsl:if test="$variables/mnx:doc[@num = $num]/copyrightAbbrIEEE != ''">
 			<fo:block margin-top="2mm">
 				<xsl:variable name="Image-IEEE-Logo2">
-					<xsl:call-template name="get_Image-IEEE-Logo2">
-						<xsl:with-param name="stage_published" select="$stage_published"/>
-					</xsl:call-template>
+					<xsl:call-template name="get_Image-IEEE-Logo2"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 				</xsl:variable>
 				<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-IEEE-Logo2))}" content-width="{$content-height * 2 + 2}mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image IEEE Logo"/>
 			</fo:block>
 		</xsl:if>
-	</xsl:template>
+	</xsl:template> <!-- END: insertLogoImages2024 -->
 	
 	<xsl:template name="insertLogoImage2024">
+		<xsl:param name="num"/>
 		<xsl:param name="content-height"/>
-		<xsl:param name="stage_published"/>
-		<xsl:param name="substage"/>
 		<xsl:variable name="owner_number" select="count(ancestor::mn:copyright/preceding-sibling::mn:copyright) + 1"/>
 		<!-- https://github.com/metanorma/metanorma-iso/issues/1386 -->
 		<xsl:variable name="logo_width_">
@@ -3478,17 +3469,12 @@
 			</xsl:when>
 			<xsl:when test="mn:abbreviation = 'ISO'">
 				<fo:instream-foreign-object content-height="{$content-height}mm" fox:alt-text="Image ISO Logo">
-					<xsl:call-template name="get_Image-ISO-Logo-SVG">
-						<xsl:with-param name="stage_published" select="$stage_published"/>
-						<xsl:with-param name="substage" select="$substage"/>
-					</xsl:call-template>
+					<xsl:call-template name="get_Image-ISO-Logo-SVG"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 				</fo:instream-foreign-object>
 			</xsl:when>
 			<xsl:when test="mn:abbreviation = 'IEC'">
 				<fo:instream-foreign-object content-height="{$content-height}mm" fox:alt-text="Image IEC Logo">
-					<xsl:call-template name="get_Image-IEC-Logo-SVG">
-						<xsl:with-param name="stage_published" select="$stage_published"/>
-					</xsl:call-template>
+					<xsl:call-template name="get_Image-IEC-Logo-SVG"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 				</fo:instream-foreign-object>
 			</xsl:when>
 			<xsl:when test="mn:abbreviation = 'IEEE'"></xsl:when>
@@ -3500,35 +3486,33 @@
 	</xsl:template> <!-- END: insertLogoImage2024 -->
 	
 	<xsl:template name="insertTitlesLangMain">
-		<xsl:param name="stage-abbreviation"/>
-		<xsl:param name="doctype_uppercased"/>
+		<xsl:param name="num"/>
 		<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-intro']"/>
 		<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-main']"/>
 		<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-complementary']"/>
 		<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']">
+			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="isMainLang">true</xsl:with-param>
 		</xsl:apply-templates>
 		<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-amd']">
+			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="isMainLang">true</xsl:with-param>
-			<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-			<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
 		</xsl:apply-templates>
 	</xsl:template>
 	
 	<xsl:template name="insertTitlesLangOther">
+		<xsl:param name="num"/>
 		<xsl:param name="lang_other"/>
-		<xsl:param name="stage-abbreviation"/>
-		<xsl:param name="doctype_uppercased"/>
 		<xsl:apply-templates select="$XML/mn:metanorma/mn:bibdata/mn:title[@language = $lang_other and @type = 'title-intro']"/>
 		<xsl:apply-templates select="$XML/mn:metanorma/mn:bibdata/mn:title[@language = $lang_other and @type = 'title-main']"/>
 		<xsl:apply-templates select="$XML/mn:metanorma/mn:bibdata/mn:title[@language = $lang_other and @type = 'title-complementary']"/>
 		<xsl:apply-templates select="$XML/mn:metanorma/mn:bibdata/mn:title[@language = $lang_other and @type = 'title-part']">
+			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="curr_lang" select="$lang_other"/>
 		</xsl:apply-templates>
 		<xsl:apply-templates select="$XML/mn:metanorma/mn:bibdata/mn:title[@language = $lang_other and @type = 'title-amd']">
+			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="curr_lang" select="$lang_other"/>
-			<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-			<xsl:with-param name="doctype_uppercased" select="$doctype_uppercased"/>
 		</xsl:apply-templates>																
 	</xsl:template>
 	
@@ -3541,9 +3525,10 @@
 	</xsl:template>
 	
 	<xsl:template name="insertEditionAndDate">
-		<xsl:param name="stage-abbreviation"/>
-		<xsl:param name="stagename_abbreviation"/>
-		<xsl:param name="stage_published"/>
+		<xsl:param name="num"/>
+		<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
+		<xsl:variable name="stagename_abbreviation" select="$variables/mnx:doc[@num = $num]/stagename_abbreviation"/>
+		<xsl:variable name="stage_published" select="$variables/mnx:doc[@num = $num]/stage_published"/>
 		<xsl:variable name="edition">
 			<xsl:if test="$stage-abbreviation = 'PRF' or 
 												$stage-abbreviation = 'IS' or 
@@ -3585,11 +3570,12 @@
 	</xsl:template>
 	
 	<xsl:template name="insertDraftComments">
-		<xsl:param name="stage-abbreviation"/>
-		<xsl:param name="stagename_abbreviation"/>
-		<xsl:variable name="i18n_draft_comment_1"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_1</xsl:with-param></xsl:call-template></xsl:variable>
-		<xsl:variable name="i18n_draft_comment_2"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_2</xsl:with-param></xsl:call-template></xsl:variable>
-		<xsl:variable name="i18n_draft_comment_3"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_3</xsl:with-param></xsl:call-template></xsl:variable>
+		<xsl:param name="num"/>
+		<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
+		<xsl:variable name="stagename_abbreviation" select="$variables/mnx:doc[@num = $num]/stagename_abbreviation"/>
+		<xsl:variable name="i18n_draft_comment_1" select="$variables/mnx:doc[@num = $num]/i18n_draft_comment_1"/>
+		<xsl:variable name="i18n_draft_comment_2" select="$variables/mnx:doc[@num = $num]/i18n_draft_comment_2"/>
+		<xsl:variable name="i18n_draft_comment_3" select="$variables/mnx:doc[@num = $num]/i18n_draft_comment_3"/>
 		<xsl:if test="$stagename_abbreviation = 'DIS' or 
 											$stage-abbreviation = 'DIS' or 
 											$stage-abbreviation = 'DAMD' or 
@@ -3661,8 +3647,11 @@
 	</xsl:template>
 	
 	<xsl:template name="insertCoverPageAdditionalNotes">
-		<xsl:param name="stage-abbreviation"/>
-		<xsl:param name="stagename_abbreviation"/>
+		<xsl:param name="num"/>
+		<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
+		<xsl:variable name="stagename_abbreviation" select="$variables/mnx:doc[@num = $num]/stagename_abbreviation"/>
+		<xsl:variable name="i18n_fast_track_procedure" select="$variables/mnx:doc[@num = $num]/i18n_fast_track_procedure"/>
+		<xsl:variable name="i18n_iso_cen_parallel" select="$variables/mnx:doc[@num = $num]/i18n_iso_cen_parallel"/>
 		<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FCD' or 
 											$stage-abbreviation = 'DIS' or $stage-abbreviation = 'FDIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or $stagename_abbreviation = 'DIS' or $stagename_abbreviation = 'FDIS'">
 			<xsl:variable name="text">
@@ -3701,7 +3690,6 @@
 							</xsl:if>
 							<fo:block>
 								<!-- <xsl:text>FAST TRACK PROCEDURE</xsl:text>  -->
-								<xsl:variable name="i18n_fast_track_procedure"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">fast-track-procedure</xsl:with-param></xsl:call-template></xsl:variable>
 								<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($i18n_fast_track_procedure))"/>
 							</fo:block>
 						</fo:block-container>
@@ -3726,7 +3714,6 @@
 							</xsl:if>
 							<fo:block>
 								<!-- <xsl:text>ISO/CEN PARALLEL PROCESSING</xsl:text>  -->
-								<xsl:variable name="i18n_iso_cen_parallel"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">iso-cen-parallel</xsl:with-param></xsl:call-template></xsl:variable>
 								<xsl:call-template name="add-letter-spacing">
 									<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($i18n_iso_cen_parallel))"/>
 									<xsl:with-param name="letter-spacing" select="0.13"/>
@@ -3754,7 +3741,7 @@
 					<xsl:call-template name="refine_toc-style"/>
 				
 					<!-- render 'Contents' outside if role="TOC" -->
-					<xsl:apply-templates select="mn:fmt-title"/>
+					<xsl:apply-templates select="mn:fmt-title"><xsl:with-param name="num" select="$num"/></xsl:apply-templates>
 				
 					<fo:block role="TOC">
 					
@@ -3905,9 +3892,12 @@
 				</fo:block-container>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>
+	</xsl:template> <!-- END: clause[@type = 'toc'] -->
 	
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
+		<xsl:param name="num"/>
+		<xsl:variable name="i18n_locality_part" select="$variables/mnx:doc[@num = $num]/i18n_locality_part"/>
+		<xsl:variable name="i18n_locality_page" select="$variables/mnx:doc[@num = $num]/i18n_locality_page"/>
 		<fo:block xsl:use-attribute-sets="toc-title-style">
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="margin-top">0</xsl:attribute>
@@ -3935,7 +3925,6 @@
 						<xsl:attribute name="font-size">9.6pt</xsl:attribute>
 					</xsl:if> -->
 					<!-- Page -->
-					<xsl:variable name="i18n_locality_page"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.page</xsl:with-param></xsl:call-template></xsl:variable>
 					<xsl:value-of select="$i18n_locality_page"/>
 				</fo:inline>
 			</fo:inline>
@@ -4027,9 +4016,11 @@
 	</xsl:template>
 
 	<xsl:template match="mn:bibdata/mn:title[@type = 'title-part']">
+		<xsl:param name="num"/>
 		<xsl:param name="curr_lang" select="$lang"/>
 		<xsl:param name="isMainLang">false</xsl:param>
-		<xsl:variable name="part" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@part)"/>
+		<xsl:variable name="part" select="$variables/mnx:doc[@num = $num]/part"/>
+		<xsl:variable name="i18n_locality_part" select="$variables/mnx:doc[@num = $num]/i18n_locality_part"/>
 		<xsl:choose>
 			<xsl:when test="$part != ''">
 				<!-- <xsl:text> — </xsl:text> -->
@@ -4040,7 +4031,6 @@
 				<xsl:variable name="part-word">
 					<xsl:choose>
 						<xsl:when test="$isMainLang = 'true'">
-							<xsl:variable name="i18n_locality_part"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template></xsl:variable>
 							<xsl:value-of select="concat($i18n_locality_part, ' ', $part, ':')"/>
 						</xsl:when>
 						<xsl:otherwise>
@@ -4110,11 +4100,12 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:bibdata/mn:title[@type = 'title-amd']">
+		<xsl:param name="num"/>
 		<xsl:param name="isMainLang">false</xsl:param>
 		<xsl:param name="curr_lang" select="$lang"/>
 		<xsl:param name="isMainBody">false</xsl:param>
-		<xsl:param name="stage-abbreviation"/>
-		<xsl:param name="doctype_uppercased"/>
+		<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
+		<xsl:variable name="doctype_uppercased" select="$variables/mnx:doc[@num = $num]/doctype_uppercased"/>
 		<xsl:if test="$doctype = 'amendment'">
 			<fo:block margin-right="-5mm" margin-top="6pt" role="H1">
 				<xsl:if test="$isMainLang = 'true'">
@@ -4893,6 +4884,7 @@
 	
 	
 	<xsl:template name="processElementContent">
+		<xsl:param name="num"/>
 		<xsl:variable name="level">
 			<xsl:call-template name="getLevel">
 				<xsl:with-param name="depth" select="mn:fmt-title/@depth"/>
@@ -4963,14 +4955,6 @@
 	<xsl:template match="mn:indexsect" />
 	<xsl:template match="mn:indexsect" mode="index">
 		<xsl:param name="num"/>
-		<xsl:param name="ISOnumber"/>
-		<xsl:param name="doctype_localized"/>
-		<xsl:param name="stage-fullname"/>
-		<xsl:param name="stage-abbreviation"/>
-		<xsl:param name="stagename_abbreviation"/>
-		<xsl:param name="stagename_localized"/>
-		<xsl:param name="copyrightText"/>
-		<xsl:param name="copyrightAbbrIEEE"/>
 		<fo:page-sequence master-reference="index" force-page-count="no-force">
 			<!-- <xsl:variable name="header-title">
 				<xsl:choose>
@@ -4986,14 +4970,6 @@
 				<!-- <xsl:with-param name="header-title" select="$header-title"/> -->
 				<xsl:with-param name="num" select="$num"/>
 				<xsl:with-param name="font-weight">normal</xsl:with-param>
-				<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
-				<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-				<xsl:with-param name="stage-fullname" select="$stage-fullname"/>
-				<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-				<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-				<xsl:with-param name="stagename_localized" select="$stagename_localized"/>
-				<xsl:with-param name="copyrightText" select="$copyrightText"/>
-				<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
 			</xsl:call-template>
 			
 			<fo:flow flow-name="xsl-region-body">
@@ -5005,7 +4981,7 @@
 				</fo:block>
 			</fo:flow>
 		</fo:page-sequence>
-	</xsl:template> <!-- END: mn:indexsect mode="index" -->
+	</xsl:template>
 	
 	
 	<xsl:template match="mn:xref | mn:fmt-xref" priority="2">
@@ -5100,101 +5076,63 @@
 		<xsl:param name="border_around_page">false</xsl:param>
 		<xsl:param name="insert_header_first">true</xsl:param>
 		<xsl:param name="insert_footer_last">true</xsl:param>
-		<xsl:param name="ISOnumber"/>
-		<xsl:param name="doctype_localized"/>
-		<xsl:param name="stage-fullname"/>
-		<xsl:param name="stage-abbreviation"/>
-		<xsl:param name="stagename_abbreviation"/>
-		<xsl:param name="stagename_localized"/>
-		<xsl:param name="copyrightText"/>
-		<xsl:param name="copyrightAbbrIEEE"/>
 		
 		<xsl:call-template name="insertHeader">
+			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="is_header" select="$is_header"/>
 			<xsl:with-param name="border_around_page" select="$border_around_page"/>
 			<xsl:with-param name="insert_header_first" select="$insert_header_first"/>
-			<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
-			<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-			<xsl:with-param name="stage-fullname" select="$stage-fullname"/>
-			<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-			<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-			<xsl:with-param name="stagename_localized" select="$stagename_localized"/>
 		</xsl:call-template>
 		<xsl:call-template name="insertFooter">
 			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="font-weight" select="$font-weight"/>
 			<xsl:with-param name="is_footer" select="$is_footer"/>
 			<xsl:with-param name="insert_footer_last" select="$insert_footer_last"/>
-			<xsl:with-param name="copyrightText" select="$copyrightText"/>
-			<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
-			<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
 		</xsl:call-template>
 	</xsl:template> <!-- END: insertHeaderFooter -->
 	
 	<xsl:template name="insertHeader">
+		<xsl:param name="num"/>
 		<xsl:param name="is_header">true</xsl:param>
 		<xsl:param name="border_around_page">false</xsl:param>
 		<xsl:param name="insert_header_first">true</xsl:param>
-		<xsl:param name="ISOnumber"/>
-		<xsl:param name="doctype_localized"/>
-		<xsl:param name="stage-fullname"/>
-		<xsl:param name="stage-abbreviation"/>
-		<xsl:param name="stagename_abbreviation"/>
-		<xsl:param name="stagename_localized"/>
 		<xsl:call-template name="insertHeaderEven">
+			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="border_around_page" select="$border_around_page"/>
 			<xsl:with-param name="is_header" select="$is_header"/>
-			<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 		</xsl:call-template>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'"></xsl:when>
 			<xsl:when test="not((($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))) and $insert_header_first = 'true'">
-				<xsl:call-template name="insertHeaderFirst">
-					<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
-					<xsl:with-param name="doctype_localized" select="$doctype_localized"/>
-					<xsl:with-param name="stage-fullname" select="$stage-fullname"/>
-					<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-					<xsl:with-param name="stagename_abbreviation" select="$stagename_abbreviation"/>
-					<xsl:with-param name="stagename_localized" select="$stagename_localized"/>
-				</xsl:call-template>
+				<xsl:call-template name="insertHeaderFirst"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 			</xsl:when>
 		</xsl:choose>
 		<xsl:call-template name="insertHeaderOdd">
+			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="border_around_page" select="$border_around_page"/>
 			<xsl:with-param name="is_header" select="$is_header"/>
-			<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 		</xsl:call-template>
-	</xsl:template> <!-- END: insertHeader -->
+	</xsl:template> <!-- insertHeader -->
 	
 	<xsl:template name="insertFooter">
 		<xsl:param name="num"/>
 		<xsl:param name="font-weight" select="'bold'"/>
 		<xsl:param name="is_footer">false</xsl:param>
 		<xsl:param name="insert_footer_last">true</xsl:param>
-		<xsl:param name="copyrightText"/>
-		<xsl:param name="copyrightAbbrIEEE"/>
-		<xsl:param name="stage-abbreviation"/>
 		<xsl:if test="($layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and $is_footer = 'true'">
 			<xsl:call-template name="insertFooterFirst1972_1998">
+				<xsl:with-param name="num" select="$num"/>
 				<xsl:with-param name="font-weight" select="$font-weight"/>
-				<xsl:with-param name="copyrightText" select="$copyrightText"/>
-				<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
 			</xsl:call-template>
 		</xsl:if>
 		<xsl:call-template name="insertFooterEven">
 			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="font-weight" select="$font-weight"/>
 			<xsl:with-param name="insert_footer_last" select="$insert_footer_last"/>
-			<xsl:with-param name="copyrightText" select="$copyrightText"/>
-			<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
-			<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
 		</xsl:call-template>
 		<xsl:call-template name="insertFooterOdd">
 			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="font-weight" select="$font-weight"/>
-			<xsl:with-param name="copyrightText" select="$copyrightText"/>
-			<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
-			<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
 		</xsl:call-template>
 	</xsl:template> <!-- END: insertFooter -->
 	
@@ -5206,9 +5144,10 @@
 		</xsl:choose>
 	</xsl:variable>
 	<xsl:template name="insertHeaderEven">
+		<xsl:param name="num"/>
 		<xsl:param name="is_header">true</xsl:param>
 		<xsl:param name="border_around_page">false</xsl:param>
-		<xsl:param name="ISOnumber"/>
+		<xsl:variable name="ISOnumber" select="$variables/mnx:doc[@num = $num]/ISOnumber"/>
 		<fo:static-content flow-name="header-even" role="artifact">
 			<xsl:if test="$layoutVersion = '1951' and $border_around_page = 'true'">
 				<!-- box around page -->
@@ -5223,15 +5162,16 @@
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
 						<xsl:call-template name="insertHeader1951">
+							<xsl:with-param name="num" select="$num"/>
 							<xsl:with-param name="is_header" select="$is_header"/>
 							<xsl:with-param name="odd_or_even">even</xsl:with-param>
-							<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 						</xsl:call-template>
 					</xsl:when>
 					<xsl:otherwise>
 						<fo:block font-size="{$font-size_header}" font-weight="bold" padding-top="12.5mm" line-height="1.1">
 							<xsl:call-template name="insertLayoutVersionAttributesTop">
 								<xsl:with-param name="odd_or_even">even</xsl:with-param>
+								<xsl:with-param name="num" select="$num"/>
 							</xsl:call-template>
 							<xsl:if test="$is_header = 'true'">
 								<xsl:value-of select="$ISOnumber"/>
@@ -5243,12 +5183,14 @@
 		</fo:static-content>
 	</xsl:template> <!-- END: insertHeaderEven -->
 	<xsl:template name="insertHeaderFirst">
-		<xsl:param name="ISOnumber"/>
-		<xsl:param name="doctype_localized"/>
-		<xsl:param name="stage-fullname"/>
-		<xsl:param name="stage-abbreviation"/>
-		<xsl:param name="stagename_abbreviation"/>
-		<xsl:param name="stagename_localized"/>
+		<xsl:param name="num"/>
+		<xsl:variable name="ISOnumber" select="$variables/mnx:doc[@num = $num]/ISOnumber"/>
+		<xsl:variable name="doctype" select="$variables/mnx:doc[@num = $num]/doctype"/>
+		<xsl:variable name="doctype_localized" select="$variables/mnx:doc[@num = $num]/doctype_localized"/>
+		<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
+		<xsl:variable name="stagename_localized_firstpage" select="$variables/mnx:doc[@num = $num]/stagename_localized_firstpage"/>
+		<xsl:variable name="stagename-header-firstpage" select="$variables/mnx:doc[@num = $num]/stagename-header-firstpage"/>
+		<xsl:variable name="stagename-header-firstpage-uppercased" select="$variables/mnx:doc[@num = $num]/stagename-header-firstpage-uppercased"/>
 		<fo:static-content flow-name="header-first" role="artifact">
 			<xsl:choose>
 				<xsl:when test="$stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM'">
@@ -5257,7 +5199,7 @@
 							<xsl:attribute name="height">23mm</xsl:attribute>
 						</xsl:if>
 						<fo:block font-size="{$font-size_header}" font-weight="bold" text-align="right" padding-top="12.5mm" line-height="1.1">
-							<xsl:call-template name="insertLayoutVersionAttributesTop"/>
+							<xsl:call-template name="insertLayoutVersionAttributesTop"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 							<xsl:value-of select="$ISOnumber"/>
 						</fo:block>
 					</fo:block-container>
@@ -5303,26 +5245,8 @@
 									</xsl:if>
 									<fo:table-cell>
 										<fo:block>
-											<xsl:variable name="stagename-header-firstpage">
-												<xsl:choose>
-													<!-- $stage-abbreviation = 'PRF'  -->
-													<xsl:when test="$stagename_abbreviation = 'PRF'"><xsl:value-of select="$doctype_localized"/></xsl:when>
-													<!-- https://github.com/metanorma/metanorma-taste/issues/22#issuecomment-3156059344 -->
-													<xsl:when test="$doctype_localized != '' and 
-															count(/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'author'][mn:organization/mn:abbreviation = 'ISO']) = 0"><xsl:value-of select="$doctype_localized"/></xsl:when>
-													<xsl:when test="$layoutVersion = '2024' and $stagename_localized != ''">
-														<xsl:value-of select="$stagename_localized"/>
-													</xsl:when>
-													<xsl:otherwise>
-														<xsl:value-of select="$stage-fullname"/>
-													</xsl:otherwise>
-												</xsl:choose>
-											</xsl:variable>
-											<xsl:variable name="stagename-header-firstpage-uppercased" select="java:toUpperCase(java:java.lang.String.new($stagename-header-firstpage))"/>
-										
 											<xsl:choose>
 												<xsl:when test="$layoutVersion = '2024'">
-													<xsl:variable name="stagename_localized_firstpage"><xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:status/mn:stage[@language = $lang and @type = 'firstpage']/node()"/></xsl:variable>
 													<xsl:choose>
 														<xsl:when test="$doctype = 'committee-document'"><xsl:value-of select="$doctype_localized"/></xsl:when>
 														<xsl:when test="normalize-space($stagename_localized_firstpage) != ''"><xsl:apply-templates select="xalan:nodeset($stagename_localized_firstpage)/node()"/></xsl:when>
@@ -5351,9 +5275,10 @@
 		</fo:static-content>
 	</xsl:template> <!-- END: insertHeaderFirst -->
 	<xsl:template name="insertHeaderOdd">
+		<xsl:param name="num"/>
 		<xsl:param name="is_header">true</xsl:param>
 		<xsl:param name="border_around_page">false</xsl:param>
-		<xsl:param name="ISOnumber"/>
+		<xsl:variable name="ISOnumber" select="$variables/mnx:doc[@num = $num]/ISOnumber"/>
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<xsl:if test="$layoutVersion = '1951' and $border_around_page = 'true'">
 				<!-- box around page -->
@@ -5368,14 +5293,15 @@
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
 						<xsl:call-template name="insertHeader1951">
+							<xsl:with-param name="num" select="$num"/>
 							<xsl:with-param name="is_header" select="$is_header"/>
 							<xsl:with-param name="odd_or_even">odd</xsl:with-param>
-							<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
 						</xsl:call-template>
 					</xsl:when>
 					<xsl:otherwise>
 						<fo:block font-size="{$font-size_header}" font-weight="bold" text-align="right" padding-top="12.5mm" line-height="1.1">
 							<xsl:call-template name="insertLayoutVersionAttributesTop">
+								<xsl:with-param name="num" select="$num"/>
 								<xsl:with-param name="odd_or_even">odd</xsl:with-param>
 							</xsl:call-template>
 							<xsl:if test="$is_header = 'true'">
@@ -5389,11 +5315,13 @@
 	</xsl:template> <!-- END: insertHeaderOdd -->
 	
 	<xsl:template name="insertHeader1951">
+		<xsl:param name="num"/>
 		<xsl:param name="is_header"/>
 		<xsl:param name="odd_or_even"/>
-		<xsl:param name="ISOnumber"/>
+		<xsl:variable name="ISOnumber" select="$variables/mnx:doc[@num = $num]/ISOnumber"/>
 		<fo:block-container font-size="{$font-size_header}" font-weight="bold" text-align="right" padding-top="12.5mm" line-height="1.1">
 			<xsl:call-template name="insertLayoutVersionAttributesTop">
+				<xsl:with-param name="num" select="$num"/>
 				<xsl:with-param name="odd_or_even" select="$odd_or_even"/>
 			</xsl:call-template>
 			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
@@ -5427,16 +5355,19 @@
 		</fo:block-container>
 	</xsl:template> <!-- END: insertHeader1951 -->
 	
-	<xsl:variable name="font-size_footer_copyright">
+	<xsl:template name="get_font-size_footer_copyright">
+		<xsl:param name="num"/>
+		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">8pt</xsl:when>
 			<xsl:otherwise>9pt</xsl:otherwise>
 		</xsl:choose>
-	</xsl:variable>
+	</xsl:template>
 	<xsl:template name="insertFooterFirst1972_1998">
+		<xsl:param name="num"/>
 		<xsl:param name="font-weight" select="'bold'"/>
-		<xsl:param name="copyrightText"/>
-		<xsl:param name="stage-abbreviation"/>
+		<xsl:variable name="copyrightText" select="$variables/mnx:doc[@num = $num]/copyrightText"/>
+		<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
 		<fo:static-content flow-name="footer-preface-first_1972-1998" role="artifact">
 			<fo:block-container display-align="after" height="86mm">
 				
@@ -5464,10 +5395,11 @@
 							<fo:table-cell display-align="center">
 								<fo:block font-size="10pt" font-weight="bold" text-align="center">
 									<xsl:if test="$stage-abbreviation = 'PRF'">
-										<xsl:value-of select="$proof-text"/>
+										<xsl:value-of select="$PROOF_TEXT"/>
 									</xsl:if>
 								</fo:block>
 							</fo:table-cell>
+							<xsl:variable name="font-size_footer_copyright"><xsl:call-template name="get_font-size_footer_copyright"><xsl:with-param name="num" select="$num"/></xsl:call-template></xsl:variable>
 							<fo:table-cell display-align="center" padding-top="0mm" font-size="{$font-size_footer_copyright}">
 								<fo:block text-align="right"></fo:block>
 							</fo:table-cell>
@@ -5476,28 +5408,23 @@
 				</fo:table>
 			</fo:block-container>
 		</fo:static-content>
-	</xsl:template> <!-- insertFooterFirst1972_1998 -->
+	</xsl:template> <!-- END: insertFooterFirst1972_1998 -->
 	<xsl:template name="insertFooterEven">
 		<xsl:param name="num" />
 		<xsl:param name="font-weight" select="'bold'"/>
 		<xsl:param name="insert_footer_last">true</xsl:param>
-		<xsl:param name="copyrightText"/>
-		<xsl:param name="copyrightAbbrIEEE"/>
-		<xsl:param name="stage-abbreviation"/>
+		<xsl:variable name="copyrightText" select="$variables/mnx:doc[@num = $num]/copyrightText"/>
+		<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
 		<fo:static-content flow-name="footer-even" role="artifact">
 			<fo:block-container>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
-						<xsl:call-template name="insertFooter1951">
-							<xsl:with-param name="num" select="$num"/>
-						</xsl:call-template>
+						<xsl:call-template name="insertFooter1951"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 					</xsl:when>
 					<xsl:when test="$layoutVersion = '2024'">
 						<xsl:call-template name="insertFooter2024">
+							<xsl:with-param name="num" select="$num"/>
 							<xsl:with-param name="font-weight" select="$font-weight"/>
-							<xsl:with-param name="copyrightText" select="$copyrightText"/>
-							<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
-							<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
 						</xsl:call-template>
 					</xsl:when>
 					<xsl:otherwise>
@@ -5516,10 +5443,11 @@
 									<fo:table-cell display-align="center">
 										<fo:block font-size="10pt" font-weight="bold" text-align="center">
 											<xsl:if test="$stage-abbreviation = 'PRF'">
-												<xsl:value-of select="$proof-text"/>
+												<xsl:value-of select="$PROOF_TEXT"/>
 											</xsl:if>
 										</fo:block>
 									</fo:table-cell>
+									<xsl:variable name="font-size_footer_copyright"><xsl:call-template name="get_font-size_footer_copyright"><xsl:with-param name="num" select="$num"/></xsl:call-template></xsl:variable>
 									<fo:table-cell display-align="center" padding-top="0mm" font-size="{$font-size_footer_copyright}">
 										<fo:block text-align="right">
 											<xsl:choose>
@@ -5540,8 +5468,8 @@
 			<fo:static-content flow-name="footer-even-last" role="artifact">
 				<fo:block-container>
 					<xsl:call-template name="insertFooter1951">
-						<xsl:with-param name="insert_footer_last" select="$insert_footer_last"/>
 						<xsl:with-param name="num" select="$num"/>
+						<xsl:with-param name="insert_footer_last" select="$insert_footer_last"/>
 					</xsl:call-template>
 				</fo:block-container>
 			</fo:static-content>
@@ -5550,22 +5478,18 @@
 	<xsl:template name="insertFooterOdd">
 		<xsl:param name="num"/>
 		<xsl:param name="font-weight" select="'bold'"/>
-		<xsl:param name="copyrightText"/>
-		<xsl:param name="copyrightAbbrIEEE"/>
-		<xsl:param name="stage-abbreviation"/>
+		<xsl:variable name="copyrightText" select="$variables/mnx:doc[@num = $num]/copyrightText"/>
+		<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
 		<fo:static-content flow-name="footer-odd" role="artifact">
 			<fo:block-container>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
-						<xsl:call-template name="insertFooter1951">
-							<xsl:with-param name="num" select="$num"/>
-						</xsl:call-template>
+						<xsl:call-template name="insertFooter1951"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 					</xsl:when>
 					<xsl:when test="$layoutVersion = '2024'">
 						<xsl:call-template name="insertFooter2024">
+							<xsl:with-param name="num" select="$num"/>
 							<xsl:with-param name="font-weight" select="$font-weight"/>
-							<xsl:with-param name="copyrightText" select="$copyrightText"/>
-							<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
 						</xsl:call-template>
 					</xsl:when>
 					<xsl:otherwise>
@@ -5575,6 +5499,7 @@
 							<fo:table-column column-width="34%"/>
 							<fo:table-body>
 								<fo:table-row>
+									<xsl:variable name="font-size_footer_copyright"><xsl:call-template name="get_font-size_footer_copyright"><xsl:with-param name="num" select="$num"/></xsl:call-template></xsl:variable>
 									<fo:table-cell display-align="center" padding-top="0mm" font-size="{$font-size_footer_copyright}">
 										<fo:block>
 											<xsl:choose>
@@ -5586,7 +5511,7 @@
 									<fo:table-cell display-align="center">
 										<fo:block font-size="10pt" font-weight="bold" text-align="center">
 											<xsl:if test="$stage-abbreviation = 'PRF'">
-												<xsl:value-of select="$proof-text"/>
+												<xsl:value-of select="$PROOF_TEXT"/>
 											</xsl:if>
 										</fo:block>
 									</fo:table-cell>
@@ -5610,6 +5535,8 @@
 		<xsl:attribute name="height"><xsl:value-of select="$marginBottom - 2"/>mm</xsl:attribute>
 		<xsl:attribute name="display-align">after</xsl:attribute>
 		<xsl:attribute name="text-align">center</xsl:attribute>
+		<xsl:variable name="i18n_date_first_printing" select="$variables/mnx:doc[@num = $num]/i18n_date_first_printing"/>
+		<xsl:variable name="i18n_price" select="$variables/mnx:doc[@num = $num]/i18n_price"/>
 		<fo:block-container margin-left="-13mm" margin-right="-13mm">
 			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 				<fo:table table-layout="fixed" width="100%" margin-bottom="5mm">
@@ -5627,12 +5554,10 @@
 										<xsl:variable name="date_number_printing">
 											<xsl:choose>
 												<xsl:when test="$number_printing != $date_printing">
-													<!-- <xsl:variable name="i18n_date_printing"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">date_printing</xsl:with-param></xsl:call-template></xsl:variable> -->
 													<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($i18n_date_printing), '%', $number_printing)"/> -->
 													<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:date-printing"/>
 												</xsl:when>
 												<xsl:otherwise>
-													<xsl:variable name="i18n_date_first_printing"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">date_first_printing</xsl:with-param></xsl:call-template></xsl:variable>
 													<xsl:value-of select="$i18n_date_first_printing"/>
 												</xsl:otherwise>
 											</xsl:choose>
@@ -5663,15 +5588,12 @@
 										<xsl:choose>
 											<xsl:when test="$price != ''">
 												<!-- Example: Price: Sw. fr. 3.- -->
-												<xsl:variable name="i18n_price"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">price</xsl:with-param></xsl:call-template></xsl:variable>
 												<xsl:value-of select="concat($i18n_price, ': ', $price)"/>
 											</xsl:when>
 											<xsl:otherwise>
 												<xsl:attribute name="font-size">7pt</xsl:attribute>
 												<xsl:attribute name="font-weight">normal</xsl:attribute>
-												<xsl:call-template name="insertPriceBasedOn">
-													<xsl:with-param name="num" select="$num"/>
-												</xsl:call-template>
+												<xsl:call-template name="insertPriceBasedOn"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 											</xsl:otherwise>
 										</xsl:choose>
 									</xsl:if>
@@ -5684,15 +5606,16 @@
 		</fo:block-container>
 	</xsl:template><!-- END: insertFooter1951 -->
 	<xsl:template name="insertFooter2024">
+		<xsl:param name="num"/>
 		<xsl:param name="font-weight" select="'bold'"/>
-		<xsl:param name="copyrightText"/>
-		<xsl:param name="copyrightAbbrIEEE"/>
-		<xsl:param name="stage-abbreviation"/>
 		<xsl:attribute name="text-align">center</xsl:attribute>
 		<xsl:attribute name="line-height">1.1</xsl:attribute>
+		<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
+		<xsl:variable name="copyrightAbbrIEEE" select="$variables/mnx:doc[@num = $num]/copyrightAbbrIEEE"/>
+		<xsl:variable name="copyrightText" select="$variables/mnx:doc[@num = $num]/copyrightText"/>
 		<xsl:if test="$stage-abbreviation = 'PRF'">
 			<fo:block font-size="10pt" font-weight="bold" text-align="center">
-				<xsl:value-of select="$proof-text"/>
+				<xsl:value-of select="$PROOF_TEXT"/>
 			</fo:block>
 		</xsl:if>
 		<fo:block font-size="9pt">
@@ -5706,8 +5629,9 @@
 			</xsl:if>
 			<fo:page-number/>
 		</fo:block>
-	</xsl:template> <!-- END: insertFooter2024 -->
+	</xsl:template><!-- END: insertFooter2024 -->
 	<xsl:template name="insertLayoutVersionAttributesTop">
+		<xsl:param name="num"/>
 		<xsl:param name="odd_or_even"/>
 		<xsl:if test="$layoutVersion = '1951'">
 			<xsl:attribute name="font-family">Arial</xsl:attribute>
@@ -5736,20 +5660,23 @@
 			<xsl:attribute name="padding-top">12.2mm</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 		</xsl:if>
-	</xsl:template> <!-- END: insertLayoutVersionAttributesTop -->
+	</xsl:template>
 	
 	
-	<xsl:variable name="price_based_on_items">
-		<xsl:variable name="i18n_price_based_on"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">price_based_on</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:template name="get_price_based_on_items">
+		<xsl:param name="num"/>
 		<xsl:call-template name="split">
-			<xsl:with-param name="pText" select="$i18n_price_based_on"/>
+			<xsl:with-param name="pText" select="$variables/mnx:doc[@num = $num]/i18n_price_based_on"/>
 			<xsl:with-param name="sep" select="'%'"/>
 			<xsl:with-param name="normalize-space">false</xsl:with-param>
 		</xsl:call-template>
-	</xsl:variable>
+	</xsl:template>
 	
 	<xsl:template name="insertPriceBasedOn">
 		<xsl:param name="num"/>
+		<xsl:variable name="price_based_on_items">
+			<xsl:call-template name="get_price_based_on_items"><xsl:with-param name="num" select="$num"/></xsl:call-template>
+		</xsl:variable>
 		<xsl:for-each select="xalan:nodeset($price_based_on_items)/mnx:item">
 			<xsl:value-of select="."/>
 			<xsl:if test="position() != last()">
@@ -5760,15 +5687,8 @@
 	
 	<xsl:template name="back-page">
 		<xsl:param name="num"/>
-		<xsl:param name="isPublished"/>
-		<xsl:param name="ISOnumber"/>
-		<xsl:param name="stage-abbreviation"/>
-		<xsl:param name="stage_published"/>
-		<xsl:param name="substage"/>
-		<xsl:param name="copyrightText"/>
-		<xsl:param name="copyrightAbbr"/>
-		<xsl:param name="copyrightAbbrIEEE"/>
-		<xsl:param name="copyrightYear"/>
+		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+		<xsl:variable name="isPublished" select="$variables/mnx:doc[@num = $num]/isPublished"/>
 		<xsl:choose>
 			<xsl:when test="$isGenerateTableIF = 'true'"><!-- skip last page --></xsl:when>
 			<xsl:when test="$layoutVersion = '1951'"/>
@@ -5776,37 +5696,24 @@
 			<xsl:when test="$layoutVersion = '1979'"/>
 			<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))"><!-- UDC, Keywords and Price renders on the first page for technical-report --></xsl:when>
 			<xsl:when test="$layoutVersion = '2024'">
-				<xsl:call-template name="insertLastPage_2024">
-					<xsl:with-param name="num" select="$num"/>
-					<xsl:with-param name="copyrightAbbr" select="$copyrightAbbr"/>
-					<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
-					<xsl:with-param name="copyrightYear" select="$copyrightYear"/>
-					<xsl:with-param name="stage_published" select="$stage_published"/>
-					<xsl:with-param name="substage" select="$substage"/>
-				</xsl:call-template>
+				<xsl:call-template name="insertLastPage_2024"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:if test="$isPublished = 'true'">
-				<xsl:call-template name="insertLastPage">
-					<xsl:with-param name="num" select="$num"/>
-					<xsl:with-param name="copyrightText" select="$copyrightText"/>
-					<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
-					<xsl:with-param name="stage-abbreviation" select="$stage-abbreviation"/>
-				</xsl:call-template>
+				<xsl:call-template name="insertLastPage"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 				</xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>
+	</xsl:template><!-- END: back-page -->
 	
 	<xsl:template name="insertLastPage">
 		<xsl:param name="num"/>
-		<xsl:param name="copyrightText"/>
-		<xsl:param name="ISOnumber"/>
-		<xsl:param name="stage-abbreviation"/>
+		<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
+		<xsl:variable name="i18n_descriptors" select="$variables/mnx:doc[@num = $num]/i18n_descriptors"/>
+		<xsl:variable name="copyrightText" select="$variables/mnx:doc[@num = $num]/copyrightText"/>
+		<xsl:variable name="udc" select="$variables/mnx:doc[@num = $num]/udc"/>
 		<fo:page-sequence master-reference="back-page" force-page-count="no-force">
-			<xsl:call-template name="insertHeaderEven">
-				<xsl:with-param name="ISOnumber" select="$ISOnumber"/>
-			</xsl:call-template>
+			<xsl:call-template name="insertHeaderEven"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 			<fo:static-content flow-name="back-page-footer" font-size="10pt">
 				<fo:table table-layout="fixed" width="100%">
 					<fo:table-column column-width="33%"/>
@@ -5815,6 +5722,7 @@
 					<fo:table-body>
 						<fo:table-row>
 							<fo:table-cell display-align="center">
+								<xsl:variable name="font-size_footer_copyright"><xsl:call-template name="get_font-size_footer_copyright"><xsl:with-param name="num" select="$num"/></xsl:call-template></xsl:variable>
 								<fo:block font-size="{$font-size_footer_copyright}">
 									<xsl:choose>
 										<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)"></xsl:when>
@@ -5825,7 +5733,7 @@
 							<fo:table-cell>
 								<fo:block font-size="10pt" font-weight="bold" text-align="center">
 									<xsl:if test="$stage-abbreviation = 'PRF'">
-										<xsl:value-of select="$proof-text"/>
+										<xsl:value-of select="$PROOF_TEXT"/>
 									</xsl:if>
 								</fo:block>
 							</fo:table-cell>
@@ -5869,7 +5777,6 @@
 							</xsl:if>
 							<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)">
 								<fo:block margin-bottom="6pt">
-									<xsl:variable name="udc"><xsl:call-template name="get_udc"/></xsl:variable>
 									<xsl:value-of select="$udc"/>
 								</fo:block>
 							</xsl:if>
@@ -5890,9 +5797,9 @@
 								<xsl:otherwise>ICS&#xA0;&#xA0;67.060</xsl:otherwise>
 							</xsl:choose> -->
 						</fo:block>
+						<xsl:variable name="font-size_footer_copyright"><xsl:call-template name="get_font-size_footer_copyright"><xsl:with-param name="num" select="$num"/></xsl:call-template></xsl:variable>
 						<xsl:if test="/mn:metanorma/mn:bibdata/mn:keyword">
 							<fo:block font-size="{$font-size_footer_copyright}" margin-bottom="6pt">
-								<xsl:variable name="i18n_descriptors"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Descriptor.pl</xsl:with-param></xsl:call-template></xsl:variable>	
 								<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/>: </fo:inline>
 								<xsl:call-template name="insertKeywords">
 									<xsl:with-param name="sorting">no</xsl:with-param>
@@ -5901,9 +5808,7 @@
 						</xsl:if>
 						<!-- Price based on ... pages -->
 						<fo:block font-size="{$font-size_footer_copyright}">
-							<xsl:call-template name="insertPriceBasedOn">
-								<xsl:with-param name="num" select="$num"/>
-							</xsl:call-template>
+							<xsl:call-template name="insertPriceBasedOn"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 						</fo:block>
 						<xsl:if test="$layoutVersion = '1989' and $revision_date_num &gt;= 19990101">
 							<fo:block>&#xa0;</fo:block>
@@ -5924,11 +5829,9 @@
 	
 	<xsl:template name="insertLastPage_2024">
 		<xsl:param name="num"/>
-		<xsl:param name="copyrightAbbr"/>
-		<xsl:param name="copyrightAbbrIEEE"/>
-		<xsl:param name="copyrightYear"/>
-		<xsl:param name="stage_published"/>
-		<xsl:param name="substage"/>
+		<xsl:variable name="stage_published" select="$variables/mnx:doc[@num = $num]/stage_published"/>
+		<xsl:variable name="substage" select="$variables/mnx:doc[@num = $num]/substage"/>
+		<xsl:variable name="copyrightTextLastPage2024" select="$variables/mnx:doc[@num = $num]/copyrightTextLastPage2024"/>
 		<fo:page-sequence master-reference="back-page_2024" force-page-count="no-force">
 			<fo:flow flow-name="xsl-region-body">
 				<xsl:variable name="fo_last_page">
@@ -5940,27 +5843,23 @@
 					<fo:table-column column-width="proportional-column-width(114.3)"/>
 					<fo:table-body>
 						<fo:table-row height="91.8mm">
-							<fo:table-cell number-columns-spanned="2" border-right="{$cover_page_border}">
+							<fo:table-cell number-columns-spanned="2" border-right="{$COVER_PAGE_BORDER}">
 								<fo:block>
-									<xsl:call-template name="insertLogoImages2024">
-										<xsl:with-param name="copyrightAbbrIEEE" select="$copyrightAbbrIEEE"/>
-										<xsl:with-param name="stage_published" select="$stage_published"/>
-										<xsl:with-param name="substage" select="$substage"/>
-									</xsl:call-template>
+									<xsl:call-template name="insertLogoImages2024"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 								</fo:block>
 							</fo:table-cell>
 							<fo:table-cell number-columns-spanned="2"><fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block></fo:table-cell>
 						</fo:table-row>
 						<fo:table-row height="1.4mm" font-size="0pt">
-							<fo:table-cell border-bottom="{$cover_page_border}"><fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block></fo:table-cell>
+							<fo:table-cell border-bottom="{$COVER_PAGE_BORDER}"><fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block></fo:table-cell>
 							<fo:table-cell number-columns-spanned="2"><fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block></fo:table-cell>
-							<fo:table-cell border-bottom="{$cover_page_border}"><fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block></fo:table-cell>
+							<fo:table-cell border-bottom="{$COVER_PAGE_BORDER}"><fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block></fo:table-cell>
 						</fo:table-row>
 						<fo:table-row height="2mm" font-size="0pt">
 							<fo:table-cell number-columns-spanned="4"><fo:block role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block></fo:table-cell>
 						</fo:table-row>
 						<fo:table-row height="182mm"> <!-- 174 -->
-							<fo:table-cell number-columns-spanned="2" display-align="after" border-right="{$cover_page_border}">
+							<fo:table-cell number-columns-spanned="2" display-align="after" border-right="{$COVER_PAGE_BORDER}">
 								<fo:block font-size="12pt" font-weight="bold">
 									<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:ext/mn:ics/mn:code">
 										<xsl:if test="position() = 1"><fo:inline>ICS&#xA0;&#xA0;</fo:inline></xsl:if>
@@ -5972,20 +5871,8 @@
 								<!-- Price based on ... pages -->
 								<fo:block font-size="9pt" space-before="2pt">
 									<fo:block>
-										<xsl:call-template name="insertPriceBasedOn">
-											<xsl:with-param name="num" select="$num"/>
-										</xsl:call-template>
+										<xsl:call-template name="insertPriceBasedOn"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 									</fo:block>
-									<xsl:variable name="copyrightTextLastPage2024">
-										<xsl:value-of select="concat('© ', $copyrightAbbr, ' ', $copyrightYear)"/>
-										<xsl:if test="$copyrightAbbrIEEE != ''">
-											<xsl:value-of select="$linebreak"/>
-											<xsl:value-of select="concat('© ', $copyrightAbbrIEEE, ' ', $copyrightYear)"/>
-										</xsl:if>
-										<xsl:value-of select="$linebreak"/>
-										<xsl:variable name="i18n_all_rights_reserved"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">all_rights_reserved</xsl:with-param></xsl:call-template></xsl:variable>	
-										<xsl:value-of select="$i18n_all_rights_reserved"/>
-									</xsl:variable>
 									<fo:block margin-top="18pt" margin-bottom="-1mm" line-height="1.1"><xsl:value-of select="$copyrightTextLastPage2024"/></fo:block>
 								</fo:block>
 							</fo:table-cell>
@@ -6000,7 +5887,7 @@
 										<xsl:attribute name="text-align">right</xsl:attribute>
 										<fo:block font-size="16pt" font-weight="bold" margin-bottom="1mm" margin-right="1.5mm">
 											<xsl:if test="$stage_published = 'true' and $substage != 0">
-												<xsl:attribute name="color"><xsl:value-of select="$color_red"/></xsl:attribute>
+												<xsl:attribute name="color"><xsl:value-of select="$COVER_RED"/></xsl:attribute>
 											</xsl:if>
 											<xsl:text>iso.org</xsl:text>
 										</fo:block>
@@ -6039,11 +5926,12 @@
 	</xsl:variable>
 	
 	<xsl:template name="get_Image-ISO-Logo-SVG">
-		<xsl:param name="stage_published"/>
-		<xsl:param name="substage"/>
+		<xsl:param name="num"/>
+		<xsl:variable name="stage_published" select="$variables/mnx:doc[@num = $num]/stage_published"/>
+		<xsl:variable name="substage" select="$variables/mnx:doc[@num = $num]/substage"/>
 		<xsl:variable name="logo_color">
 			<xsl:choose>
-				<xsl:when test="$stage_published = 'true' and $substage != 0"><xsl:value-of select="$color_red"/></xsl:when>
+				<xsl:when test="$stage_published = 'true' and $substage != 0"><xsl:value-of select="$COVER_RED"/></xsl:when>
 				<xsl:otherwise>rgb(88,88,90)</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -6079,7 +5967,7 @@
 				<path class="cls-3" d="m42.1,18.8c-5.31,0-9.11,3.09-9.11,8.62s3.8,8.62,9.11,8.62,9.11-3.09,9.11-8.62-3.8-8.62-9.11-8.62m-.05,13.32c-2.1,0-3.43-1.34-3.43-4.7s1.33-4.7,3.43-4.7,3.43,1.34,3.43,4.7-1.33,4.7-3.43,4.7"/>
 			</g>
 		</svg>
-	</xsl:template>
+	</xsl:template> <!-- END: get_Image-ISO-Logo-SVG -->
 	
 	<xsl:variable name="Image-ISO-Logo-1951-SVG">
 		<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -6255,15 +6143,15 @@
 	</xsl:variable>
 	
 	<xsl:template name="get_Image-IEC-Logo-SVG">
-		<xsl:param name="stage_published"/>
+		<xsl:param name="num"/>
+		<xsl:variable name="stage_published" select="$variables/mnx:doc[@num = $num]/stage_published"/>
+		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
 		<xsl:variable name="logo_color">
 			<xsl:choose>
 				<xsl:when test="$stage_published = 'true' and $layoutVersion = '2024'">rgb(0,96,170)</xsl:when>
 				<xsl:otherwise>rgb(35,31,32)</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<!-- <stage_published><xsl:value-of select="$stage_published"/></stage_published>
-		<layoutVersion><xsl:value-of select="$layoutVersion"/></layoutVersion> -->
 		<svg version="1.0" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
 			<path d="m0 400h400v-400h-400z" fill="{$logo_color}"/>
 			<g fill="#fff">
@@ -6285,7 +6173,8 @@
 	</xsl:variable>
 	
 	<xsl:template name="get_Image-IEEE-Logo2">
-		<xsl:param name="stage_published"/>
+		<xsl:param name="num"/>
+		<xsl:variable name="stage_published" select="$variables/mnx:doc[@num = $num]/stage_published"/>
 		<xsl:choose>
 			<!-- color logo -->
 			<xsl:when test="$stage_published = 'true'"><xsl:text>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</xsl:text></xsl:when>
@@ -6319,6 +6208,7 @@
 	</xsl:template>
 
 	<xsl:template name="insertSmallHorizontalLine">
+		<xsl:param name="num"/>
 		<xsl:if test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989')">
 			<!-- small horizontal line -->
 			<fo:block text-align="center" margin-top="12mm" keep-with-previous="always" role="SKIP">
@@ -6351,45 +6241,6 @@
 			</xsl:if>
 			<fo:block id="firstpage_id_{$num}">&#xa0;</fo:block>
 		</fo:block-container>
-	</xsl:template>
-
-	<!-- 
-		<status>
-		<stage>30</stage>
-		<substage>92</substage>
-	</status>
-		The <stage> and <substage> values are well defined, 
-		as the International Harmonized Stage Codes (https://www.iso.org/stage-codes.html):
-		stage 60 means published, everything before is a Draft (90 means withdrawn, but the document doesn't change anymore) -->
-	<xsl:template name="get_isPublished">
-		<xsl:param name="stage"/>
-		<xsl:param name="stage-abbreviation"/>
-		<xsl:choose>
-			<xsl:when test="string($stage) = 'NaN'">false</xsl:when>
-			<xsl:when test="$stage &gt;=60">true</xsl:when>
-			<xsl:when test="normalize-space($stage-abbreviation) != ''">true</xsl:when>
-			<xsl:otherwise>false</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	
-	<xsl:template name="get_lang_other">
-		<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:title[@language != $lang]">
-			<xsl:if test="not(preceding-sibling::mn:title[@language = current()/@language])">
-				<xsl:element name="lang" namespace="{$namespace_mn_xsl}"><xsl:value-of select="@language"/></xsl:element>
-			</xsl:if>
-		</xsl:for-each>
-	</xsl:template>
-		
-	<xsl:template name="get_udc">
-		<xsl:variable name="classification_udc" select="normalize-space(/mn:metanorma/mn:bibdata/mn:classification[@type = 'UDC'])"/>
-		<xsl:choose>
-			<xsl:when test="$classification_udc != ''">
-				<xsl:variable name="i18n_classification_UDC"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">classification-UDC</xsl:with-param></xsl:call-template></xsl:variable>
-				<xsl:value-of select="concat($i18n_classification_UDC, '&#xa0;')"/>
-				<xsl:value-of select="java:replaceAll(java:java.lang.String.new($classification_udc),'(:)',' $1 ')"/>
-			</xsl:when>
-			<xsl:otherwise>&#xa0;</xsl:otherwise>
-		</xsl:choose>
 	</xsl:template>
 
 	<xsl:include href="./common.xsl"/>
