@@ -258,4 +258,29 @@
 		</xsl:choose>
 	</xsl:variable>
 	
+	<xsl:attribute-set name="page-sequence-preface">
+		<xsl:attribute name="format">i</xsl:attribute>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_page-sequence-preface">
+		<xsl:param name="layoutVersion"/>
+	</xsl:template>
+	
+	<xsl:attribute-set name="page-sequence-main">
+	
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_page-sequence-main">
+		<xsl:param name="layoutVersion"/>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="position() = 1">
+				<xsl:attribute name="initial-page-number">1</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$layoutVersion = '1951'">
+				<xsl:attribute name="initial-page-number">auto</xsl:attribute>
+				<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 </xsl:stylesheet>

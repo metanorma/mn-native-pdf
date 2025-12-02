@@ -1089,7 +1089,8 @@
 					</xsl:when><!-- END: preface sections (Foreword, Brief history for layout 1951 ($layoutVersion = '1951') -->
 					
 					<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))">
-						<fo:page-sequence master-reference="preface-1987_TR"  format="i" force-page-count="no-force">
+						<fo:page-sequence master-reference="preface-1987_TR" force-page-count="no-force" xsl:use-attribute-sets="page-sequence-preface">
+							<xsl:call-template name="refine_page-sequence-preface"/>
 							
 							<xsl:call-template name="insertHeaderFooter">
 								<xsl:with-param name="num" select="$num"/>
@@ -1255,7 +1256,8 @@
 						
 							<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 							
-								<fo:page-sequence format="i" force-page-count="no-force">
+								<fo:page-sequence force-page-count="no-force" xsl:use-attribute-sets="page-sequence-preface">
+									<xsl:call-template name="refine_page-sequence-preface"/>
 								
 									<xsl:attribute name="master-reference">
 										<xsl:value-of select="concat('preface',$document-master-reference_addon)"/>
@@ -1317,8 +1319,11 @@
 					<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 				
 						<!-- BODY -->
-						<fo:page-sequence force-page-count="no-force">
-						
+						<fo:page-sequence force-page-count="no-force" xsl:use-attribute-sets="page-sequence-main">
+							<xsl:call-template name="refine_page-sequence-main">
+								<xsl:with-param name="layoutVersion" select="$layoutVersion"/>
+							</xsl:call-template>
+							
 							<!-- Example: msster-reference document-landscape_first_sequence -->
 							<xsl:attribute name="master-reference">
 								<xsl:value-of select="concat('document',$document-master-reference_addon)"/>
@@ -1329,13 +1334,6 @@
 									<xsl:if test="normalize-space($document-master-reference_addon) = ''">_first_sequence</xsl:if>
 								</xsl:if>
 							</xsl:attribute>
-							<xsl:if test="position() = 1">
-								<xsl:attribute name="initial-page-number">1</xsl:attribute>
-							</xsl:if>
-							<xsl:if test="$layoutVersion = '1951'">
-								<xsl:attribute name="initial-page-number">auto</xsl:attribute>
-								<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
-							</xsl:if>
 							
 							<xsl:if test="position() = last() and normalize-space($force-page-count-main_sections) != ''">
 								<xsl:attribute name="force-page-count"><xsl:value-of select="$force-page-count-main_sections"/></xsl:attribute>
@@ -3133,7 +3131,8 @@
 		
 		<xsl:if test="normalize-space(/mn:metanorma/mn:boilerplate/mn:copyright-statement) != ''">
 		
-			<fo:page-sequence format="i" force-page-count="no-force">
+			<fo:page-sequence force-page-count="no-force" xsl:use-attribute-sets="page-sequence-preface">
+				<xsl:call-template name="refine_page-sequence-preface"/>
 				<xsl:attribute name="master-reference">
 					<xsl:variable name="document-master-reference_addon" select="$variables/mnx:doc[@num = $num]/document-master-reference_addon"/>
 					<xsl:value-of select="concat('preface',$document-master-reference_addon)"/>
