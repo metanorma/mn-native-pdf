@@ -3843,7 +3843,7 @@
 															<xsl:apply-templates select="mnx:title"/>
 															
 															<fo:inline keep-together.within-line="always" role="SKIP">
-																<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+																<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 																<fo:inline role="SKIP">
 																	<xsl:if test="@level = 1 and @type = 'annex'">
 																		<xsl:attribute name="font-weight">bold</xsl:attribute>
