@@ -4659,17 +4659,18 @@
 		
 		<xsl:call-template name="setNamedDestination"/>
 		
-		<xsl:variable name="p_styles">
+		<xsl:variable name="p_styles_">
 			<styles xsl:use-attribute-sets="p-style">
 				<xsl:call-template name="refine_p-style">
 					<xsl:with-param name="element-name" select="$element-name"/>
 				</xsl:call-template>
 			</styles>
 		</xsl:variable>
+		<xsl:variable name="p_styles" select="xalan:nodeset($p_styles_)"/>
 		
 		<xsl:element name="{$element-name}">
 			
-			<xsl:copy-of select="xalan:nodeset($p_styles)/styles/@*"/>
+			<xsl:copy-of select="$p_styles/styles/@*"/>
 			
 			<!-- put inline title in the first paragraph -->
 			<xsl:if test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
@@ -4692,9 +4693,13 @@
 		
 		<xsl:if test="$element-name = 'fo:inline' and not($inline = 'true') and not(parent::mn:admonition)">
 			<fo:block margin-bottom="12pt" role="SKIP">
-				 <xsl:if test="ancestor::mn:sections or ancestor::mn:annex or following-sibling::mn:table">
+				<xsl:if test="ancestor::mn:sections or ancestor::mn:annex or following-sibling::mn:table">
 					<xsl:attribute name="margin-bottom">0</xsl:attribute>
-				 </xsl:if>
+					<xsl:if test="following-sibling::mn:p or mn:note"> 
+						<xsl:attribute name="font-size">0pt</xsl:attribute>
+						<xsl:copy-of select="$p_styles/styles/@margin-bottom"/>
+					</xsl:if>
+				</xsl:if>
 				<xsl:value-of select="$linebreak"/>
 			</fo:block>
 		</xsl:if>
