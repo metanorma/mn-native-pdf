@@ -168,6 +168,9 @@
 				<xsl:if test="preceding-sibling::*[1][self::mn:table]">
 					<xsl:attribute name="margin-top">0pt</xsl:attribute>
 				</xsl:if>
+				<xsl:if test="parent::mn:p[@inline-header = 'true'] and not(following-sibling::*)">
+					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+				</xsl:if>
 			</xsl:if>
 			<xsl:if test="$doctype = 'amendment' and parent::mn:quote">
 				<xsl:attribute name="font-size">inherit</xsl:attribute>
