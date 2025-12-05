@@ -1796,21 +1796,54 @@
 			<xsl:otherwise> <!-- handbook -->
 				<fo:page-sequence master-reference="back-page" force-page-count="no-force">
 					<fo:flow flow-name="xsl-region-body">
-						<fo:block-container width="100%" border="0.75pt solid black" font-size="10pt" line-height="1.7">
+						<!-- <fo:block-container width="100%" border="0.75pt solid black" font-size="10pt" line-height="1.7">
 							<fo:block margin-left="4.5mm" margin-top="1mm">
 								<xsl:value-of select="/*/mn:bibdata/mn:title[@language = 'ja' and @type = 'title-main']"/>
 								<fo:inline padding-left="4mm"><xsl:value-of select="/*/mn:bibdata/mn:edition[@language = 'ja']"/></fo:inline>
 							</fo:block>
 							<fo:block margin-left="7.7mm"><xsl:value-of select="/*/mn:bibdata/mn:date[@type = 'published']"/><xsl:text> 発行</xsl:text></fo:block>
-							<!-- MLIT Department -->
+							<!- - MLIT Department - - >
 							<fo:block margin-left="7.7mm"><xsl:value-of select="/*/mn:bibdata/mn:contributor[mn:role/@type = 'author']/mn:organization/mn:name"/></fo:block>
 							<fo:block margin-left="9mm"><xsl:value-of select="/*/mn:bibdata/mn:contributor[mn:role/@type = 'enabler']/mn:organization/mn:name"/></fo:block>
-						</fo:block-container>
+						</fo:block-container> -->
+						<!-- added in https://github.com/metanorma/metanorma-plateau/issues/281 -->
+						<xsl:apply-templates select="/*/mn:colophon"/>
+						<xsl:if test="not(/*/mn:colophon)"><fo:block/></xsl:if>
 					</fo:flow>
 				</fo:page-sequence>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template> <!-- END: back-page -->
+	
+	<xsl:template match="mn:colophon">
+		<fo:block-container width="100%" border="0.75pt solid black" font-size="10pt" line-height="1.7">
+			<xsl:apply-templates />
+		</fo:block-container>
+	</xsl:template>
+	
+	<xsl:template match="mn:colophon/mn:clause">
+		<xsl:apply-templates />
+	</xsl:template>
+	<xsl:template match="mn:colophon//mn:p[@id = '_colophon_title']">
+		<fo:block margin-left="4.5mm" margin-top="1mm">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="mn:colophon//mn:p[@id = '_colophon_date_published']">
+		<fo:block margin-left="7.7mm">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="mn:colophon//mn:p[@id = '_colophon_author']">
+		<fo:block margin-left="7.7mm">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+	<xsl:template match="mn:colophon//mn:p[@id = '_colophon_sponsor']">
+		<fo:block margin-left="9mm">
+			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
 	
 	<xsl:variable name="PLATEAU-Logo">
 		<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 141.72 172.64">
