@@ -1,0 +1,45 @@
+<bibdata type="standard">
+<title language="en" type="main">Cereals and pulses — Specifications and test methods — Rice (FDIS)</title>
+
+<title language="en" type="title-intro">Cereals and pulses</title>
+
+<title language="en" type="title-main">Specifications and test methods</title>
+
+<title language="en" type="title-part">Rice (FDIS)</title>
+
+<title language="fr" type="main">Céréales et légumineuses — Spécification et méthodes d’essai — Riz (FDIS)</title>
+
+<title language="fr" type="title-intro">Céréales et légumineuses</title>
+
+<title language="fr" type="title-main">Spécification et méthodes d’essai</title>
+
+<title language="fr" type="title-part">Riz (FDIS)</title>
+<docidentifier type="ISO" primary="true">ISO/FDIS 17301-1:2023</docidentifier><docidentifier type="iso-reference">ISO/FDIS 17301-1:2023(E)</docidentifier><docidentifier type="URN">urn:iso:std:iso:17301:-1:stage-50.00:en</docidentifier><docidentifier type="iso-undated">ISO/FDIS 17301-1</docidentifier><docidentifier type="iso-with-lang">ISO/FDIS 17301-1:2023(en)</docidentifier><docidentifier type="iso-tc">17301</docidentifier><docnumber>17301</docnumber><date type="vote-started"><on>2023-02-19</on></date><date type="vote-ended"><on>2023-05-13</on></date><contributor><role type="author"/><organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation></organization></contributor><contributor><role type="author"><description>committee</description></role><organization>
+<name>International Organization for Standardization</name>
+<subdivision type="Technical committee" subtype="TC">
+<name>Food products</name>
+<identifier>TC 34</identifier><identifier type="full">TC 34/SC 4/WG 4</identifier></subdivision><subdivision type="Subcommittee" subtype="SC">
+<name>Cereals and pulses</name>
+<identifier>SC 4</identifier></subdivision><subdivision type="Workgroup" subtype="WG">
+<name>Amylose in rice</name>
+<identifier>WG 4</identifier></subdivision><abbreviation>ISO</abbreviation></organization></contributor><contributor><role type="authorizer"><description>Agency</description></role><organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation></organization></contributor><contributor><role type="author"><description>secretariat</description></role><organization>
+<name>International Organization for Standardization</name>
+<subdivision type="Secretariat">
+<name>SAC</name>
+</subdivision><abbreviation>ISO</abbreviation></organization></contributor><contributor><role type="publisher"/><organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation></organization></contributor><contributor><role type="authorizer"><description>committee</description></role><organization>
+<name>International Organization for Standardization</name>
+<subdivision type="Technical committee" subtype="TC">
+<name>Food products</name>
+<identifier>TC 34</identifier><identifier type="full">TC 34/SC 4/WG 4</identifier></subdivision><subdivision type="Subcommittee" subtype="SC">
+<name>Cereals and pulses</name>
+<identifier>SC 4</identifier></subdivision><subdivision type="Workgroup" subtype="WG">
+<name>Amylose in rice</name>
+<identifier>WG 4</identifier></subdivision><abbreviation>ISO</abbreviation></organization></contributor><edition>3</edition><version><revision-date>2023-02-01</revision-date></version><language>en</language><script>Latn</script><status><stage abbreviation="FDIS">50</stage><substage>00</substage></status><copyright><from>2023</from><owner><organization>
+<name>International Organization for Standardization</name>
+<abbreviation>ISO</abbreviation></organization></owner></copyright><ext><doctype>international-standard</doctype><flavor>iso</flavor><ics><code>67.060</code><text>Cereals, pulses and derived products</text></ics><structuredidentifier><project-number part="1">ISO 17301</project-number></structuredidentifier><stagename abbreviation="FDIS">Final Draft International Standard</stagename></ext></bibdata>
