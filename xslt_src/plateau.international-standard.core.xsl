@@ -29,6 +29,7 @@
 	<xsl:variable name="doctype" select="//mn:metanorma[1]/mn:bibdata/mn:ext/mn:doctype[@language = '' or not(@language)]"/>
 	
 	<xsl:variable name="i18n_doctype_dict_annex"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.annex</xsl:with-param></xsl:call-template></xsl:variable>
+	<xsl:variable name="i18n_doctype_dict_handbook"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.handbook</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_doctype_dict_technical_report"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">doctype_dict.technical-report</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_table_of_contents"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">table_of_contents</xsl:with-param></xsl:call-template></xsl:variable>
 	<xsl:variable name="i18n_table_footnote"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">table_footnote</xsl:with-param></xsl:call-template></xsl:variable>
@@ -737,10 +738,22 @@
 									<xsl:attribute name="font-size">16pt</xsl:attribute>
 									<xsl:attribute name="margin-top">8mm</xsl:attribute>
 								</xsl:if>
-								<xsl:apply-templates select="/*/mn:bibdata/mn:title[@language = 'en' and @type = 'title-intro']/node()"/>
+								<!-- <xsl:apply-templates select="/*/mn:bibdata/mn:title[@language = 'en' and @type = 'title-intro']/node()"/> -->
+								<!-- TODO: need English version of doctype description -->
+								<xsl:choose>
+									<xsl:when test="$doctype = 'handbook'">
+										<xsl:value-of select="$i18n_doctype_dict_handbook"/>
+									</xsl:when>
+									<xsl:when test="$doctype = 'technical-report'">
+										<xsl:value-of select="$i18n_doctype_dict_technical_report"/>
+									</xsl:when>
+									<xsl:when test="$doctype = 'annex'">
+										<xsl:value-of select="$i18n_doctype_dict_annex"/>
+									</xsl:when>
+								</xsl:choose>
 							</fo:block>
 							<fo:block font-family="Noto Sans JP" font-size="14.2pt" margin-top="2mm">
-								<xsl:if test="$doctype = 'annex'">
+								<!-- <xsl:if test="$doctype = 'annex'">
 									<xsl:attribute name="text-indent">-3.5mm</xsl:attribute>
 									<xsl:value-of select="concat('（', $i18n_doctype_dict_annex)"/>
 									<fo:inline letter-spacing="-1mm">）</fo:inline>
@@ -748,7 +761,20 @@
 								<xsl:if test="$doctype = 'technical-report'">
 									<xsl:attribute name="font-size">12pt</xsl:attribute>
 								</xsl:if>
-								<xsl:apply-templates select="/*/mn:bibdata/mn:title[@language = 'ja' and @type = 'title-intro']/node()"/>
+								<xsl:apply-templates select="/*/mn:bibdata/mn:title[@language = 'ja' and @type = 'title-intro']/node()"/> -->
+								<xsl:choose>
+									<xsl:when test="$doctype = 'handbook'">
+										<xsl:value-of select="$i18n_doctype_dict_handbook"/>
+									</xsl:when>
+									<xsl:when test="$doctype = 'technical-report'">
+                    <xsl:attribute name="font-size">12pt</xsl:attribute>
+										<xsl:value-of select="$i18n_doctype_dict_technical_report"/>
+									</xsl:when>
+									<xsl:when test="$doctype = 'annex'">
+                    <xsl:attribute name="text-indent">-3.5mm</xsl:attribute>
+										<xsl:value-of select="$i18n_doctype_dict_annex"/>
+									</xsl:when>
+								</xsl:choose>
 							</fo:block>
 						</fo:block-container>
 					</fo:static-content>
