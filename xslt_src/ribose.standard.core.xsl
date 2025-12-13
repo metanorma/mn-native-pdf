@@ -1013,7 +1013,8 @@
 					</xsl:choose>
 				</xsl:attribute>
 				<fo:block padding-top="1mm" padding-bottom="0.5mm">
-					<fo:inline font-size="11pt" font-weight="300">
+					<fo:inline xsl:use-attribute-sets="term-kind-style">
+						<xsl:call-template name="refine_term-kind-style"/>
 						<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($term_kind))"/>
 					</fo:inline>
 				</fo:block>
