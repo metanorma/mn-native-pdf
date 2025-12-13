@@ -32,6 +32,16 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:attribute-set name="term-kind-style">
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="font-weight">300</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_term-kind-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="term-number-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
