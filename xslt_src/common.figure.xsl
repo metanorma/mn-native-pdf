@@ -1247,7 +1247,16 @@
 	<!-- =================== -->
 	<!-- SVG images processing -->
 	<!-- =================== -->
-	<xsl:variable name="figure_name_height">14</xsl:variable>
+	<xsl:variable name="figure_name_height_">
+		<xsl:choose>
+			<xsl:when test="$namespace = 'rsd'">
+				<!-- see figure-style padding-top=7.5mm, padding-bottom=7.5mm, margin-bottom=3mm, i.e. 14 + 15 + 3 (+ 4 for figure name margin) -->
+				36
+			</xsl:when>
+			<xsl:otherwise>14</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="figure_name_height" select="number(normalize-space($figure_name_height_))"/>
 	<xsl:variable name="width_effective" select="$pageWidth - $marginLeftRight1 - $marginLeftRight2"/><!-- paper width minus margins -->
 	<xsl:variable name="height_effective" select="$pageHeight - $marginTop - $marginBottom - $figure_name_height"/><!-- paper height minus margins and title height -->
 	<xsl:variable name="image_dpi" select="96"/>
@@ -1447,6 +1456,17 @@
 							</xsl:if>
 							
 							<xsl:copy-of select="$svg_content"/>
+							
+							<!-- <debug>
+								<svg_width><xsl:value-of select="$svg_width"/></svg_width>
+								<width_effective_px><xsl:value-of select="$width_effective_px"/></width_effective_px>
+								<scale_x><xsl:value-of select="$scale_x"/></scale_x>
+								<svg_height><xsl:value-of select="$svg_height"/></svg_height>
+								<height_effective_px><xsl:value-of select="$height_effective_px"/></height_effective_px>
+								<isPrecedingTitle><xsl:value-of select="$isPrecedingTitle"/></isPrecedingTitle>
+								<scale_y><xsl:value-of select="$scale_y"/></scale_y>
+							</debug> -->
+
 						</fo:instream-foreign-object>
 					<!-- </fo:block> -->
 					</xsl:copy>
