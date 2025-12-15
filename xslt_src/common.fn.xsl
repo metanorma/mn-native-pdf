@@ -12,11 +12,26 @@
 											extension-element-prefixes="redirect"
 											version="1.0">
 	
+	<xsl:attribute-set name="footnote-separator-block-style">
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_footnote-separator-block-style">
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="footnote-separator-leader-style">
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:attribute name="leader-pattern">rule</xsl:attribute>
 			<xsl:attribute name="rule-thickness">0.5pt</xsl:attribute>
 			<xsl:attribute name="leader-length">35%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="leader-pattern">rule</xsl:attribute>
+			<xsl:attribute name="leader-length">30%</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set>
 	
@@ -25,6 +40,12 @@
 			<xsl:if test="$current_template = 'whitepaper' or $current_template= 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 				<xsl:attribute name="rule-thickness">1pt</xsl:attribute>
 				<xsl:attribute name="leader-length">51mm</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:if test="$layoutVersion = '2024'">
+				<xsl:attribute name="leader-length">51mm</xsl:attribute>
+				<xsl:attribute name="rule-thickness">0.5pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
