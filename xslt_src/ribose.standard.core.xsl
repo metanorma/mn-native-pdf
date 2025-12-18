@@ -1241,14 +1241,7 @@
 			<xsl:text>&#xA0;</xsl:text>
 			<xsl:call-template name="capitalizeWords">
 				<xsl:with-param name="str">
-					<xsl:choose>
-						<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:doctype-alias">
-							<xsl:value-of select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:doctype-alias"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/>
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:call-template name="getDoctype"/>
 				</xsl:with-param>
 			</xsl:call-template>
 		</xsl:variable>

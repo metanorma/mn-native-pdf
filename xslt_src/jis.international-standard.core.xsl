@@ -528,7 +528,7 @@
 					
 					<xsl:variable name="copyrightText"><xsl:call-template name="get_copyrightText"/></xsl:variable>
 					
-					<xsl:variable name="doctype"><xsl:call-template name="get_doctype"/></xsl:variable>
+					<xsl:variable name="doctype"><xsl:call-template name="getDoctype"/></xsl:variable>
 					
 					<xsl:variable name="title_ja" select="/*/mn:bibdata/mn:title[@language = 'ja' and @type = 'main']"/>
 					<xsl:variable name="title_en" select="/*/mn:bibdata/mn:title[@language = 'en' and @type = 'main']"/>
@@ -993,9 +993,6 @@
 		</fo:root>
 	</xsl:template>
 	
-	<xsl:template name="get_doctype">
-		<xsl:value-of select="/*/mn:bibdata/mn:ext/mn:doctype"/>
-	</xsl:template>
 	<xsl:template name="get_docidentifier_JIS">
 		<xsl:value-of select="/*/mn:bibdata/mn:docidentifier[@type = 'JIS']"/>
 	</xsl:template>
@@ -1025,7 +1022,7 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:if test="$isGenerateTableIF = 'false'">
-					<xsl:variable name="doctype"><xsl:call-template name="get_doctype"/></xsl:variable>
+					<xsl:variable name="doctype"><xsl:call-template name="getDoctype"/></xsl:variable>
 					<xsl:variable name="docidentifier_JIS"><xsl:call-template name="get_docidentifier_JIS"/></xsl:variable>
 					<xsl:variable name="doclang"><xsl:call-template name="getLang"/></xsl:variable>
 					<xsl:variable name="copyrightText"><xsl:call-template name="get_copyrightText"/></xsl:variable>
