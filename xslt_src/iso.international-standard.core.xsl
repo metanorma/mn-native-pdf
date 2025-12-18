@@ -257,7 +257,7 @@
 
 						<part><xsl:value-of select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@part)"/></part>
 						
-						<xsl:variable name="doctype" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/>	 
+						<xsl:variable name="doctype"><xsl:call-template name="getDoctype"/></xsl:variable>
 						<doctype><xsl:value-of select="$doctype"/></doctype>
 						
 						<xsl:variable name="doctype_localized_" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype[@language = $lang]"/>
