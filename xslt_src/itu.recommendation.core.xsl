@@ -52,7 +52,7 @@
 			
 						<xsl:apply-templates select="//mn:table" mode="contents"/>
 						
-						<xsl:variable name="doctype"><xsl:call-template name="get_doctype"/></xsl:variable>
+						<xsl:variable name="doctype"><xsl:call-template name="getDoctype"/></xsl:variable>
 						
 						<xsl:call-template name="processTablesFigures_Contents">
 							<xsl:with-param name="always" select="$doctype = 'technical-report' or $doctype = 'technical-paper'"/>
@@ -267,7 +267,7 @@
 						</xsl:call-template>
 					</xsl:variable>
 					
-					<xsl:variable name="doctype"><xsl:call-template name="get_doctype"/></xsl:variable>
+					<xsl:variable name="doctype"><xsl:call-template name="getDoctype"/></xsl:variable>
 					
 					<xsl:variable name="docnumber"><xsl:call-template name="get_docnumber"/></xsl:variable>
 					
@@ -277,7 +277,7 @@
 						<xsl:value-of select="concat($x,'STR-', $acronym)"/>
 					</xsl:variable>
 					
-					<xsl:variable name="doctypeTitle"><xsl:call-template name="get_doctypeTitle"/></xsl:variable>
+					<xsl:variable name="doctypeTitle"><xsl:call-template name="getDoctypeTitle"/></xsl:variable>
 					
 					<xsl:variable name="TDnumber"><xsl:call-template name="get_TDnumber"/></xsl:variable>
 					<xsl:variable name="provisionalIdentifier"><xsl:call-template name="get_provisionalIdentifier"/></xsl:variable>
@@ -616,30 +616,12 @@
 		</fo:root>
 	</xsl:template> 
 
-	<xsl:template name="get_doctype">
-		<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/>
-	</xsl:template>
-	
 	<xsl:template name="get_docnumber">
 		<xsl:value-of select="normalize-space(/mn:metanorma/mn:bibdata/mn:docnumber)"/>
 	</xsl:template>
 	
 	<xsl:template name="get_date_published">
 		<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']/mn:on"/>
-	</xsl:template>
-	
-	<xsl:template name="get_doctypeTitle">
-		<xsl:variable name="doctype"><xsl:call-template name="get_doctype"/></xsl:variable>
-		<xsl:choose>
-			<xsl:when test="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype[@language = $lang]">
-				<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype[@language = $lang]"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:call-template name="capitalizeWords">
-					<xsl:with-param name="str" select="$doctype"/>
-				</xsl:call-template>
-			</xsl:otherwise>
-		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template name="get_provisionalIdentifier">
@@ -654,8 +636,8 @@
 	<xsl:template name="cover-page">
 		<xsl:param name="num"/>
 		
-		<xsl:variable name="doctype"><xsl:call-template name="get_doctype"/></xsl:variable>
-		<xsl:variable name="doctypeTitle"><xsl:call-template name="get_doctypeTitle"/></xsl:variable>
+		<xsl:variable name="doctype"><xsl:call-template name="getDoctype"/></xsl:variable>
+		<xsl:variable name="doctypeTitle"><xsl:call-template name="getDoctypeTitle"/></xsl:variable>
 		<xsl:variable name="docnumber"><xsl:call-template name="get_docnumber"/></xsl:variable>
 		<xsl:variable name="date_published"><xsl:call-template name="get_date_published"/></xsl:variable>
 		<xsl:variable name="annexid" select="normalize-space(/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:annexid)"/>
