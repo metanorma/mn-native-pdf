@@ -1758,6 +1758,11 @@
 		<xsl:call-template name="getLang_fromCurrentNode"/><xsl:value-of select=".//mn:p[1]/@id"/>
 	</xsl:template>
 
+	<xsl:template name="getDoctype">
+		<xsl:variable name="doctype_alias" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:doctype-alias)"/>
+		<xsl:value-of select="$doctype_alias"/>
+		<xsl:if test="$doctype_alias = ''"><xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/></xsl:if>
+	</xsl:template>
 
 	<xsl:template name="setId">
 		<xsl:param name="prefix"/>
