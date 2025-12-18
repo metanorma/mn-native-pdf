@@ -268,7 +268,7 @@
 								
 							<fo:block margin-top="6pt"><xsl:text>Category: </xsl:text>
 								<xsl:call-template name="capitalizeWords">
-									<xsl:with-param name="str" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/>
+									<xsl:with-param name="str"><xsl:call-template name="getDoctype"/></xsl:with-param>
 								</xsl:call-template>
 							</fo:block>
 							
