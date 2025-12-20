@@ -69,7 +69,7 @@
 						<i18n_iso_cen_parallel><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">iso-cen-parallel</xsl:with-param></xsl:call-template></i18n_iso_cen_parallel>
 						<xsl:variable name="i18n_all_rights_reserved"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">all_rights_reserved</xsl:with-param></xsl:call-template></xsl:variable>
 						<i18n_locality_page><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.page</xsl:with-param></xsl:call-template></i18n_locality_page>
-						<i18n_locality_part><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template></i18n_locality_part>
+						<!-- <i18n_locality_part><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template></i18n_locality_part> -->
 						<xsl:variable name="i18n_secretariat"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">secretariat</xsl:with-param></xsl:call-template></xsl:variable>
 						<xsl:variable name="i18n_classification_UDC"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">classification-UDC</xsl:with-param></xsl:call-template></xsl:variable>
 						<i18n_draft_comment_1><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_1</xsl:with-param></xsl:call-template></i18n_draft_comment_1>
@@ -3893,7 +3893,6 @@
 	
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<xsl:param name="num"/>
-		<xsl:variable name="i18n_locality_part" select="$variables/mnx:doc[@num = $num]/i18n_locality_part"/>
 		<xsl:variable name="i18n_locality_page" select="$variables/mnx:doc[@num = $num]/i18n_locality_page"/>
 		<fo:block xsl:use-attribute-sets="toc-title-style">
 			<xsl:if test="$layoutVersion = '2024'">
@@ -4017,7 +4016,7 @@
 		<xsl:param name="curr_lang" select="$lang"/>
 		<xsl:param name="isMainLang">false</xsl:param>
 		<xsl:variable name="part" select="$variables/mnx:doc[@num = $num]/part"/>
-		<xsl:variable name="i18n_locality_part" select="$variables/mnx:doc[@num = $num]/i18n_locality_part"/>
+		<!-- <xsl:variable name="i18n_locality_part" select="$variables/mnx:doc[@num = $num]/i18n_locality_part"/> -->
 		<xsl:choose>
 			<xsl:when test="$part != ''">
 				<!-- <xsl:text> — </xsl:text> -->
@@ -4028,7 +4027,8 @@
 				<xsl:variable name="part-word">
 					<xsl:choose>
 						<xsl:when test="$isMainLang = 'true'">
-							<xsl:value-of select="concat($i18n_locality_part, ' ', $part, ':')"/>
+							<!-- <xsl:value-of select="concat($i18n_locality_part, ' ', $part, ':')"/> -->
+							<xsl:value-of select="concat(../mn:title[@type = 'title-part-prefix' and @language = $curr_lang], ':')"/>
 						</xsl:when>
 						<xsl:otherwise>
 							<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang=$curr_lang]),'#',$part)"/> -->
