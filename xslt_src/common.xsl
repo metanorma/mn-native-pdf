@@ -156,7 +156,7 @@
 		<title-toc lang="zh">目次</title-toc>
 		
 		<title-part lang="en">
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso'">
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 				<xsl:text>Part #:</xsl:text>
 			</xsl:if>
 			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
@@ -164,7 +164,7 @@
 			</xsl:if>
 		</title-part>
 		<title-part lang="fr">
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso'">
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 				<xsl:text>Partie #:</xsl:text>
 			</xsl:if>
 			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
@@ -172,9 +172,6 @@
 			</xsl:if>
 		</title-part>
 		<title-part lang="ru">
-			<xsl:if test="$namespace = 'iso'">
-				<xsl:text>Часть #:</xsl:text>
-			</xsl:if>
 			<xsl:if test="$namespace = 'iec'">
 				<xsl:text>Часть #:  </xsl:text>
 			</xsl:if>
@@ -219,32 +216,6 @@
 		<xsl:copy-of select="//mn:metanorma/mn:bibdata" />
 		<xsl:copy-of select="//mn:metanorma/mn:localized-strings" />
 	</xsl:variable>
-	
-	
-	<xsl:template name="getTitle">
-		<xsl:param name="name"/>
-		<xsl:param name="lang"/>
-		<xsl:variable name="lang_">
-			<xsl:choose>
-				<xsl:when test="$lang != ''">
-					<xsl:value-of select="$lang"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:call-template name="getLang"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:variable name="language" select="normalize-space($lang_)"/>
-		<xsl:variable name="title_" select="$titles/*[local-name() = $name][@lang = $language]"/>
-		<xsl:choose>
-			<xsl:when test="normalize-space($title_) != ''">
-				<xsl:value-of select="$title_"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$titles/*[local-name() = $name][@lang = 'en']"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 	
 	<xsl:include href="./common.characters.xsl"/>
 	

@@ -4031,7 +4031,8 @@
 							<xsl:value-of select="concat($i18n_locality_part, ' ', $part, ':')"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang=$curr_lang]),'#',$part)"/>
+							<!-- <xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang=$curr_lang]),'#',$part)"/> -->
+							<xsl:value-of select="concat(../mn:title[@type = 'title-part-prefix' and @language = $curr_lang], ':')"/>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
