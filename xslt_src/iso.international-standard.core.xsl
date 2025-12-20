@@ -389,7 +389,7 @@
 						<docnumber_with_prefix><xsl:if test="$doctype = 'recommendation'">R&#xa0;</xsl:if><xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docnumber"/></docnumber_with_prefix>
 
 						<lang_other>
-							<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:title[@language != $lang]">
+							<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:title[@language != $lang and @type != 'title-part-prefix']">
 								<xsl:if test="not(preceding-sibling::mn:title[@language = current()/@language])">
 									<xsl:element name="lang" namespace="{$namespace_mn_xsl}"><xsl:value-of select="@language"/></xsl:element>
 								</xsl:if>
