@@ -1364,16 +1364,18 @@
 													<xsl:value-of select="normalize-space(concat($bibdata_doctype_localized, ' ', $bibdata_amendment_number))"/>
 													<xsl:text> — </xsl:text>
 												</xsl:if>
-												<xsl:variable name="partnumber" select="mn:ext/mn:structuredidentifier/mn:project-number/@part"/>
+												<!-- <xsl:variable name="partnumber" select="mn:ext/mn:structuredidentifier/mn:project-number/@part"/> -->
 												<xsl:for-each select="mn:title[@language = $lang and @type = 'title-intro'] |
 															mn:title[@language = $lang and @type = 'title-main'] |
 															mn:title[@language = $lang and @type = 'title-complementary'] |
 															mn:title[@language = $lang and @type = 'title-part']">
 													<xsl:if test="@type = 'title-part'">
-														<xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template>
+														<!-- <xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template>
 														<xsl:text> </xsl:text>
 														<xsl:value-of select="$partnumber"/>
-														<xsl:text>: </xsl:text>
+														<xsl:text>: </xsl:text> -->
+														<xsl:variable name="title_part_prefix" select="../mn:title[@language = $lang and @type = 'title-part-prefix']"/>
+														<xsl:value-of select="concat(translate($title_part_prefix, '&#xa0;', ' '), ': ')"/>
 													</xsl:if>
 													<xsl:value-of select="."/>
 													<xsl:if test="position() != last()"><xsl:text> — </xsl:text></xsl:if>
