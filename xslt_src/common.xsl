@@ -159,21 +159,10 @@
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 				<xsl:text>Part #:</xsl:text>
 			</xsl:if>
-			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
-				<xsl:text>Part #: </xsl:text>
-			</xsl:if>
 		</title-part>
 		<title-part lang="fr">
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 				<xsl:text>Partie #:</xsl:text>
-			</xsl:if>
-			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
-				<xsl:text>Partie #:  </xsl:text>
-			</xsl:if>
-		</title-part>
-		<title-part lang="ru">
-			<xsl:if test="$namespace = 'iec'">
-				<xsl:text>Часть #:  </xsl:text>
 			</xsl:if>
 		</title-part>
 		<title-part lang="zh">第 # 部分:</title-part>
