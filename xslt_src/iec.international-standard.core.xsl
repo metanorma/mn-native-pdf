@@ -1045,7 +1045,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 					<xsl:value-of select="(//mn:metanorma)[2]/mn:bibdata/mn:language[@current = 'true']"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language and @language != $lang and @type != 'title-part-prefix']/@language"/>
+					<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language and @language != $lang and not(contains(@type, '-prefix'))]/@language"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
