@@ -1045,7 +1045,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 					<xsl:value-of select="(//mn:metanorma)[2]/mn:bibdata/mn:language[@current = 'true']"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language and @language != $lang]/@language"/>
+					<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language and @language != $lang and not(contains(@type, '-prefix'))]/@language"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -1180,6 +1180,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 						<title-part><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']"/></title-part>
 					</xsl:variable>
 					<xsl:variable name="titles_first" select="xalan:nodeset($titles_first_)"/>
+					<xsl:variable name="title_first_part_prefix" select="//mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-part-prefix']"/>
 					
 					<xsl:for-each select="$titles_first/*[normalize-space() != '']">
 						<xsl:if test="position() != 1">
@@ -1187,7 +1188,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 						</xsl:if>
 						<xsl:if test="self::title-part">
 							<xsl:value-of select="$linebreak"/>
-							<xsl:if test="$part != ''">
+							<!-- <xsl:if test="$part != ''">
 								<xsl:variable name="localized_part">
 									<xsl:call-template name="getLocalizedString">
 										<xsl:with-param name="key">locality.part</xsl:with-param>
@@ -1195,7 +1196,8 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 									</xsl:call-template>
 								</xsl:variable>
 								<xsl:value-of select="concat($localized_part ,' ',$part, ': ')"/>
-							</xsl:if>
+							</xsl:if> -->
+							<xsl:value-of select="concat($title_first_part_prefix, ': ')"/>
 						</xsl:if>
 						<xsl:value-of select="."/>
 					</xsl:for-each>
@@ -1212,6 +1214,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 						<title-part><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:title[@language = $lang_second and @type = 'title-part']"/></title-part>
 					</xsl:variable>
 					<xsl:variable name="titles_second" select="xalan:nodeset($titles_second_)"/>
+					<xsl:variable name="title_second_part_prefix" select="//mn:metanorma/mn:bibdata/mn:title[@language = $lang_second and @type = 'title-part-prefix']"/>
 					
 					<xsl:for-each select="$titles_second/*[normalize-space() != '']">
 						<xsl:if test="position() != 1">
@@ -1220,7 +1223,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 						<xsl:if test="self::title-part">
 							<xsl:value-of select="$linebreak"/>
 							<xsl:if test="$part != ''">
-								<xsl:variable name="locality_part_lang_second">
+								<!-- <xsl:variable name="locality_part_lang_second">
 									<xsl:call-template name="getLocalizedString">
 										<xsl:with-param name="key">locality.part</xsl:with-param>
 										<xsl:with-param name="lang"><xsl:value-of select="$lang_second"/></xsl:with-param>
@@ -1239,7 +1242,9 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 									<xsl:otherwise>
 										<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang = $lang_second]),'#',$part)"/>
 									</xsl:otherwise>
-								</xsl:choose>
+								</xsl:choose> -->
+								
+								<xsl:value-of select="concat($title_second_part_prefix, ': ')"/>
 							</xsl:if>
 						</xsl:if>
 						<xsl:value-of select="."/>
@@ -1456,35 +1461,6 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(.))"/>
 	</xsl:template>
 	
-	<xsl:template name="insertPrefacepages_old">
-		<xsl:param name="lang" select="$lang"/>
-		<fo:block break-after="page"/>
-		<fo:block-container font-size="12pt" text-align="center" margin-bottom="18pt">
-		
-			<xsl:if test="not(contains($SDO, '/'))"> <!-- only one IEC -->
-				<fo:block>
-					<xsl:call-template name="getLocalizedString">
-						<xsl:with-param name="key">IEC</xsl:with-param>
-						<xsl:with-param name="lang"><xsl:value-of select="$lang"/></xsl:with-param>
-					</xsl:call-template>
-				</fo:block>
-				<fo:block>___________</fo:block>
-				<fo:block>&#xa0;</fo:block>
-			</xsl:if>
-			
-			<fo:block font-weight="bold" role="H1">				
-			
-				<xsl:call-template name="printTitles">
-					<xsl:with-param name="lang" select="$lang"/>
-				</xsl:call-template>
-				
-			</fo:block>
-		</fo:block-container>
-		
-		<!-- Foreword, Introduction -->
-		<xsl:call-template name="processPrefaceSectionsDefault"/>
-	</xsl:template>
-	
 	<xsl:template name="insertPrefacepages">
 		<xsl:param name="num"/>
 		
@@ -1539,18 +1515,6 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 				<xsl:call-template name="insertHeaderFooter"/>
 				<fo:flow flow-name="xsl-region-body">
 					
-					<!-- <fo:block-container font-size="12pt" text-align="center" margin-bottom="36pt">
-						
-						<fo:block font-weight="bold" role="H1">						
-						
-							<xsl:call-template name="printTitles">
-								<xsl:with-param name="lang" select="$lang"/>
-							</xsl:call-template>
-							
-							<fo:block>&#xa0;</fo:block>
-						</fo:block>
-					</fo:block-container> -->
-					
 					<!-- Main sections -->
 					<fo:block>				
 						<!-- <xsl:call-template name="processMainSectionsDefault"/> -->
@@ -1567,42 +1531,6 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 		
 	</xsl:template>
 	
-	<xsl:template name="printTitles">
-		<xsl:param name="lang"/>
-		
-		<xsl:variable name="titles_doc_">
-			<title-intro><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-intro']))"/></title-intro>
-			<title-main><xsl:value-of select="java:toUpperCase(java:java.lang.String.new(/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-main']))"/></title-main>
-			<title-part><xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']"/></title-part>
-		</xsl:variable>
-		<xsl:variable name="titles_doc" select="xalan:nodeset($titles_doc_)"/>
-		
-		<xsl:for-each select="$titles_doc/*[normalize-space() != '']">
-			<xsl:if test="position() != 1">
-				<xsl:value-of select="concat(' ',$en_dash ,' ')"/>
-			</xsl:if>
-			<xsl:choose>
-				<xsl:when test="self::title-part">
-					<fo:block>&#xa0;</fo:block>
-					<fo:block>
-						<xsl:if test="$part != ''">
-							<xsl:variable name="localized_part">
-								<xsl:call-template name="getLocalizedString">
-									<xsl:with-param name="key">Part.sg</xsl:with-param>
-									<xsl:with-param name="lang" select="$lang"/>
-								</xsl:call-template>
-							</xsl:variable>
-							<xsl:value-of select="concat($localized_part ,' ',$part, ': ')"/>
-						</xsl:if>
-						<xsl:value-of select="."/>
-					</fo:block>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="."/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:for-each>
-	</xsl:template>
 	
 	<xsl:template match="node()">		
 		<xsl:apply-templates />			

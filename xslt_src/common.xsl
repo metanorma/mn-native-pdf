@@ -156,27 +156,13 @@
 		<title-toc lang="zh">目次</title-toc>
 		
 		<title-part lang="en">
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso'">
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 				<xsl:text>Part #:</xsl:text>
-			</xsl:if>
-			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
-				<xsl:text>Part #: </xsl:text>
 			</xsl:if>
 		</title-part>
 		<title-part lang="fr">
-			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso'">
+			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 				<xsl:text>Partie #:</xsl:text>
-			</xsl:if>
-			<xsl:if test="$namespace = 'iec' or $namespace = 'gb'">
-				<xsl:text>Partie #:  </xsl:text>
-			</xsl:if>
-		</title-part>
-		<title-part lang="ru">
-			<xsl:if test="$namespace = 'iso'">
-				<xsl:text>Часть #:</xsl:text>
-			</xsl:if>
-			<xsl:if test="$namespace = 'iec'">
-				<xsl:text>Часть #:  </xsl:text>
 			</xsl:if>
 		</title-part>
 		<title-part lang="zh">第 # 部分:</title-part>
@@ -219,32 +205,6 @@
 		<xsl:copy-of select="//mn:metanorma/mn:bibdata" />
 		<xsl:copy-of select="//mn:metanorma/mn:localized-strings" />
 	</xsl:variable>
-	
-	
-	<xsl:template name="getTitle">
-		<xsl:param name="name"/>
-		<xsl:param name="lang"/>
-		<xsl:variable name="lang_">
-			<xsl:choose>
-				<xsl:when test="$lang != ''">
-					<xsl:value-of select="$lang"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:call-template name="getLang"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:variable name="language" select="normalize-space($lang_)"/>
-		<xsl:variable name="title_" select="$titles/*[local-name() = $name][@lang = $language]"/>
-		<xsl:choose>
-			<xsl:when test="normalize-space($title_) != ''">
-				<xsl:value-of select="$title_"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$titles/*[local-name() = $name][@lang = 'en']"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 	
 	<xsl:include href="./common.characters.xsl"/>
 	
@@ -1404,16 +1364,18 @@
 													<xsl:value-of select="normalize-space(concat($bibdata_doctype_localized, ' ', $bibdata_amendment_number))"/>
 													<xsl:text> — </xsl:text>
 												</xsl:if>
-												<xsl:variable name="partnumber" select="mn:ext/mn:structuredidentifier/mn:project-number/@part"/>
+												<!-- <xsl:variable name="partnumber" select="mn:ext/mn:structuredidentifier/mn:project-number/@part"/> -->
 												<xsl:for-each select="mn:title[@language = $lang and @type = 'title-intro'] |
 															mn:title[@language = $lang and @type = 'title-main'] |
 															mn:title[@language = $lang and @type = 'title-complementary'] |
 															mn:title[@language = $lang and @type = 'title-part']">
 													<xsl:if test="@type = 'title-part'">
-														<xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template>
+														<!-- <xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template>
 														<xsl:text> </xsl:text>
 														<xsl:value-of select="$partnumber"/>
-														<xsl:text>: </xsl:text>
+														<xsl:text>: </xsl:text> -->
+														<xsl:variable name="title_part_prefix" select="../mn:title[@language = $lang and @type = 'title-part-prefix']"/>
+														<xsl:value-of select="concat(translate($title_part_prefix, '&#xa0;', ' '), ': ')"/>
 													</xsl:if>
 													<xsl:value-of select="."/>
 													<xsl:if test="position() != last()"><xsl:text> — </xsl:text></xsl:if>

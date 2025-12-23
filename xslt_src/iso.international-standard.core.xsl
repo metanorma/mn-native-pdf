@@ -69,7 +69,7 @@
 						<i18n_iso_cen_parallel><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">iso-cen-parallel</xsl:with-param></xsl:call-template></i18n_iso_cen_parallel>
 						<xsl:variable name="i18n_all_rights_reserved"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">all_rights_reserved</xsl:with-param></xsl:call-template></xsl:variable>
 						<i18n_locality_page><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.page</xsl:with-param></xsl:call-template></i18n_locality_page>
-						<i18n_locality_part><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template></i18n_locality_part>
+						<!-- <i18n_locality_part><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">locality.part</xsl:with-param></xsl:call-template></i18n_locality_part> -->
 						<xsl:variable name="i18n_secretariat"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">secretariat</xsl:with-param></xsl:call-template></xsl:variable>
 						<xsl:variable name="i18n_classification_UDC"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">classification-UDC</xsl:with-param></xsl:call-template></xsl:variable>
 						<i18n_draft_comment_1><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">draft_comment_1</xsl:with-param></xsl:call-template></i18n_draft_comment_1>
@@ -389,7 +389,7 @@
 						<docnumber_with_prefix><xsl:if test="$doctype = 'recommendation'">R&#xa0;</xsl:if><xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docnumber"/></docnumber_with_prefix>
 
 						<lang_other>
-							<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:title[@language != $lang]">
+							<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:title[@language != $lang and not(contains(@type, '-prefix'))]">
 								<xsl:if test="not(preceding-sibling::mn:title[@language = current()/@language])">
 									<xsl:element name="lang" namespace="{$namespace_mn_xsl}"><xsl:value-of select="@language"/></xsl:element>
 								</xsl:if>
@@ -2187,12 +2187,13 @@
 															
 																<xsl:if test="$doctype = 'amendment'"> <!-- and not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM') -->
 																	<fo:block font-size="15pt" font-weight="bold" margin-bottom="3mm">
-																		<xsl:value-of select="$doctype_uppercased"/>
+																		<!-- <xsl:value-of select="$doctype_uppercased"/>
 																		<xsl:text> </xsl:text>
 																		<xsl:variable name="amendment-number" select="/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@amendment"/>
 																		<xsl:if test="normalize-space($amendment-number) != ''">
 																			<xsl:value-of select="$amendment-number"/><xsl:text> </xsl:text>
-																		</xsl:if>
+																		</xsl:if> -->
+																		<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-amendment-prefix' and @language = $lang]"/>
 																	</fo:block>
 																<!-- </xsl:if>
 															
@@ -2739,12 +2740,13 @@
 														<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')">
 															<fo:block text-align="right" margin-right="0.5mm" role="SKIP">
 																<fo:block font-weight="bold" margin-top="4pt" role="H1">
-																	<xsl:value-of select="$doctype_uppercased"/>
+																	<!-- <xsl:value-of select="$doctype_uppercased"/>
 																	<xsl:text> </xsl:text>
 																	<xsl:variable name="amendment-number" select="/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@amendment"/>
 																	<xsl:if test="normalize-space($amendment-number) != ''">
 																		<xsl:value-of select="$amendment-number"/><xsl:text> </xsl:text>
-																	</xsl:if>
+																	</xsl:if> -->
+																	<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-amendment-prefix' and @language = $lang]"/>
 																</fo:block>
 																<fo:block>
 																	<xsl:if test="/mn:metanorma/mn:bibdata/mn:date[@type = 'updated']">																		
@@ -3893,7 +3895,6 @@
 	
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<xsl:param name="num"/>
-		<xsl:variable name="i18n_locality_part" select="$variables/mnx:doc[@num = $num]/i18n_locality_part"/>
 		<xsl:variable name="i18n_locality_page" select="$variables/mnx:doc[@num = $num]/i18n_locality_page"/>
 		<fo:block xsl:use-attribute-sets="toc-title-style">
 			<xsl:if test="$layoutVersion = '2024'">
@@ -4017,7 +4018,7 @@
 		<xsl:param name="curr_lang" select="$lang"/>
 		<xsl:param name="isMainLang">false</xsl:param>
 		<xsl:variable name="part" select="$variables/mnx:doc[@num = $num]/part"/>
-		<xsl:variable name="i18n_locality_part" select="$variables/mnx:doc[@num = $num]/i18n_locality_part"/>
+		<!-- <xsl:variable name="i18n_locality_part" select="$variables/mnx:doc[@num = $num]/i18n_locality_part"/> -->
 		<xsl:choose>
 			<xsl:when test="$part != ''">
 				<!-- <xsl:text> — </xsl:text> -->
@@ -4025,7 +4026,7 @@
 					<xsl:when test="$layoutVersion = '1951'"></xsl:when>
 					<xsl:otherwise><xsl:value-of select="$nonbreak_space_em_dash_space"/></xsl:otherwise>
 				</xsl:choose>
-				<xsl:variable name="part-word">
+				<!-- <xsl:variable name="part-word">
 					<xsl:choose>
 						<xsl:when test="$isMainLang = 'true'">
 							<xsl:value-of select="concat($i18n_locality_part, ' ', $part, ':')"/>
@@ -4034,7 +4035,8 @@
 							<xsl:value-of select="java:replaceAll(java:java.lang.String.new($titles/title-part[@lang=$curr_lang]),'#',$part)"/>
 						</xsl:otherwise>
 					</xsl:choose>
-				</xsl:variable>
+				</xsl:variable> -->
+				<xsl:variable name="part-word" select="concat(../mn:title[@type = 'title-part-prefix' and @language = $curr_lang], ':')"/>
 				<xsl:choose>
 					<xsl:when test="$isMainLang = 'true'">
 						<xsl:choose>
@@ -4113,14 +4115,15 @@
 				</xsl:if>
 				
 				<fo:block font-weight="normal" line-height="1.1" role="SKIP">
-					<xsl:choose>
+					<!-- <xsl:choose>
 						<xsl:when test="$isMainLang = 'false' and $curr_lang = 'fr'">AMENDEMENT</xsl:when>
 						<xsl:otherwise><xsl:value-of select="$doctype_uppercased"/></xsl:otherwise>
 					</xsl:choose>
 					<xsl:variable name="amendment-number" select="/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@amendment"/>
 					<xsl:if test="normalize-space($amendment-number) != ''">
 						<xsl:text> </xsl:text><xsl:value-of select="$amendment-number"/>
-					</xsl:if>
+					</xsl:if> -->
+					<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-amendment-prefix' and @language = $curr_lang]"/>
 					
 					<xsl:if test="not($stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM')">
 						<xsl:text>: </xsl:text>
