@@ -1989,7 +1989,7 @@
 		<!-- background image -->
 		<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0" id="__internal_layout__coverpage{$suffix}_{$name}_{$number}_{generate-id()}">
 			<fo:block>
-				<xsl:for-each select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = $name][1]/mn:value/mn:image[$num]">
+				<xsl:for-each select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/*[local-name() = $name][1]/mn:image[$num]">
 					
 					<xsl:call-template name="insertPageImage"/>
 					
@@ -2001,7 +2001,7 @@
 	<!-- for https://github.com/metanorma/mn-native-pdf/issues/845 -->
 	<xsl:template name="insertCoverPageFullImage">
 		<xsl:param name="name">coverpage-image</xsl:param>
-		<xsl:for-each select="//mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = $name][1]/mn:value/mn:image">
+		<xsl:for-each select="//mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/*[local-name() = $name][1]/mn:image">
 			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
 				<xsl:if test="$namespace = 'bipm' and position() = 1">
 					<xsl:attribute name="force-page-count">even</xsl:attribute>
