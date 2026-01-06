@@ -127,7 +127,8 @@
 		<xsl:variable name="root-style_" select="xalan:nodeset($root-style)"/>
 		
 		<xsl:variable name="additional_fonts_">
-			<xsl:for-each select="//mn:metanorma[1]/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'fonts']/mn:value | 
+			<xsl:for-each select="//mn:metanorma[1]/mn:metanorma-extension/mn:presentation-metadata/mn:fonts |
+					//mn:metanorma[1]/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'fonts']/mn:value | 
 					//mn:metanorma[1]/mn:presentation-metadata[mn:name = 'fonts']/mn:value">
 				<xsl:value-of select="."/><xsl:if test="position() != last()">, </xsl:if>
 			</xsl:for-each>

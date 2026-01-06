@@ -476,7 +476,7 @@
 					</xsl:if>
 					
 					<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
-						<xsl:variable name="admonition_color" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = concat('color-admonition-', @type)]/mn:value)"/>
+						<xsl:variable name="admonition_color" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/*[local-name() = concat('color-admonition-', @type)])"/>
 						<xsl:if test="$admonition_color != ''">
 							<xsl:attribute name="border">0.5pt solid <xsl:value-of select="$admonition_color"/></xsl:attribute>
 							<xsl:attribute name="color"><xsl:value-of select="$admonition_color"/></xsl:attribute>
