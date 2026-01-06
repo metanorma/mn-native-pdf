@@ -1541,7 +1541,7 @@
 					<fo:static-content flow-name="header">
 						<xsl:variable name="presentation_metadata_image_name">
 							<xsl:choose>
-								<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'backpage-image']/mn:value/mn:image">backpage-image</xsl:when>
+								<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:backpage-image/mn:image">backpage-image</xsl:when>
 								<xsl:otherwise>coverpage-image</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
