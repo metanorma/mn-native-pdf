@@ -38,8 +38,8 @@
 
 	<xsl:variable name="color">rgb(0, 51, 102)</xsl:variable>
 	
-	<xsl:variable name="color_text_title" select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-text-title']/mn:value"/>
-	<xsl:variable name="color_table_header_row" select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-background-table-header']/mn:value"/>
+	<xsl:variable name="color_text_title" select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-text-title"/>
+	<xsl:variable name="color_table_header_row" select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-background-table-header"/>
 	
 	<xsl:variable name="contents_">
 		<mnx:contents>
