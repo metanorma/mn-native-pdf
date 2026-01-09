@@ -126,10 +126,24 @@
 		<xsl:param name="root-style"/>
 		<xsl:variable name="root-style_" select="xalan:nodeset($root-style)"/>
 		
-		<xsl:variable name="additional_fonts_">
-			<xsl:for-each select="//mn:metanorma[1]/mn:metanorma-extension/mn:presentation-metadata/mn:fonts |
+		<xsl:variable name="additional_fonts___">
+			<xsl:for-each select="//mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:fonts |
 					//mn:metanorma[1]/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'fonts']/mn:value | 
 					//mn:metanorma[1]/mn:presentation-metadata[mn:name = 'fonts']/mn:value">
+				<font><xsl:value-of select="."/></font>
+			</xsl:for-each>
+		</xsl:variable>
+		<xsl:variable name="additional_fonts__">
+			<!-- unique fonts -->
+			<xsl:for-each select="xalan:nodeset($additional_fonts___)//font">
+				<xsl:choose>
+					<xsl:when test="preceding-sibling::font[text() = current()/text()]"><!-- skip --></xsl:when>
+					<xsl:otherwise><xsl:copy-of select="."/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:for-each>
+		</xsl:variable>
+		<xsl:variable name="additional_fonts_">
+			<xsl:for-each select="xalan:nodeset($additional_fonts__)//font">
 				<xsl:value-of select="."/><xsl:if test="position() != last()">, </xsl:if>
 			</xsl:for-each>
 		</xsl:variable>
