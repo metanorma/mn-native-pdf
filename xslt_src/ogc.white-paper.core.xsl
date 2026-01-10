@@ -38,8 +38,8 @@
 
 	<xsl:variable name="color">rgb(0, 51, 102)</xsl:variable>
 	
-	<xsl:variable name="color_text_title" select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-text-title']/mn:value"/>
-	<xsl:variable name="color_table_header_row" select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-background-table-header']/mn:value"/>
+	<xsl:variable name="color_text_title" select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-text-title"/>
+	<xsl:variable name="color_table_header_row" select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-background-table-header"/>
 	
 	<xsl:variable name="contents_">
 		<mnx:contents>
@@ -227,7 +227,7 @@
 	<xsl:template name="cover-page">
 		<!-- Cover Page -->
 		<xsl:choose>
-			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image']/mn:value/mn:image and 
+			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:coverpage-image/mn:image and 
 							normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:full-coverpage-replacement) = 'true'">
 				<xsl:call-template name="insertCoverPageFullImage"/>
 			</xsl:when>

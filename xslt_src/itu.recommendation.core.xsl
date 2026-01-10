@@ -652,7 +652,7 @@
 			<xsl:if test="$docidentifier_ITU_left_part_ = ''"><xsl:text>ITU-T</xsl:text></xsl:if>
 		</xsl:variable>
 		
-		<xsl:variable name="document_scheme" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'document-scheme']/mn:value)"/>
+		<xsl:variable name="document_scheme" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:document-scheme)"/>
 		<xsl:variable name="layoutVersion_">
 			<xsl:choose>
 				<xsl:when test="$document_scheme = '' or $document_scheme = 'current'">2023</xsl:when>
@@ -707,7 +707,7 @@
 		<!-- ============================================= -->
 
 		<xsl:choose>
-			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image']/mn:value/mn:image and 
+			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:coverpage-image/mn:image and 
 							normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:full-coverpage-replacement) = 'true'">
 				<xsl:call-template name="insertCoverPageFullImage"/>
 			</xsl:when>
@@ -1764,7 +1764,7 @@
 
 	<xsl:template name="inner-cover-page">
 		<xsl:param name="num"/>
-		<xsl:variable name="document_scheme" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'document-scheme']/mn:value)"/>
+		<xsl:variable name="document_scheme" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:document-scheme)"/>
 		<xsl:variable name="layoutVersion_">
 			<xsl:choose>
 				<xsl:when test="$document_scheme = '' or $document_scheme = 'current'">2023</xsl:when>

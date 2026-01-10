@@ -56,7 +56,7 @@
 	
 	<xsl:variable name="copyright-owner" select="java:toUpperCase(java:java.lang.String.new(/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:name))"/>
 	
-	<xsl:variable name="presentation_metadata_color_text" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-text']/mn:value)"/>
+	<xsl:variable name="presentation_metadata_color_text" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-text)"/>
 	<xsl:variable name="color_main">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_text != ''"><xsl:value-of select="$presentation_metadata_color_text"/></xsl:when>
@@ -64,7 +64,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_secondary_shade_1" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-secondary-shade-1']/mn:value)"/>
+	<xsl:variable name="presentation_metadata_color_secondary_shade_1" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-secondary-shade-1)"/>
 	<xsl:variable name="color_design">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_secondary_shade_1 != ''"><xsl:value-of select="$presentation_metadata_color_secondary_shade_1"/></xsl:when>
@@ -73,7 +73,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_secondary_shade_2" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-secondary-shade-2']/mn:value)"/>
+	<xsl:variable name="presentation_metadata_color_secondary_shade_2" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-secondary-shade-2)"/>
 	<xsl:variable name="color_design_light">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_secondary_shade_2 != ''"><xsl:value-of select="$presentation_metadata_color_secondary_shade_2"/></xsl:when>
@@ -82,7 +82,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_definition_term" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-background-definition-term']/mn:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_definition_term" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-background-definition-term)"/>
 	<xsl:variable name="color_dl_dt">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_definition_term != ''"><xsl:value-of select="$presentation_metadata_color_background_definition_term"/></xsl:when>
@@ -90,7 +90,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_definition_description" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-background-definition-description']/mn:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_definition_description" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-background-definition-description)"/>
 	<xsl:variable name="color_dl_dd">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_definition_description != ''"><xsl:value-of select="$presentation_metadata_color_background_definition_description"/></xsl:when>
@@ -98,7 +98,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_text_title" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-text-title']/mn:value)"/>
+	<xsl:variable name="presentation_metadata_color_text_title" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-text-title)"/>
 	<xsl:variable name="color_text_title">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_text_title != ''"><xsl:value-of select="$presentation_metadata_color_text_title"/></xsl:when>
@@ -106,7 +106,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_page" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-background-page']/mn:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_page" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-background-page)"/>
 	<xsl:variable name="color-background-page">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_page != ''"><xsl:value-of select="$presentation_metadata_color_background_page"/></xsl:when>
@@ -114,7 +114,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_text_label_legacy" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-background-text-label-legacy']/mn:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_text_label_legacy" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-background-text-label-legacy)"/>
 	<xsl:variable name="color_background_blue">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_text_label_legacy != ''"><xsl:value-of select="$presentation_metadata_color_background_text_label_legacy"/></xsl:when>
@@ -122,7 +122,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_term_preferred_label" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-background-term-preferred-label']/mn:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_term_preferred_label" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-background-term-preferred-label)"/>
 	<xsl:variable name="color_term_preferred">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_term_preferred_label != ''"><xsl:value-of select="$presentation_metadata_color_background_term_preferred_label"/></xsl:when>
@@ -130,7 +130,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_term_deprecated_label" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-background-term-deprecated-label']/mn:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_term_deprecated_label" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-background-term-deprecated-label)"/>
 	<xsl:variable name="color_term_deprecated">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_term_deprecated_label != ''"><xsl:value-of select="$presentation_metadata_color_background_term_deprecated_label"/></xsl:when>
@@ -138,7 +138,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_term_admitted_label" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-background-term-admitted-label']/mn:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_term_admitted_label" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-background-term-admitted-label)"/>
 	<xsl:variable name="color_term_admitted">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_term_admitted_label != ''"><xsl:value-of select="$presentation_metadata_color_background_term_admitted_label"/></xsl:when>
@@ -146,7 +146,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_table_header" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-background-table-header']/mn:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_table_header" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-background-table-header)"/>
 	<xsl:variable name="color_table_header_row">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_table_header != ''"><xsl:value-of select="$presentation_metadata_color_background_table_header"/></xsl:when>
@@ -154,7 +154,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_table_row_even" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-background-table-row-even']/mn:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_table_row_even" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-background-table-row-even)"/>
 	<xsl:variable name="color_table_row_even">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_table_row_even != ''"><xsl:value-of select="$presentation_metadata_color_background_table_row_even"/></xsl:when>
@@ -162,7 +162,7 @@
 		</xsl:choose>
 	</xsl:variable>
 	
-	<xsl:variable name="presentation_metadata_color_background_table_row_odd" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'color-background-table-row-odd']/mn:value)"/>
+	<xsl:variable name="presentation_metadata_color_background_table_row_odd" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-background-table-row-odd)"/>
 	<xsl:variable name="color_table_row_odd">
 		<xsl:choose>
 			<xsl:when test="$presentation_metadata_color_background_table_row_odd != ''"><xsl:value-of select="$presentation_metadata_color_background_table_row_odd"/></xsl:when>
@@ -561,7 +561,7 @@
 	<xsl:template name="cover-page">
 		<!-- Cover Page -->
 		<xsl:choose>
-			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image']/mn:value/mn:image and 
+			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:coverpage-image/mn:image and 
 							normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:full-coverpage-replacement) = 'true'">
 				<xsl:call-template name="insertCoverPageFullImage"/>
 			</xsl:when>

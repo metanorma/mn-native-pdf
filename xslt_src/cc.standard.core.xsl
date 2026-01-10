@@ -286,7 +286,7 @@
 	<xsl:template name="cover-page">
 		<!-- Cover Page -->
 		<xsl:choose>
-			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image']/mn:value/mn:image and 
+			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:coverpage-image/mn:image and 
 							normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:full-coverpage-replacement) = 'true'">
 				<xsl:call-template name="insertCoverPageFullImage"/>
 			</xsl:when>

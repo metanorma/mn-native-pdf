@@ -1016,7 +1016,7 @@
 		<xsl:param name="num"/>
 		<xsl:param name="docidentifier"/>
 		<xsl:choose>
-			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'coverpage-image']/mn:value/mn:image and 
+			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:coverpage-image/mn:image and 
 							normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:full-coverpage-replacement) = 'true'">
 				<xsl:call-template name="insertCoverPageFullImage"/>
 			</xsl:when>
@@ -1541,7 +1541,7 @@
 					<fo:static-content flow-name="header">
 						<xsl:variable name="presentation_metadata_image_name">
 							<xsl:choose>
-								<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata[mn:name = 'backpage-image']/mn:value/mn:image">backpage-image</xsl:when>
+								<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:backpage-image/mn:image">backpage-image</xsl:when>
 								<xsl:otherwise>coverpage-image</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
