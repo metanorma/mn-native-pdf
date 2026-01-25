@@ -1104,9 +1104,14 @@
 			<xsl:otherwise>
 				<xsl:variable name="src_with_basepath" select="concat($basepath, @src)"/>
 				<xsl:variable name="file_exists" select="normalize-space(java:exists(java:java.io.File.new($src_with_basepath)))"/>
+				<xsl:variable name="src_with_mn2pdfpath" select="concat($mn2pdfpath, @src)"/>
+				<xsl:variable name="file_exists_in_mn2pdf_path" select="normalize-space(java:exists(java:java.io.File.new($src_with_mn2pdfpath)))"/>
 				<xsl:choose>
 					<xsl:when test="$file_exists = 'true'">
 						<xsl:value-of select="$src_with_basepath"/>
+					</xsl:when>
+					<xsl:when test="$file_exists_in_mn2pdf_path = 'true'">
+						<xsl:value-of select="$src_with_mn2pdfpath"/>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:value-of select="@src"/>

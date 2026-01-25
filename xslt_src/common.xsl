@@ -27,6 +27,7 @@
 	<xsl:param name="svg_images"/> <!-- svg images array -->
 	<xsl:variable name="images" select="document($svg_images)"/>
 	<xsl:param name="basepath"/> <!-- base path for images -->
+	<xsl:param name="mn2pdfpath"/> <!-- mn2pdf working directory -->
 	<xsl:param name="inputxml_basepath"/> <!-- input xml file path -->
 	<xsl:param name="inputxml_filename"/> <!-- input xml file name -->
 	<xsl:param name="output_path"/> <!-- output PDF file name -->
