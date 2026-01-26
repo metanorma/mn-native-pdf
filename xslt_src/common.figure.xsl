@@ -1111,7 +1111,7 @@
 						<xsl:value-of select="java:org.metanorma.fop.Util.getURIFromPath($src_with_basepath)"/>
 					</xsl:when>
 					<xsl:when test="$file_exists_in_mn2pdf_path = 'true'">
-						<xsl:value-of select="$src_with_mn2pdfpath"/>
+						<!-- <xsl:value-of select="$src_with_mn2pdfpath"/> -->
 						<xsl:value-of select="java:org.metanorma.fop.Util.getURIFromPath($src_with_mn2pdfpath)"/>
 					</xsl:when>
 					<xsl:otherwise>
