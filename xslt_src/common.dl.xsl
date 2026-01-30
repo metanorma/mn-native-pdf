@@ -26,7 +26,7 @@
 	</xsl:attribute-set>
 	
 	<xsl:template name="refine_dl-block-style">
-		<xsl:if test="@key = 'true' and ancestor::mn:figure">
+		<xsl:if test="(@key = 'true' or ancestor::mn:key) and ancestor::mn:figure">
 			<xsl:attribute name="keep-together.within-column">always</xsl:attribute>
 		</xsl:if>
 	</xsl:template>
@@ -180,7 +180,7 @@
 	
 	<xsl:template name="refine_dl-name-style">
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:if test="ancestor::mn:tfoot and ../@key = 'true'">
+			<xsl:if test="ancestor::mn:tfoot and (../@key = 'true' or ancestor::mn:key)">
 				<xsl:attribute name="margin-left">-<xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -296,7 +296,7 @@
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'plateau'">
-				<xsl:if test="@key = 'true' and (ancestor::mn:tfoot or parent::mn:figure)">
+				<xsl:if test="(@key = 'true' or ancestor::mn:key) and (ancestor::mn:tfoot or parent::mn:figure)">
 					<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
 					<xsl:attribute name="margin-bottom">0</xsl:attribute>
 				</xsl:if>
@@ -344,7 +344,7 @@
 				
 				<xsl:variable name="key_iso">
 					<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">
-						<xsl:if test="$parent = 'figure' or $parent = 'formula' or ../@key = 'true'">true</xsl:if>
+						<xsl:if test="$parent = 'figure' or $parent = 'formula' or ../@key = 'true' or ancestor::mn:key">true</xsl:if>
 					</xsl:if> <!-- and  (not(../@class) or ../@class !='pseudocode') -->
 				</xsl:variable>
 				
@@ -612,7 +612,7 @@
 											<xsl:when test="$namespace = 'plateau'">
 												<xsl:choose>
 													<!-- https://github.com/metanorma/metanorma-plateau/issues/171 -->
-													<xsl:when test="@key = 'true' and (ancestor::mn:tfoot or parent::mn:figure)"> <!--  and not(xalan:nodeset($colwidths)//column) -->
+													<xsl:when test="(@key = 'true' or ancestor::mn:key) and (ancestor::mn:tfoot or parent::mn:figure)"> <!--  and not(xalan:nodeset($colwidths)//column) -->
 														<xsl:variable name="dt_nodes">
 															<xsl:for-each select="mn:dt">
 																<xsl:apply-templates select="." mode="dt_clean"/>
@@ -741,7 +741,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="line-height">1.4</xsl:attribute>
-			<xsl:if test="@key = 'true'">
+			<xsl:if test="@key = 'true' or ancestor::mn:key">
 				<xsl:attribute name="margin-top">2pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>

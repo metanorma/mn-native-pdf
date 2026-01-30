@@ -159,7 +159,7 @@
 					<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 				</xsl:if>
 			</xsl:if>
-			<xsl:if test="ancestor::*[@key = 'true']">
+			<xsl:if test="ancestor::*[@key = 'true'] or ancestor::mn:key">
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 			</xsl:if>
 			<!-- $namespace = 'bsi' -->
@@ -527,7 +527,7 @@
 				<xsl:attribute name="line-height">0</xsl:attribute>
 			</xsl:if>
 
-			<xsl:if test="ancestor::*[@key = 'true']">
+			<xsl:if test="ancestor::*[@key = 'true'] or ancestor::mn:key">
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 			</xsl:if>
 			
@@ -665,7 +665,7 @@
 				<xsl:attribute name="line-height">0</xsl:attribute>
 			</xsl:if>
 
-			<xsl:if test="ancestor::*[@key = 'true']">
+			<xsl:if test="ancestor::*[@key = 'true'] or ancestor::mn:key">
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 			</xsl:if>
 			
@@ -689,7 +689,7 @@
 				<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 			</xsl:if>
 			
-			<xsl:if test="parent::mn:dd and ancestor::mn:dl[@key = 'true'] and (ancestor::mn:tfoot or ancestor::mn:figure)">
+			<xsl:if test="parent::mn:dd and (ancestor::mn:dl[@key = 'true'] or ancestor::mn:key) and (ancestor::mn:tfoot or ancestor::mn:figure)">
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 			</xsl:if>
 			

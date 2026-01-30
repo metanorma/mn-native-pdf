@@ -701,6 +701,8 @@
 	<!-- figure's footnote label -->
 	<!-- figure/dl[@key = 'true']/dt/p/sup -->
 	<xsl:template match="mn:figure/mn:dl[@key = 'true']/mn:dt/
+				mn:p[count(node()[normalize-space() != '']) = 1]/mn:sup |
+				mn:figure/mn:key/mn:dl/mn:dt/
 				mn:p[count(node()[normalize-space() != '']) = 1]/mn:sup" priority="3">
 		<xsl:variable name="key_iso">
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">true</xsl:if>
