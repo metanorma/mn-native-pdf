@@ -340,7 +340,7 @@
 					</xsl:otherwise>
 				</xsl:choose>
 				
-				<xsl:variable name="parent" select="local-name(..)"/>
+				<xsl:variable name="parent" select="local-name(../..)"/>
 				
 				<xsl:variable name="key_iso">
 					<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">
@@ -367,7 +367,7 @@
 										</xsl:call-template>
 									</xsl:variable>
 									<xsl:value-of select="$title-where"/> -->
-									<xsl:apply-templates select="preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
+									<xsl:apply-templates select="ancector::mn:key/preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
 								</fo:block>
 								<fo:block>
 									<xsl:if test="$namespace = 'gb'">
@@ -390,7 +390,7 @@
 										</xsl:call-template>
 									</xsl:variable>
 									<xsl:value-of select="$title-where"/> -->
-									<xsl:apply-templates select="preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
+									<xsl:apply-templates select="ancector::mn:key/preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
 									<xsl:text>&#xA0;</xsl:text>
 									<xsl:apply-templates select="mn:dt/*"/>
 									<xsl:if test="mn:dd/node()[normalize-space() != ''][1][self::text()]">
@@ -413,7 +413,8 @@
 							</xsl:variable>
 							<xsl:value-of select="$title-where"/><xsl:if test="$namespace = 'bsi' or $namespace = 'itu'">:</xsl:if> -->
 							<!-- preceding 'p' with word 'where' -->
-							<xsl:apply-templates select="preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
+							<!-- <xsl:apply-templates select="preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/> -->
+							<xsl:apply-templates select="ancestor::mn:key/preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
 						</fo:block>
 					</xsl:when>  <!-- END: a few components -->
 					<xsl:when test="$parent = 'figure' and  (not(../@class) or ../@class !='pseudocode')"> <!-- definition list in a figure -->
@@ -726,7 +727,7 @@
 	</xsl:template> <!-- refine_dl_formula_where_style -->
 	
 	<xsl:template name="refine_multicomponent_style">
-		<xsl:variable name="parent" select="local-name(..)"/>
+		<xsl:variable name="parent" select="local-name(../..)"/>
 		<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:if test="$parent = 'formula'">
 				<xsl:attribute name="margin-left">4mm</xsl:attribute>
@@ -761,7 +762,7 @@
 	</xsl:template> <!-- refine_multicomponent_style -->
 	
 	<xsl:template name="refine_multicomponent_block_style">
-		<xsl:variable name="parent" select="local-name(..)"/>
+		<xsl:variable name="parent" select="local-name(../..)"/>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:if test="$parent = 'formula'">
 				<xsl:attribute name="margin-left">-1mm</xsl:attribute>

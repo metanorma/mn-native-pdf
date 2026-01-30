@@ -255,7 +255,7 @@
 
 
 	<!-- ignore 'p' with 'where' in formula, before 'dl' -->
-	<xsl:template match="mn:formula/*[self::mn:p and @keep-with-next = 'true' and following-sibling::*[1][self::mn:dl]]" />
+	<xsl:template match="mn:formula/*[self::mn:p and @keep-with-next = 'true' and following-sibling::*[1][self::mn:dl or self::mn:key]]" />
 
 
 	<!-- ======================================= -->
