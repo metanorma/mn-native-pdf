@@ -180,7 +180,7 @@
 	
 	<xsl:template name="refine_dl-name-style">
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:if test="ancestor::mn:tfoot and (../@key = 'true' or ancestor::mn:key)">
+			<xsl:if test="ancestor::mn:tfoot and ../@key = 'true'">
 				<xsl:attribute name="margin-left">-<xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -367,7 +367,7 @@
 										</xsl:call-template>
 									</xsl:variable>
 									<xsl:value-of select="$title-where"/> -->
-									<xsl:apply-templates select="ancector::mn:key/preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
+									<xsl:apply-templates select="ancestor::mn:key/preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
 								</fo:block>
 								<fo:block>
 									<xsl:if test="$namespace = 'gb'">
@@ -390,7 +390,7 @@
 										</xsl:call-template>
 									</xsl:variable>
 									<xsl:value-of select="$title-where"/> -->
-									<xsl:apply-templates select="ancector::mn:key/preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
+									<xsl:apply-templates select="ancestor::mn:key/preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
 									<xsl:text>&#xA0;</xsl:text>
 									<xsl:apply-templates select="mn:dt/*"/>
 									<xsl:if test="mn:dd/node()[normalize-space() != ''][1][self::text()]">
@@ -456,7 +456,7 @@
 						
 							<xsl:call-template name="refine_multicomponent_block_style"/>
 							
-							<xsl:apply-templates select="mn:fmt-name">
+							<xsl:apply-templates select="mn:fmt-name | parent::*[self::mn:key]/mn:name">
 								<xsl:with-param name="process">true</xsl:with-param>
 							</xsl:apply-templates>
 							
