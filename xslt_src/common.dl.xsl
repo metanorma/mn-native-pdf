@@ -26,8 +26,13 @@
 	</xsl:attribute-set>
 	
 	<xsl:template name="refine_dl-block-style">
-		<xsl:if test="@key = 'true' and ancestor::mn:figure">
+		<xsl:if test="(@key = 'true' or ancestor::mn:key) and ancestor::mn:figure">
 			<xsl:attribute name="keep-together.within-column">always</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="ancestor::mn:td">
+				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 	
@@ -296,7 +301,7 @@
 			</xsl:if>
 			
 			<xsl:if test="$namespace = 'plateau'">
-				<xsl:if test="@key = 'true' and (ancestor::mn:tfoot or parent::mn:figure)">
+				<xsl:if test="(@key = 'true' or ancestor::mn:key) and (ancestor::mn:tfoot or parent::mn:figure)">
 					<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
 					<xsl:attribute name="margin-bottom">0</xsl:attribute>
 				</xsl:if>
@@ -340,18 +345,18 @@
 					</xsl:otherwise>
 				</xsl:choose>
 				
-				<xsl:variable name="parent" select="local-name(..)"/>
+				<xsl:variable name="parent" select="local-name(../..)"/>
 				
 				<xsl:variable name="key_iso">
 					<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">
-						<xsl:if test="$parent = 'figure' or $parent = 'formula' or ../@key = 'true'">true</xsl:if>
+						<xsl:if test="($parent = 'figure' or $parent = 'formula') and (../@key = 'true' or ancestor::mn:key)">true</xsl:if>
 					</xsl:if> <!-- and  (not(../@class) or ../@class !='pseudocode') -->
 				</xsl:variable>
 				
-				<xsl:variable name="onlyOneComponent" select="normalize-space($parent = 'formula' and count(mn:dt) = 1)"/>
+				<xsl:variable name="onlyOneFormulaKeyItem" select="normalize-space($parent = 'formula' and count(mn:dt) = 1)"/>
 				
 				<xsl:choose>
-					<xsl:when test="$onlyOneComponent = 'true'"> <!-- only one component -->
+					<xsl:when test="$onlyOneFormulaKeyItem = 'true'"> <!-- only one component -->
 						<xsl:choose>
 							<xsl:when test="$namespace = 'iec' or $namespace = 'gb'">
 								<fo:block text-align="left">
@@ -367,7 +372,7 @@
 										</xsl:call-template>
 									</xsl:variable>
 									<xsl:value-of select="$title-where"/> -->
-									<xsl:apply-templates select="preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
+									<xsl:apply-templates select="ancestor::mn:key/preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
 								</fo:block>
 								<fo:block>
 									<xsl:if test="$namespace = 'gb'">
@@ -390,7 +395,7 @@
 										</xsl:call-template>
 									</xsl:variable>
 									<xsl:value-of select="$title-where"/> -->
-									<xsl:apply-templates select="preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
+									<xsl:apply-templates select="ancestor::mn:key/preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
 									<xsl:text>&#xA0;</xsl:text>
 									<xsl:apply-templates select="mn:dt/*"/>
 									<xsl:if test="mn:dd/node()[normalize-space() != ''][1][self::text()]">
@@ -413,12 +418,13 @@
 							</xsl:variable>
 							<xsl:value-of select="$title-where"/><xsl:if test="$namespace = 'bsi' or $namespace = 'itu'">:</xsl:if> -->
 							<!-- preceding 'p' with word 'where' -->
-							<xsl:apply-templates select="preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
+							<!-- <xsl:apply-templates select="preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/> -->
+							<xsl:apply-templates select="ancestor::mn:key/preceding-sibling::*[1][self::mn:p and @keep-with-next = 'true']/node()"/>
 						</fo:block>
 					</xsl:when>  <!-- END: a few components -->
 					<xsl:when test="$parent = 'figure' and  (not(../@class) or ../@class !='pseudocode')"> <!-- definition list in a figure -->
 						<!-- Presentation XML contains 'Key' caption, https://github.com/metanorma/isodoc/issues/607 -->
-						<xsl:if test="not(preceding-sibling::*[1][self::mn:p and @keep-with-next])"> <!-- for old Presentation XML -->
+						<xsl:if test="not(preceding-sibling::*[1][self::mn:p and @keep-with-next]) and 1 = 2"> <!-- for old Presentation XML -->
 						
 							<xsl:choose>
 								<xsl:when test="$namespace = 'bsi' or $namespace = 'pas'"></xsl:when><!-- https://github.com/metanorma/isodoc/issues/607, see template<xsl:template
@@ -426,7 +432,7 @@
 								<xsl:otherwise>						
 									<fo:block font-weight="bold" text-align="left" margin-bottom="12pt" keep-with-next="always">
 									
-										<xsl:call-template name="refine_figure_key_style"/>
+										<xsl:call-template name="refine_figure-key-name-style"/>
 									
 										<xsl:variable name="title-key">
 											<xsl:call-template name="getLocalizedString">
@@ -442,7 +448,7 @@
 				</xsl:choose>
 				
 				<!-- a few components -->
-				<xsl:if test="$onlyOneComponent = 'false'">
+				<xsl:if test="$onlyOneFormulaKeyItem = 'false'">
 					<fo:block role="SKIP">
 					
 						<xsl:call-template name="refine_multicomponent_style"/>
@@ -455,7 +461,7 @@
 						
 							<xsl:call-template name="refine_multicomponent_block_style"/>
 							
-							<xsl:apply-templates select="mn:fmt-name">
+							<xsl:apply-templates select="mn:fmt-name | parent::mn:key[parent::mn:table]/mn:name">
 								<xsl:with-param name="process">true</xsl:with-param>
 							</xsl:apply-templates>
 							
@@ -612,7 +618,7 @@
 											<xsl:when test="$namespace = 'plateau'">
 												<xsl:choose>
 													<!-- https://github.com/metanorma/metanorma-plateau/issues/171 -->
-													<xsl:when test="@key = 'true' and (ancestor::mn:tfoot or parent::mn:figure)"> <!--  and not(xalan:nodeset($colwidths)//column) -->
+													<xsl:when test="(@key = 'true' or ancestor::mn:key) and (ancestor::mn:tfoot or parent::mn:figure)"> <!--  and not(xalan:nodeset($colwidths)//column) -->
 														<xsl:variable name="dt_nodes">
 															<xsl:for-each select="mn:dt">
 																<xsl:apply-templates select="." mode="dt_clean"/>
@@ -726,7 +732,7 @@
 	</xsl:template> <!-- refine_dl_formula_where_style -->
 	
 	<xsl:template name="refine_multicomponent_style">
-		<xsl:variable name="parent" select="local-name(..)"/>
+		<xsl:variable name="parent" select="local-name(../..)"/>
 		<xsl:if test="$namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:if test="$parent = 'formula'">
 				<xsl:attribute name="margin-left">4mm</xsl:attribute>
@@ -741,7 +747,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="line-height">1.4</xsl:attribute>
-			<xsl:if test="@key = 'true'">
+			<xsl:if test="@key = 'true' or ancestor::mn:key">
 				<xsl:attribute name="margin-top">2pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -761,7 +767,7 @@
 	</xsl:template> <!-- refine_multicomponent_style -->
 	
 	<xsl:template name="refine_multicomponent_block_style">
-		<xsl:variable name="parent" select="local-name(..)"/>
+		<xsl:variable name="parent" select="local-name(../..)"/>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:if test="$parent = 'formula'">
 				<xsl:attribute name="margin-left">-1mm</xsl:attribute>
