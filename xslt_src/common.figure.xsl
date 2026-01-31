@@ -519,6 +519,7 @@
 	
 	<xsl:attribute-set name="figure-key-name-style">
 		<xsl:attribute name="text-align">left</xsl:attribute>
+		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		<xsl:attribute name="keep-with-previous">always</xsl:attribute>

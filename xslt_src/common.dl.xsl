@@ -29,6 +29,11 @@
 		<xsl:if test="(@key = 'true' or ancestor::mn:key) and ancestor::mn:figure">
 			<xsl:attribute name="keep-together.within-column">always</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="ancestor::mn:td">
+				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:attribute-set name="dt-row-style">
@@ -344,7 +349,7 @@
 				
 				<xsl:variable name="key_iso">
 					<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso' or $namespace = 'iec'  or $namespace = 'gb' or $namespace = 'jcgm'">
-						<xsl:if test="$parent = 'figure' or $parent = 'formula' or ../@key = 'true' or ancestor::mn:key">true</xsl:if>
+						<xsl:if test="($parent = 'figure' or $parent = 'formula') and (../@key = 'true' or ancestor::mn:key)">true</xsl:if>
 					</xsl:if> <!-- and  (not(../@class) or ../@class !='pseudocode') -->
 				</xsl:variable>
 				
@@ -456,7 +461,7 @@
 						
 							<xsl:call-template name="refine_multicomponent_block_style"/>
 							
-							<xsl:apply-templates select="mn:fmt-name | parent::*[self::mn:key]/mn:name">
+							<xsl:apply-templates select="mn:fmt-name | parent::mn:key[parent::mn:table]/mn:name">
 								<xsl:with-param name="process">true</xsl:with-param>
 							</xsl:apply-templates>
 							
