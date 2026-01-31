@@ -461,7 +461,7 @@
 								<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 							</xsl:if>
 							
-							<xsl:apply-templates select="node()[not(self::mn:fmt-name or self::mn:dl)]" />
+							<xsl:apply-templates select="node()[not(self::mn:fmt-name or self::mn:dl or self::mn:key)]" />
 						</fo:block>
 						
 						<xsl:apply-templates select="mn:dl | mn:key"/> <!-- Key table -->

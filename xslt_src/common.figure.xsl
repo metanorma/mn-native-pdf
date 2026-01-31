@@ -517,6 +517,36 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:attribute-set name="figure-key-name-style">
+		<xsl:attribute name="text-align">left</xsl:attribute>
+		<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso' or $namespace = 'jcgm'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">0</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="font-size">8pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'gb'">
+			<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			<xsl:attribute name="text-indent">7.4mm</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="color">black</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- figure-key-name-style -->
+	
+	<xsl:template name="refine_figure-key-name-style">
+		
+	</xsl:template> <!-- refine_figure-key-name-style -->
+	
 	<!-- ============================ -->
 	<!-- figure's footnotes rendering -->
 	<!-- ============================ -->
@@ -725,31 +755,12 @@
 	<!-- ============================ -->
 	
 	<!-- caption for figure key and another caption, https://github.com/metanorma/isodoc/issues/607 -->
-	<xsl:template match="mn:figure/mn:p[@keep-with-next = 'true' and mn:strong]" priority="3">
-		<fo:block text-align="left" margin-bottom="12pt" keep-with-next="always" keep-with-previous="always">
-			<xsl:call-template name="refine_figure_key_style"/>
+	<xsl:template match="mn:figure/mn:p[@keep-with-next = 'true' and mn:strong] | mn:figure/mn:key/mn:name" priority="3">
+		<fo:block xsl:use-attribute-sets="figure-key-name-style">
+			<xsl:call-template name="refine_figure-key-name-style"/>
 			<xsl:apply-templates/>
 		</fo:block>
 	</xsl:template>
-	
-	<xsl:template name="refine_figure_key_style">
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso' or $namespace = 'jcgm'">
-			<xsl:attribute name="font-size">10pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">0</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'iec'">
-			<xsl:attribute name="font-size">8pt</xsl:attribute>
-			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'gb'">
-			<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-			<xsl:attribute name="text-indent">7.4mm</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'rsd'">
-			<xsl:attribute name="font-weight">normal</xsl:attribute>
-			<xsl:attribute name="color">black</xsl:attribute>
-		</xsl:if>
-	</xsl:template> <!-- refine_figure_key_style -->
 	
 	<!-- ====== -->
 	<!-- figure    -->

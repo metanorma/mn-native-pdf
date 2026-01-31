@@ -348,10 +348,10 @@
 					</xsl:if> <!-- and  (not(../@class) or ../@class !='pseudocode') -->
 				</xsl:variable>
 				
-				<xsl:variable name="onlyOneComponent" select="normalize-space($parent = 'formula' and count(mn:dt) = 1)"/>
+				<xsl:variable name="onlyOneFormulaKeyItem" select="normalize-space($parent = 'formula' and count(mn:dt) = 1)"/>
 				
 				<xsl:choose>
-					<xsl:when test="$onlyOneComponent = 'true'"> <!-- only one component -->
+					<xsl:when test="$onlyOneFormulaKeyItem = 'true'"> <!-- only one component -->
 						<xsl:choose>
 							<xsl:when test="$namespace = 'iec' or $namespace = 'gb'">
 								<fo:block text-align="left">
@@ -419,7 +419,7 @@
 					</xsl:when>  <!-- END: a few components -->
 					<xsl:when test="$parent = 'figure' and  (not(../@class) or ../@class !='pseudocode')"> <!-- definition list in a figure -->
 						<!-- Presentation XML contains 'Key' caption, https://github.com/metanorma/isodoc/issues/607 -->
-						<xsl:if test="not(preceding-sibling::*[1][self::mn:p and @keep-with-next])"> <!-- for old Presentation XML -->
+						<xsl:if test="not(preceding-sibling::*[1][self::mn:p and @keep-with-next]) and 1 = 2"> <!-- for old Presentation XML -->
 						
 							<xsl:choose>
 								<xsl:when test="$namespace = 'bsi' or $namespace = 'pas'"></xsl:when><!-- https://github.com/metanorma/isodoc/issues/607, see template<xsl:template
@@ -427,7 +427,7 @@
 								<xsl:otherwise>						
 									<fo:block font-weight="bold" text-align="left" margin-bottom="12pt" keep-with-next="always">
 									
-										<xsl:call-template name="refine_figure_key_style"/>
+										<xsl:call-template name="refine_figure-key-name-style"/>
 									
 										<xsl:variable name="title-key">
 											<xsl:call-template name="getLocalizedString">
@@ -443,7 +443,7 @@
 				</xsl:choose>
 				
 				<!-- a few components -->
-				<xsl:if test="$onlyOneComponent = 'false'">
+				<xsl:if test="$onlyOneFormulaKeyItem = 'false'">
 					<fo:block role="SKIP">
 					
 						<xsl:call-template name="refine_multicomponent_style"/>
