@@ -665,6 +665,10 @@
 					
 					<xsl:call-template name="processBibitem"/>
 				</fo:block>
+				<xsl:if test="$namespace = 'iso' or $namespace = 'rsd'">
+					<!-- for tags structure, see https://github.com/metanorma/metanorma-standoc/issues/1140#issuecomment-3831538094 -->
+					<xsl:call-template name="processFormattedrefNotes"/>
+				</xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
 
@@ -725,7 +729,7 @@
 					<xsl:apply-templates select="mn:biblio-tag"/>
 					<xsl:apply-templates select="mn:formattedref"/>
 				</fo:block>
-				<xsl:call-template name="processBibitemFollowingNotes"/>
+				<xsl:call-template name="processFormattedrefNotes"/>
 				<!-- END CSA bibitem processing -->
 			</xsl:when>
 		
@@ -789,7 +793,7 @@
 								</xsl:apply-templates>
 								<xsl:apply-templates select="mn:formattedref"/>
 							</fo:block>
-							<xsl:call-template name="processBibitemFollowingNotes"/>
+							<xsl:call-template name="processFormattedrefNotes"/>
 						</fo:list-item-body>
 					</fo:list-item>
 				</fo:list-block>
@@ -869,7 +873,7 @@
 								<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 							</xsl:call-template>
 						</fo:block>
-						<xsl:call-template name="processBibitemFollowingNotes"/>
+						<xsl:call-template name="processFormattedrefNotes"/>
 					</fo:list-item-body>
 				</fo:list-item>
 			</xsl:otherwise>
@@ -906,7 +910,7 @@
 						<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 					</xsl:apply-templates>
 					<xsl:apply-templates select="mn:formattedref"/>
-					<xsl:call-template name="processBibitemFollowingNotes"/>
+					<xsl:call-template name="processFormattedrefNotes"/>
 				</xsl:variable>
 				
 				<xsl:choose>
@@ -940,7 +944,6 @@
 									<fo:block>
 										<xsl:copy-of select="$bibitem_body"/>
 									</fo:block>
-									<xsl:call-template name="processBibitemFollowingNotes"/>
 								</fo:list-item-body>
 							</fo:list-item>
 						</fo:list-block>
@@ -962,7 +965,7 @@
 					</xsl:apply-templates>
 				</fo:inline>
 				<xsl:apply-templates select="mn:formattedref"/>
-				<xsl:call-template name="processBibitemFollowingNotes"/>
+				<xsl:call-template name="processFormattedrefNotes"/>
 			</xsl:when>
 
 			<xsl:when test="$namespace = 'nist-sp'">
@@ -979,7 +982,7 @@
 					<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 				</xsl:apply-templates>
 				<xsl:apply-templates select="mn:formattedref"/>
-				<xsl:call-template name="processBibitemFollowingNotes"/>
+				<xsl:call-template name="processFormattedrefNotes"/>
 				<!-- END NIST SP bibitem processing -->
 			</xsl:when>
 			
@@ -995,7 +998,7 @@
 				</xsl:apply-templates>
 				
 				<xsl:apply-templates select="un:formattedref"/>
-				<xsl:call-template name="processBibitemFollowingNotes"/>
+				<xsl:call-template name="processFormattedrefNotes"/>
 				<!-- END UNECE bibitem processing -->
 			</xsl:when>
 			
@@ -1019,13 +1022,14 @@
 				<xsl:apply-templates select="mn:formattedref"/>
 				
 				<xsl:choose>
-					<xsl:when test="$namespace = 'iso'">
-						<xsl:if test="ancestor::mn:references[@normative = 'true']">
+					<xsl:when test="$namespace = 'iso' or $namespace = 'rsd'">
+						<!-- no processing for https://github.com/metanorma/metanorma-standoc/issues/1140#issuecomment-3831538094 -->
+						<!-- <xsl:if test="ancestor::mn:references[@normative = 'true']">
 							<xsl:call-template name="processBibitemFollowingNotes"/>
-						</xsl:if>
+						</xsl:if> -->
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:call-template name="processBibitemFollowingNotes"/>
+						<xsl:call-template name="processFormattedrefNotes"/>
 					</xsl:otherwise>
 				</xsl:choose>
 				<!-- end bibitem processing -->
@@ -1034,6 +1038,14 @@
 		</xsl:choose>
 	</xsl:template> <!-- processBibitem (bibitem) -->
 	
+	<!-- note at the end of formattedref, will be processed in processFormattedrefNotes -->
+	<xsl:template match="mn:formattedref/mn:note[not(following-sibling::node()[normalize-space() != '' and not(self::mn:note)])]" />
+
+	<xsl:template name="processFormattedrefNotes">
+		<xsl:for-each select="mn:formattedref/mn:note[not(following-sibling::node()[normalize-space() != '' and not(self::mn:note)])]">
+			<xsl:call-template name="note"/>
+		</xsl:for-each>
+	</xsl:template>
 
 	<xsl:template name="processBibitemFollowingNotes">
 		<!-- current context is bibitem element -->

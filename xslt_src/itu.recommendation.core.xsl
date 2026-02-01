@@ -2671,6 +2671,7 @@
 				<xsl:with-param name="biblio_tag_part">last</xsl:with-param>
 			</xsl:apply-templates>
 			<xsl:apply-templates select="mn:formattedref"/>
+			<xsl:call-template name="processFormattedrefNotes"/>
 		</xsl:variable>
 		
 		<tr id="{@id}">
