@@ -33,8 +33,8 @@ jobs:
         run: |
           gem install fontist
           fontist update
-          fontist manifest-install --confirm-license fonts/manifest.yml
-          fontist manifest-locations fonts/manifest.yml > fonts/manifest.paths.yml
+          fontist manifest install --confirm-license fonts/manifest.yml
+          fontist manifest locations fonts/manifest.yml > fonts/manifest.paths.yml
           cat fonts/manifest.paths.yml
 
       # cabextract for fonts, gettext-base for envsubst
