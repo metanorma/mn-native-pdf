@@ -36,6 +36,12 @@
 		<xsl:if test="string-length(normalize-space()) &lt; 30 and not(contains(normalize-space(), 'http://')) and not(contains(normalize-space(), 'https://')) and not(ancestor::*[self::mn:table or self::mn:dl])">
 			<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:if test="not(starts-with(text(), 'Figure') or starts-with(text(), 'Table'))">
+				<xsl:attribute name="color">blue</xsl:attribute>
+				<xsl:attribute name="text-decoration">underline</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:if test="not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
@@ -61,7 +67,7 @@
 		</xsl:call-template>
 	</xsl:template> <!-- xref -->
 	
-	<xsl:if test="$namespace = 'jis' or $namespace = 'plateau' or $namespace = 'rsd'">
+	<xsl:if test="$namespace = 'csd' or $namespace = 'jis' or $namespace = 'plateau' or $namespace = 'rsd'">
 	<xsl:template match="mn:indexsect//mn:fmt-xref[@pagenumber = 'true']" priority="2">
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">

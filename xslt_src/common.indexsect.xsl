@@ -40,6 +40,11 @@
 			<xsl:attribute name="font-size">18pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="font-size">13pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="color">rgb(14, 26, 133)</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">84pt</xsl:attribute>
