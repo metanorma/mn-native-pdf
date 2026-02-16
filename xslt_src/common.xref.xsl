@@ -67,7 +67,7 @@
 		</xsl:call-template>
 	</xsl:template> <!-- xref -->
 	
-	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'jis' or 
+	<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'jis' or 
 			$namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd'">
 	<xsl:template match="mn:indexsect//mn:fmt-xref[@pagenumber = 'true']" priority="2">
 		<xsl:call-template name="insert_basic_link">

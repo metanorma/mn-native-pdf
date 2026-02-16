@@ -43,6 +43,9 @@
 			<xsl:attribute name="font-size">18pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="font-size">26pt</xsl:attribute>
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
