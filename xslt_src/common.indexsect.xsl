@@ -55,6 +55,10 @@
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">84pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-size">16pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">84pt</xsl:attribute>

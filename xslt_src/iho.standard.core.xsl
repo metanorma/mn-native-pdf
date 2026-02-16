@@ -55,6 +55,7 @@
 					<mnx:contents>
 						<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 						<xsl:call-template name="processMainSectionsDefault_Contents"/>
+						<xsl:apply-templates select="//mn:indexsect" mode="contents"/>
 						
 						<xsl:call-template name="processTablesFigures_Contents"/>
 					</mnx:contents>
@@ -156,6 +157,28 @@
 					<fo:conditional-page-master-reference master-reference="blankpage-landscape" blank-or-not-blank="blank"/>
 					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
 					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			
+			<!-- Index pages (two columns) -->
+			<fo:simple-page-master master-name="index-odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" xsl:use-attribute-sets="indexsect-region-body-style"/>
+				<fo:region-before region-name="header-odd" extent="{$marginTop}mm"/> 
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="index-even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm" xsl:use-attribute-sets="indexsect-region-body-style"/>
+				<fo:region-before region-name="header-even" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
+			</fo:simple-page-master>
+			<fo:page-sequence-master master-name="index">
+				<fo:repeatable-page-master-alternatives>						
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="index-even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="index-odd"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
 		</fo:layout-master-set>
@@ -338,6 +361,10 @@
 										<xsl:text>document</xsl:text>
 										<xsl:call-template name="getPageSequenceOrientation"/>
 									</xsl:attribute>
+									
+									<xsl:if test="mn:indexsect">
+										<xsl:attribute name="master-reference">index</xsl:attribute>
+									</xsl:if>
 									
 									<xsl:if test="position() = 1">
 										<xsl:attribute name="initial-page-number">1</xsl:attribute>
@@ -855,10 +882,15 @@
 			</xsl:variable>
 			
 			<mnx:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" root="{$root}" display="{$display}">
+				<xsl:if test="$type = 'indexsect'">
+					<xsl:attribute name="level">1</xsl:attribute>
+				</xsl:if>
 				<mnx:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
 				</mnx:title>
-				<xsl:apply-templates  mode="contents" />
+				<xsl:if test="$type != 'indexsect'">
+					<xsl:apply-templates mode="contents"/>
+				</xsl:if>
 			</mnx:item>
 			
 		</xsl:if>	
@@ -1069,6 +1101,15 @@
 	
 	<!-- https://github.com/metanorma/mn-native-pdf/issues/214 -->
 	<xsl:template match="mn:index"/>
+	
+	<xsl:template match="mn:indexsect">
+	<fo:block id="{@id}" xsl:use-attribute-sets="indexsect-title-block-style">
+			<xsl:apply-templates select="mn:fmt-title"/>
+		</fo:block>
+		<fo:block role="Index">
+			<xsl:apply-templates select="*[not(self::mn:fmt-title)]"/>
+		</fo:block>
+	</xsl:template>
 	
 	
 	<xsl:template name="insertHeaderFooter">
