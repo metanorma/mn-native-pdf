@@ -84,6 +84,13 @@
 			<xsl:attribute name="font-family">Arial</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="font-family">Lato</xsl:attribute>
+			<xsl:attribute name="font-size">26pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
+			<xsl:attribute name="color">rgb(59, 56, 56)</xsl:attribute>
+			<xsl:attribute name="border-bottom">2pt solid rgb(21, 43, 77)</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -162,7 +169,7 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'rsd'">
+	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
 	<xsl:template match="mn:indexsect" />
 	<xsl:template match="mn:indexsect" mode="index">
 		<xsl:param name="num"/>

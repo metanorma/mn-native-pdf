@@ -74,6 +74,15 @@
 				<fo:region-end region-name="right" extent="{$marginLeftRight2}mm"/>
 			</fo:simple-page-master>
 			
+			<!-- Index pages (two columns) -->
+			<fo:simple-page-master master-name="index" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" xsl:use-attribute-sets="indexsect-region-body-style"/>
+				<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/> 
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm" precedence="true"/>
+				<fo:region-start region-name="left" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			
 		</fo:layout-master-set>
 	</xsl:template> <!-- END: layout-master-set -->
 
@@ -216,6 +225,9 @@
 							<!-- End Document Pages -->
 						</xsl:for-each>
 					</xsl:for-each>
+					
+					<xsl:call-template name="index-pages"/>
+					
 				</xsl:for-each>
 				
 				<xsl:call-template name="back-page"/>
@@ -507,10 +519,15 @@
 			</xsl:variable>
 			
 			<mnx:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
+				<xsl:if test="$type = 'indexsect'">
+					<xsl:attribute name="level">1</xsl:attribute>
+				</xsl:if>
 				<mnx:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
 				</mnx:title>
-				<xsl:apply-templates mode="contents" />
+				<xsl:if test="$type != 'indexsect'">
+					<xsl:apply-templates mode="contents"/>
+				</xsl:if>
 			</mnx:item>
 		</xsl:if>	
 		
