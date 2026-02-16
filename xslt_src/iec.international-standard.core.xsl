@@ -1902,15 +1902,14 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 	
 	<xsl:template match="mn:indexsect" />
 	<xsl:template match="mn:indexsect" mode="index">
-	
 		<fo:page-sequence master-reference="document" force-page-count="no-force">
 			<xsl:call-template name="insertHeaderFooter" />
 			<fo:flow flow-name="xsl-region-body">
 				<fo:block id="{@id}" span="all">
-					<xsl:apply-templates select="mn:title"/>
+					<xsl:apply-templates select="mn:fmt-title"/>
 				</fo:block>
 				<fo:block role="Index">
-					<xsl:apply-templates select="*[not(self::mn:title)]"/>
+					<xsl:apply-templates select="*[not(self::mn:fmt-title)]"/>
 				</fo:block>
 			</fo:flow>
 		</fo:page-sequence>
