@@ -61,7 +61,7 @@
 		</xsl:call-template>
 	</xsl:template> <!-- xref -->
 	
-	<xsl:if test="$namespace = 'jis' or $namespace = 'rsd'">
+	<xsl:if test="$namespace = 'jis' or $namespace = 'plateau' or $namespace = 'rsd'">
 	<xsl:template match="mn:indexsect//mn:fmt-xref[@pagenumber = 'true']" priority="2">
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">

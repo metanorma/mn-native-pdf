@@ -164,6 +164,27 @@
 				<fo:region-end region-name="right-region-landscape" extent="{$marginLeftRight2}mm"/>
 			</fo:simple-page-master>
 			
+			<!-- Index pages (two columns) -->
+			<fo:simple-page-master master-name="index" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<xsl:if test="$vertical_layout = 'true'">
+					<xsl:attribute name="page-width"><xsl:value-of select="$pageHeight"/>mm</xsl:attribute>
+					<xsl:attribute name="page-height"><xsl:value-of select="$pageWidth"/>mm</xsl:attribute>
+				</xsl:if>
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm">
+					<xsl:if test="$vertical_layout != 'true'">
+						<xsl:attribute name="column-count">2</xsl:attribute>
+						<xsl:attribute name="column-gap">10mm</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="$vertical_layout = 'true'">
+						<xsl:attribute name="writing-mode">tb-rl</xsl:attribute>
+					</xsl:if>
+				</fo:region-body>
+				<fo:region-before region-name="header" extent="{$marginTop}mm"/>
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			
 			<fo:simple-page-master master-name="back-page" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="179.5mm" margin-bottom="30mm" margin-left="15mm" margin-right="22.7mm"/>
 				<fo:region-before region-name="header" extent="179.5mm"/>
@@ -350,6 +371,10 @@
 						<xsl:variable name="page_orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:variable>
 						
 						<fo:page-sequence master-reference="document{$page_orientation}" force-page-count="no-force">
+							
+							<xsl:if test="mn:indexsect">
+								<xsl:attribute name="master-reference">index</xsl:attribute>
+							</xsl:if>
 							
 							<xsl:if test="position() = 1">
 								<xsl:attribute name="initial-page-number">1</xsl:attribute>
@@ -885,7 +910,7 @@
 					</xsl:apply-templates>
 				</mnx:title>
 				<xsl:if test="$type != 'index'">
-					<xsl:apply-templates  mode="contents" />
+					<xsl:apply-templates mode="contents" />
 				</xsl:if>
 			</mnx:item>
 		</xsl:if>
@@ -1708,28 +1733,14 @@
 	<!-- Index processing -->
 	<!-- =================== -->
 	<xsl:template match="mn:indexsect">
-		<fo:block id="{@id}" span="all">
-			<xsl:apply-templates select="mn:title"/>
+		<fo:block id="{@id}" xsl:use-attribute-sets="indexsect-title-block-style">
+			<xsl:apply-templates select="mn:fmt-title"/>
 		</fo:block>
 		<fo:block role="Index">
-			<xsl:apply-templates select="*[not(self::mn:title)]"/>
+			<xsl:apply-templates select="*[not(self::mn:fmt-title)]"/>
 		</fo:block>
 	</xsl:template>
 	
-	<xsl:template match="mn:xref[@pagenumber = 'true'] | mn:fmt-xref[@pagenumber = 'true']"  priority="2">
-		<xsl:call-template name="insert_basic_link">
-			<xsl:with-param name="element">
-				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
-					<fo:inline>
-						<xsl:if test="@id">
-							<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-						</xsl:if>
-						<fo:page-number-citation ref-id="{@target}"/>
-					</fo:inline>
-				</fo:basic-link>
-			</xsl:with-param>
-		</xsl:call-template>
-	</xsl:template>
 	<!-- =================== -->
 	<!-- End of Index processing -->
 	<!-- =================== -->

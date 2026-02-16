@@ -57,9 +57,8 @@
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
-		
 		<xsl:if test="$namespace = 'plateau'">
-			<xsl:attribute name="span">all</xsl:attribute>
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
