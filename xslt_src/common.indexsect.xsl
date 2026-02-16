@@ -79,6 +79,11 @@
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="font-family">Arial</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -157,7 +162,7 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'itu' or $namespace = 'rsd'">
+	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'rsd'">
 	<xsl:template match="mn:indexsect" />
 	<xsl:template match="mn:indexsect" mode="index">
 		<xsl:param name="num"/>
