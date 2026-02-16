@@ -36,6 +36,12 @@
 		<xsl:if test="string-length(normalize-space()) &lt; 30 and not(contains(normalize-space(), 'http://')) and not(contains(normalize-space(), 'https://')) and not(ancestor::*[self::mn:table or self::mn:dl])">
 			<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:if test="not(starts-with(text(), 'Figure') or starts-with(text(), 'Table'))">
+				<xsl:attribute name="color">blue</xsl:attribute>
+				<xsl:attribute name="text-decoration">underline</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:if test="not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
@@ -60,6 +66,22 @@
 			</xsl:with-param>
 		</xsl:call-template>
 	</xsl:template> <!-- xref -->
+	
+	<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'itu' or $namespace = 'jis' or 
+			$namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd'">
+	<xsl:template match="mn:indexsect//mn:fmt-xref[@pagenumber = 'true']" priority="2">
+		<xsl:call-template name="insert_basic_link">
+			<xsl:with-param name="element">
+				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
+					<fo:inline>
+						<xsl:copy-of select="@id"/>
+						<fo:page-number-citation ref-id="{@target}"/>
+					</fo:inline>
+				</fo:basic-link>
+			</xsl:with-param>
+		</xsl:call-template>
+	</xsl:template>
+	</xsl:if>
 	
 	<!-- command between two xref points to non-standard bibitem -->
 	<xsl:template match="text()[. = ','][preceding-sibling::node()[1][self::mn:sup][mn:fmt-xref[@type = 'footnote']] and 

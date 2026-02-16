@@ -32,6 +32,7 @@
 		<mnx:contents>
 			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
 			<xsl:call-template name="processMainSectionsDefault_Contents"/>
+			<xsl:apply-templates select="//mn:indexsect" mode="contents"/>
 			<xsl:call-template name="processTablesFigures_Contents"/>
 		</mnx:contents>
 	</xsl:variable>
@@ -56,6 +57,15 @@
 			
 			<fo:simple-page-master master-name="document-landscape" page-width="{$pageHeight}mm" page-height="{$pageWidth}mm">
 				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm"/>
+				<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/> 
+				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			
+			<!-- Index pages (two columns) -->
+			<fo:simple-page-master master-name="index" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" xsl:use-attribute-sets="indexsect-region-body-style"/>
 				<fo:region-before region-name="header" extent="{$marginTop}mm" precedence="true"/> 
 				<fo:region-after region-name="footer" extent="{$marginBottom}mm"/>
 				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
@@ -212,6 +222,8 @@
 						
 					</xsl:for-each>
 				</xsl:for-each>
+				
+				<xsl:call-template name="index-pages"/>
 				
 			</xsl:for-each>
 			
@@ -426,6 +438,7 @@
 			</xsl:call-template>
 		</xsl:variable>
 		
+		<xsl:variable name="type" select="local-name()"/>
 		
 		<xsl:variable name="display">
 			<xsl:choose>				
@@ -453,10 +466,15 @@
 			</xsl:variable>
 			
 			<mnx:item id="{@id}" level="{$level}" section="{$section}" display="{$display}">
+				<xsl:if test="$type = 'indexsect'">
+					<xsl:attribute name="level">1</xsl:attribute>
+				</xsl:if>
 				<mnx:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
 				</mnx:title>
-				<xsl:apply-templates mode="contents" />
+				<xsl:if test="$type != 'indexsect'">
+					<xsl:apply-templates mode="contents" />
+				</xsl:if>
 			</mnx:item>
 		</xsl:if>
 	</xsl:template>

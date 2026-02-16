@@ -1323,7 +1323,23 @@
 			<xsl:sort select="@displayorder" data-type="number"/>
 			<xsl:element name="page_sequence" namespace="{$namespace_full}">
 				<xsl:attribute name="main_page_sequence"/>
-				<xsl:apply-templates select="." mode="update_xml_step_move_pagebreak"/>
+				
+				<!-- from common <xsl:template name="index-pages"> -->
+				<xsl:variable name="docid">
+					<xsl:call-template name="getDocumentId"/>
+				</xsl:variable>
+				
+				<xsl:variable name="current_document_index_id">
+					<xsl:apply-templates select="." mode="index_add_id">
+						<xsl:with-param name="docid" select="$docid"/>
+					</xsl:apply-templates>
+				</xsl:variable>
+				<xsl:variable name="current_document_index">
+					<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
+				</xsl:variable>
+				
+				<!-- xalan:nodeset($current_document_index) -->
+				<xsl:apply-templates select="xalan:nodeset($current_document_index)" mode="update_xml_step_move_pagebreak"/>
 			</xsl:element>
 		</xsl:for-each>
 	</xsl:template>

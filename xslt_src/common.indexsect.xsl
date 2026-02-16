@@ -13,37 +13,103 @@
 											version="1.0">
 	
 	<!-- Index section styles -->
+	
+	<xsl:attribute-set name="indexsect-region-body-style">
+		<xsl:attribute name="column-count">2</xsl:attribute>
+		<xsl:attribute name="column-gap">10mm</xsl:attribute>
+	</xsl:attribute-set>
+	
+	<xsl:attribute-set name="indexsect-title-block-style">
+		<xsl:attribute name="role">SKIP</xsl:attribute>
+		<xsl:attribute name="span">all</xsl:attribute>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="text-align">center</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="text-align">center</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set>
+	
 	<xsl:attribute-set name="indexsect-title-style">
 		<xsl:attribute name="role">H1</xsl:attribute>
+		<xsl:attribute name="font-weight">bold</xsl:attribute>
+		<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="font-size">16pt</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-bottom">84pt</xsl:attribute>
 			<xsl:attribute name="margin-left">-18mm</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-size">18pt</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="font-size">26pt</xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="color">black</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="font-size">13pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="color">rgb(14, 26, 133)</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iec'">
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-bottom">84pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:attribute name="font-family">Arial</xsl:attribute>
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-size">16pt</xsl:attribute>
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-bottom">84pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="font-size">14pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="span">all</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'plateau'">
-			<xsl:attribute name="font-weight">bold</xsl:attribute>
-			<xsl:attribute name="span">all</xsl:attribute>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp' or $namespace = 'nist-sp'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="font-family">Arial</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="font-size">18pt</xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="font-family">Lato</xsl:attribute>
+			<xsl:attribute name="font-size">26pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
+			<xsl:attribute name="color">rgb(59, 56, 56)</xsl:attribute>
+			<xsl:attribute name="border-bottom">2pt solid rgb(21, 43, 77)</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="font-size">12pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="font-size">22pt</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- indexsect-title-style -->
 	
@@ -94,6 +160,48 @@
 		</xsl:for-each>
 	</xsl:variable>
 
+
+	<xsl:template name="index-pages">
+		<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
+			
+		<xsl:variable name="docid">
+			<xsl:call-template name="getDocumentId"/>
+		</xsl:variable>
+		
+		<xsl:variable name="current_document_index_id">
+			<xsl:apply-templates select="//mn:indexsect" mode="index_add_id">
+				<xsl:with-param name="docid" select="$docid"/>
+			</xsl:apply-templates>
+		</xsl:variable>
+		<xsl:variable name="current_document_index">
+			<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
+		</xsl:variable>
+		
+		<xsl:apply-templates select="xalan:nodeset($current_document_index)" mode="index">
+			<xsl:with-param name="num" select="$num"/>
+		</xsl:apply-templates>
+	</xsl:template>
+	
+	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
+	<xsl:template match="mn:indexsect" />
+	<xsl:template match="mn:indexsect" mode="index">
+		<xsl:param name="num"/>
+		<fo:page-sequence master-reference="index" force-page-count="no-force">
+			<xsl:call-template name="insertHeaderFooter">
+				<xsl:with-param name="section">main</xsl:with-param>
+			</xsl:call-template>
+			<fo:flow flow-name="xsl-region-body">
+				<fo:block id="{@id}" xsl:use-attribute-sets="indexsect-title-block-style">
+					<xsl:apply-templates select="mn:fmt-title"/>
+				</fo:block>
+				<fo:block role="Index">
+					<xsl:apply-templates select="*[not(self::mn:fmt-title)]"/>
+				</fo:block>
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template>
+	</xsl:if>
+	
 	<xsl:template match="@*|node()" mode="index_add_id">
 		<xsl:param name="docid"/>
 		<xsl:copy>
@@ -147,7 +255,7 @@
 	<xsl:template match="mn:indexsect//mn:li" mode="index_update">
 		<xsl:copy>
 			<xsl:apply-templates select="@*"  mode="index_update"/>
-		<xsl:apply-templates select="node()[not(self::mn:fmt-name)][1]" mode="process_li_element"/>
+			<xsl:apply-templates select="node()[not(self::mn:fmt-name)][1]" mode="process_li_element"/>
 		</xsl:copy>
 	</xsl:template>
 	
