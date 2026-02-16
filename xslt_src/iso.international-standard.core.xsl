@@ -1486,40 +1486,8 @@
 					<xsl:message>DEBUG: processing time <xsl:value-of select="java:getTime(java:java.util.Date.new()) - $startTimeC"/> msec.</xsl:message>
 				</xsl:if>
 				
-				
 				<!-- Index -->
-				<!-- <xsl:message>START current_document_index_id</xsl:message> -->
-				
-				<xsl:variable name="docid">
-					<xsl:call-template name="getDocumentId"/>
-				</xsl:variable>
-		
-				<xsl:variable name="current_document_index_id">
-					<xsl:apply-templates select="//mn:indexsect" mode="index_add_id">
-						<xsl:with-param name="docid" select="$docid"/>
-					</xsl:apply-templates>
-				</xsl:variable>
-				<!-- <xsl:message>END current_document_index_id</xsl:message> -->
-				
-				<!-- <xsl:message>START current_document_index</xsl:message> -->
-				<xsl:variable name="startTime1" select="java:getTime(java:java.util.Date.new())"/>
-				<xsl:variable name="current_document_index">
-					<xsl:apply-templates select="xalan:nodeset($current_document_index_id)" mode="index_update"/>
-				</xsl:variable>
-				<!-- <xsl:variable name="endTime1" select="java:getTime(java:java.util.Date.new())"/>
-				<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime1 - $startTime1"/> msec.</xsl:message>
-				<xsl:message>END current_document_index</xsl:message> -->
-				
-				
-				<!-- <xsl:variable name="startTime2" select="java:getTime(java:java.util.Date.new())"/>
-				<xsl:message>START xalan:nodeset</xsl:message> -->
-				<!-- <xsl:apply-templates select="//mn:indexsect" mode="index"/> -->
-				<xsl:apply-templates select="xalan:nodeset($current_document_index)" mode="index">
-					<xsl:with-param name="num" select="$num"/>
-				</xsl:apply-templates>
-				<!-- <xsl:variable name="endTime2" select="java:getTime(java:java.util.Date.new())"/>
-				<xsl:message>DEBUG: processing time <xsl:value-of select="$endTime2 - $startTime2"/> msec.</xsl:message>
-				<xsl:message>END xalan:nodeset</xsl:message> -->
+				<xsl:call-template name="index-pages"/>
 				
 				<xsl:call-template name="back-page">
 					<xsl:with-param name="num" select="$num"/>
@@ -4978,7 +4946,7 @@
 			</xsl:call-template>
 			
 			<fo:flow flow-name="xsl-region-body">
-				<fo:block id="{@id}" text-align="center" span="all">
+				<fo:block id="{@id}" xsl:use-attribute-sets="indexsect-title-block-style">
 					<xsl:apply-templates select="mn:fmt-title"/>
 				</fo:block>
 				<fo:block role="Index">
