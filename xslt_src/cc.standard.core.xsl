@@ -659,24 +659,6 @@
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="mn:indexsect" />
-	<xsl:template match="mn:indexsect" mode="index">
-		<xsl:param name="num"/>
-		<fo:page-sequence master-reference="index" force-page-count="no-force">
-			<xsl:call-template name="insertHeaderFooter">
-				<xsl:with-param name="section">main</xsl:with-param>
-			</xsl:call-template>
-			<fo:flow flow-name="xsl-region-body">
-				<fo:block id="{@id}" xsl:use-attribute-sets="indexsect-title-block-style">
-					<xsl:apply-templates select="mn:fmt-title"/>
-				</fo:block>
-				<fo:block role="Index">
-					<xsl:apply-templates select="*[not(self::mn:fmt-title)]"/>
-				</fo:block>
-			</fo:flow>
-		</fo:page-sequence>
-	</xsl:template>
-
 	<xsl:template name="insertHeaderFooter">
 		<xsl:call-template name="insertHeader"/>
 		<xsl:call-template name="insertFooter"/>

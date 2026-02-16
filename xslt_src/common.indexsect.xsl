@@ -40,6 +40,12 @@
 			<xsl:attribute name="font-size">18pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">24pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="font-size">26pt</xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			<xsl:attribute name="color">black</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csd'">
 			<xsl:attribute name="font-size">13pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -139,7 +145,27 @@
 			<xsl:with-param name="num" select="$num"/>
 		</xsl:apply-templates>
 	</xsl:template>
-
+	
+	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd'">
+	<xsl:template match="mn:indexsect" />
+	<xsl:template match="mn:indexsect" mode="index">
+		<xsl:param name="num"/>
+		<fo:page-sequence master-reference="index" force-page-count="no-force">
+			<xsl:call-template name="insertHeaderFooter">
+				<xsl:with-param name="section">main</xsl:with-param>
+			</xsl:call-template>
+			<fo:flow flow-name="xsl-region-body">
+				<fo:block id="{@id}" xsl:use-attribute-sets="indexsect-title-block-style">
+					<xsl:apply-templates select="mn:fmt-title"/>
+				</fo:block>
+				<fo:block role="Index">
+					<xsl:apply-templates select="*[not(self::mn:fmt-title)]"/>
+				</fo:block>
+			</fo:flow>
+		</fo:page-sequence>
+	</xsl:template>
+	</xsl:if>
+	
 	<xsl:template match="@*|node()" mode="index_add_id">
 		<xsl:param name="docid"/>
 		<xsl:copy>
