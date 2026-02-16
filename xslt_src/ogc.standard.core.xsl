@@ -50,7 +50,7 @@
 
 	<xsl:variable name="doctype">
 		<xsl:call-template name="capitalizeWords">
-			<xsl:with-param name="str" select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype"/>
+			<xsl:with-param name="str"><xsl:call-template name="getDoctype"/></xsl:with-param>
 		</xsl:call-template>
 	</xsl:variable>
 	
@@ -548,7 +548,7 @@
 					</xsl:for-each>
 				<!-- </xsl:for-each> -->
 			
-				<xsl:apply-templates select="//mn:indexsect" mode="sections"/>
+				<!-- <xsl:apply-templates select="//mn:indexsect" mode="sections"/> -->
 				
 			</xsl:for-each>
 				
@@ -1210,8 +1210,8 @@
 					<!-- <xsl:apply-templates select="."/> -->
 					
 					<xsl:choose>
-						<xsl:when test="self::mn:indexsect">
-							<xsl:apply-templates select="."/>
+						<xsl:when test=".//mn:indexsect">
+							<xsl:apply-templates select=".//mn:indexsect" mode="index"/>
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:apply-templates />
@@ -1224,6 +1224,16 @@
 		
 	</xsl:template>
 
+
+	<xsl:template match="mn:indexsect" />
+	<xsl:template match="mn:indexsect" mode="index">
+		<fo:block id="{@id}" span="all">
+			<xsl:apply-templates select="mn:fmt-title"/>
+		</fo:block>
+		<fo:block role="Index">
+			<xsl:apply-templates select="*[not(self::mn:fmt-title)]"/>
+		</fo:block>
+	</xsl:template>
 
 	<xsl:template match="node()">		
 		<xsl:apply-templates />			
@@ -1266,18 +1276,21 @@
 				<xsl:call-template name="getName"/>
 			</xsl:variable>
 			
-			<xsl:variable name="type">
-				<xsl:value-of select="local-name()"/>
-			</xsl:variable>
+			<xsl:variable name="type" select="local-name()"/>
 			
 			<mnx:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
+				<xsl:if test="$type = 'indexsect'">
+					<xsl:attribute name="level">1</xsl:attribute>
+				</xsl:if>
 				<xsl:if test="ancestor::mn:annex">
 					<xsl:attribute name="parent">annex</xsl:attribute>
 				</xsl:if>
 				<mnx:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
 				</mnx:title>
-				<xsl:apply-templates mode="contents" />
+				<xsl:if test="$type != 'indexsect'">
+					<xsl:apply-templates  mode="contents" />
+				</xsl:if>
 			</mnx:item>
 		</xsl:if>	
 		
@@ -1871,7 +1884,10 @@
 		<xsl:param name="title"/>
 		<xsl:param name="level">1</xsl:param>
 		<fo:block>
-			<fo:block font-size="18pt" color="{$color_text_title}" keep-with-next="always" line-height="150%">
+			<xsl:variable name="title_styles"><styles xsl:use-attribute-sets="title-style"/></xsl:variable>
+			<fo:block line-height="150%">
+				<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*[local-name() = 'font-size' or local-name() = 'color' or 
+						local-name() = 'keep-with-next']"/>
 				<xsl:if test="$section != ''">
 					<fo:inline padding-right="2mm">
 						<xsl:call-template name="addLetterSpacing">
