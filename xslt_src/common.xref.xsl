@@ -61,6 +61,21 @@
 		</xsl:call-template>
 	</xsl:template> <!-- xref -->
 	
+	<xsl:if test="$namespace = 'jis' or $namespace = 'rsd'">
+	<xsl:template match="mn:indexsect//mn:fmt-xref[@pagenumber = 'true']" priority="2">
+		<xsl:call-template name="insert_basic_link">
+			<xsl:with-param name="element">
+				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
+					<fo:inline>
+						<xsl:copy-of select="@id"/>
+						<fo:page-number-citation ref-id="{@target}"/>
+					</fo:inline>
+				</fo:basic-link>
+			</xsl:with-param>
+		</xsl:call-template>
+	</xsl:template>
+	</xsl:if>
+	
 	<!-- command between two xref points to non-standard bibitem -->
 	<xsl:template match="text()[. = ','][preceding-sibling::node()[1][self::mn:sup][mn:fmt-xref[@type = 'footnote']] and 
 		following-sibling::node()[1][self::mn:sup][mn:fmt-xref[@type = 'footnote']]]">

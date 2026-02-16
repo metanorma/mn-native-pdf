@@ -20,6 +20,7 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="indexsect-title-block-style">
+		<xsl:attribute name="role">SKIP</xsl:attribute>
 		<xsl:attribute name="span">all</xsl:attribute>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="text-align">center</xsl:attribute>
@@ -50,6 +51,13 @@
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="span">all</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="font-weight">normal</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+		</xsl:if>
+		
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:attribute name="span">all</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>

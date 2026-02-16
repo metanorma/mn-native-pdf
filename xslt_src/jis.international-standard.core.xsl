@@ -1883,7 +1883,7 @@
 					</xsl:apply-templates>
 				</mnx:title>
 				<xsl:if test="$type != 'index'">
-					<xsl:apply-templates  mode="contents" />
+					<xsl:apply-templates mode="contents" />
 				</xsl:if>
 			</mnx:item>
 		</xsl:if>
@@ -3207,6 +3207,17 @@
 	<xsl:template match="mn:span[@class = 'halffontsize']" priority="3">
 		<fo:inline font-size="50%" baseline-shift="15%"><xsl:apply-templates/></fo:inline>
 	</xsl:template>
+	
+	<xsl:template match="mn:indexsect" />
+	<xsl:template match="mn:indexsect" mode="index">
+		<fo:block id="{@id}" xsl:use-attribute-sets="indexsect-title-block-style">
+			<xsl:apply-templates select="mn:fmt-title"/>
+		</fo:block>
+		<fo:block role="Index">
+			<xsl:apply-templates select="*[not(self::mn:fmt-title)]"/>
+		</fo:block>
+	</xsl:template>
+	
 	
 	<xsl:template name="insertHeaderFooter">
 		<xsl:param name="docidentifier" />
