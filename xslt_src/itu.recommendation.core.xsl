@@ -49,6 +49,8 @@
 				<mnx:doc num="{$num}" firstpage_id="firstpage_id_{$num}" title-part="{$docnumber}" bundle="{$bundle}"> <!-- 'bundle' means several different documents (not language versions) in one xml -->
 					<mnx:contents>
 						<xsl:call-template name="processMainSectionsDefault_Contents"/>
+						
+						<xsl:apply-templates select="//mn:indexsect" mode="contents"/>
 			
 						<xsl:apply-templates select="//mn:table" mode="contents"/>
 						
@@ -198,6 +200,27 @@
 				<fo:repeatable-page-master-alternatives>
 					<fo:conditional-page-master-reference odd-or-even="even" master-reference="even-landscape"/>
 					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="odd-landscape"/>
+				</fo:repeatable-page-master-alternatives>
+			</fo:page-sequence-master>
+			<!-- Index pages (two columns) -->
+			<fo:simple-page-master master-name="index-odd" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight1}mm" margin-right="{$marginLeftRight2}mm" xsl:use-attribute-sets="indexsect-region-body-style"/>
+				<fo:region-before region-name="header-odd" extent="{$marginTop}mm"  display-align="center"/>
+				<fo:region-after region-name="footer-odd" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight1}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight2}mm"/>
+			</fo:simple-page-master>
+			<fo:simple-page-master master-name="index-even" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
+				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm" xsl:use-attribute-sets="indexsect-region-body-style"/>
+				<fo:region-before region-name="header-even" extent="{$marginTop}mm"  display-align="center"/>
+				<fo:region-after region-name="footer-even" extent="{$marginBottom}mm"/>
+				<fo:region-start region-name="left-region" extent="{$marginLeftRight2}mm"/>
+				<fo:region-end region-name="right-region" extent="{$marginLeftRight1}mm"/>
+			</fo:simple-page-master>
+			<fo:page-sequence-master master-name="index">
+				<fo:repeatable-page-master-alternatives>						
+					<fo:conditional-page-master-reference odd-or-even="even" master-reference="index-even"/>
+					<fo:conditional-page-master-reference odd-or-even="odd" master-reference="index-odd"/>
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
 		</fo:layout-master-set>
@@ -608,6 +631,9 @@
 							</fo:page-sequence>
 						</xsl:for-each>
 					</xsl:for-each>
+					
+					<xsl:call-template name="index-pages"/>
+					
 				</xsl:for-each>
 			</xsl:for-each>
 			
@@ -2082,10 +2108,15 @@
 			
 			<mnx:item level="{$level}" section="{$section}" type="{$type}" display="{$display}">
 				<xsl:call-template name="setId"/>
+				<xsl:if test="$type = 'indexsect'">
+					<xsl:attribute name="level">1</xsl:attribute>
+				</xsl:if>
 				<mnx:title>
 					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
 				</mnx:title>
-				<xsl:apply-templates  mode="contents" />
+				<xsl:if test="$type != 'indexsect'">
+					<xsl:apply-templates mode="contents"/>
+				</xsl:if>
 			</mnx:item>
 			
 		</xsl:if>	

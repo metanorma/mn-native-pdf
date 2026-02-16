@@ -25,6 +25,9 @@
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="text-align">center</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="text-align">center</xsl:attribute>
+		</xsl:if>
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="indexsect-title-style">
@@ -62,6 +65,10 @@
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-size">16pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">84pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="font-size">14pt</xsl:attribute>
+			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="span">all</xsl:attribute>
@@ -150,7 +157,7 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd'">
+	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'itu' or $namespace = 'rsd'">
 	<xsl:template match="mn:indexsect" />
 	<xsl:template match="mn:indexsect" mode="index">
 		<xsl:param name="num"/>
