@@ -1830,6 +1830,11 @@
 				<xsl:when test="$namespace = 'ogc-white-paper'"></xsl:when> <!-- table's title will be rendered after table -->
 				<xsl:otherwise>
 					<xsl:apply-templates select="mn:fmt-name" /> <!-- table's title rendered before table -->
+					<xsl:if test="not(mn:fmt-name)"> <!-- for https://github.com/metanorma/mn-samples-jis/issues/75#issuecomment-3922169930 -->
+						<xsl:apply-templates select="mn:name">
+							<xsl:with-param name="process">true</xsl:with-param>
+						</xsl:apply-templates>
+					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
 			
@@ -2178,7 +2183,13 @@
 	</xsl:template>
 	
 	<!-- table/name-->
-	<xsl:template match="*[local-name()='table']/mn:fmt-name">
+	<xsl:template match="mn:table[not(mn:fmt-name)]/mn:name"> <!-- for https://github.com/metanorma/mn-samples-jis/issues/75#issuecomment-3922169930 -->
+		<xsl:param name="process">false</xsl:param>
+		<xsl:if test="$process = 'true'">
+			<xsl:call-template name="table_name"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="*[local-name()='table']/mn:fmt-name" name="table_name">
 		<xsl:param name="continued"/>
 		<xsl:param name="cols-count"/>
 		<xsl:if test="normalize-space() != ''">
@@ -2832,15 +2843,23 @@
 		<xsl:param name="colwidths"/>
 		<xsl:param name="colgroup"/>
 		
-		<xsl:variable name="isNoteOrFnExist" select="../mn:note[not(@type = 'units')] or ../mn:example or ../mn:dl or ../mn:key or ..//mn:fn[not(parent::mn:fmt-name)] or ../mn:fmt-source or ../mn:p"/>
+		<xsl:variable name="isNoteOrFnExist" select="../mn:note[not(@type = 'units')] or 
+					../mn:example or 
+					../mn:dl or 
+					../mn:key or 
+					(..//mn:fn[not(parent::mn:fmt-name)] and not(ancestor::mn:table[1]//mn:tfoot//mn:fmt-footnote-container)) or 
+					../mn:fmt-source or ../mn:p"/>
+		<!-- in JIS fmt-footnote-container renders in tfoot, so no need render fn in the separate table -->
 		
-		<xsl:variable name="isNoteOrFnExistShowAfterTable">
+		
+		<xsl:variable name="isNoteOrFnExistShowAfterTable_">
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 				 <xsl:value-of select="../mn:note[not(@type = 'units')] or ../mn:fmt-source or ../mn:dl or ../mn:key or ..//mn:fn"/>
 			</xsl:if>
 		</xsl:variable>
+		<xsl:variable name="isNoteOrFnExistShowAfterTable" select="normalize-space($isNoteOrFnExistShowAfterTable_)"/>
 		
-		<xsl:if test="$isNoteOrFnExist = 'true' or normalize-space($isNoteOrFnExistShowAfterTable) = 'true'">
+		<xsl:if test="$isNoteOrFnExist = 'true' or $isNoteOrFnExistShowAfterTable = 'true'">
 		
 			<xsl:variable name="cols-count">
 				<xsl:choose>
