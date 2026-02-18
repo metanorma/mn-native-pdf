@@ -3923,16 +3923,18 @@
 	
 	<xsl:template name="insertListOf_Item">
 		<fo:block xsl:use-attribute-sets="toc-listof-item-style">
-			<fo:basic-link internal-destination="{@id}">
-				<xsl:call-template name="setAltText">
-					<xsl:with-param name="value" select="@alt-text"/>
-				</xsl:call-template>
-				<xsl:apply-templates select="." mode="contents"/>
-				<fo:inline keep-together.within-line="always">
-					<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
-					<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-				</fo:inline>
-			</fo:basic-link>
+			<fo:wrapper role="Reference">
+				<fo:basic-link internal-destination="{@id}">
+					<xsl:call-template name="setAltText">
+						<xsl:with-param name="value" select="@alt-text"/>
+					</xsl:call-template>
+					<xsl:apply-templates select="." mode="contents"/>
+					<fo:inline keep-together.within-line="always">
+						<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+						<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+					</fo:inline>
+				</fo:basic-link>
+			</fo:wrapper>
 		</fo:block>
 	</xsl:template>
 
