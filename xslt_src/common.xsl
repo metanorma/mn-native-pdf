@@ -956,7 +956,12 @@
 		<xsl:variable name="external-destination" select="normalize-space(count($element_node/fo:basic-link/@external-destination[. != '']) = 1)"/>
 		<xsl:variable name="internal-destination" select="normalize-space(count($element_node/fo:basic-link/@internal-destination[. != '']) = 1)"/>
 		<xsl:choose>
-			<xsl:when test="$external-destination = 'true' or $internal-destination = 'true'">
+			<xsl:when test="$internal-destination = 'true'">
+				<fo:wrapper role="Reference">
+					<xsl:copy-of select="$element_node"/>
+				</fo:wrapper>
+			</xsl:when>
+			<xsl:when test="$external-destination = 'true'">
 				<xsl:copy-of select="$element_node"/>
 			</xsl:when>
 			<xsl:otherwise>
