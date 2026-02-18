@@ -3740,8 +3740,8 @@
 								
 									<xsl:call-template name="refine_toc-item-style"/>
 									
-									<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section} {mnx:title}"> <!-- link at this level needs for PDF structure tags -->
 									
+									<!-- <fo:basic-link internal-destination="{@id}" fox:alt-text="{@section} {mnx:title}"> --> <!-- link at this level needs for PDF structure tags --> <!-- role="Reference" -->
 										<fo:list-block role="SKIP">
 											<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left * (@level - 1)"/>mm</xsl:attribute>
 											
@@ -3783,7 +3783,7 @@
 											</xsl:attribute>
 											
 											<fo:list-item role="SKIP">
-												<fo:list-item-label end-indent="label-end()" role="SKIP">
+												<fo:list-item-label end-indent="label-end()" role="Lbl"> <!-- role="SKIP" -->
 													<fo:block role="SKIP">
 														<xsl:if test="$layoutVersion = '1987'">
 															<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -3797,13 +3797,13 @@
 													</fo:block>
 												</fo:list-item-label>
 												<fo:list-item-body start-indent="body-start()" role="SKIP">
-													<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm" role="SKIP">
+													<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm" role="Reference"> <!-- role="SKIP" -->
 													
 														<xsl:if test="$layoutVersion = '1987' and @type = 'section'">
 															<xsl:attribute name="font-weight">bold</xsl:attribute>
 														</xsl:if>
 													
-														<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}" role="SKIP">
+														<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}"> <!-- role="SKIP" -->
 														
 															<xsl:if test="$layoutVersion = '1987' and @type = 'section'">
 																<xsl:value-of select="concat(@section, ' ')"/>
@@ -3829,7 +3829,7 @@
 												</fo:list-item-body>
 											</fo:list-item>
 										</fo:list-block>
-									</fo:basic-link>
+									<!-- </fo:basic-link> -->
 								</fo:block>
 								
 							</xsl:for-each>
