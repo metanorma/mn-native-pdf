@@ -2832,15 +2832,23 @@
 		<xsl:param name="colwidths"/>
 		<xsl:param name="colgroup"/>
 		
-		<xsl:variable name="isNoteOrFnExist" select="../mn:note[not(@type = 'units')] or ../mn:example or ../mn:dl or ../mn:key or ..//mn:fn[not(parent::mn:fmt-name)] or ../mn:fmt-source or ../mn:p"/>
+		<xsl:variable name="isNoteOrFnExist" select="../mn:note[not(@type = 'units')] or 
+					../mn:example or 
+					../mn:dl or 
+					../mn:key or 
+					(..//mn:fn[not(parent::mn:fmt-name)] and not(ancestor::mn:table[1]//mn:tfoot//mn:fmt-footnote-container)) or 
+					../mn:fmt-source or ../mn:p"/>
+		<!-- in JIS fmt-footnote-container renders in tfoot, so no need render fn in the separate table -->
 		
-		<xsl:variable name="isNoteOrFnExistShowAfterTable">
+		
+		<xsl:variable name="isNoteOrFnExistShowAfterTable_">
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 				 <xsl:value-of select="../mn:note[not(@type = 'units')] or ../mn:fmt-source or ../mn:dl or ../mn:key or ..//mn:fn"/>
 			</xsl:if>
 		</xsl:variable>
+		<xsl:variable name="isNoteOrFnExistShowAfterTable" select="normalize-space($isNoteOrFnExistShowAfterTable_)"/>
 		
-		<xsl:if test="$isNoteOrFnExist = 'true' or normalize-space($isNoteOrFnExistShowAfterTable) = 'true'">
+		<xsl:if test="$isNoteOrFnExist = 'true' or $isNoteOrFnExistShowAfterTable = 'true'">
 		
 			<xsl:variable name="cols-count">
 				<xsl:choose>
