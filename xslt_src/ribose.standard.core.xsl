@@ -520,7 +520,7 @@
 	
 	<xsl:template name="insertListOf_Item">
 		<fo:block xsl:use-attribute-sets="toc-listof-item-style">
-			<fo:block text-align-last="justify" >
+			<fo:block text-align-last="justify" role="Reference">
 				<fo:basic-link internal-destination="{@id}">
 					<xsl:call-template name="setAltText">
 						<xsl:with-param name="value" select="@alt-text"/>
@@ -529,7 +529,7 @@
 					<xsl:text> &#xA0;</xsl:text>
 					<fo:inline>
 						<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
-						<fo:inline xsl:use-attribute-sets="toc-pagenumber-style"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+						<fo:inline xsl:use-attribute-sets="toc-pagenumber-style"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}"/></fo:wrapper></fo:inline>
 					</fo:inline>
 				</fo:basic-link>
 			</fo:block>
@@ -553,17 +553,21 @@
 									
 									<xsl:call-template name="refine_toc-item-style"/>
 									
-									<fo:block text-align-last="justify">
-										<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
-											<xsl:value-of select="@section"/>
-											<xsl:text> </xsl:text>
-											<xsl:apply-templates select="mnx:title"/>
-											<xsl:text> &#xA0;</xsl:text>
-											<fo:inline>
-												<fo:leader xsl:use-attribute-sets="toc-leader-style" />
-												<fo:inline xsl:use-attribute-sets="toc-pagenumber-style"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-											</fo:inline>
-										</fo:basic-link>
+									<fo:block text-align-last="justify" role="SKIP">
+										<fo:inline role="Lbl"><xsl:value-of select="@section"/></fo:inline>
+										<fo:wrapper role="Reference">
+											<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+												<xsl:if test="@section != ''">
+													<xsl:text> </xsl:text>
+												</xsl:if>
+												<xsl:apply-templates select="mnx:title"/>
+												<xsl:text> &#xA0;</xsl:text>
+												<fo:inline role="SKIP">
+													<fo:leader xsl:use-attribute-sets="toc-leader-style" />
+													<fo:inline xsl:use-attribute-sets="toc-pagenumber-style"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}"/></fo:wrapper></fo:inline>
+												</fo:inline>
+											</fo:basic-link>
+										</fo:wrapper>
 									</fo:block>
 								</fo:block>
 							</xsl:for-each>

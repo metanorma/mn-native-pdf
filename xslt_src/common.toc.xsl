@@ -523,6 +523,7 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="toc-pagenumber-style">
+		<xsl:attribute name="role">SKIP</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="font-family">Arial</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -596,6 +597,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<!-- <xsl:attribute name="font-size">13pt</xsl:attribute> -->
+			<xsl:attribute name="role">TOCI</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color">black</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
