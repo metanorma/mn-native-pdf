@@ -1830,6 +1830,11 @@
 				<xsl:when test="$namespace = 'ogc-white-paper'"></xsl:when> <!-- table's title will be rendered after table -->
 				<xsl:otherwise>
 					<xsl:apply-templates select="mn:fmt-name" /> <!-- table's title rendered before table -->
+					<xsl:if test="not(mn:fmt-name)"> <!-- for https://github.com/metanorma/mn-samples-jis/issues/75#issuecomment-3922169930 -->
+						<xsl:apply-templates select="mn:name">
+							<xsl:with-param name="process">true</xsl:with-param>
+						</xsl:apply-templates>
+					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
 			
@@ -2178,7 +2183,13 @@
 	</xsl:template>
 	
 	<!-- table/name-->
-	<xsl:template match="*[local-name()='table']/mn:fmt-name">
+	<xsl:template match="mn:table[not(mn:fmt-name)]/mn:name"> <!-- for https://github.com/metanorma/mn-samples-jis/issues/75#issuecomment-3922169930 -->
+		<xsl:param name="process">false</xsl:param>
+		<xsl:if test="$process = 'true'">
+			<xsl:call-template name="table_name"/>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="*[local-name()='table']/mn:fmt-name" name="table_name">
 		<xsl:param name="continued"/>
 		<xsl:param name="cols-count"/>
 		<xsl:if test="normalize-space() != ''">
