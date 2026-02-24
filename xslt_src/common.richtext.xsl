@@ -80,10 +80,11 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="tt-style">
+		<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd'">
 			<xsl:attribute name="font-family"><xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'm3d' or 
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'gb' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'm3d' or 
 										 $namespace = 'ogc-white-paper' or $namespace = 'jcgm'">
 			<xsl:attribute name="font-family">Courier New, <xsl:value-of select="$font_noto_sans_mono"/></xsl:attribute>			
 		</xsl:if>
