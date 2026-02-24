@@ -1,0 +1,12 @@
+WARNING: Font 'Inter' (font name 'Inter', font style 'normal', font weight 'normal') doesn't exist. Replaced by '/home/runner/.metanorma/fonts/NotoSans-Regular.ttf'.
+WARNING: Font 'Inter' (font name 'Inter', font style 'normal', font weight 'bold') doesn't exist. Replaced by '/home/runner/.metanorma/fonts/NotoSans-Bold.ttf'.
+WARNING: Font 'Inter' (font name 'Inter', font style 'italic', font weight 'normal') doesn't exist. Replaced by '/home/runner/.metanorma/fonts/NotoSans-Italic.ttf'.
+WARNING: Font 'Inter' (font name 'Inter', font style 'italic', font weight 'bold') doesn't exist. Replaced by '/home/runner/.metanorma/fonts/NotoSans-BoldItalic.ttf'.
+
+Content overflows the viewport of an fo:block-container in block-progression direction by 26267 millipoints. (See position 17:4002)
+Can't highlight the text ''.
+WARNING: Font 'Inter' (font name 'Inter', font style 'normal', font weight 'normal') doesn't exist. Replaced by '/home/runner/.metanorma/fonts/NotoSans-Regular.ttf'.
+WARNING: Font 'Inter' (font name 'Inter', font style 'normal', font weight 'bold') doesn't exist. Replaced by '/home/runner/.metanorma/fonts/NotoSans-Bold.ttf'.
+WARNING: Font 'Inter' (font name 'Inter', font style 'italic', font weight 'normal') doesn't exist. Replaced by '/home/runner/.metanorma/fonts/NotoSans-Italic.ttf'.
+WARNING: Font 'Inter' (font name 'Inter', font style 'italic', font weight 'bold') doesn't exist. Replaced by '/home/runner/.metanorma/fonts/NotoSans-BoldItalic.ttf'.
+
