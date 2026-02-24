@@ -128,6 +128,7 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-top">10pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">18pt</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
@@ -194,7 +195,7 @@
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
-			<xsl:attribute name="role">SKIP</xsl:attribute>
+			<xsl:attribute name="role">P</xsl:attribute> <!-- SKIP -->
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
