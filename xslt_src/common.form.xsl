@@ -17,11 +17,18 @@
 		<xsl:attribute name="background-color">yellow</xsl:attribute>
 	</xsl:attribute-set>
 	
+	<xsl:variable name="METANORMA_FORM_START_PREFIX">_metanorma_form_start</xsl:variable>
+	<xsl:variable name="METANORMA_FORM_ITEM_PREFIX">_metanorma_form_item_</xsl:variable>
+	
 	<!-- =================== -->
 	<!-- Form's elements processing -->
 	<!-- =================== -->
 	<xsl:template match="mn:form">
 		<fo:block>
+			<fo:inline>
+				<xsl:attribute name="id"><xsl:value-of select="concat($METANORMA_FORM_START_PREFIX, '___', @id, '___', @name)"/></xsl:attribute>
+				<xsl:value-of select="$hair_space"/>
+			</fo:inline>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -34,7 +41,7 @@
 		<!-- add helper id for mn2pdf class FOPIFFormsHandler  (_metanorma_form_item_border_) -->
 		<fo:inline>
 			<xsl:call-template name="set_id_metanorma_form_item">
-				<xsl:with-param name="border_prefix">border_</xsl:with-param>
+				<xsl:with-param name="add_border_prefix">true</xsl:with-param>
 			</xsl:call-template>
 			<xsl:value-of select="$hair_space"/>
 		</fo:inline>
@@ -78,18 +85,19 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:form//mn:input[@type = 'checkbox']">
+		<xsl:variable name="form_item_type">checkbox</xsl:variable>
 		<!-- add helper id for mn2pdf class FOPIFFormsHandler  (_metanorma_form_item_border_) -->
 		<fo:inline>
 			<xsl:call-template name="set_id_metanorma_form_item">
-				<xsl:with-param name="form_item_type">checkbox</xsl:with-param>
-				<xsl:with-param name="border_prefix">border_</xsl:with-param>
+				<xsl:with-param name="form_item_type" select="$form_item_type"/>
+				<xsl:with-param name="add_border_prefix">true</xsl:with-param>
 			</xsl:call-template>
 			<xsl:value-of select="$hair_space"/>
 		</fo:inline>
 		
 		<fo:inline padding-right="1mm" border="1pt solid black"><!-- don't remove 'border', this border needs for mn2pdf FOPIFFormsHandler -->
 			<xsl:call-template name="set_id_metanorma_form_item">
-				<xsl:with-param name="form_item_type">checkbox</xsl:with-param>
+				<xsl:with-param name="form_item_type" select="$form_item_type"/>
 			</xsl:call-template>
 			<fo:instream-foreign-object fox:alt-text="Box" baseline-shift="-10%">
 				<xsl:attribute name="height">3.5mm</xsl:attribute>
@@ -130,13 +138,16 @@
 		</fo:block-container>
 	</xsl:template>
 
-  <xsl:template name="set_id_metanorma_form_item">
-    <xsl:param name="form_item_type">textfield</xsl:param>
-    <xsl:param name="border_prefix"/>
-    <xsl:if test="@id">
-      <xsl:attribute name="id"><xsl:value-of select="concat('_metanorma_form_item_', $border_prefix, $form_item_type, '_', @id, '___name_', @name)"/></xsl:attribute>
-    </xsl:if>
-  </xsl:template>
+	<xsl:template name="set_id_metanorma_form_item">
+		<xsl:param name="form_item_type">textfield</xsl:param>
+		<xsl:param name="add_border_prefix">false</xsl:param>
+		<xsl:variable name="border_prefix"><xsl:if test="normalize-space($add_border_prefix) = 'true'">border_</xsl:if></xsl:variable>
+		<xsl:if test="@id">
+			<!-- _metanorma_form_item_border____form_item_type___id___name___value -->
+			<!-- split by '___': [2] - form_item_type, [3] - id, [4] - name, [5] - value -->
+			<xsl:attribute name="id"><xsl:value-of select="concat($METANORMA_FORM_ITEM_PREFIX, $border_prefix, '___', $form_item_type, '___', @id, '___', @name, '___', @value)"/></xsl:attribute>
+		</xsl:if>
+	</xsl:template>
 
 	<!-- =================== -->
 	<!-- End Form's elements processing -->
