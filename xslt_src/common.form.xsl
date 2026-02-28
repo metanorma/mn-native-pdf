@@ -145,7 +145,13 @@
 		<xsl:if test="@id">
 			<!-- _metanorma_form_item_border____form_item_type___id___name___value -->
 			<!-- split by '___': [2] - form_item_type, [3] - id, [4] - name, [5] - value -->
-			<xsl:attribute name="id"><xsl:value-of select="concat($METANORMA_FORM_ITEM_PREFIX, $border_prefix, '___', $form_item_type, '___', @id, '___', @name, '___', @value)"/></xsl:attribute>
+			<xsl:variable name="value">
+				<xsl:choose>
+					<xsl:when test="@type = 'checkbox'"><xsl:value-of select="normalize-space(@checked = 'true')"/><!-- true or false --></xsl:when>
+					<xsl:otherwise><xsl:value-of select="@value"/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:attribute name="id"><xsl:value-of select="concat($METANORMA_FORM_ITEM_PREFIX, $border_prefix, '___', $form_item_type, '___', @id, '___', @name, '___', $value)"/></xsl:attribute>
 		</xsl:if>
 	</xsl:template>
 
