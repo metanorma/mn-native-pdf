@@ -112,7 +112,20 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:form//mn:input[@type = 'radio']">
-		<fo:inline padding-right="1mm">
+		<xsl:variable name="form_item_type">radiobutton</xsl:variable>
+		<!-- add helper id for mn2pdf class FOPIFFormsHandler  (_metanorma_form_item_border_) -->
+		<fo:inline>
+			<xsl:call-template name="set_id_metanorma_form_item">
+				<xsl:with-param name="form_item_type" select="$form_item_type"/>
+				<xsl:with-param name="add_border_prefix">true</xsl:with-param>
+			</xsl:call-template>
+			<xsl:value-of select="$hair_space"/>
+		</fo:inline>
+		
+		<fo:inline padding-right="1mm" border="1pt solid black"><!-- don't remove 'border', this border needs for mn2pdf FOPIFFormsHandler -->
+			<xsl:call-template name="set_id_metanorma_form_item">
+				<xsl:with-param name="form_item_type" select="$form_item_type"/>
+			</xsl:call-template>
 			<fo:instream-foreign-object fox:alt-text="Box" baseline-shift="-10%">
 				<xsl:attribute name="height">3.5mm</xsl:attribute>
 				<xsl:attribute name="content-width">100%</xsl:attribute>
