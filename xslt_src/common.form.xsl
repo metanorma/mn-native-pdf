@@ -19,6 +19,7 @@
 	
 	<xsl:variable name="METANORMA_FORM_START_PREFIX">_metanorma_form_start</xsl:variable>
 	<xsl:variable name="METANORMA_FORM_ITEM_PREFIX">_metanorma_form_item_</xsl:variable>
+	<xsl:variable name="METANORMA_FORM_ITEM_BORDER">1pt solid black</xsl:variable>
 	
 	<!-- =================== -->
 	<!-- Form's elements processing -->
@@ -45,7 +46,7 @@
 			</xsl:call-template>
 			<xsl:value-of select="$hair_space"/>
 		</fo:inline>
-		<fo:inline border="1pt solid black"><!-- don't remove, this border needs for mn2pdf FOPIFFormsHandler -->
+		<fo:inline border="{$METANORMA_FORM_ITEM_BORDER}"><!-- don't remove, this border needs for mn2pdf FOPIFFormsHandler -->
 			<fo:inline>
 				<xsl:call-template name="set_id_metanorma_form_item"/>
 				<xsl:call-template name="text_input"/>
@@ -95,7 +96,7 @@
 			<xsl:value-of select="$hair_space"/>
 		</fo:inline>
 		
-		<fo:inline padding-right="1mm" border="1pt solid black"><!-- don't remove 'border', this border needs for mn2pdf FOPIFFormsHandler -->
+		<fo:inline border="{$METANORMA_FORM_ITEM_BORDER}"><!-- don't remove 'border', this border needs for mn2pdf FOPIFFormsHandler -->
 			<xsl:call-template name="set_id_metanorma_form_item">
 				<xsl:with-param name="form_item_type" select="$form_item_type"/>
 			</xsl:call-template>
@@ -108,7 +109,7 @@
 					<polyline points="0,0 80,0 80,80 0,80 0,0" stroke="black" stroke-width="5" fill="white"/>
 				</svg>
 			</fo:instream-foreign-object>
-		</fo:inline>
+		</fo:inline><fo:inline padding-right="1mm"><xsl:value-of select="$zero_width_space"/></fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="mn:form//mn:input[@type = 'radio']">
@@ -122,7 +123,7 @@
 			<xsl:value-of select="$hair_space"/>
 		</fo:inline>
 		
-		<fo:inline padding-right="1mm" border="1pt solid black"><!-- don't remove 'border', this border needs for mn2pdf FOPIFFormsHandler -->
+		<fo:inline border="{$METANORMA_FORM_ITEM_BORDER}"><!-- don't remove 'border', this border needs for mn2pdf FOPIFFormsHandler -->
 			<xsl:call-template name="set_id_metanorma_form_item">
 				<xsl:with-param name="form_item_type" select="$form_item_type"/>
 			</xsl:call-template>
@@ -137,6 +138,7 @@
 				</svg>
 			</fo:instream-foreign-object>
 		</fo:inline>
+		<fo:inline padding-right="1mm"><xsl:value-of select="$zero_width_space"/></fo:inline>
 	</xsl:template>
 	
 	<xsl:template match="mn:form//mn:select">
@@ -146,7 +148,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:form//mn:textarea">
-		<fo:block-container border="1pt solid black" width="50%">
+		<fo:block-container border="{$METANORMA_FORM_ITEM_BORDER}" width="50%">
 			<fo:block>&#xA0;</fo:block>
 		</fo:block-container>
 	</xsl:template>
