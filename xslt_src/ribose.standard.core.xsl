@@ -528,7 +528,7 @@
 					<xsl:apply-templates select="." mode="contents"/>
 					<xsl:text> &#xA0;</xsl:text>
 					<fo:inline>
-						<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+						<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 						<fo:inline xsl:use-attribute-sets="toc-pagenumber-style"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}"/></fo:wrapper></fo:inline>
 					</fo:inline>
 				</fo:basic-link>
@@ -563,7 +563,7 @@
 												<xsl:apply-templates select="mnx:title"/>
 												<xsl:text> &#xA0;</xsl:text>
 												<fo:inline role="SKIP">
-													<fo:leader xsl:use-attribute-sets="toc-leader-style" />
+													<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 													<fo:inline xsl:use-attribute-sets="toc-pagenumber-style"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}"/></fo:wrapper></fo:inline>
 												</fo:inline>
 											</fo:basic-link>

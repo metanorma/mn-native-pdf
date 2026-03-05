@@ -1187,13 +1187,7 @@
 					<xsl:apply-templates select="mnx:title" />
 				</fo:inline>
 				<fo:inline keep-together.within-line="always">
-					<fo:leader xsl:use-attribute-sets="toc-leader-style">
-						<xsl:if test="$vertical_layout = 'true'">
-							<xsl:attribute name="leader-pattern">rule</xsl:attribute>
-							<xsl:attribute name="rule-thickness">0.5pt</xsl:attribute>
-							<xsl:attribute name="baseline-shift">60%</xsl:attribute>
-						</xsl:if>
-					</fo:leader>
+					<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 					<fo:inline>
 						<xsl:if test="not($vertical_layout = 'true')">
 							<xsl:attribute name="font-size">8pt</xsl:attribute>

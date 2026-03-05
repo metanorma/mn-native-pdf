@@ -899,7 +899,7 @@
 				<!-- <xsl:copy-of select="node()"/> -->
 				<xsl:apply-templates select="." mode="contents"/>
 				<fo:inline keep-together.within-line="always">
-					<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+					<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 					<fo:page-number-citation ref-id="{@id}"/>
 				</fo:inline>
 			</fo:basic-link>
@@ -946,7 +946,7 @@
 															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($sectionTitle))"/>															
 															<xsl:text> </xsl:text>															
 															<fo:inline keep-together.within-line="always">
-																<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+																<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 																<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
 															</fo:inline>
 														</fo:basic-link>
@@ -972,7 +972,7 @@
 												<xsl:apply-templates select="mnx:title"/>
 												<xsl:text> </xsl:text>
 												<fo:inline keep-together.within-line="always">
-													<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+													<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 													<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
 												</fo:inline>
 											</fo:basic-link>
@@ -1024,7 +1024,7 @@
 									<xsl:copy-of select="title/node()"/>
 									<xsl:text> </xsl:text>
 									<fo:inline keep-together.within-line="always">
-										<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+										<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 										<fo:page-number-citation ref-id="{@id}"/>
 									</fo:inline>
 								</fo:basic-link>

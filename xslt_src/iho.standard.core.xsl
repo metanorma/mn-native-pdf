@@ -706,7 +706,7 @@
 				</xsl:call-template>
 				<xsl:apply-templates select="." mode="contents"/>
 				<fo:inline keep-together.within-line="always">
-					<fo:leader xsl:use-attribute-sets="toc-leader-style" />
+					<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 					<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
 				</fo:inline>
 			</fo:basic-link>
@@ -785,7 +785,7 @@
 												<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
 													<xsl:apply-templates select="mnx:title"/>
 													<fo:inline keep-together.within-line="always">
-														<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+														<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
 													</fo:inline>
 												</fo:basic-link>

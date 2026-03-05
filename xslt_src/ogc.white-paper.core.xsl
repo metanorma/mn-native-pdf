@@ -414,7 +414,7 @@
 								</xsl:if>
 								<xsl:apply-templates select="mnx:title"/>
 								<fo:inline keep-together.within-line="always">
-									<fo:leader xsl:use-attribute-sets="toc-leader-style" />
+									<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 									<fo:inline xsl:use-attribute-sets="toc-pagenumber-style"><fo:page-number-citation ref-id="{@id}"/></fo:inline>
 								</fo:inline>
 							</fo:basic-link>
@@ -435,7 +435,7 @@
 								<fo:basic-link internal-destination="{@id}" fox:alt-text="{mn:fmt-name}">
 									<xsl:apply-templates select="mn:fmt-name" mode="contents"/>										
 									<fo:inline keep-together.within-line="always">
-										<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+										<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 										<fo:page-number-citation ref-id="{@id}"/>
 									</fo:inline>
 								</fo:basic-link>
