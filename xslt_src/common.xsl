@@ -952,16 +952,17 @@
 	<!-- insert fo:basic-link, if external-destination or internal-destination is non-empty, otherwise insert fo:inline -->
 	<xsl:template name="insert_basic_link">
 		<xsl:param name="element"/>
+		<xsl:param name="wrapper">true</xsl:param>
 		<xsl:variable name="element_node" select="xalan:nodeset($element)"/>
 		<xsl:variable name="external-destination" select="normalize-space(count($element_node/fo:basic-link/@external-destination[. != '']) = 1)"/>
 		<xsl:variable name="internal-destination" select="normalize-space(count($element_node/fo:basic-link/@internal-destination[. != '']) = 1)"/>
 		<xsl:choose>
-			<xsl:when test="$internal-destination = 'true'">
+			<xsl:when test="$internal-destination = 'true' and $wrapper = 'true'">
 				<fo:wrapper role="Reference">
 					<xsl:copy-of select="$element_node"/>
 				</fo:wrapper>
 			</xsl:when>
-			<xsl:when test="$external-destination = 'true'">
+			<xsl:when test="$internal-destination = 'true' or $external-destination = 'true'">
 				<xsl:copy-of select="$element_node"/>
 			</xsl:when>
 			<xsl:otherwise>

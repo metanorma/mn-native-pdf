@@ -643,17 +643,9 @@
 								
 								<xsl:if test="$paged_xml_preface/mn:page and count($paged_xml_preface/mn:page/*) != 0">
 									<!-- Preface pages -->
-									<fo:page-sequence master-reference="preface" force-page-count="no-force">
-										
-										<xsl:if test="$vertical_layout = 'true'">
-											<xsl:attribute name="master-reference">document_vertical_layout</xsl:attribute>
-											<xsl:attribute name="format">&#x4E00;</xsl:attribute>
-										</xsl:if>
-										
-										<xsl:if test="position() = 1">
-											<xsl:attribute name="initial-page-number">1</xsl:attribute>
-										</xsl:if>
-										
+									<fo:page-sequence xsl:use-attribute-sets="page-sequence-preface">
+										<xsl:call-template name="refine_page-sequence-preface"/>
+
 										<fo:static-content flow-name="xsl-footnote-separator" role="artifact">
 											<fo:block text-align="center" margin-bottom="6pt">
 												<fo:leader leader-pattern="rule" leader-length="80mm"/>
@@ -706,7 +698,7 @@
 					<xsl:if test="not($vertical_layout = 'true') and not($doctype = 'technical-specification')">
 										
 					<!-- Document type rendering -->
-					<fo:page-sequence master-reference="preface" force-page-count="no-force">
+					<fo:page-sequence xsl:use-attribute-sets="page-sequence-preface">
 						<xsl:call-template name="insertHeaderFooter">
 							<xsl:with-param name="docidentifier" select="$docidentifier"/>
 							<xsl:with-param name="copyrightText" select="$copyrightText"/>
@@ -803,33 +795,8 @@
 					
 						<xsl:variable name="isCommentary" select="normalize-space(.//mn:annex[@commentary = 'true'] and 1 = 1)"/> <!-- true or false -->
 						<!-- DEBUG: <xsl:copy-of select="."/> -->
-						<fo:page-sequence master-reference="document" force-page-count="no-force">
-							
-							<xsl:choose>
-								<xsl:when test="$vertical_layout = 'true'">
-									<xsl:attribute name="master-reference">document_vertical_layout</xsl:attribute>
-									<xsl:if test="position() = last()">
-										<xsl:attribute name="master-reference">document_vertical_layout_with_last</xsl:attribute>
-									</xsl:if>
-									
-									<xsl:attribute name="format">&#x4E00;</xsl:attribute>
-									<!-- <xsl:attribute name="fox:number-conversion-features">&#x30A2;</xsl:attribute> -->
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:if test="position() = 1">
-										<xsl:attribute name="master-reference">document_first_section</xsl:attribute>
-									</xsl:if>
-									<xsl:if test="@orientation = 'landscape'">
-										<xsl:attribute name="master-reference">document-<xsl:value-of select="@orientation"/></xsl:attribute>
-									</xsl:if>
-									<xsl:if test="$isCommentary = 'true'">
-										<xsl:attribute name="master-reference">document_commentary_section</xsl:attribute>
-									</xsl:if>
-									<xsl:if test="position() = 1">
-										<xsl:attribute name="initial-page-number">1</xsl:attribute>
-									</xsl:if>
-								</xsl:otherwise>
-							</xsl:choose>
+						<fo:page-sequence xsl:use-attribute-sets="page-sequence-main">
+							<xsl:call-template name="refine_page-sequence-main"/>
 							
 							<xsl:call-template name="insertFootnoteSeparatorCommon">
 								<xsl:with-param name="leader_length">15%</xsl:with-param>

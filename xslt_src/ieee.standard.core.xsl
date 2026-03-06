@@ -580,7 +580,8 @@
 								<!-- <xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]"> -->
 								<xsl:for-each select=".//mn:page_sequence[mn:introduction or mn:acknowledgements]">
 						
-									<fo:page-sequence master-reference="document-draft"> <!-- format="i" initial-page-number="1" -->
+									<fo:page-sequence master-reference="document-draft" xsl:use-attribute-sets="page-sequence-preface"> <!-- format="i" initial-page-number="1" -->
+										<xsl:call-template name="refine_page-sequence-preface"/>
 								
 										<xsl:call-template name="insertFootnoteSeparator"/>
 										
@@ -604,7 +605,9 @@
 							
 							
 							<xsl:for-each select="/*/mn:preface/mn:clause[@type = 'toc']">
-								<fo:page-sequence master-reference="document-draft">
+								<fo:page-sequence master-reference="document-draft" xsl:use-attribute-sets="page-sequence-preface">
+									<xsl:call-template name="refine_page-sequence-preface"/>
+									
 									<xsl:call-template name="insertFootnoteSeparator"/>
 										
 									<xsl:call-template name="insertHeaderFooter">
@@ -631,7 +634,8 @@
 							<!-- NOTICE AND DISCLAIMER OF LIABILITY CONCERNING THE USE OF IEEE SA INDUSTRY CONNECTIONS DOCUMENTS -->
 							
 							<!-- ToC -->
-							<fo:page-sequence master-reference="page-toc" force-page-count="no-force">
+							<fo:page-sequence master-reference="page-toc" force-page-count="no-force" xsl:use-attribute-sets="page-sequence-preface">
+								<xsl:call-template name="refine_page-sequence-preface"/>
 							
 								<xsl:call-template name="insertHeaderFooter">
 									<xsl:with-param name="copyright_year" select="$copyright_year"/>
@@ -849,7 +853,8 @@
 		<xsl:param name="copyright_holder" />
 		<xsl:param name="is_first_sequence" />
 
-		<fo:page-sequence master-reference="document-draft" force-page-count="no-force">
+		<fo:page-sequence master-reference="document-draft" force-page-count="no-force" xsl:use-attribute-sets="page-sequence-main">
+			<xsl:call-template name="refine_page-sequence-main"/>
 		
 			<xsl:if test="@orientation = 'landscape'">
 				<xsl:attribute name="master-reference">document-draft-<xsl:value-of select="@orientation"/></xsl:attribute>

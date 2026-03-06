@@ -266,7 +266,7 @@
 				</xsl:variable>
 				
 				<xsl:if test="normalize-space($toc_and_boilerplate) != ''">
-					<fo:page-sequence master-reference="document" force-page-count="no-force"> <!-- master-reference="toc" -->
+					<fo:page-sequence xsl:use-attribute-sets="page-sequence-main"> <!-- master-reference="toc" -->
 						<xsl:call-template name="insertHeaderFooter">
 							<xsl:with-param name="section">toc</xsl:with-param>
 						</xsl:call-template>
@@ -289,9 +289,8 @@
 				
 					<xsl:for-each select=".//mn:page_sequence[normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 						
-						<xsl:variable name="page_orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:variable>
-						
-						<fo:page-sequence master-reference="document{$page_orientation}" force-page-count="no-force">
+						<fo:page-sequence xsl:use-attribute-sets="page-sequence-main">
+							<xsl:call-template name="refine_page-sequence-main"/>
 						
 							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 							

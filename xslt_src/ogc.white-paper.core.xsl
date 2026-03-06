@@ -161,12 +161,8 @@
 						<xsl:for-each select=".//mn:page_sequence[parent::*[self::mn:preface or self::mn:boilerplate]][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 					
 							<!-- Copyright, Content, Foreword, etc. pages -->
-							<fo:page-sequence master-reference="document" force-page-count="no-force">
-								
-								<xsl:attribute name="master-reference">
-									<xsl:text>document</xsl:text>
-									<xsl:call-template name="getPageSequenceOrientation"/>
-								</xsl:attribute>
+							<fo:page-sequence xsl:use-attribute-sets="page-sequence-preface">
+								<xsl:call-template name="refine_page-sequence-preface"/>
 								
 								<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 								
@@ -196,16 +192,8 @@
 						<xsl:for-each select=".//mn:page_sequence[not(parent::*[self::mn:preface or self::mn:boilerplate])][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 					
 							<!-- Document Pages -->
-							<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
-								
-								<xsl:attribute name="master-reference">
-									<xsl:text>document</xsl:text>
-									<xsl:call-template name="getPageSequenceOrientation"/>
-								</xsl:attribute>
-								
-								<xsl:if test="position() = 1">
-									<xsl:attribute name="initial-page-number">1</xsl:attribute>
-								</xsl:if>
+							<fo:page-sequence xsl:use-attribute-sets="page-sequence-main">
+								<xsl:call-template name="refine_page-sequence-main"/>
 								
 								<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 								

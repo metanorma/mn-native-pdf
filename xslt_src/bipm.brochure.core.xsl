@@ -1176,7 +1176,9 @@
 				
 				
 				<xsl:if test="mn:preface/*[not(self::mn:note or self::mn:admonition)]">
-					<fo:page-sequence master-reference="document" force-page-count="no-force">
+					<fo:page-sequence master-reference="document" force-page-count="no-force" xsl:use-attribute-sets="page-sequence-preface">
+						<xsl:call-template name="refine_page-sequence-preface"/>
+						
 						<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 						
 						<xsl:variable name="header-title">
@@ -1206,7 +1208,9 @@
 					<xsl:call-template name="getDocumentId"/>
 				</xsl:variable>
 				
-				<fo:page-sequence master-reference="document" force-page-count="no-force">
+				<fo:page-sequence master-reference="document" force-page-count="no-force" xsl:use-attribute-sets="page-sequence-preface">
+					<xsl:call-template name="refine_page-sequence-preface"/>
+					
 					<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 					
 					<xsl:variable name="title-toc">
@@ -2252,7 +2256,9 @@
 	
 	
 	<xsl:template match="node()" mode="sections">
-		<fo:page-sequence master-reference="document" force-page-count="no-force">
+		<fo:page-sequence master-reference="document" force-page-count="no-force" xsl:use-attribute-sets="page-sequence-main">
+			<xsl:call-template name="refine_page-sequence-main"/>
+			
 			<xsl:if test="@orientation = 'landscape'">
 				<xsl:attribute name="master-reference">document-landscape</xsl:attribute>
 			</xsl:if>
@@ -2313,7 +2319,9 @@
 	</xsl:template>
 	
 	<xsl:template  name="sections_appendix">
-		<fo:page-sequence master-reference="document" force-page-count="no-force">
+		<fo:page-sequence master-reference="document" force-page-count="no-force" xsl:use-attribute-sets="page-sequence-main">
+			<xsl:call-template name="refine_page-sequence-main"/>
+			
 			<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 			
 			<xsl:variable name="curr_lang" select="/mn:metanorma/mn:bibdata/mn:language[@current = 'true']"/>
@@ -3754,7 +3762,9 @@
 		<xsl:param name="isDraft"/>
 		<xsl:param name="lang"/>
 	
-		<fo:page-sequence master-reference="index" force-page-count="no-force">
+		<fo:page-sequence master-reference="index" force-page-count="no-force" xsl:use-attribute-sets="page-sequence-main">
+			<xsl:call-template name="refine_page-sequence-main"/>
+			
 			<xsl:variable name="header-title">
 				<xsl:choose>
 					<xsl:when test="./mn:title[1]/mn:tab">
