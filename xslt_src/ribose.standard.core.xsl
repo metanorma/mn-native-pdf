@@ -266,7 +266,7 @@
 				</xsl:variable>
 				
 				<xsl:if test="normalize-space($toc_and_boilerplate) != ''">
-					<fo:page-sequence master-reference="document" force-page-count="no-force"> <!-- master-reference="toc" -->
+					<fo:page-sequence xsl:use-attribute-sets="page-sequence-main"> <!-- master-reference="toc" -->
 						<xsl:call-template name="insertHeaderFooter">
 							<xsl:with-param name="section">toc</xsl:with-param>
 						</xsl:call-template>
@@ -289,9 +289,8 @@
 				
 					<xsl:for-each select=".//mn:page_sequence[normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 						
-						<xsl:variable name="page_orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:variable>
-						
-						<fo:page-sequence master-reference="document{$page_orientation}" force-page-count="no-force">
+						<fo:page-sequence xsl:use-attribute-sets="page-sequence-main">
+							<xsl:call-template name="refine_page-sequence-main"/>
 						
 							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 							
@@ -528,7 +527,7 @@
 					<xsl:apply-templates select="." mode="contents"/>
 					<xsl:text> &#xA0;</xsl:text>
 					<fo:inline>
-						<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+						<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 						<fo:inline xsl:use-attribute-sets="toc-pagenumber-style"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}"/></fo:wrapper></fo:inline>
 					</fo:inline>
 				</fo:basic-link>
@@ -563,7 +562,7 @@
 												<xsl:apply-templates select="mnx:title"/>
 												<xsl:text> &#xA0;</xsl:text>
 												<fo:inline role="SKIP">
-													<fo:leader xsl:use-attribute-sets="toc-leader-style" />
+													<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 													<fo:inline xsl:use-attribute-sets="toc-pagenumber-style"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}"/></fo:wrapper></fo:inline>
 												</fo:inline>
 											</fo:basic-link>

@@ -385,32 +385,12 @@
 						
 						<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 				
-							<fo:page-sequence master-reference="preface" format="i" force-page-count="no-force">
-							
-								<xsl:if test="$doctype = 'resolution'">
-									<xsl:attribute name="font-size">11pt</xsl:attribute>
-								</xsl:if>
-								<xsl:if test="$doctype = 'service-publication'">
-									<xsl:attribute name="font-size">11pt</xsl:attribute>
-									<xsl:attribute name="font-family">Arial, STIX Two Math</xsl:attribute>
-								</xsl:if>
-							
-								<xsl:attribute name="master-reference">
-									<xsl:text>preface</xsl:text>
-									<xsl:call-template name="getPageSequenceOrientation"/>
-								</xsl:attribute>
-							
-								<xsl:if test="$doctype = 'service-publication'">
-									<xsl:attribute name="master-reference">
-										<xsl:text>document</xsl:text>
-										<xsl:call-template name="getPageSequenceOrientation"/>
-									</xsl:attribute>
-									<xsl:attribute name="format">1</xsl:attribute>
-								</xsl:if>
-								
-								<xsl:if test="position() = 1">
-									<xsl:attribute name="initial-page-number">1</xsl:attribute>
-								</xsl:if>
+							<!-- <debug><xsl:copy-of select="."/></debug> -->
+				
+							<fo:page-sequence xsl:use-attribute-sets="page-sequence-preface">
+								<xsl:call-template name="refine_page-sequence-preface">
+									<xsl:with-param name="doctype" select="$doctype"/>
+								</xsl:call-template>
 								
 								<xsl:call-template name="insertHeaderFooter">
 									<xsl:with-param name="doctype" select="$doctype"/>
@@ -522,29 +502,11 @@
 						<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 						
 							<!-- BODY -->
-							<fo:page-sequence master-reference="document" force-page-count="no-force">
+							<fo:page-sequence xsl:use-attribute-sets="page-sequence-main">
+								<xsl:call-template name="refine_page-sequence-main">
+									<xsl:with-param name="doctype" select="$doctype"/>
+								</xsl:call-template>
 							
-								<xsl:if test="$doctype = 'resolution'">
-									<xsl:attribute name="font-size">11pt</xsl:attribute>
-								</xsl:if>
-								<xsl:if test="$doctype = 'service-publication'">
-									<xsl:attribute name="font-size">11pt</xsl:attribute>
-									<xsl:attribute name="font-family">Arial, STIX Two Math</xsl:attribute>
-								</xsl:if>
-							
-								<xsl:attribute name="master-reference">
-									<xsl:text>document</xsl:text>
-									<xsl:call-template name="getPageSequenceOrientation"/>
-								</xsl:attribute>
-								
-								<xsl:if test="position() = 1">
-									<xsl:attribute name="initial-page-number">1</xsl:attribute>
-								</xsl:if>
-							
-								<xsl:if test="$doctype = 'service-publication'">
-									<xsl:attribute name="initial-page-number">auto</xsl:attribute>
-								</xsl:if>
-								
 								<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 								
 								<xsl:call-template name="insertHeaderFooter">
@@ -1906,7 +1868,7 @@
 				</xsl:call-template>
 				<xsl:apply-templates select="." mode="contents"/>
 				<fo:inline keep-together.within-line="always">
-					<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+					<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 					<fo:page-number-citation ref-id="{@id}"/>
 				</fo:inline>
 			</fo:basic-link>
@@ -1968,7 +1930,7 @@
 														<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
 															<xsl:apply-templates select="mnx:title"/>
 															<fo:inline keep-together.within-line="always">
-																<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+																<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 																<fo:page-number-citation ref-id="{@id}"/>
 															</fo:inline>
 														</fo:basic-link>

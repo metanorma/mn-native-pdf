@@ -284,19 +284,10 @@
 				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface -->
 				
 					<xsl:for-each select=".//mn:page_sequence[parent::mn:boilerplate or parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
-					
-						<xsl:variable name="page_orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:variable>
 						
-						<fo:page-sequence master-reference="document{$page_orientation}" format="i">
+						<fo:page-sequence xsl:use-attribute-sets="page-sequence-preface">
+							<xsl:call-template name="refine_page-sequence-preface"/>
 							
-							<xsl:if test="position() = 1">
-								<xsl:attribute name="initial-page-number">2</xsl:attribute>
-							</xsl:if>
-							
-							<xsl:if test="position() = last()">
-								<xsl:attribute name="force-page-count">odd</xsl:attribute>
-							</xsl:if>
-						
 							<xsl:call-template name="insertHeaderFooter"/>
 								
 							<fo:flow flow-name="xsl-region-body" line-height="115%">
@@ -315,14 +306,9 @@
 							
 							<xsl:for-each select=".//mn:page_sequence[not(parent::mn:boilerplate or parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 								
-								<xsl:variable name="page_orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:variable>
-								
 								<!-- JCGM BODY -->
-								<fo:page-sequence master-reference="document{$page_orientation}" force-page-count="no-force">
-								
-									<xsl:if test="position() = 1">
-										<xsl:attribute name="initial-page-number">1</xsl:attribute>
-									</xsl:if>
+								<fo:page-sequence xsl:use-attribute-sets="page-sequence-main">
+									<xsl:call-template name="refine_page-sequence-main"/>
 								
 									<xsl:call-template name="insertHeaderFooter"/>
 									
@@ -341,7 +327,7 @@
 					</xsl:when> <!-- END: count(//mn:metanorma) = 1 -->
 					
 					<xsl:otherwise> <!-- count(//mn:metanorma) != 1 -->
-						<fo:page-sequence master-reference="document" initial-page-number="1" force-page-count="no-force">
+						<fo:page-sequence initial-page-number="1" xsl:use-attribute-sets="page-sequence-main">
 							
 							<xsl:call-template name="insertHeaderFooter"/>
 							
@@ -628,7 +614,7 @@
 				</fo:inline>
 				<xsl:text> </xsl:text>
 				<fo:inline keep-together.within-line="always" font-weight="normal">
-					<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+					<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 					<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
 				</fo:inline>
 			</fo:basic-link>
@@ -1055,7 +1041,7 @@
 								</fo:inline>
 								<xsl:text> </xsl:text>
 								<fo:inline keep-together.within-line="always" font-weight="normal">
-									<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+									<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 									<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
 								</fo:inline>
 							</fo:basic-link>
@@ -1244,17 +1230,7 @@
 	<xsl:template match="mn:indexsect" />
 	<xsl:template match="mn:indexsect" mode="index">
 	
-		<fo:page-sequence master-reference="document" force-page-count="no-force">
-			<xsl:variable name="header-title">
-				<xsl:choose>
-					<xsl:when test="./mn:title[1]/mn:tab">
-						<xsl:apply-templates select="./mn:title[1]/mn:tab[1]/following-sibling::node()" mode="header"/>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates select="./mn:title[1]" mode="header"/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
+		<fo:page-sequence xsl:use-attribute-sets="page-sequence-main">
 			
 			<xsl:call-template name="insertHeaderFooter"/>
 			

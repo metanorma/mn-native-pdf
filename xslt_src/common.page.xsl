@@ -259,19 +259,324 @@
 	</xsl:variable>
 	
 	<xsl:attribute-set name="page-sequence-preface">
-		<xsl:attribute name="format">i</xsl:attribute>
-	</xsl:attribute-set>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+			<xsl:attribute name="format">i</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="master-reference">pas-preface</xsl:attribute>
+			<xsl:attribute name="format">i</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="format">1</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="master-reference">preface</xsl:attribute>
+			<xsl:attribute name="format">i</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="format">1</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="master-reference">preface</xsl:attribute>
+			<xsl:attribute name="format">i</xsl:attribute>
+			<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="format">i</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="master-reference">preface</xsl:attribute>
+			<xsl:attribute name="format">i</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+			<xsl:attribute name="format">i</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="master-reference">preface</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp'">
+			<xsl:attribute name="master-reference">preface</xsl:attribute>
+			<xsl:attribute name="format">i</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+			<xsl:attribute name="line-height">116%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+			<xsl:attribute name="format">i</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="master-reference">preface</xsl:attribute>
+			<xsl:attribute name="format">i</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="master-reference">preface</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+			<xsl:attribute name="font-family">Noto Sans JP</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- page-sequence-preface -->
 	
 	<xsl:template name="refine_page-sequence-preface">
 		<xsl:param name="layoutVersion"/>
-	</xsl:template>
+		<xsl:param name="doctype"/>
+		<xsl:param name="num"/>
+		<xsl:param name="skip_force_page_count">false</xsl:param>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:if test="not(following-sibling::mn:page[*])">
+				<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@orientation = 'landscape'">
+				<xsl:attribute name="master-reference">pas-preface-<xsl:value-of select="@orientation"/></xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>preface</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+			<xsl:if test="$skip_force_page_count = 'false' and position() = last()">
+				<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>document</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+			<xsl:if test="position() = 1 and $num = '1'">
+				<xsl:attribute name="initial-page-number">2</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$isIEV = 'true'">
+				<xsl:attribute name="format">I</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>preface</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:if test="$doctype = 'resolution'">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$doctype = 'service-publication'">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+				<xsl:attribute name="font-family">Arial, STIX Two Math</xsl:attribute>
+			</xsl:if>
+		
+			<xsl:attribute name="master-reference">
+				<xsl:text>preface</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+		
+			<xsl:if test="$doctype = 'service-publication'">
+				<xsl:attribute name="master-reference">
+					<xsl:text>document</xsl:text>
+					<xsl:call-template name="getPageSequenceOrientation"/>
+				</xsl:attribute>
+				<xsl:attribute name="format">1</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="position() = 1">
+				<xsl:attribute name="initial-page-number">1</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>document</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+			<xsl:if test="position() = 1">
+				<xsl:attribute name="initial-page-number">2</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="position() = last()">
+				<xsl:attribute name="force-page-count">odd</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="$vertical_layout = 'true'">
+				<xsl:attribute name="master-reference">document_vertical_layout</xsl:attribute>
+				<xsl:attribute name="format">&#x4E00;</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="position() = 1">
+				<xsl:attribute name="initial-page-number">1</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>preface</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+			<xsl:if test="position() = 1">
+				<xsl:attribute name="initial-page-number">2</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>document</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+			 <xsl:if test="position() = 1">
+				<xsl:attribute name="initial-page-number">3</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>document</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="master-reference">preface<xsl:call-template name="getPageSequenceOrientation"/></xsl:attribute>
+		</xsl:if>
+	</xsl:template> <!-- refine_page-sequence-preface -->
 	
 	<xsl:attribute-set name="page-sequence-main">
-	
-	</xsl:attribute-set>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="master-reference">pas-document</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="format">1</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="format">1</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+			<xsl:attribute name="format">1</xsl:attribute>
+			<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp'">
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+			<xsl:attribute name="line-height">116%</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+			<xsl:attribute name="format">1</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+			<xsl:attribute name="format">1</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="master-reference">document</xsl:attribute>
+			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
+		</xsl:if>
+	</xsl:attribute-set> <!-- page-sequence-main -->
 	
 	<xsl:template name="refine_page-sequence-main">
 		<xsl:param name="layoutVersion"/>
+		<xsl:param name="doctype"/>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:if test="@orientation = 'landscape'">
+				<xsl:attribute name="master-reference">document-<xsl:value-of select="@orientation"/></xsl:attribute>
+			</xsl:if>
+			<xsl:if test=".//mn:indexsect">
+				<xsl:attribute name="master-reference">index</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:if test="@orientation = 'landscape'">
+				<xsl:attribute name="master-reference">pas-document-<xsl:value-of select="@orientation"/></xsl:attribute>
+			</xsl:if>
+			<xsl:if test=".//mn:indexsect">
+				<xsl:attribute name="master-reference">index</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csa'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>document</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>document</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
+			<xsl:if test="position() = 1">
+				<xsl:attribute name="initial-page-number">1</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'csd'">
+			<xsl:if test="position() = 1">
+				<xsl:attribute name="initial-page-number">1</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iec'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>document</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+			<xsl:if test="position() = 1 and $isIEV = 'true' and not(self::mn:indexsect)">
+				<xsl:attribute name="initial-page-number">1</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>document</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+			<xsl:if test="mn:indexsect">
+				<xsl:attribute name="master-reference">index</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="position() = 1">
+				<xsl:attribute name="initial-page-number">1</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="position() = 1">
 				<xsl:attribute name="initial-page-number">1</xsl:attribute>
@@ -281,6 +586,110 @@
 				<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
-	</xsl:template>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:if test="$doctype = 'resolution'">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$doctype = 'service-publication'">
+				<xsl:attribute name="font-size">11pt</xsl:attribute>
+				<xsl:attribute name="font-family">Arial, STIX Two Math</xsl:attribute>
+			</xsl:if>
+		
+			<xsl:attribute name="master-reference">
+				<xsl:text>document</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+			
+			<xsl:if test="position() = 1">
+				<xsl:attribute name="initial-page-number">1</xsl:attribute>
+			</xsl:if>
+		
+			<xsl:if test="$doctype = 'service-publication'">
+				<xsl:attribute name="initial-page-number">auto</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>document</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+			<xsl:if test="position() = 1">
+				<xsl:attribute name="initial-page-number">1</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:choose>
+				<xsl:when test="$vertical_layout = 'true'">
+					<xsl:attribute name="master-reference">document_vertical_layout</xsl:attribute>
+					<xsl:if test="position() = last()">
+						<xsl:attribute name="master-reference">document_vertical_layout_with_last</xsl:attribute>
+					</xsl:if>
+					<xsl:attribute name="format">&#x4E00;</xsl:attribute>
+					<!-- <xsl:attribute name="fox:number-conversion-features">&#x30A2;</xsl:attribute> -->
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:if test="position() = 1">
+						<xsl:attribute name="master-reference">document_first_section</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="@orientation = 'landscape'">
+						<xsl:attribute name="master-reference">document-<xsl:value-of select="@orientation"/></xsl:attribute>
+					</xsl:if>
+					<xsl:variable name="isCommentary" select="normalize-space(.//mn:annex[@commentary = 'true'] and 1 = 1)"/>
+					<xsl:if test="$isCommentary = 'true'">
+						<xsl:attribute name="master-reference">document_commentary_section</xsl:attribute>
+					</xsl:if>
+					<xsl:if test="position() = 1">
+						<xsl:attribute name="initial-page-number">1</xsl:attribute>
+					</xsl:if>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-cswp'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>document</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+			<xsl:if test="position() = 1">
+				<xsl:attribute name="initial-page-number">1</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>document</xsl:text>
+				<xsl:if test="mn:annex">-annex</xsl:if>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+			<xsl:if test="position() = 1 or mn:annex">
+				<xsl:attribute name="initial-page-number">1</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>document</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc-white-paper'">
+			<xsl:attribute name="master-reference">
+				<xsl:text>document</xsl:text>
+				<xsl:call-template name="getPageSequenceOrientation"/>
+			</xsl:attribute>
+			<xsl:if test="position() = 1">
+				<xsl:attribute name="initial-page-number">1</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="master-reference">document<xsl:call-template name="getPageSequenceOrientation"/></xsl:attribute>
+			<xsl:if test="mn:indexsect">
+				<xsl:attribute name="master-reference">index</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="position() = 1">
+				<xsl:attribute name="initial-page-number">1</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="master-reference">document<xsl:call-template name="getPageSequenceOrientation"/></xsl:attribute>
+		</xsl:if>
+	</xsl:template> <!-- refine_page-sequence-main -->
 	
 </xsl:stylesheet>

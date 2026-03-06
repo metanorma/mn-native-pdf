@@ -1364,7 +1364,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 										</xsl:call-template>
 										<xsl:text> </xsl:text>
 										<fo:inline keep-together.within-line="always" role="SKIP">
-											<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+											<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 											<fo:inline role="SKIP"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}"/></fo:wrapper></fo:inline>
 										</fo:inline>
 									</fo:basic-link>
@@ -1400,7 +1400,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 			<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}"> <!-- {local-name()} {@id} -->
 				<xsl:apply-templates select="." mode="contents"/>
 				<fo:inline keep-together.within-line="always" role="SKIP">
-					<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+					<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 					<fo:wrapper role="artifact">
 						<fo:page-number-citation ref-id="{@id}"/>
 					</fo:wrapper>
@@ -1466,19 +1466,10 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 		
 		<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 	
-			<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
-				
-				<xsl:attribute name="master-reference">
-					<xsl:text>document</xsl:text>
-					<xsl:call-template name="getPageSequenceOrientation"/>
-				</xsl:attribute>
-				
-				<xsl:if test="position() = 1 and $num = '1'">
-					<xsl:attribute name="initial-page-number">2</xsl:attribute>
-				</xsl:if>
-				<xsl:if test="$isIEV = 'true'">
-					<xsl:attribute name="format">I</xsl:attribute>
-				</xsl:if>
+			<fo:page-sequence xsl:use-attribute-sets="page-sequence-preface">
+				<xsl:call-template name="refine_page-sequence-preface">
+					<xsl:with-param name="num" select="$num"/>
+				</xsl:call-template>
 				
 				<xsl:call-template name="insertHeaderFooter"/>
 				
@@ -1499,17 +1490,9 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 		
 		<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 	
-			<fo:page-sequence master-reference="document" force-page-count="no-force">						
+			<fo:page-sequence xsl:use-attribute-sets="page-sequence-main">
+				<xsl:call-template name="refine_page-sequence-main"/>
 			
-				<xsl:attribute name="master-reference">
-					<xsl:text>document</xsl:text>
-					<xsl:call-template name="getPageSequenceOrientation"/>
-				</xsl:attribute>
-			
-				<xsl:if test="position() = 1 and $isIEV = 'true'">
-					<xsl:attribute name="initial-page-number">1</xsl:attribute>
-				</xsl:if>
-				
 				<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 				
 				<xsl:call-template name="insertHeaderFooter"/>
@@ -1902,7 +1885,9 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 	
 	<xsl:template match="mn:indexsect" />
 	<xsl:template match="mn:indexsect" mode="index">
-		<fo:page-sequence master-reference="document" force-page-count="no-force">
+		<fo:page-sequence xsl:use-attribute-sets="page-sequence-main">
+			<xsl:call-template name="refine_page-sequence-main"/>
+			
 			<xsl:call-template name="insertHeaderFooter" />
 			<fo:flow flow-name="xsl-region-body">
 				<fo:block id="{@id}" span="all">

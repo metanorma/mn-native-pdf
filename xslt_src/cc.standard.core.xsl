@@ -242,16 +242,8 @@
 					<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 			
 						<!-- Copyright, Content, Foreword, etc. pages -->
-						<fo:page-sequence master-reference="preface" format="i">
-						
-							<xsl:attribute name="master-reference">
-								<xsl:text>preface</xsl:text>
-								<xsl:call-template name="getPageSequenceOrientation"/>
-							</xsl:attribute>
-						
-							<xsl:if test="position() = last()">
-								<xsl:attribute name="force-page-count">end-on-even</xsl:attribute>
-							</xsl:if>
+						<fo:page-sequence xsl:use-attribute-sets="page-sequence-preface">
+							<xsl:call-template name="refine_page-sequence-preface"/>
 						
 							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 							<xsl:call-template name="insertHeaderFooter"/>
@@ -270,17 +262,9 @@
 					<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 				
 						<!-- Document Pages -->
-						<fo:page-sequence master-reference="document" format="1" force-page-count="no-force">
+						<fo:page-sequence xsl:use-attribute-sets="page-sequence-main">
+							<xsl:call-template name="refine_page-sequence-main"/>
 						
-							<xsl:attribute name="master-reference">
-								<xsl:text>document</xsl:text>
-								<xsl:call-template name="getPageSequenceOrientation"/>
-							</xsl:attribute>
-						
-							<xsl:if test="position() = 1">
-								<xsl:attribute name="initial-page-number">1</xsl:attribute>
-							</xsl:if>
-							
 							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 							<xsl:call-template name="insertHeaderFooter"/>
 							<fo:flow flow-name="xsl-region-body">
@@ -383,7 +367,11 @@
 	</xsl:template> <!-- END: cover-page -->
 	
 	<xsl:template name="inner-cover-page">
-		<fo:page-sequence master-reference="preface" format="i" initial-page-number="2">
+		<fo:page-sequence initial-page-number="2" xsl:use-attribute-sets="page-sequence-preface">
+			<xsl:call-template name="refine_page-sequence-preface">
+				<xsl:with-param name="skip_force_page_count">true</xsl:with-param>
+			</xsl:call-template>
+			
 			<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 			<xsl:call-template name="insertHeaderFooter"/>
 			<fo:flow flow-name="xsl-region-body">
@@ -434,7 +422,7 @@
 								</xsl:call-template>
 								<xsl:apply-templates select="." mode="contents"/>
 								<fo:inline keep-together.within-line="always" role="SKIP">
-									<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+									<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 									<fo:inline role="SKIP"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}"/></fo:wrapper></fo:inline>
 								</fo:inline>
 							</fo:basic-link>
@@ -481,7 +469,7 @@
 												<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}" role="SKIP">													
 													<xsl:apply-templates select="mnx:title"/>
 													<fo:inline keep-together.within-line="always" role="SKIP">
-														<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+														<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 														<fo:inline role="SKIP"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}"/></fo:wrapper></fo:inline>
 													</fo:inline>
 												</fo:basic-link>

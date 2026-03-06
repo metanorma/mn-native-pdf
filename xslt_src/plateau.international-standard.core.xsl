@@ -328,9 +328,8 @@
 							</xsl:when>
 							<xsl:otherwise>
 							
-								<xsl:variable name="page_orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:variable>
-					
-								<fo:page-sequence master-reference="preface{$page_orientation}" force-page-count="no-force" font-family="Noto Sans JP" font-size="10pt">
+								<fo:page-sequence xsl:use-attribute-sets="page-sequence-preface">
+									<xsl:call-template name="refine_page-sequence-preface"/>
 								
 									<fo:static-content flow-name="header" role="artifact" id="__internal_layout__preface_header_{generate-id()}">
 										<!-- grey background  -->
@@ -370,15 +369,8 @@
 					<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 						<xsl:variable name="page_orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:variable>
 						
-						<fo:page-sequence master-reference="document{$page_orientation}" force-page-count="no-force">
-							
-							<xsl:if test="mn:indexsect">
-								<xsl:attribute name="master-reference">index</xsl:attribute>
-							</xsl:if>
-							
-							<xsl:if test="position() = 1">
-								<xsl:attribute name="initial-page-number">1</xsl:attribute>
-							</xsl:if>
+						<fo:page-sequence xsl:use-attribute-sets="page-sequence-main">
+							<xsl:call-template name="refine_page-sequence-main"/>
 							
 							<xsl:call-template name="insertFootnoteSeparatorCommon"><xsl:with-param name="leader_length">15%</xsl:with-param></xsl:call-template>
 							
@@ -626,7 +618,7 @@
 				</xsl:if>
 				<fo:inline><xsl:apply-templates select="mnx:title" /><xsl:text> </xsl:text></fo:inline>
 				<fo:inline keep-together.within-line="always">
-					<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
+					<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 					<fo:inline>
 						<xsl:if test="$doctype = 'technical-report'"><xsl:text>- </xsl:text></xsl:if>
 						<fo:page-number-citation ref-id="{@id}"/>

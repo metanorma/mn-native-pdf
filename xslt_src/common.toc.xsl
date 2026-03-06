@@ -468,6 +468,9 @@
 	</xsl:template> <!-- END: refine_toc-item-style -->
 	
 	<xsl:attribute-set name="toc-leader-style">
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="leader-pattern">dots</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="leader-pattern">dots</xsl:attribute>
 		</xsl:if>
@@ -521,6 +524,13 @@
 	</xsl:attribute-set> <!-- END: toc-leader-style -->
 	
 	<xsl:template name="refine_toc-leader-style">
+		<xsl:if test="$namespace = 'jis'">
+			<xsl:if test="$vertical_layout = 'true'">
+				<xsl:attribute name="leader-pattern">rule</xsl:attribute>
+				<xsl:attribute name="rule-thickness">0.5pt</xsl:attribute>
+				<xsl:attribute name="baseline-shift">60%</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:attribute-set name="toc-pagenumber-style">
