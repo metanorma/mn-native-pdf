@@ -327,7 +327,6 @@
 			<xsl:attribute name="force-page-count">no-force</xsl:attribute>
 			<xsl:attribute name="font-family">Noto Sans JP</xsl:attribute>
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
-			master-reference="preface{$page_orientation}"
 		</xsl:if>
 	</xsl:attribute-set> <!-- page-sequence-preface -->
 	
