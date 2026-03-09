@@ -4211,7 +4211,7 @@
 				</xsl:if>
 			</xsl:when>
 			<xsl:otherwise>
-				<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="P">
+				<fo:block font-size="18pt" font-weight="bold" margin-top="40pt" margin-bottom="20pt" line-height="1.1" role="P/Title">
 					<xsl:if test="$layoutVersion = '2024'">
 						<xsl:attribute name="margin-top">50pt</xsl:attribute>
 					</xsl:if>
