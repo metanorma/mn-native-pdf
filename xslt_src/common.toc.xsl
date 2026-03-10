@@ -578,7 +578,7 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:attribute name="role">TOCI</xsl:attribute>
+			<xsl:attribute name="role">H2</xsl:attribute> <!-- TOCI -->
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>

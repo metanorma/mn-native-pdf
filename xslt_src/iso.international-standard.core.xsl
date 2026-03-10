@@ -1298,7 +1298,7 @@
 										<xsl:value-of select="concat('preface',$document-master-reference_addon)"/>
 										<xsl:call-template name="getPageSequenceOrientation"/>
 									</xsl:attribute>
-								
+									
 									<xsl:if test="position() = last()">
 										<xsl:attribute name="force-page-count"><xsl:value-of select="$force-page-count-preface"/></xsl:attribute> <!-- to prevent empty pages -->
 									</xsl:if>
@@ -3886,28 +3886,38 @@
 								
 							</xsl:for-each>
 							
-							<!-- List of Tables -->
-							<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:tables/mnx:table">
-								<xsl:if test="position() = 1">
-									<xsl:call-template name="insertListOf_Title">
-										<xsl:with-param name="title" select="$title-list-tables"/>
-									</xsl:call-template>
-								</xsl:if>
-								<xsl:call-template name="insertListOf_Item"/>
-							</xsl:for-each>
-							
-							<!-- List of Figures -->
-							<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:figures/mnx:figure">
-								<xsl:if test="position() = 1">
-									<xsl:call-template name="insertListOf_Title">
-										<xsl:with-param name="title" select="$title-list-figures"/>
-									</xsl:call-template>
-								</xsl:if>
-								<xsl:call-template name="insertListOf_Item"/>
-							</xsl:for-each>
-						
 						</xsl:if>
 					</fo:block>
+					
+					<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
+						<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:tables/mnx:table">
+							<fo:block-container>
+								<!-- List of Tables -->
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-tables"/>
+								</xsl:call-template>
+								<fo:block role="TOC">
+									<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:tables/mnx:table">
+										<xsl:call-template name="insertListOf_Item"/>
+									</xsl:for-each>
+								</fo:block>
+							</fo:block-container>
+						</xsl:if>
+						
+						<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:figures/mnx:figure">
+							<fo:block-container>
+								<!-- List of Figures -->
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-figures"/>
+								</xsl:call-template>
+								<fo:block role="TOC">
+									<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:figures/mnx:figure">
+										<xsl:call-template name="insertListOf_Item"/>
+									</xsl:for-each>
+								</fo:block>
+							</fo:block-container>
+						</xsl:if>
+					</xsl:if>
 				</fo:block-container>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -3981,9 +3991,9 @@
 						<xsl:with-param name="value" select="@alt-text"/>
 					</xsl:call-template>
 					<xsl:apply-templates select="." mode="contents"/>
-					<fo:inline keep-together.within-line="always">
+					<fo:inline keep-together.within-line="always" role="SKIP">
 						<fo:leader xsl:use-attribute-sets="toc-leader-style"/>
-						<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+						<fo:inline role="SKIP"><fo:page-number-citation ref-id="{@id}" role="SKIP"/></fo:inline>
 					</fo:inline>
 				</fo:basic-link>
 			</fo:wrapper>
