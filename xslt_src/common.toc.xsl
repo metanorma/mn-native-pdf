@@ -49,7 +49,7 @@
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="margin-left">10mm</xsl:attribute> <!-- 32mm -->
 			<xsl:attribute name="margin-right">-17mm</xsl:attribute>
-			<xsl:attribute name="role">TOC</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute> <!-- TOC -->
 		</xsl:if>
 	</xsl:attribute-set>
 	
@@ -609,7 +609,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<!-- <xsl:attribute name="font-size">13pt</xsl:attribute> -->
-			<xsl:attribute name="role">TOCI</xsl:attribute>
+			<xsl:attribute name="role">H2</xsl:attribute> <!-- TOCI -->
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color">black</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
