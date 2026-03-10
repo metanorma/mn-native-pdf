@@ -2140,7 +2140,7 @@
 										
 											<fo:block-container font-family="Cambria" line-height="1.1" role="SKIP" height="110mm">
 												<!-- for role see coment https://github.com/pdf-association/extension-brotli/issues/5#issuecomment-3931742869 -->
-												<fo:block margin-right="3.5mm"> <!-- role="SKIP" -->
+												<fo:block margin-right="3.5mm" role="P/Title"> <!-- role="SKIP" -->
 													<fo:block font-size="18pt" font-weight="bold" margin-top="2.5mm" role="SKIP"> <!-- role="H1" -->
 														<xsl:call-template name="insertTitlesLangMain"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 													</fo:block>
@@ -2584,7 +2584,7 @@
 										
 										<fo:block-container line-height="1.1" margin-top="3mm" role="SKIP">
 											<xsl:call-template name="insertTripleLine"/>
-											<fo:block margin-right="5mm"> <!-- role="SKIP" -->
+											<fo:block margin-right="5mm" role="P/Title"> <!-- role="SKIP" -->
 												<fo:block font-size="18pt" font-weight="bold" margin-top="6pt" role="SKIP"> <!-- role="H1" -->
 													<xsl:if test="$layoutVersion = '1989'">
 														<xsl:attribute name="font-size">16pt</xsl:attribute>
@@ -2843,7 +2843,7 @@
 													<fo:table-cell role="SKIP">
 														<xsl:call-template name="insertTripleLine"/>
 														<fo:block-container line-height="1.1" role="SKIP">
-															<fo:block margin-right="3.5mm"> <!-- role="SKIP" -->
+															<fo:block margin-right="3.5mm" role="P/Title"> <!-- role="SKIP" -->
 																<xsl:variable name="font_size">
 																	<xsl:choose>
 																		<xsl:when test="$layoutVersion = '1989'">16pt</xsl:when>
@@ -2991,7 +2991,7 @@
 								
 								<xsl:call-template name="insertTripleLine"/>
 								<fo:block-container line-height="1.1" role="SKIP">
-									<fo:block margin-right="40mm"> <!-- role="SKIP" -->
+									<fo:block margin-right="40mm" role="P/Title"> <!-- role="SKIP" -->
 										<fo:block font-size="18pt" font-weight="bold" margin-top="12pt" role="SKIP"> <!--  role="H1" -->
 											<xsl:if test="$layoutVersion = '1989'">
 												<xsl:attribute name="font-size">16pt</xsl:attribute>
@@ -3073,7 +3073,7 @@
 								</fo:block>
 							</fo:block-container>
 							
-							<fo:block-container font-size="16pt" role="P"> <!-- role="SKIP" -->
+							<fo:block-container font-size="16pt" role="P/Title"> <!-- role="SKIP" -->
 								<!-- Information and documentation — Codes for transcription systems  -->
 									<fo:block font-weight="bold" role="SKIP"> <!-- role="H1" -->
 										<xsl:call-template name="insertTitlesLangMain"><xsl:with-param name="num" select="$num"/></xsl:call-template>
@@ -4170,7 +4170,7 @@
 	<xsl:template match="mn:sections//mn:p[@class = 'zzSTDTitle1']" priority="4">
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'">
-				<fo:block font-size="13pt" font-weight="bold" text-align="center" margin-top="49mm" margin-bottom="20mm" text-transform="uppercase" line-height="1.1" role="P">
+				<fo:block font-size="13pt" font-weight="bold" text-align="center" margin-top="49mm" margin-bottom="20mm" text-transform="uppercase" line-height="1.1" role="P/Title">
 					<xsl:if test="$revision_date_num &gt;= 19680101">
 						<xsl:attribute name="font-family">Arial</xsl:attribute>
 						<xsl:attribute name="font-size">10.5pt</xsl:attribute>
@@ -4205,7 +4205,7 @@
 			</xsl:when>
 			<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"></xsl:when>
 			<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
-				<fo:block font-size="16pt" font-weight="bold" margin-top="40pt" margin-bottom="40pt" line-height="1.1" role="P" span="all">
+				<fo:block font-size="16pt" font-weight="bold" margin-top="40pt" margin-bottom="40pt" line-height="1.1" role="P/Title" span="all">
 					<xsl:if test="following-sibling::*[1][self::mn:p][starts-with(@class, 'zzSTDTitle')]">
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
@@ -4253,7 +4253,7 @@
 	<xsl:template match="mn:sections//mn:p[@class = 'zzSTDTitle2']" priority="4">
 		<!-- Example: <p class="zzSTDTitle2" displayorder="3">AMENDMENT 1: Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</p> -->
 		<xsl:if test="$doctype = 'amendment'">
-			<fo:block font-size="18pt" margin-top="12pt" margin-bottom="20pt" margin-right="0mm" font-weight="normal" line-height="1.1" role="P">
+			<fo:block font-size="18pt" margin-top="12pt" margin-bottom="20pt" margin-right="0mm" font-weight="normal" line-height="1.1" role="P/Title">
 				<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">16pt</xsl:attribute>
 			</xsl:if>
