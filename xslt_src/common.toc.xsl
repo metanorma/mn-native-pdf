@@ -49,11 +49,12 @@
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="margin-left">10mm</xsl:attribute> <!-- 32mm -->
 			<xsl:attribute name="margin-right">-17mm</xsl:attribute>
-			<xsl:attribute name="role">TOC</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute> <!-- TOC -->
 		</xsl:if>
 	</xsl:attribute-set>
 	
 	<xsl:template name="refine_toc-style">
+		<xsl:copy-of select="@id"/>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:if test="$layoutVersion = '1987'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
@@ -577,7 +578,7 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
-			<xsl:attribute name="role">TOCI</xsl:attribute>
+			<xsl:attribute name="role">H2</xsl:attribute> <!-- TOCI -->
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
@@ -608,7 +609,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<!-- <xsl:attribute name="font-size">13pt</xsl:attribute> -->
-			<xsl:attribute name="role">TOCI</xsl:attribute>
+			<xsl:attribute name="role">H2</xsl:attribute> <!-- TOCI -->
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color">black</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
@@ -714,13 +715,13 @@
 	
 	<xsl:template name="processPrefaceSectionsDefault_Contents">
 		<xsl:variable name="nodes_preface_">
-			<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition or @type = 'toc')]">
+			<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition)]"> <!--  or @type = 'toc' -->
 				<node id="{@id}"/>
 			</xsl:for-each>
 		</xsl:variable>
 		<xsl:variable name="nodes_preface" select="xalan:nodeset($nodes_preface_)"/>
 		
-		<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition or @type = 'toc')]">
+		<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition)]"> <!--  or @type = 'toc' -->
 			<xsl:sort select="@displayorder" data-type="number"/>
 			
 			<!-- process Section's title -->
@@ -733,6 +734,22 @@
 		</xsl:for-each>
 	</xsl:template>
 	
+	<xsl:template match="*[@type = 'toc'][mn:title or mn:fmt-title]" mode="contents" priority="2">
+		<xsl:variable name="title">
+			<xsl:call-template name="getName"/>
+		</xsl:variable>
+		<xsl:variable name="root">
+			<xsl:if test="ancestor-or-self::mn:preface">preface</xsl:if>
+			<xsl:if test="ancestor-or-self::mn:annex">annex</xsl:if>
+		</xsl:variable>
+		<mnx:item id="{@id}" level="1" section="" type="toc" root="{$root}" display="false">
+			<mnx:title>
+				<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item">
+					<xsl:with-param name="element" select="$root"/>
+				</xsl:apply-templates>
+			</mnx:title>
+		</mnx:item>
+	</xsl:template>
 	
 	<xsl:template name="processMainSectionsDefault_Contents">
 	
