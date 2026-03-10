@@ -3746,14 +3746,14 @@
 			<xsl:otherwise>
 				
 				<fo:block-container xsl:use-attribute-sets="toc-style">
-				
+					
 					<xsl:call-template name="refine_toc-style"/>
 				
 					<!-- render 'Contents' outside if role="TOC" -->
 					<xsl:apply-templates select="mn:fmt-title"><xsl:with-param name="num" select="$num"/></xsl:apply-templates>
 				
 					<fo:block role="TOC">
-					
+						
 						<xsl:apply-templates select="node()[not(self::mn:fmt-title)]"/>
 					
 						<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
@@ -3839,25 +3839,25 @@
 													</fo:block>
 												</fo:list-item-label>
 												<fo:list-item-body start-indent="body-start()" role="SKIP">
-													<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm" role="SKIP" > <!-- role="SKIP" role="Reference" -->
+													<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm" role="Reference"> <!-- role="SKIP" role="Reference" -->
 													
 														<xsl:if test="$layoutVersion = '1987' and @type = 'section'">
 															<xsl:attribute name="font-weight">bold</xsl:attribute>
 														</xsl:if>
 													
 														<!-- Reference/Link for title -->
-														<fo:wrapper role="Reference">
-															<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}"> <!-- role="SKIP" -->
+														<!-- <fo:wrapper role="Reference"> -->
+															<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}" > <!-- role="SKIP" -->
 																<xsl:if test="$layoutVersion = '1987' and @type = 'section'">
 																	<xsl:value-of select="concat(@section, ' ')"/>
 																</xsl:if>
 																<xsl:apply-templates select="mnx:title"/>
-															</fo:basic-link>
-														</fo:wrapper>
+															<!-- </fo:basic-link> -->
+														<!-- </fo:wrapper> -->
 														
 														<!-- Reference/Link for page number -->
-														<fo:wrapper role="Reference">
-															<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+														<!-- <fo:wrapper role="Reference"> -->
+															<!-- <fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}"> -->
 																<fo:inline keep-together.within-line="always" role="SKIP">
 																	<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 																	<fo:inline role="SKIP">
@@ -3875,7 +3875,7 @@
 																	</fo:inline>
 																</fo:inline>
 															</fo:basic-link>
-														</fo:wrapper>
+														<!-- </fo:wrapper> -->
 														
 													</fo:block>
 												</fo:list-item-body>
