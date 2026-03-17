@@ -1334,7 +1334,7 @@
 	<!-- remove semantic xml -->
 	<xsl:template match="mn:metanorma-extension/mn:metanorma/mn:source" mode="update_xml_pres"/>
 	<!-- remove image/emf -->
-	<xsl:template match="mn:image/mn:emf" mode="update_xml_pres"/>
+	<xsl:template match="mn:image//mn:emf" mode="update_xml_pres"/>
 	<xsl:template match="mn:preprocess-xslt" mode="update_xml_pres"/>
 	<xsl:template match="mn:stem" mode="update_xml_pres"/>
 	

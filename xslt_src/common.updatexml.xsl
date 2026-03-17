@@ -221,7 +221,7 @@
 	<xsl:template match="mn:metanorma-extension/*[local-name() = 'UnitsML']" mode="update_xml_step1"/>
 	
 	<!-- remove image/emf -->
-	<xsl:template match="mn:image/mn:emf" mode="update_xml_step1"/>
+	<xsl:template match="mn:image//mn:emf" mode="update_xml_step1"/>
 	
 	<!-- https://github.com/metanorma/metanorma/issues/540 -->
 	<xsl:template match="mn:image[mn:altsource]" priority="3" mode="update_xml_step1">
