@@ -2222,6 +2222,9 @@
 			<xsl:variable name="title">
 				<xsl:call-template name="getName"/>
 			</xsl:variable>
+			<xsl:variable name="variant_title">
+				<xsl:copy-of select="mn:variant-title[@type = 'toc']/node()"/>
+			</xsl:variable>
 			
 			<xsl:variable name="type">
 				<xsl:choose>
@@ -2236,7 +2239,14 @@
 					<xsl:attribute name="parent">annex</xsl:attribute>
 				</xsl:if>
 				<mnx:title>
-					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+					<xsl:choose>
+						<xsl:when test="normalize-space($variant_title) != ''">
+							<xsl:apply-templates select="xalan:nodeset($variant_title)" mode="contents_item"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</mnx:title>
 				<xsl:if test="$type != 'index'">
 					<xsl:apply-templates  mode="contents" />

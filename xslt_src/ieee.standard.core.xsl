@@ -2104,6 +2104,9 @@
 			<xsl:variable name="title">
 				<xsl:call-template name="getName"/>
 			</xsl:variable>
+			<xsl:variable name="variant_title">
+				<xsl:copy-of select="mn:variant-title[@type = 'toc']/node()"/>
+			</xsl:variable>
 			
 			<xsl:variable name="root">
 				<xsl:if test="ancestor-or-self::mn:preface">preface</xsl:if>
@@ -2115,9 +2118,18 @@
 					<xsl:attribute name="level">1</xsl:attribute>
 				</xsl:if>
 				<mnx:title>
-					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item">
-						<xsl:with-param name="mode">contents</xsl:with-param>
-					</xsl:apply-templates>
+					<xsl:choose>
+						<xsl:when test="normalize-space($variant_title) != ''">
+							<xsl:apply-templates select="xalan:nodeset($variant_title)" mode="contents_item">
+								<xsl:with-param name="mode">contents</xsl:with-param>
+							</xsl:apply-templates>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item">
+								<xsl:with-param name="mode">contents</xsl:with-param>
+							</xsl:apply-templates>
+						</xsl:otherwise>
+					</xsl:choose>
 				</mnx:title>
 				<xsl:if test="$type != 'index'">
 					<xsl:apply-templates  mode="contents" />
