@@ -554,13 +554,23 @@
 			<xsl:variable name="title">
 				<xsl:call-template name="getName"/>
 			</xsl:variable>
+			<xsl:variable name="variant_title">
+				<xsl:copy-of select="mn:variant-title[@type = 'toc']/node()"/>
+			</xsl:variable>
 			
 			<mnx:item id="{@id}" level="{$level}" section="{$section}" display="{$display}">
 				<xsl:if test="$type = 'indexsect'">
 					<xsl:attribute name="level">1</xsl:attribute>
 				</xsl:if>
 				<mnx:title>
-					<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+					<xsl:choose>
+						<xsl:when test="normalize-space($variant_title) != ''">
+							<xsl:apply-templates select="xalan:nodeset($variant_title)" mode="contents_item"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates select="xalan:nodeset($title)" mode="contents_item"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</mnx:title>
 				<xsl:if test="$type != 'indexsect'">
 					<xsl:apply-templates mode="contents" />

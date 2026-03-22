@@ -1616,7 +1616,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 			</xsl:variable>
 			
 			<xsl:variable name="variant_title">
-				<xsl:copy-of select="mn:variant-title/node()"/>
+				<xsl:copy-of select="mn:variant-title[@type = 'toc']/node()"/>
 			</xsl:variable>
 			
 			<mnx:item id="{@id}" level="{$level}" section="{$section}" type="{$type}" display="{$display}">
