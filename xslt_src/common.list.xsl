@@ -967,6 +967,9 @@
 		</fo:list-item>
 	</xsl:template>
 
+	<xsl:template match="mn:fmt-ol | mn:fmt-ul">
+		<xsl:apply-templates />
+	</xsl:template>
 	
 	<!-- ===================================== -->
 	<!-- END Lists processing -->
