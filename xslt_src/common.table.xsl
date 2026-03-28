@@ -436,6 +436,8 @@
 				<xsl:attribute name="border-bottom">1.5pt solid black</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		
+		<xsl:call-template name="setNoBordersForTableList"/>
 	</xsl:template> <!-- refine_table-style -->
 	
 	<xsl:attribute-set name="table-number-style">
@@ -783,6 +785,8 @@
 				<xsl:attribute name="border-bottom">none</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		
+		<xsl:call-template name="setNoBordersForTableList"/>
 	</xsl:template> <!-- refine_table-header-row-style -->
 	
 	<xsl:attribute-set name="table-footer-row-style" use-attribute-sets="table-row-style">
@@ -821,6 +825,8 @@
 			<xsl:attribute name="border-left"><xsl:value-of select="$table-border"/></xsl:attribute>
 			<xsl:attribute name="border-right"><xsl:value-of select="$table-border"/></xsl:attribute>
 		</xsl:if>
+		
+		<xsl:call-template name="setNoBordersForTableList"/>
 	</xsl:template> <!-- refine_table-footer-row-style -->
 
 	
@@ -907,6 +913,8 @@
 				<xsl:attribute name="background-color">rgb(254, 247, 228)</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		
+		<xsl:call-template name="setNoBordersForTableList"/>
 	</xsl:template> <!-- refine_table-body-row-style -->
 
 	<xsl:attribute-set name="table-header-cell-style">
@@ -1166,6 +1174,16 @@
 				<xsl:attribute name="padding-left">3mm</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		
+		<xsl:if test="ancestor::mn:fmt-ol or ancestor::mn:fmt-ul">
+			<xsl:attribute name="display-align">before</xsl:attribute>
+			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:if test="following-sibling::*">
+				<xsl:attribute name="padding-right">4mm</xsl:attribute>
+			</xsl:if>
+			<xsl:call-template name="setNoBordersForTableList"/>
+		</xsl:if>
+		
 	</xsl:template> <!-- refine_table-header-cell-style -->
 
 	<xsl:attribute-set name="table-cell-style">
@@ -1445,6 +1463,15 @@
 			</xsl:if>
 		</xsl:if>
 		
+		<xsl:if test="ancestor::mn:fmt-ol or ancestor::mn:fmt-ul">
+			<xsl:attribute name="display-align">before</xsl:attribute>
+			<xsl:attribute name="text-align">left</xsl:attribute>
+			<xsl:if test="following-sibling::*">
+				<xsl:attribute name="padding-right">4mm</xsl:attribute>
+			</xsl:if>
+			<xsl:call-template name="setNoBordersForTableList"/>
+		</xsl:if>
+		
 	</xsl:template> <!-- refine_table-cell-style -->
 
 	<xsl:attribute-set name="table-footer-cell-style">
@@ -1520,6 +1547,8 @@
 				<xsl:attribute name="border">none</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		
+		<xsl:call-template name="setNoBordersForTableList"/>
 	</xsl:template> <!-- refine_table-footer-cell-style -->
 
 	
@@ -1763,6 +1792,16 @@
 	</xsl:attribute-set>
 	
 	<xsl:template name="refine_table-fn-body-style">
+	</xsl:template>
+
+	<xsl:template name="setNoBordersForTableList">
+		<xsl:if test="ancestor::mn:fmt-ol or ancestor::mn:fmt-ul">
+			<xsl:attribute name="border">none</xsl:attribute>
+			<xsl:attribute name="border-top">none</xsl:attribute>
+			<xsl:attribute name="border-bottom">none</xsl:attribute>
+			<xsl:attribute name="border-left">none</xsl:attribute>
+			<xsl:attribute name="border-right">none</xsl:attribute>
+		</xsl:if>
 	</xsl:template>
 
 	<!-- ========================== -->

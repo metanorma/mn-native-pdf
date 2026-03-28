@@ -506,6 +506,16 @@
 		</xsl:choose>
 	</xsl:template>
 	
+	<!-- https://github.com/metanorma/metanorma-iso/issues/1535 -->
+	<xsl:template match="mn:ol[mn:fmt-ol]" mode="update_xml_step1">
+		<xsl:apply-templates select="mn:fmt-ol" mode="update_xml_step1"/>
+	</xsl:template>
+	
+	<xsl:template match="mn:ul[mn:fmt-ul]" mode="update_xml_step1">
+		<xsl:apply-templates select="mn:fmt-ul" mode="update_xml_step1"/>
+	</xsl:template>
+	
+	
 	<!-- li/fmt-name -->
 	<xsl:template match="mn:li/mn:fmt-name" priority="2" mode="update_xml_step1">
 		<xsl:attribute name="label"><xsl:value-of select="."/></xsl:attribute>
