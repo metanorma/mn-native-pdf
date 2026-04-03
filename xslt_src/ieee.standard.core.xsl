@@ -32,10 +32,10 @@
 		<xsl:for-each select="//mn:metanorma">
 			<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
 			<xsl:variable name="docnumber"><xsl:value-of select="mn:bibdata/mn:docidentifier[@type = 'IEEE']"/></xsl:variable>
-			<!-- <xsl:variable name="current_document">
+			<xsl:variable name="current_document">
 				<xsl:copy-of select="."/>
-			</xsl:variable> -->
-			<xsl:for-each select="."> <!-- xalan:nodeset($current_document) -->
+			</xsl:variable>
+			<xsl:for-each select="xalan:nodeset($current_document)">
 				<mnx:doc num="{$num}" firstpage_id="firstpage_id_{$num}" title-part="{$docnumber}" bundle="{$bundle}"> <!-- 'bundle' means several different documents (not language versions) in one xml -->
 					<mnx:contents>
 						<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
