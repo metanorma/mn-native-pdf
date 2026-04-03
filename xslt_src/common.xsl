@@ -2011,7 +2011,7 @@
 	<xsl:template name="insertCoverPageFullImage">
 		<xsl:param name="name">coverpage-image</xsl:param>
 		<xsl:for-each select="//mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/*[local-name() = $name][1]/mn:image">
-			<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
+			<fo:page-sequence master-reference="cover-page" force-page-count="no-force" initial-page-number="1">
 				<xsl:if test="$namespace = 'bipm' and position() = 1">
 					<xsl:attribute name="force-page-count">even</xsl:attribute>
 				</xsl:if>
@@ -2480,6 +2480,18 @@
 				<xsl:otherwise>_</xsl:otherwise>
 			</xsl:choose>
 		</xsl:attribute>
+	</xsl:template>
+ 
+	<xsl:template name="insert_firstpage_id">
+		<xsl:param name="num"/>
+		<fo:wrapper role="artifact">
+			<fo:block-container absolute-position="fixed" top="1mm">
+				<xsl:if test="$num = 1">
+					<xsl:attribute name="id">firstpage_id_0</xsl:attribute>
+				</xsl:if>
+				<fo:block id="firstpage_id_{$num}" role="SKIP">&#xa0;</fo:block>
+			</fo:block-container>
+		</fo:wrapper>
 	</xsl:template>
  
 	<xsl:template name="getCharByCodePoint">
