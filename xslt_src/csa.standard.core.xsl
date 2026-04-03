@@ -29,12 +29,21 @@
 	<xsl:variable name="color-header-document">rgb(79, 201, 204)</xsl:variable>
 	
 	<xsl:variable name="contents_">
-		<mnx:contents>
-			<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
-			<xsl:call-template name="processMainSectionsDefault_Contents"/>
-			<xsl:apply-templates select="//mn:indexsect" mode="contents"/>
-			<xsl:call-template name="processTablesFigures_Contents"/>
-		</mnx:contents>
+		<xsl:variable name="bundle" select="count(//mn:metanorma) &gt; 1"/>
+		<xsl:for-each select="//mn:metanorma">
+			<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
+			<xsl:variable name="docnumber"><xsl:value-of select="mn:bibdata/mn:docidentifier[@primary = 'true']"/></xsl:variable>
+			<xsl:for-each select=".">
+				<mnx:doc num="{$num}" firstpage_id="firstpage_id_{$num}" title-part="{$docnumber}" bundle="{$bundle}">
+					<mnx:contents>
+						<xsl:call-template name="processPrefaceSectionsDefault_Contents"/>
+						<xsl:call-template name="processMainSectionsDefault_Contents"/>
+						<xsl:apply-templates select="//mn:indexsect" mode="contents"/>
+						<xsl:call-template name="processTablesFigures_Contents"/>
+					</mnx:contents>
+				</mnx:doc>
+			</xsl:for-each>
+		</xsl:for-each>
 	</xsl:variable>
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
