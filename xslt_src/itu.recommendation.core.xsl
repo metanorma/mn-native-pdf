@@ -594,7 +594,9 @@
 						</xsl:for-each>
 					</xsl:for-each>
 					
-					<xsl:call-template name="index-pages"/>
+					<xsl:call-template name="index-pages">
+						<xsl:with-param name="num" select="$num"/>
+					</xsl:call-template>
 					
 				</xsl:for-each>
 			</xsl:for-each>

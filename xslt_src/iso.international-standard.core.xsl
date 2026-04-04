@@ -1523,7 +1523,9 @@
 				</xsl:if>
 				
 				<!-- Index -->
-				<xsl:call-template name="index-pages"/>
+				<xsl:call-template name="index-pages">
+					<xsl:with-param name="num" select="$num"/>
+				</xsl:call-template>
 				
 				<xsl:call-template name="back-page">
 					<xsl:with-param name="num" select="$num"/>
