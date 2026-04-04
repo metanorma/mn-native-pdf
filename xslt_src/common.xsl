@@ -280,6 +280,8 @@
 	
 	<xsl:include href="./common.key.xsl"/>
 	
+	<xsl:include href="./common.debug.xsl"/>
+	
 	<xsl:template name="processPrefaceSectionsDefault">
 		<xsl:param name="num"/>
 		<xsl:for-each select="/*/mn:preface/*[not(self::mn:note or self::mn:admonition)]">
