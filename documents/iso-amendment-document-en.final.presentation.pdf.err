@@ -1,0 +1,5 @@
+WARNING: Font 'Inter,normal,400' (font family 'Inter', style 'normal', weight 'normal/400') doesn't exist. Replaced by 'NotoSans-Regular' (/home/runner/.metanorma/fonts/NotoSans-Regular.ttf).
+WARNING: Font 'Inter,normal,700' (font family 'Inter', style 'normal', weight 'bold/700') doesn't exist. Replaced by 'NotoSans-Bold' (/home/runner/.metanorma/fonts/NotoSans-Bold.ttf).
+WARNING: Font 'Inter,italic,400' (font family 'Inter', style 'italic', weight 'normal/400') doesn't exist. Replaced by 'NotoSans-Italic' (/home/runner/.metanorma/fonts/NotoSans-Italic.ttf).
+WARNING: Font 'Inter,italic,700' (font family 'Inter', style 'italic', weight 'bold/700') doesn't exist. Replaced by 'NotoSans-BoldItalic' (/home/runner/.metanorma/fonts/NotoSans-BoldItalic.ttf).
+
