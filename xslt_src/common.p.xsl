@@ -590,6 +590,7 @@
 			<xsl:call-template name="setBlockAttributes"/>
 			
 			<xsl:if test="ancestor::mn:license-statement">
+				<xsl:variable name="stage" select="$variables/mnx:doc[@num = 1]/stage"/> <!-- TODO: 1 - $num -->
 				<xsl:if test="$stage = 'draft-internal'">
 					<xsl:attribute name="font-size">14pt</xsl:attribute>
 					<xsl:attribute name="text-align">center</xsl:attribute>
