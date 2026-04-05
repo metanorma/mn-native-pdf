@@ -162,8 +162,8 @@
 
 
 	<xsl:template name="index-pages">
-		<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
-			
+		<xsl:param name="num"/>
+		
 		<xsl:variable name="docid">
 			<xsl:call-template name="getDocumentId"/>
 		</xsl:variable>
@@ -184,10 +184,17 @@
 	
 	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
 	<xsl:template match="mn:indexsect" />
+	<xsl:template match="/" mode="index">
+		<xsl:param name="num"/>
+		<xsl:apply-templates mode="index">
+			<xsl:with-param name="num" select="$num"/>
+		</xsl:apply-templates>
+	</xsl:template>
 	<xsl:template match="mn:indexsect" mode="index">
 		<xsl:param name="num"/>
 		<fo:page-sequence master-reference="index" force-page-count="no-force">
 			<xsl:call-template name="insertHeaderFooter">
+				<xsl:with-param name="num" select="$num"/>
 				<xsl:with-param name="section">main</xsl:with-param>
 			</xsl:call-template>
 			<fo:flow flow-name="xsl-region-body">

@@ -1523,7 +1523,9 @@
 				</xsl:if>
 				
 				<!-- Index -->
-				<xsl:call-template name="index-pages"/>
+				<xsl:call-template name="index-pages">
+					<xsl:with-param name="num" select="$num"/>
+				</xsl:call-template>
 				
 				<xsl:call-template name="back-page">
 					<xsl:with-param name="num" select="$num"/>
@@ -6292,18 +6294,6 @@
 	<xsl:template name="insertLastBlock">
 		<xsl:param name="num"/>
 		<fo:block id="lastBlock{$num}" font-size="1pt" keep-with-previous="always" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
-	</xsl:template>
-
-	<xsl:template name="insert_firstpage_id">
-		<xsl:param name="num"/>
-		<fo:wrapper role="artifact">
-			<fo:block-container absolute-position="fixed" top="1mm">
-				<xsl:if test="$num = 1">
-					<xsl:attribute name="id">firstpage_id_0</xsl:attribute>
-				</xsl:if>
-				<fo:block id="firstpage_id_{$num}" role="SKIP">&#xa0;</fo:block>
-			</fo:block-container>
-		</fo:wrapper>
 	</xsl:template>
 
 	<xsl:include href="./common.xsl"/>
