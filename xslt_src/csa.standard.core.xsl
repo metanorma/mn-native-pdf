@@ -20,11 +20,27 @@
 
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="copyright">
-		<xsl:text>© Copyright </xsl:text>
-		<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
-		<xsl:text>, Cloud Security Alliance. All rights reserved.</xsl:text>
+	<xsl:variable name="variables_">
+		<xsl:for-each select="//mn:metanorma">
+			<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
+
+			<xsl:variable name="current_document">
+				<xsl:copy-of select="."/>
+			</xsl:variable>
+			
+			<xsl:for-each select="xalan:nodeset($current_document)">
+				<mnx:doc num="{$num}">
+					<xsl:variable name="copyright">
+						<xsl:text>© Copyright </xsl:text>
+						<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
+						<xsl:text>, Cloud Security Alliance. All rights reserved.</xsl:text>
+					</xsl:variable>
+					<copyright><xsl:value-of select="$copyright"/></copyright>
+				</mnx:doc>
+			</xsl:for-each>
+		</xsl:for-each>
 	</xsl:variable>
+	<xsl:variable name="variables" select="xalan:nodeset($variables_)"/>
 	
 	<xsl:variable name="color-header-document">rgb(79, 201, 204)</xsl:variable>
 	
@@ -123,7 +139,9 @@
 						<xsl:with-param name="num" select="$num"/>
 					</xsl:call-template>
 					
-					<xsl:call-template name="inner-cover-page"/>
+					<xsl:call-template name="inner-cover-page">
+						<xsl:with-param name="num" select="$num"/>
+					</xsl:call-template>
 					
 					<xsl:call-template name="debug_contents"/>
 					
@@ -132,7 +150,9 @@
 						<xsl:call-template name="refine_page-sequence-preface"/>
 
 						<xsl:call-template name="insertFootnoteSeparatorCommon"/>
-						<xsl:call-template name="insertHeaderFooter"/>
+						<xsl:call-template name="insertHeaderFooter">
+							<xsl:with-param name="num" select="$num"/>
+						</xsl:call-template>
 						<fo:flow flow-name="xsl-region-body">
 							
 							<fo:block font-size="26pt" margin-bottom="18pt" role="H1">
@@ -219,7 +239,9 @@
 								<xsl:call-template name="refine_page-sequence-main"/>
 								
 								<xsl:call-template name="insertFootnoteSeparatorCommon"/>
-								<xsl:call-template name="insertHeaderFooter"/>
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="num" select="$num"/>
+								</xsl:call-template>
 								<fo:flow flow-name="xsl-region-body">
 								
 									<!-- Table of Contents -->
@@ -305,12 +327,15 @@
 		
 
 	<xsl:template name="inner-cover-page">
+		<xsl:param name="num"/>
 		<!-- Copyright -->
 		<fo:page-sequence initial-page-number="2" xsl:use-attribute-sets="page-sequence-main">
 			<xsl:call-template name="refine_page-sequence-main"/>
 
 			<xsl:call-template name="insertFootnoteSeparatorCommon"/>
-			<xsl:call-template name="insertHeaderFooter"/>
+			<xsl:call-template name="insertHeaderFooter">
+				<xsl:with-param name="num" select="$num"/>
+			</xsl:call-template>
 			<fo:flow flow-name="xsl-region-body">
 				
 				<fo:block>
@@ -644,8 +669,11 @@
 	</xsl:template>
 
 	<xsl:template name="insertHeaderFooter">
+		<xsl:param name="num"/>
 		<xsl:call-template name="insertHeader"/>
-		<xsl:call-template name="insertFooter"/>
+		<xsl:call-template name="insertFooter">
+			<xsl:with-param name="num" select="$num"/>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<xsl:template name="insertHeader">
@@ -657,10 +685,11 @@
 	</xsl:template>
 	
 	<xsl:template name="insertFooter">
+		<xsl:param name="num"/>
 		<fo:static-content flow-name="footer" role="artifact">
 			<fo:block-container font-family="Azo Sans Lt" font-size="10.1pt" height="100%" display-align="after"> <!-- 11.5pt -->
 				<fo:block padding-bottom="13mm" text-align="right" color="rgb(144, 144, 144)">
-					<fo:inline padding-right="7mm"><xsl:value-of select="$copyright" /></fo:inline>
+					<fo:inline padding-right="7mm"><xsl:value-of select="$variables/mnx:doc[@num = $num]/copyright"/></fo:inline>
 					<fo:page-number/>
 				</fo:block>
 			</fo:block-container>
