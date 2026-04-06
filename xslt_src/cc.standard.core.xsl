@@ -20,18 +20,30 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="copyright">
-		<xsl:text>© The Calendaring and Scheduling Consortium, Inc. </xsl:text>
-		<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
-		<xsl:text> – All rights reserved</xsl:text>
+	<xsl:variable name="variables_">
+		<xsl:for-each select="//mn:metanorma">
+			<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
+
+			<xsl:variable name="current_document">
+				<xsl:copy-of select="."/>
+			</xsl:variable>
+			
+			<xsl:for-each select="xalan:nodeset($current_document)">
+				<mnx:doc num="{$num}">
+					<xsl:variable name="copyright">
+						<xsl:text>© The Calendaring and Scheduling Consortium, Inc. </xsl:text>
+						<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
+						<xsl:text> – All rights reserved</xsl:text>
+					</xsl:variable>
+					<copyright><xsl:value-of select="$copyright"/></copyright>
+					
+					<xsl:variable name="header" select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'CalConnect']"/>
+					<header><xsl:value-of select="$header"/></header>
+				</mnx:doc>
+			</xsl:for-each>
+		</xsl:for-each>
 	</xsl:variable>
-	
-	<!-- <xsl:variable name="header">
-		<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'csd']"/>
-		<xsl:text>:</xsl:text>
-		<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
-	</xsl:variable> -->
-	<xsl:variable name="header" select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'CalConnect']"/>
+	<xsl:variable name="variables" select="xalan:nodeset($variables_)"/>
 	
 	<xsl:variable name="contents_">
 		<xsl:variable name="bundle" select="count(//mn:metanorma) &gt; 1"/>
@@ -221,11 +233,7 @@
 				<xsl:call-template name="updateXML"/>
 			</xsl:variable>
 			
-			<xsl:if test="$debug = 'true'">
-				<redirect:write file="updated_xml.xml">
-					<xsl:copy-of select="$updated_xml"/>
-				</redirect:write>
-			</xsl:if>
+			<xsl:call-template name="debug_contents"/>
 			
 			<xsl:for-each select="xalan:nodeset($updated_xml)//mn:metanorma">
 				<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
@@ -254,7 +262,9 @@
 				
 					<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)"> <!-- set context to preface/sections -->
 					
-						<xsl:call-template name="inner-cover-page"/>
+						<xsl:call-template name="inner-cover-page">
+							<xsl:with-param name="num" select="$num"/>
+						</xsl:call-template>
 						
 						<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 				
@@ -263,7 +273,9 @@
 								<xsl:call-template name="refine_page-sequence-preface"/>
 							
 								<xsl:call-template name="insertFootnoteSeparatorCommon"/>
-								<xsl:call-template name="insertHeaderFooter"/>
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="num" select="$num"/>
+								</xsl:call-template>
 								<fo:flow flow-name="xsl-region-body">
 									
 									<!-- Table of contents, Foreword, Introduction -->					
@@ -285,7 +297,9 @@
 								<xsl:call-template name="refine_page-sequence-main"/>
 							
 								<xsl:call-template name="insertFootnoteSeparatorCommon"/>
-								<xsl:call-template name="insertHeaderFooter"/>
+								<xsl:call-template name="insertHeaderFooter">
+									<xsl:with-param name="num" select="$num"/>
+								</xsl:call-template>
 								<fo:flow flow-name="xsl-region-body">
 									<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="17pt" role="H1">
 										<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en']"/>
@@ -328,7 +342,7 @@
 					<fo:static-content flow-name="cover-page-header" font-size="10pt">
 						<fo:block-container height="23.5mm" display-align="before">
 							<fo:block padding-top="12.5mm">
-								<xsl:value-of select="$copyright"/>
+								<xsl:value-of select="$variables/mnx:doc[@num = $num]/copyright"/>
 							</fo:block>
 						</fo:block-container>
 					</fo:static-content>
@@ -391,13 +405,16 @@
 	</xsl:template> <!-- END: cover-page -->
 	
 	<xsl:template name="inner-cover-page">
+		<xsl:param name="num"/>
 		<fo:page-sequence initial-page-number="2" xsl:use-attribute-sets="page-sequence-preface">
 			<xsl:call-template name="refine_page-sequence-preface">
 				<xsl:with-param name="skip_force_page_count">true</xsl:with-param>
 			</xsl:call-template>
 			
 			<xsl:call-template name="insertFootnoteSeparatorCommon"/>
-			<xsl:call-template name="insertHeaderFooter"/>
+			<xsl:call-template name="insertHeaderFooter">
+				<xsl:with-param name="num" select="$num"/>
+			</xsl:call-template>
 			<fo:flow flow-name="xsl-region-body">
 				<fo:block margin-bottom="15pt">&#xA0;</fo:block>
 				<fo:block margin-bottom="14pt">
@@ -688,28 +705,35 @@
 	</xsl:template>
 
 	<xsl:template name="insertHeaderFooter">
-		<xsl:call-template name="insertHeader"/>
-		<xsl:call-template name="insertFooter"/>
+		<xsl:param name="num"/>
+		<xsl:call-template name="insertHeader">
+			<xsl:with-param name="num" select="$num"/>
+		</xsl:call-template>
+		<xsl:call-template name="insertFooter">
+			<xsl:with-param name="num" select="$num"/>
+		</xsl:call-template>
 	</xsl:template>
 
 	<xsl:template name="insertHeader">
+		<xsl:param name="num"/>
 		<fo:static-content flow-name="header-even" role="artifact">
 			<fo:block-container height="17mm" display-align="before">
 				<fo:block padding-top="12.5mm">
-					<xsl:value-of select="$header"/>
+					<xsl:value-of select="$variables/mnx:doc[@num = $num]/header"/>
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container height="17mm" display-align="before">
 				<fo:block text-align="right" padding-top="12.5mm">
-					<xsl:value-of select="$header"/>
+					<xsl:value-of select="$variables/mnx:doc[@num = $num]/header"/>
 				</fo:block>
 			</fo:block-container>
 		</fo:static-content>
 	</xsl:template>
 	
 	<xsl:template name="insertFooter">
+		<xsl:param name="num"/>
 		<fo:static-content flow-name="footer-even" role="artifact">
 			<fo:block-container font-size="10pt" height="100%" display-align="after">
 				<fo:table table-layout="fixed" width="100%">
@@ -721,7 +745,7 @@
 								<fo:block padding-bottom="5mm"><fo:page-number/></fo:block>
 							</fo:table-cell>
 							<fo:table-cell padding-right="2mm">
-								<fo:block padding-bottom="5mm" text-align="right"><xsl:value-of select="$copyright"/></fo:block>
+								<fo:block padding-bottom="5mm" text-align="right"><xsl:value-of select="$variables/mnx:doc[@num = $num]/copyright"/></fo:block>
 							</fo:table-cell>
 						</fo:table-row>
 					</fo:table-body>
@@ -736,7 +760,7 @@
 					<fo:table-body>
 						<fo:table-row>
 							<fo:table-cell>
-								<fo:block padding-bottom="5mm"><xsl:value-of select="$copyright"/></fo:block>
+								<fo:block padding-bottom="5mm"><xsl:value-of select="$variables/mnx:doc[@num = $num]/copyright"/></fo:block>
 							</fo:table-cell>
 							<fo:table-cell padding-right="2mm">
 								<fo:block padding-bottom="5mm" text-align="right"><fo:page-number/></fo:block>
