@@ -16,6 +16,8 @@
 	
 	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
+	<xsl:key name="kid" match="*" use="@id"/>
+	
 	<xsl:variable name="namespace">csd</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
@@ -429,7 +431,9 @@
 					<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
 				</fo:block>
 				<fo:block margin-bottom="12pt">
-					<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement/mn:clause/mn:p[@id = 'boilerplate-name']"/>
+					<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement/mn:clause/mn:p[@id = 'boilerplate-name']">
+						<xsl:with-param name="skip_id">true</xsl:with-param>
+					</xsl:apply-templates>
 				</fo:block>
 				<fo:block>
 					<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement/mn:clause/mn:p[@id = 'boilerplate-address']"/>
@@ -651,12 +655,16 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<xsl:variable name="title_styles">
 			<styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"/></styles>
 		</xsl:variable>
 		
 		<xsl:element name="{$element-name}">
 			<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
+			
+			<xsl:call-template name="setIDforNamedDestinationInline"/>
 			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
@@ -667,6 +675,7 @@
 	<xsl:template match="mn:p" name="paragraph">
 		<xsl:param name="inline" select="'false'"/>
 		<xsl:param name="split_keep-within-line"/>
+		<xsl:param name="skip_id">false</xsl:param>
 		<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 		<xsl:variable name="element-name">
 			<xsl:choose>
@@ -678,6 +687,10 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:if test="$skip_id = 'false'">
+			<xsl:call-template name="setNamedDestination"/>
+		</xsl:if>
+		
 		<xsl:variable name="p_styles">
 			<styles xsl:use-attribute-sets="p-style">
 				<xsl:call-template name="refine_p-style"><xsl:with-param name="element-name" select="$element-name"/></xsl:call-template>
@@ -686,6 +699,9 @@
 		
 		<xsl:element name="{$element-name}">
 			<xsl:copy-of select="xalan:nodeset($p_styles)/styles/@*"/>
+			<xsl:if test="$skip_id = 'false'">
+				<xsl:call-template name="copyParagraphId"/>
+			</xsl:if>
 			
 			<xsl:apply-templates>
 				<xsl:with-param name="split_keep-within-line" select="$split_keep-within-line"/>
