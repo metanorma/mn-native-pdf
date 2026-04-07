@@ -449,7 +449,7 @@
 	</xsl:template>
 	
 	<xsl:template name="addNamedDestinationAttribute">
-		<xsl:if test="$namespace = 'iso'">
+		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iso'">
 		<xsl:variable name="docnum"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
 		<xsl:variable name="caption_label" select="translate(normalize-space(.//mn:span[@class = 'fmt-caption-label']), ' ()', '')"/>
 		
