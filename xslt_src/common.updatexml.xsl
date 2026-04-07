@@ -449,7 +449,7 @@
 	</xsl:template>
 	
 	<xsl:template name="addNamedDestinationAttribute">
-		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iso'">
+		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'iso'">
 		<xsl:variable name="docnum"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
 		<xsl:variable name="caption_label" select="translate(normalize-space(.//mn:span[@class = 'fmt-caption-label']), ' ()', '')"/>
 		
@@ -457,7 +457,8 @@
 			<xsl:choose>
 				<xsl:when test="count(ancestor::mn:figure) &gt; 1"></xsl:when> <!-- prevent id 'a)' -->
 				<xsl:when test="ancestor::mn:note or ancestor::mn:example or
-							ancestor::mn:termnote or ancestor::mn:termexample"></xsl:when>
+							ancestor::mn:termnote or ancestor::mn:termexample or
+							ancestor::mn:admonition"></xsl:when>
 				<xsl:when test="$caption_label = '' and parent::mn:foreword">
 					<xsl:variable name="foreword_number"><xsl:number count="mn:foreword" level="any"/></xsl:variable>
 					<xsl:if test="$foreword_number = 1">Foreword</xsl:if>
