@@ -20,6 +20,8 @@
 	<!-- mandatory 'key' -->
 	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
+	<xsl:key name="kid" match="*" use="@id"/>
+	
 	<!-- mandatory variable -->
 	<xsl:variable name="namespace">ieee</xsl:variable>
 	
@@ -1394,6 +1396,7 @@
 		
 		<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 			<fo:block role="TOC">
+				<xsl:copy-of select="@id"/>
 				<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']">
 					<xsl:choose>
 						<xsl:when test="$current_template = 'standard' or $current_template = 'draft'">
@@ -1930,6 +1933,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:abstract">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -2337,6 +2341,7 @@
 
 					
 	<xsl:template match="mn:introduction | mn:foreword | mn:acknowledgements">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -2419,6 +2424,7 @@
 			<xsl:call-template name="extractSection"/>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
 		
 		<xsl:choose>
 			<xsl:when test="string-length($section) != 0 and $element-name = 'fo:block' and ($current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report') and
@@ -2435,6 +2441,7 @@
 								<xsl:if test="$level = 1">
 									<xsl:attribute name="color"><xsl:value-of select="$color_blue"/></xsl:attribute>
 								</xsl:if>
+								<xsl:call-template name="setIDforNamedDestinationInline"/>
 								<xsl:value-of select="$section"/>
 							</fo:block>
 						</fo:list-item-label>
@@ -2467,6 +2474,8 @@
 							<xsl:with-param name="skip">false</xsl:with-param>
 						</xsl:apply-templates> 
 					</xsl:if>
+					
+					<xsl:call-template name="setIDforNamedDestinationInline"/>
 					
 					<xsl:apply-templates />
 					<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
@@ -2536,6 +2545,8 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<fo:block margin-bottom="16pt">
 			<!-- <xsl:if test="@ancestor = 'sections' and $level &gt; 2"> -->
 			<xsl:if test="$level &gt; 2">
@@ -2548,6 +2559,7 @@
 						<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 					</xsl:if>
 					<!-- term/name -->
+					<xsl:call-template name="setIDforNamedDestination"/>
 					<xsl:apply-templates select="mn:fmt-name" />
 					<xsl:text> </xsl:text>
 					<xsl:apply-templates select="mn:fmt-preferred" />
@@ -2586,6 +2598,7 @@
 
 
 	<xsl:template match="mn:annex" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}">
 		</fo:block>
 		<xsl:apply-templates />
@@ -2610,6 +2623,8 @@
 					<!-- 	<xsl:otherwise>fo:block</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable> -->
+				
+				<xsl:call-template name="setNamedDestination"/>
 				
 				<xsl:variable name="p_styles">
 					<styles xsl:use-attribute-sets="p-style">
