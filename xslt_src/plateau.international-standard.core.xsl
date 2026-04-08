@@ -1468,7 +1468,12 @@
 	<xsl:variable name="tag_font_en_bold_close">###/<xsl:value-of select="$element_name_font_en_bold"/>###</xsl:variable>
 	
 	<xsl:template match="mn:p//text()[not(ancestor::mn:strong) and not(ancestor::mn:fmt-stem)] |
-						mn:dt/text() | mn:td/text() | mn:th/text()" mode="update_xml_step1">
+						mn:dt//text()[not(ancestor::mn:strong)] | 
+						mn:td//text()[not(ancestor::mn:strong)] | 
+						mn:th//text()[not(ancestor::mn:strong)] |
+						mn:xref//text() | mn:fmt-xref//text() |
+						mn:origin/text() | mn:fmt-origin/text() |
+						mn:fmt-link/text()" mode="update_xml_step1">
 		<!-- add hairspace after 'IDEOGRAPHIC SPACE' (U+3000) -->
 		<xsl:variable name="text" select="java:replaceAll(java:java.lang.String.new(.), '(\u3000)', concat('$1',$hair_space))"/>
 		<xsl:variable name="text_en__">
@@ -1492,20 +1497,28 @@
 				</xsl:call-template>
 			</xsl:element>
 		</xsl:variable>
-		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
+		<xsl:choose>
+			<xsl:when test="normalize-space($text_en) != ''">
+				<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	
 	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
-	<xsl:template match="mn:title/text() | mn:fmt-title/text() | 
-						mn:note/mn:name/text() | mn:note/mn:fmt-name/text() | 
-						mn:termnote/mn:name/text() | mn:termnote/mn:fmt-name/text() |
-						mn:table/mn:name/text() | mn:table/mn:fmt-name/text() |
-						mn:figure/mn:name/text() | mn:figure/mn:fmt-name/text() |
-						mn:termexample/mn:name/text() | mn:termexample/mn:fmt-name/text() |
+	<xsl:template match="mn:title/text() | mn:fmt-title//text() | 
+						mn:note/mn:name/text() | mn:note/mn:fmt-name//text() | 
+						mn:termnote/mn:name/text() | mn:termnote/mn:fmt-name//text() |
+						mn:table/mn:name/text() | mn:table/mn:fmt-name//text() |
+						mn:figure/mn:name/text() | mn:figure/mn:fmt-name//text() |
+						mn:termexample/mn:name/text() | mn:termexample/mn:fmt-name//text()" mode="update_xml_step1">
+						<!--  |
 						mn:xref//text() | mn:fmt-xref//text() |
 						mn:origin/text() | mn:fmt-origin/text() |
-						mn:fmt-link/text()" mode="update_xml_step1">
+						mn:fmt-link/text() -->
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
 		<xsl:variable name="text_en">
 			<xsl:element name="text" namespace="{$namespace_full}">
@@ -1516,7 +1529,14 @@
 				</xsl:call-template>
 			</xsl:element>
 		</xsl:variable>
-		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
+		<xsl:choose>
+			<xsl:when test="normalize-space($text_en) != ''">
+				<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- for $contents -->
@@ -1645,29 +1665,41 @@
 	
 	<xsl:template match="*[local-name() = 'font_en_bold'][normalize-space() != '']">
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
+			<xsl:variable name="keep_with_previous" select="normalize-space(java:endsWith(java:java.lang.String.new(normalize-space()),']') and 1 = 1)"/>
 			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'false' and $keep_with_previous = 'true'"></xsl:when>
 				<xsl:when test="$isGenerateTableIF = 'false'"><fo:inline font-size="0.1pt"><xsl:text> </xsl:text></fo:inline></xsl:when>
 				<xsl:otherwise><fo:inline><xsl:value-of select="$zero_width_space"/></fo:inline></xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
-		<fo:inline font-family="Noto Sans Condensed" font-weight="300"> <!--  font-weight="bold" -->
+		<fo:inline font-family="Noto Sans Condensed" font-weight="bold"> <!--  font-weight="300"  -->
 			
-			<xsl:if test="(ancestor::mn:figure or ancestor::mn:table) and parent::mn:fmt-name">
+			<!-- <xsl:if test="(ancestor::mn:figure or ancestor::mn:table) and parent::mn:fmt-name">
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 				<xsl:if test="$doctype = 'technical-report'">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 				</xsl:if>
-			</xsl:if>
+			</xsl:if> -->
 			
 			<xsl:if test="ancestor::mn:annex and ancestor::mn:fmt-title and not(ancestor::mn:clause)">
 				<xsl:attribute name="font-family">inherit</xsl:attribute>
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<!-- <xsl:attribute name="font-weight">bold</xsl:attribute> -->
+			</xsl:if>
+			
+			<xsl:if test="ancestor::mn:tt">
+				<xsl:call-template name="refine_tt-style"/>
+				<!-- <xsl:attribute name="font-weight">normal</xsl:attribute>
+				<xsl:if test="((ancestor::mn:figure or ancestor::mn:table) and ancestor::mn:fmt-name) or ancestor::mn:strong">
+					<xsl:attribute name="font-weight">bold</xsl:attribute>
+				</xsl:if> -->
 			</xsl:if>
 			
 			<xsl:apply-templates/>
 		</fo:inline>
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
+			<xsl:variable name="keep_with_next" select="normalize-space(java:endsWith(java:java.lang.String.new(normalize-space()),'[') and 1 = 1)"/>
 			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'false' and $keep_with_next = 'true'"></xsl:when>
 				<xsl:when test="$isGenerateTableIF = 'false'"><fo:inline font-size="0.1pt"><xsl:text> </xsl:text></fo:inline></xsl:when>
 				<xsl:otherwise><fo:inline><xsl:value-of select="$zero_width_space"/></fo:inline></xsl:otherwise>
 			</xsl:choose>
@@ -1677,7 +1709,9 @@
 	<xsl:template match="*[local-name() = 'font_en'][normalize-space() != '']">
 		<!-- <debug><xsl:copy-of select="ancestor::mn:td"/></debug> -->
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
+			<xsl:variable name="keep_with_previous" select="normalize-space(java:endsWith(java:java.lang.String.new(normalize-space()),']') and 1 = 1)"/>
 			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'false' and $keep_with_previous = 'true'"></xsl:when>
 				<xsl:when test="$isGenerateTableIF = 'false'"><fo:inline font-size="0.1pt"><xsl:text> </xsl:text></fo:inline></xsl:when>
 				<xsl:otherwise><fo:inline><xsl:value-of select="$zero_width_space"/></fo:inline></xsl:otherwise>
 			</xsl:choose>
@@ -1690,10 +1724,18 @@
 			<xsl:if test="ancestor::mn:fmt-preferred">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
 			</xsl:if>
+			<xsl:if test="ancestor::mn:tt">
+				<xsl:call-template name="refine_tt-style"/>
+				<xsl:attribute name="font-weight">normal</xsl:attribute>
+			</xsl:if>
+			
 			<xsl:apply-templates/>
 		</fo:inline>
+
 		<xsl:if test="ancestor::*[local-name() = 'td' or local-name() = 'th']">
+			<xsl:variable name="keep_with_next" select="normalize-space(java:endsWith(java:java.lang.String.new(normalize-space()),'[') and 1 = 1)"/>
 			<xsl:choose>
+				<xsl:when test="$isGenerateTableIF = 'false' and $keep_with_next = 'true'"></xsl:when>
 				<xsl:when test="$isGenerateTableIF = 'false'"><fo:inline font-size="0.1pt"><xsl:text> </xsl:text></fo:inline></xsl:when>
 				<xsl:otherwise><fo:inline><xsl:value-of select="$zero_width_space"/></fo:inline></xsl:otherwise>
 			</xsl:choose>
