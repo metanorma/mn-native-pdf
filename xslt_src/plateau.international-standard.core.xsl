@@ -1470,7 +1470,10 @@
 	<xsl:template match="mn:p//text()[not(ancestor::mn:strong) and not(ancestor::mn:fmt-stem)] |
 						mn:dt//text()[not(ancestor::mn:strong)] | 
 						mn:td//text()[not(ancestor::mn:strong)] | 
-						mn:th//text()[not(ancestor::mn:strong)]" mode="update_xml_step1">
+						mn:th//text()[not(ancestor::mn:strong)] |
+						mn:xref//text() | mn:fmt-xref//text() |
+						mn:origin/text() | mn:fmt-origin/text() |
+						mn:fmt-link/text()" mode="update_xml_step1">
 		<!-- add hairspace after 'IDEOGRAPHIC SPACE' (U+3000) -->
 		<xsl:variable name="text" select="java:replaceAll(java:java.lang.String.new(.), '(\u3000)', concat('$1',$hair_space))"/>
 		<xsl:variable name="text_en__">
@@ -1511,10 +1514,11 @@
 						mn:termnote/mn:name/text() | mn:termnote/mn:fmt-name//text() |
 						mn:table/mn:name/text() | mn:table/mn:fmt-name//text() |
 						mn:figure/mn:name/text() | mn:figure/mn:fmt-name//text() |
-						mn:termexample/mn:name/text() | mn:termexample/mn:fmt-name//text() |
+						mn:termexample/mn:name/text() | mn:termexample/mn:fmt-name//text()" mode="update_xml_step1">
+						<!--  |
 						mn:xref//text() | mn:fmt-xref//text() |
 						mn:origin/text() | mn:fmt-origin/text() |
-						mn:fmt-link/text()" mode="update_xml_step1">
+						mn:fmt-link/text() -->
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
 		<xsl:variable name="text_en">
 			<xsl:element name="text" namespace="{$namespace_full}">
@@ -1668,26 +1672,26 @@
 				<xsl:otherwise><fo:inline><xsl:value-of select="$zero_width_space"/></fo:inline></xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
-		<fo:inline font-family="Noto Sans Condensed" font-weight="300"> <!--  font-weight="bold" -->
+		<fo:inline font-family="Noto Sans Condensed" font-weight="bold"> <!--  font-weight="300"  -->
 			
-			<xsl:if test="(ancestor::mn:figure or ancestor::mn:table) and parent::mn:fmt-name">
+			<!-- <xsl:if test="(ancestor::mn:figure or ancestor::mn:table) and parent::mn:fmt-name">
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
 				<xsl:if test="$doctype = 'technical-report'">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 				</xsl:if>
-			</xsl:if>
+			</xsl:if> -->
 			
 			<xsl:if test="ancestor::mn:annex and ancestor::mn:fmt-title and not(ancestor::mn:clause)">
 				<xsl:attribute name="font-family">inherit</xsl:attribute>
-				<xsl:attribute name="font-weight">bold</xsl:attribute>
+				<!-- <xsl:attribute name="font-weight">bold</xsl:attribute> -->
 			</xsl:if>
 			
 			<xsl:if test="ancestor::mn:tt">
 				<xsl:call-template name="refine_tt-style"/>
-				<xsl:attribute name="font-weight">normal</xsl:attribute>
+				<!-- <xsl:attribute name="font-weight">normal</xsl:attribute>
 				<xsl:if test="((ancestor::mn:figure or ancestor::mn:table) and ancestor::mn:fmt-name) or ancestor::mn:strong">
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
-				</xsl:if>
+				</xsl:if> -->
 			</xsl:if>
 			
 			<xsl:apply-templates/>
