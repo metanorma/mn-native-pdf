@@ -492,6 +492,7 @@
 					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
+			<xsl:copy-of select="@id"/>
 			<!-- $namespace = 'itu' -->
 		</xsl:if>
 		
