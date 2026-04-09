@@ -1763,14 +1763,18 @@
 	</xsl:template>
 	
 	<xsl:template name="setIDforNamedDestination">
-		<xsl:if test="@named_dest">
-			<xsl:attribute name="id"><xsl:value-of select="@named_dest"/></xsl:attribute>
+		<xsl:if test="$isGenerateTableIF = 'false'">
+			<xsl:if test="@named_dest">
+				<xsl:attribute name="id"><xsl:value-of select="@named_dest"/></xsl:attribute>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template name="setIDforNamedDestinationInline">
-		<xsl:if test="@named_dest">
-			<fo:inline><xsl:call-template name="setIDforNamedDestination"/></fo:inline>
+		<xsl:if test="$isGenerateTableIF = 'false'">
+			<xsl:if test="@named_dest">
+				<fo:inline><xsl:call-template name="setIDforNamedDestination"/></fo:inline>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 	
@@ -1786,6 +1790,12 @@
 					<fox:destination internal-destination="{@named_dest}"/>
 				</xsl:if>
 			</xsl:for-each>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template name="copyParagraphId">
+		<xsl:if test="normalize-space(java:matches(java:java.lang.String.new(@id), '_[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}.*')) = 'false'">
+			<xsl:copy-of select="@id"/>
 		</xsl:if>
 	</xsl:template>
 

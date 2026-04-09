@@ -470,7 +470,12 @@
 				</xsl:when>
 				<xsl:when test="$caption_label = ''"></xsl:when>
 				<xsl:when test="../@unnumbered = 'true'"></xsl:when>
+				<!-- 1.1 in Appendix 1 -->
 				<xsl:otherwise>
+					<xsl:if test="ancestor::mn:annex and string(number(substring($caption_label, 1, 1))) != 'NaN'">
+						<xsl:variable name="annex_caption_label" select="translate(normalize-space(ancestor::mn:annex[1]/mn:fmt-title//mn:span[@class = 'fmt-caption-label']), ' ()', '')"/>
+						<xsl:value-of select="concat($annex_caption_label, '_')"/>
+					</xsl:if>
 					<xsl:if test="parent::mn:formula">Formula</xsl:if>
 					<xsl:value-of select="$caption_label"/>
 				</xsl:otherwise>
