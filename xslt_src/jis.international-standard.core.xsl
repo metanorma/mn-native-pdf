@@ -20,6 +20,8 @@
 	
 	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
+	<xsl:key name="kid" match="*" use="@id"/>
+	
 	<xsl:variable name="namespace">jis</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
@@ -1047,6 +1049,7 @@
 		<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 			<!-- fill ToC -->
 			<fo:block role="TOC">
+				<xsl:copy-of select="@id"/>
 			
 				<xsl:call-template name="refine_toc-style"/>
 			
@@ -1863,6 +1866,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:preface/mn:clause" priority="3">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -1921,12 +1925,24 @@
 		
 		<!-- to space-before Foreword -->
 		<xsl:if test="@ancestor = 'foreword' and $level = '1'"><fo:block></fo:block></xsl:if>
+	
+		<xsl:call-template name="setNamedDestination"/>
 		
 		<xsl:variable name="title_styles"><styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"/></styles></xsl:variable>
 		
 		<xsl:choose>
 			<xsl:when test="@inline-header = 'true' and following-sibling::*[1][self::mn:p]">
 				<fo:block role="H{$level}">
+					<fo:inline>
+						<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
+						<xsl:if test="not($vertical_layout = 'true')">
+							<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+							<xsl:attribute name="font-weight">bold</xsl:attribute>
+						</xsl:if>
+						<xsl:call-template name="setIDforNamedDestination"/>
+						<xsl:apply-templates />
+					</fo:inline>
+					<fo:inline padding-right="4mm">&#xa0;</fo:inline>
 					<xsl:for-each select="following-sibling::*[1][self::mn:p]">
 						<xsl:call-template name="paragraph">
 							<xsl:with-param name="inline-header">true</xsl:with-param>
@@ -2011,6 +2027,8 @@
 						
 					</xsl:if>
 					
+					<xsl:call-template name="setIDforNamedDestinationInline"/>
+					
 					<xsl:choose>
 						<xsl:when test="$vertical_layout = 'true'">
 							<!-- <xsl:call-template name="extractTitle"/> -->
@@ -2057,6 +2075,7 @@
 	<!-- ============================= -->
 
 	<xsl:template match="mn:term" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="term-style">
 			<xsl:if test="$namespace = 'jis'">
 				<xsl:if test="$vertical_layout = 'true'">
@@ -2071,12 +2090,14 @@
 	</xsl:template>
 
 	<xsl:template match="mn:introduction">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}">
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
 
 	<xsl:template match="mn:annex" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}">
 		</fo:block>
 		<xsl:apply-templates />
@@ -2096,7 +2117,14 @@
 			<xsl:otherwise>
 			
 				<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
-				<xsl:variable name="element-name">fo:block</xsl:variable>
+				<xsl:variable name="element-name">
+					<xsl:choose>
+						<xsl:when test="preceding-sibling::*[1][self::mn:fmt-title]/@inline-header = 'true'">fo:inline</xsl:when>
+						<xsl:otherwise>fo:block</xsl:otherwise>
+					</xsl:choose>
+					</xsl:variable>
+				
+				<xsl:call-template name="setNamedDestination"/>
 				
 				<xsl:variable name="p_styles">
 					<styles xsl:use-attribute-sets="p-style">

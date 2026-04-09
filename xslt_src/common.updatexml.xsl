@@ -450,7 +450,7 @@
 	
 	<xsl:template name="addNamedDestinationAttribute">
 		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or
-		 $namespace = 'itu' or $namespace = 'jcgm'">
+		 $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis'">
 		<xsl:variable name="docnum"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
 		<xsl:variable name="caption_label" select="translate(normalize-space(.//mn:span[@class = 'fmt-caption-label']), ' ()', '')"/>
 		
@@ -470,6 +470,7 @@
 				</xsl:when>
 				<xsl:when test="$caption_label = ''"></xsl:when>
 				<xsl:when test="../@unnumbered = 'true'"></xsl:when>
+				<xsl:when test="normalize-space(java:matches(java:java.lang.String.new($caption_label), '[\x21-\xFF]+')) = 'false'"></xsl:when>
 				<!-- 1.1 in Appendix 1 -->
 				<xsl:otherwise>
 					<xsl:if test="ancestor::mn:annex and string(number(substring($caption_label, 1, 1))) != 'NaN'">
