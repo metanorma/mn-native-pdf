@@ -492,7 +492,7 @@
 					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:copy-of select="@id"/>
+			<xsl:call-template name="copyParagraphId"/>
 			<!-- $namespace = 'itu' -->
 		</xsl:if>
 		
@@ -506,6 +506,7 @@
 				<xsl:attribute name="widows">1</xsl:attribute>
 				<xsl:attribute name="orphans">1</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="copyParagraphId"/>
 			<!-- $namespace = 'jcgm' -->
 		</xsl:if>
 		
