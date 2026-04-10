@@ -449,9 +449,10 @@
 	</xsl:template>
 	
 	<xsl:template name="addNamedDestinationAttribute">
-		<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or
-		 $namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or 
-		 $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd'">
+		<xsl:if test="$namespace = 'bipm' or 
+			$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or
+			$namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or 
+			$namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd'">
 		<xsl:variable name="docnum"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
 		<xsl:variable name="caption_label" select="translate(normalize-space(.//mn:span[@class = 'fmt-caption-label']), ' ()', '')"/>
 		
