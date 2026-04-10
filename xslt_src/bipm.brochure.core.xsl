@@ -22,6 +22,7 @@
 	<xsl:param name="final_transform">true</xsl:param>
 	
 	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
+	<xsl:key name="kid" match="*" use="@id"/>
 	
 	<xsl:variable name="first_pass" select="count($index//item) = 0"/>
 	
@@ -2398,6 +2399,8 @@
 			<xsl:call-template name="getLevel"/>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<xsl:variable name="title_styles">
 			<styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"/></styles>
 		</xsl:variable>
@@ -2410,6 +2413,7 @@
 				<xsl:choose>
 					<xsl:when test="mn:tab and not(ancestor::mn:annex) "><!-- split number and title -->
 						<fo:table table-layout="fixed" width="100%" role="SKIP">
+							<xsl:call-template name="setIDforNamedDestination"/>
 							<fo:table-column column-width="14mm"/>
 							<fo:table-column column-width="136mm"/>
 							<fo:table-body>
@@ -2448,10 +2452,14 @@
 										<xsl:attribute name="text-align">left</xsl:attribute>
 									</xsl:if>
 									
+									<xsl:call-template name="setIDforNamedDestinationInline"/>
+									
 									<xsl:apply-templates />
 									<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 								</xsl:when>
 								<xsl:otherwise>
+									
+									<xsl:call-template name="setIDforNamedDestinationInline"/>
 									
 									<xsl:apply-templates />
 									<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
@@ -2495,6 +2503,7 @@
 
 
 	<xsl:template match="mn:preface/*[not(self::mn:note or self::mn:admonition)][1]" priority="3">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block keep-with-next="always">
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -2652,6 +2661,7 @@
 		</xsl:variable>					
 		<xsl:variable name="space-before-value" select="normalize-space($space-before)"/>			
 		
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block keep-with-next="always">
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -2865,6 +2875,7 @@
 
 	<!-- from common.xsl -->
 	<xsl:template match="mn:clause" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:choose>
 			<xsl:when test="count(./node()) = 0"> <!-- if empty clause, then move id into next title -->
 				<xsl:choose>
@@ -2971,6 +2982,8 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
+		<xsl:call-template name="setNamedDestination"/>
 		
 		<xsl:variable name="p_styles">
 			<styles xsl:use-attribute-sets="p-style">
