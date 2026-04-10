@@ -17,6 +17,8 @@
 		
 	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
+	<xsl:key name="kid" match="*" use="@id"/>
+	
 	<xsl:variable name="namespace">ogc</xsl:variable>
 
 	<xsl:variable name="debug">false</xsl:variable>
@@ -1445,6 +1447,8 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<xsl:variable name="title_styles"><styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"/></styles></xsl:variable>
 		
 		<xsl:choose>
@@ -1460,6 +1464,7 @@
 								<fo:table-body>
 									<fo:table-row>
 										<fo:table-cell>
+											<xsl:call-template name="setIDforNamedDestination"/>
 											<fo:block margin-top="-3mm">
 												<xsl:for-each select="..">
 													<xsl:call-template name="insertSectionNumInCircle">
@@ -1497,6 +1502,7 @@
 				<fo:block>
 					<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*[local-name() = 'space-before' or local-name() = 'margin-bottom' or 
 						local-name() = 'keep-with-next' or local-name() = 'role']"/>
+					<xsl:call-template name="setIDforNamedDestinationInline"/>
 					<xsl:variable name="title">							
 						<xsl:choose>
 							<xsl:when test="mn:tab">
@@ -1518,6 +1524,7 @@
 			<xsl:otherwise>
 				<xsl:element name="{$element-name}">
 					<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
+					<xsl:call-template name="setIDforNamedDestinationInline"/>
 
 					<xsl:apply-templates />
 					<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
@@ -1543,6 +1550,7 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		<xsl:call-template name="setNamedDestination"/>
 		
 		<xsl:variable name="p_styles">
 			<styles xsl:use-attribute-sets="p-style">
@@ -1617,8 +1625,10 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:term/mn:fmt-name" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block xsl:use-attribute-sets="term-number-style">
 			<xsl:call-template name="refine_term-number-style"/>
+			<xsl:call-template name="setIDforNamedDestination"/>
 			<fo:list-block color="{$color_text_title}" keep-with-next="always" provisional-distance-between-starts="{string-length()*3.25}mm">
 				<fo:list-item>
 					<fo:list-item-label end-indent="label-end()">
@@ -1711,8 +1721,13 @@
 	<xsl:template match="mn:figure" priority="2">
 		<xsl:param name="indent"/>
 		<!-- <fo:block>debug figure indent=<xsl:value-of select="$indent"/></fo:block> -->
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block-container id="{@id}" margin-top="12pt" margin-bottom="12pt">			
 			<fo:block>
+				<xsl:for-each select="mn:fmt-name">
+					<xsl:call-template name="setIDforNamedDestination"/>
+				</xsl:for-each>
+				
 				<xsl:apply-templates select="mn:note[@type = 'units']"/>
 				<xsl:apply-templates select="node()[not(self::mn:fmt-name) and not(self::mn:note and @type = 'units')]">
 					<xsl:with-param name="indent" select="$indent"/>
