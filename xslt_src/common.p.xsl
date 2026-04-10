@@ -568,6 +568,7 @@
 			<xsl:if test="ancestor::mn:attribution">
 				<xsl:attribute name="text-align">right</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="copyParagraphId"/>
 			<!-- $namespace = 'nist-cswp' -->
 		</xsl:if>
 		
@@ -604,6 +605,7 @@
 			<xsl:if test="ancestor::mn:attribution">
 				<xsl:attribute name="text-align">right</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="copyParagraphId"/>
 			<!-- $namespace = 'nist-sp' -->
 		</xsl:if>
 		
