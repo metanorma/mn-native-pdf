@@ -20,6 +20,8 @@
 	
 	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
+	<xsl:key name="kid" match="*" use="@id"/>
+	
 	<xsl:variable name="namespace">plateau</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
@@ -921,6 +923,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:preface/mn:page_sequence/mn:clause" priority="3">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -984,9 +987,13 @@
 			<styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"/></styles>
 		</xsl:variable>
 	
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:choose>
 			<xsl:when test="@inline-header = 'true' and following-sibling::*[1][self::mn:p]">
 				<fo:block role="H{$level}">
+					<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
+					<xsl:call-template name="setIDforNamedDestination"/>
+					<xsl:apply-templates />
 					<xsl:for-each select="following-sibling::*[1][self::mn:p]">
 						<xsl:call-template name="paragraph">
 							<xsl:with-param name="inline-header">true</xsl:with-param>
@@ -1025,6 +1032,8 @@
 						</xsl:choose>
 					</xsl:if>
 					
+					<xsl:call-template name="setIDforNamedDestinationInline"/>
+					
 					<xsl:call-template name="extractTitle"/>
 					
 					<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
@@ -1043,6 +1052,7 @@
 	</xsl:template>
 
 	<xsl:template match="mn:sections/mn:page_sequence//mn:clause" priority="20">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block keep-with-next="always">
 			<fo:block id="{@id}" />
 		</fo:block>
@@ -1051,6 +1061,7 @@
 	
 	<!-- indent for clause level 4 and more -->
 	<xsl:template match="mn:sections/mn:page_sequence//mn:clause[mn:fmt-title[@depth &gt;= 4]]" priority="20">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block keep-with-next="always">
 			<fo:block id="{@id}" />
 		</fo:block>
@@ -1075,6 +1086,7 @@
 	
 
 	<xsl:template match="mn:annex" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}">
 		</fo:block>
 		<xsl:apply-templates />
@@ -1096,10 +1108,13 @@
 				<xsl:variable name="previous-element" select="local-name(preceding-sibling::*[1])"/>
 				<xsl:variable name="element-name">
 					<xsl:choose>
+						<xsl:when test="preceding-sibling::*[1][self::mn:fmt-title]/@inline-header = 'true'">fo:inline</xsl:when>
 						<xsl:when test="ancestor::mn:figure and parent::mn:note[not(@type = 'units')]">fo:inline</xsl:when>
 						<xsl:otherwise>fo:block</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
+				
+				<xsl:call-template name="setNamedDestination"/>
 				
 				<xsl:variable name="p_styles">
 					<styles xsl:use-attribute-sets="p-style">
