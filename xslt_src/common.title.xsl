@@ -407,6 +407,7 @@
 			</xsl:if>
 			<xsl:if test="$element-name = 'fo:inline'">
 				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+				<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
 			</xsl:if>
 			<!-- $namespace = 'pas' -->
 		</xsl:if>
