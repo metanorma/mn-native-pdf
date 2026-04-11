@@ -16,6 +16,8 @@
 	
 	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
+	<xsl:key name="kid" match="*" use="@id"/>
+	
 	<xsl:variable name="namespace">itu</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
@@ -2132,6 +2134,7 @@
 				</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -2147,6 +2150,7 @@
 				<xsl:value-of select="$linebreak"/>
 			</fo:block>
 		</xsl:if>
+		<xsl:call-template name="setNamedDestination"/>
 		<xsl:apply-templates />
 	</xsl:template>
 	<!-- ============================= -->
@@ -2166,7 +2170,7 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-
+		<xsl:call-template name="setNamedDestination"/>
 		
 		<xsl:variable name="p_styles">
 			<styles xsl:use-attribute-sets="p-style">
@@ -2205,10 +2209,12 @@
 	
 
 	<xsl:template match="mn:clause[starts-with(@id, 'draft-warning')]/mn:fmt-title" mode="caution">
+	<xsl:call-template name="setNamedDestination"/>
 		<fo:block font-size="16pt" font-style="italic" font-weight="bold" text-align="center" space-after="6pt" role="H1">
 			<xsl:if test="$lang = 'ar'"> <!-- to prevent rendering `###` due the missing Arabic glyphs in the italic font (Times New Roman) -->
 				<xsl:attribute name="font-style">normal</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="setIDforNamedDestinationInline"/>
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
 		</fo:block>
@@ -2239,12 +2245,16 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<xsl:variable name="title_styles">
 			<styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"><xsl:with-param name="element-name" select="$element-name"/></xsl:call-template></styles>
 		</xsl:variable>
 		
 		<xsl:element name="{$element-name}">
 			<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
+			
+			<xsl:call-template name="setIDforNamedDestinationInline"/>
 			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
@@ -2299,11 +2309,16 @@
 	
 	
 	<xsl:template match="mn:fmt-preferred" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block xsl:use-attribute-sets="term-preferred-block-style">
 			<xsl:call-template name="refine_term-preferred-block-style"/>
 			
 			<fo:inline xsl:use-attribute-sets="term-number-style">
 				<xsl:call-template name="refine_term-number-style"/>
+				
+				<xsl:for-each select="ancestor::mn:term[1]/mn:fmt-name">
+					<xsl:call-template name="setIDforNamedDestinationInline"/>
+				</xsl:for-each>
 				
 				<xsl:apply-templates select="ancestor::mn:term[1]/mn:fmt-name" />
 			</fo:inline>

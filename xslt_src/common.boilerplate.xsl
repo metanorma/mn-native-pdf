@@ -623,6 +623,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:feedback-statement//mn:p">
+		<xsl:param name="skip_id">false</xsl:param>
 		<xsl:param name="margin"/>
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iec' or $namespace = 'ogc'">
@@ -635,6 +636,7 @@
 			<xsl:otherwise>
 				<!-- process in the template 'paragraph' -->
 				<xsl:call-template name="paragraph">
+					<xsl:with-param name="skip_id" select="$skip_id"/>
 					<xsl:with-param name="margin" select="$margin"/>
 				</xsl:call-template>
 			</xsl:otherwise>

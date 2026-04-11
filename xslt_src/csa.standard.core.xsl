@@ -16,6 +16,8 @@
 
 	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
+	<xsl:key name="kid" match="*" use="@id"/>
+	
 	<xsl:variable name="namespace">csa</xsl:variable>
 
 	<xsl:variable name="debug">false</xsl:variable>
@@ -565,12 +567,16 @@
 			</xsl:choose>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<xsl:variable name="title_styles">
 			<styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"/></styles>
 		</xsl:variable>
 		
 		<xsl:element name="{$element-name}">
 			<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
+			
+			<xsl:call-template name="setIDforNamedDestination"/>
 			
 			<xsl:if test="$level = 2">
 				<fo:inline padding-right="1mm">							
@@ -599,6 +605,8 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		
+		<xsl:call-template name="setNamedDestination"/>
 		
 		<xsl:variable name="p_styles">
 			<styles xsl:use-attribute-sets="p-style">

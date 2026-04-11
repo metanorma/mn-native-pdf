@@ -17,6 +17,8 @@
 	<xsl:param name="additionalXMLs" select="''"/> <!-- iec-rice.fr.xml  -->
 	
 	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
+	
+	<xsl:key name="kid" match="*" use="@id"/>
 		
 	<xsl:variable name="additionalXMLsArray">
 		<xsl:call-template name="split">
@@ -1411,6 +1413,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" name="toc" priority="3">
 		<fo:block-container role="SKIP">
+			<xsl:copy-of select="@id"/>
 			<!-- render 'Contents' outside if role="TOC" -->
 			<xsl:apply-templates select="mn:fmt-title"/>
 			<fo:block role="TOC">
@@ -1755,12 +1758,14 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 	</xsl:template>
 	
 	<xsl:template match="mn:annex//mn:clause" priority="2">		
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" margin-top="5pt" margin-bottom="10pt" text-align="justify">
 			<xsl:apply-templates />				
 		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="mn:clause//mn:clause" priority="2">
+		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" space-after="10pt">
 			<xsl:apply-templates/>
 		</fo:block>
@@ -1792,6 +1797,8 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+			
+		<xsl:call-template name="setNamedDestination"/>
 		
 		<xsl:variable name="title_styles">
 			<styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"/></styles>
@@ -1799,6 +1806,8 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 		
 		<xsl:element name="{$element-name}">
 			<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
+			
+			<xsl:call-template name="setIDforNamedDestination"/>
 			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>
@@ -1821,7 +1830,9 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-				
+		
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<xsl:variable name="p_styles">
 			<styles xsl:use-attribute-sets="p-style">
 				<xsl:call-template name="refine_p-style"><xsl:with-param name="element-name" select="$element-name"/></xsl:call-template>

@@ -449,7 +449,10 @@
 	</xsl:template>
 	
 	<xsl:template name="addNamedDestinationAttribute">
-		<xsl:if test="$namespace = 'iso'">
+		<xsl:if test="$namespace = 'bipm' or $namespace = 'bsi' or $namespace = 'pas' or 
+			$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iec' or $namespace = 'ieee' or $namespace = 'iho' or $namespace = 'iso' or
+			$namespace = 'itu' or $namespace = 'jcgm' or $namespace = 'jis' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or 
+			$namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'plateau' or $namespace = 'rsd'">
 		<xsl:variable name="docnum"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
 		<xsl:variable name="caption_label" select="translate(normalize-space(.//mn:span[@class = 'fmt-caption-label']), ' ()', '')"/>
 		
@@ -457,7 +460,8 @@
 			<xsl:choose>
 				<xsl:when test="count(ancestor::mn:figure) &gt; 1"></xsl:when> <!-- prevent id 'a)' -->
 				<xsl:when test="ancestor::mn:note or ancestor::mn:example or
-							ancestor::mn:termnote or ancestor::mn:termexample"></xsl:when>
+							ancestor::mn:termnote or ancestor::mn:termexample or
+							ancestor::mn:admonition"></xsl:when>
 				<xsl:when test="$caption_label = '' and parent::mn:foreword">
 					<xsl:variable name="foreword_number"><xsl:number count="mn:foreword" level="any"/></xsl:variable>
 					<xsl:if test="$foreword_number = 1">Foreword</xsl:if>
@@ -468,7 +472,13 @@
 				</xsl:when>
 				<xsl:when test="$caption_label = ''"></xsl:when>
 				<xsl:when test="../@unnumbered = 'true'"></xsl:when>
+				<xsl:when test="normalize-space(java:matches(java:java.lang.String.new($caption_label), '[\x21-\xFF]+')) = 'false'"></xsl:when>
+				<!-- 1.1 in Appendix 1 -->
 				<xsl:otherwise>
+					<xsl:if test="ancestor::mn:annex and string(number(substring($caption_label, 1, 1))) != 'NaN'">
+						<xsl:variable name="annex_caption_label" select="translate(normalize-space(ancestor::mn:annex[1]/mn:fmt-title//mn:span[@class = 'fmt-caption-label']), ' ()', '')"/>
+						<xsl:value-of select="concat($annex_caption_label, '_')"/>
+					</xsl:if>
 					<xsl:if test="parent::mn:formula">Formula</xsl:if>
 					<xsl:value-of select="$caption_label"/>
 				</xsl:otherwise>

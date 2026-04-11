@@ -18,6 +18,8 @@
 	
 	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
 	
+	<xsl:key name="kid" match="*" use="@id"/>
+	
 	<xsl:variable name="namespace">jcgm</xsl:variable>
 	
 	<xsl:variable name="align_cross_elements_default">clause</xsl:variable>
@@ -623,6 +625,7 @@
 
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" name="toc" priority="3">
 		<fo:block-container>
+			<xsl:copy-of select="@id"/>
 			<fo:block role="TOC">
 			
 				<xsl:apply-templates />
@@ -823,6 +826,7 @@
 				<xsl:otherwise>fo:block</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+		<xsl:call-template name="setNamedDestination"/>
 		
 		<xsl:variable name="p_styles">
 			<styles xsl:use-attribute-sets="p-style">
@@ -1190,8 +1194,12 @@
 			<styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"><xsl:with-param name="element-name" select="$element-name"/></xsl:call-template></styles>
 		</xsl:variable>
 		
+		<xsl:call-template name="setNamedDestination"/>
+		
 		<xsl:element name="{$element-name}">
 			<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
+		
+			<xsl:call-template name="setIDforNamedDestinationInline"/>
 			
 			<xsl:apply-templates />
 			<xsl:apply-templates select="following-sibling::*[1][self::mn:variant-title][@type = 'sub']" mode="subtitle"/>

@@ -492,6 +492,7 @@
 					<xsl:otherwise>justify</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
+			<xsl:call-template name="copyParagraphId"/>
 			<!-- $namespace = 'itu' -->
 		</xsl:if>
 		
@@ -505,6 +506,7 @@
 				<xsl:attribute name="widows">1</xsl:attribute>
 				<xsl:attribute name="orphans">1</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="copyParagraphId"/>
 			<!-- $namespace = 'jcgm' -->
 		</xsl:if>
 		
@@ -566,6 +568,7 @@
 			<xsl:if test="ancestor::mn:attribution">
 				<xsl:attribute name="text-align">right</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="copyParagraphId"/>
 			<!-- $namespace = 'nist-cswp' -->
 		</xsl:if>
 		
@@ -602,6 +605,7 @@
 			<xsl:if test="ancestor::mn:attribution">
 				<xsl:attribute name="text-align">right</xsl:attribute>
 			</xsl:if>
+			<xsl:call-template name="copyParagraphId"/>
 			<!-- $namespace = 'nist-sp' -->
 		</xsl:if>
 		

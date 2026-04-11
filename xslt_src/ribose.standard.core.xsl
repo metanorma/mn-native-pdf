@@ -15,6 +15,8 @@
 	<xsl:output version="1.0" method="xml" encoding="UTF-8" indent="no"/>
 	
 	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
+	
+	<xsl:key name="kid" match="*" use="@id"/>
 
 	<xsl:variable name="namespace">rsd</xsl:variable>
 	
@@ -251,11 +253,7 @@
 				<!-- <xsl:copy-of select="."/> -->
 			</xsl:variable>
 			
-			<xsl:if test="$debug = 'true'">
-				<redirect:write file="contents_.xml"> <!-- {java:getTime(java:java.util.Date.new())} -->
-					<xsl:copy-of select="$contents"/>
-				</redirect:write>
-			</xsl:if>
+			<xsl:call-template name="debug_contents"/>
 			
 			<!-- <xsl:for-each select="xalan:nodeset($updated_xml)/*"> -->
 			<xsl:for-each select="xalan:nodeset($updated_xml)//mn:metanorma">
@@ -388,6 +386,7 @@
 					
 					<fo:flow flow-name="xsl-region-body" color="black">
 						<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
+						
 						<!-- background image -->
 						<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0">
 							<fo:block>
@@ -953,6 +952,10 @@
 			<xsl:if test="preceding-sibling::*[1][self::mn:fmt-name]">
 				<fo:inline xsl:use-attribute-sets="term-number-style">
 					<xsl:call-template name="refine_term-number-style"/>
+					
+					<xsl:for-each select="ancestor::mn:term[1]/mn:fmt-name"><!-- change context -->
+						<xsl:call-template name="setIDforNamedDestination"/>
+					</xsl:for-each>
 					
 					<xsl:apply-templates select="ancestor::mn:term[1]/mn:fmt-name" />
 				</fo:inline>
