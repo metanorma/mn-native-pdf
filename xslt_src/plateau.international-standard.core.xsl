@@ -1488,7 +1488,10 @@
 						mn:th//text()[not(ancestor::mn:strong)] |
 						mn:xref//text() | mn:fmt-xref//text() |
 						mn:origin/text() | mn:fmt-origin/text() |
-						mn:fmt-link/text()" mode="update_xml_step1">
+						mn:fmt-link/text() |
+						mn:note/mn:name/text() | mn:note/mn:fmt-name//text() | 
+						mn:termnote/mn:name/text() | mn:termnote/mn:fmt-name//text() |
+						mn:termexample/mn:name/text() | mn:termexample/mn:fmt-name//text()" mode="update_xml_step1">
 		<!-- add hairspace after 'IDEOGRAPHIC SPACE' (U+3000) -->
 		<xsl:variable name="text" select="java:replaceAll(java:java.lang.String.new(.), '(\u3000)', concat('$1',$hair_space))"/>
 		<xsl:variable name="text_en__">
@@ -1525,15 +1528,15 @@
 	
 	<!-- <name>注記  1</name> to <name>注記<font_en>  1</font_en></name> -->
 	<xsl:template match="mn:title/text() | mn:fmt-title//text() | 
-						mn:note/mn:name/text() | mn:note/mn:fmt-name//text() | 
-						mn:termnote/mn:name/text() | mn:termnote/mn:fmt-name//text() |
 						mn:table/mn:name/text() | mn:table/mn:fmt-name//text() |
-						mn:figure/mn:name/text() | mn:figure/mn:fmt-name//text() |
-						mn:termexample/mn:name/text() | mn:termexample/mn:fmt-name//text()" mode="update_xml_step1">
+						mn:figure/mn:name/text() | mn:figure/mn:fmt-name//text()" mode="update_xml_step1">
 						<!--  |
 						mn:xref//text() | mn:fmt-xref//text() |
 						mn:origin/text() | mn:fmt-origin/text() |
-						mn:fmt-link/text() -->
+						mn:fmt-link/text() |
+						mn:note/mn:name/text() | mn:note/mn:fmt-name//text() | 
+						mn:termnote/mn:name/text() | mn:termnote/mn:fmt-name//text() |
+						mn:termexample/mn:name/text() | mn:termexample/mn:fmt-name//text() -->
 		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
 		<xsl:variable name="text_en">
 			<xsl:element name="text" namespace="{$namespace_full}">
@@ -1657,17 +1660,35 @@
 		<xsl:apply-templates mode="update_xml_step1"/>
 	</xsl:template>
 	<xsl:template match="mn:strong/text()" priority="2" mode="update_xml_step1">
-		<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
-		<xsl:variable name="text_en">
-			<xsl:element name="text" namespace="{$namespace_full}">
-				<xsl:call-template name="replace_text_tags">
-					<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
-					<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
-					<xsl:with-param name="text" select="$text_en_"/>
-				</xsl:call-template>
-			</xsl:element>
-		</xsl:variable>
-		<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
+		<xsl:choose>
+			<!-- for https://github.com/metanorma/mn-samples-plateau/issues/533, non-bold -->
+			<xsl:when test="ancestor::mn:biblio-tag or ancestor::mn:fmt-preferred">
+				<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_open,'$1',$tag_font_en_close))"/>
+				<xsl:variable name="text_en">
+					<xsl:element name="text" namespace="{$namespace_full}">
+						<xsl:call-template name="replace_text_tags">
+							<xsl:with-param name="tag_open" select="$tag_font_en_open"/>
+							<xsl:with-param name="tag_close" select="$tag_font_en_close"/>
+							<xsl:with-param name="text" select="$text_en_"/>
+						</xsl:call-template>
+					</xsl:element>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
+			</xsl:when>
+			<xsl:otherwise><!-- bold -->
+				<xsl:variable name="text_en_" select="java:replaceAll(java:java.lang.String.new(.), $regex_en, concat($tag_font_en_bold_open,'$1',$tag_font_en_bold_close))"/>
+				<xsl:variable name="text_en">
+					<xsl:element name="text" namespace="{$namespace_full}">
+						<xsl:call-template name="replace_text_tags">
+							<xsl:with-param name="tag_open" select="$tag_font_en_bold_open"/>
+							<xsl:with-param name="tag_close" select="$tag_font_en_bold_close"/>
+							<xsl:with-param name="text" select="$text_en_"/>
+						</xsl:call-template>
+					</xsl:element>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($text_en)/*[local-name() = 'text']/node()"/>
+			</xsl:otherwise>
+		</xsl:choose>		
 	</xsl:template>
 	
 	<!-- Key title after the table -->
@@ -1737,7 +1758,8 @@
 				<xsl:attribute name="font-weight">300</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="ancestor::mn:fmt-preferred">
-				<xsl:attribute name="font-weight">normal</xsl:attribute>
+				<!-- <xsl:attribute name="font-weight">normal</xsl:attribute> -->
+				<xsl:attribute name="font-weight">300</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="ancestor::mn:tt">
 				<xsl:call-template name="refine_tt-style"/>
