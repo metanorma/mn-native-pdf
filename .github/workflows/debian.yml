@@ -29,8 +29,7 @@ jobs:
 
       - run: |
           ruby --version
-          rbenv install 4.0.0
-          #3.1.2
+          rbenv install 3.1.2
 
       - uses: actions/checkout@v4
 
