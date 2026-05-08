@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 											xmlns:fo="http://www.w3.org/1999/XSL/Format" 
+											xmlns:mnc="http://metanorma.org" 
 											xmlns:mn="https://www.metanorma.org/ns/standoc" 
 											xmlns:mnx="https://www.metanorma.org/ns/xslt" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
@@ -46,9 +47,9 @@
 	</xsl:variable>
 	
 	<xsl:variable name="doc_first">
-		<xsl:if test="mn:metanorma-collection">
+		<xsl:if test="mnc:metanorma-collection">
 			<xsl:variable name="doc_first_step1">
-				<xsl:apply-templates  select="(/mn:metanorma-collection//mn:metanorma)[1]" mode="flatxml_step1">
+				<xsl:apply-templates  select="(/mnc:metanorma-collection//mn:metanorma)[1]" mode="flatxml_step1">
 					<xsl:with-param name="num" select="'first'"/>
 				</xsl:apply-templates>
 			</xsl:variable>
@@ -59,8 +60,8 @@
 		</xsl:if>
 	</xsl:variable>
 	<xsl:variable name="docs_slave">
-		<xsl:if test="mn:metanorma-collection">
-			<xsl:for-each select="(/mn:metanorma-collection//mn:metanorma)[position() &gt; 1]">
+		<xsl:if test="mnc:metanorma-collection">
+			<xsl:for-each select="(/mnc:metanorma-collection//mn:metanorma)[position() &gt; 1]">
 				<xsl:variable name="doc_first_step1">
 					<xsl:apply-templates  select="." mode="flatxml_step1">
 					<xsl:with-param name="num" select="'slave'"/>
@@ -78,8 +79,8 @@
 	<xsl:variable name="column_gap">8</xsl:variable>
 	<xsl:variable name="docs_count">
 		<xsl:choose>
-			<xsl:when test="/mn:metanorma-collection">
-				<xsl:value-of select="count(/mn:metanorma-collection//mn:metanorma)"/>
+			<xsl:when test="/mnc:metanorma-collection">
+				<xsl:value-of select="count(/mnc:metanorma-collection//mn:metanorma)"/>
 			</xsl:when>
 			<xsl:otherwise>1</xsl:otherwise>
 		</xsl:choose>
