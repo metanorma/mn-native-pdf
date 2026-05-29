@@ -271,19 +271,11 @@
 			
 					<xsl:call-template name="inner-cover-page"/>
 				
-					<!-- ToC pages -->
+					<!-- ToC and boilerplate pages -->
 					<xsl:variable name="toc_and_boilerplate">
-						<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:clause[@type = 'toc']">
+						<xsl:call-template name="toc_and_boilerplate">
 							<xsl:with-param name="num" select="$num"/>
-						</xsl:apply-templates>
-						
-						<!-- <xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
-						
-						<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
-						
-						<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/> -->
-						
-						<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/*"/>
+						</xsl:call-template>
 					</xsl:variable>
 					
 					<xsl:if test="normalize-space($toc_and_boilerplate) != ''">
@@ -491,6 +483,19 @@
 	</xsl:template> <!-- END: cover-page -->
 	
 	<xsl:template name="inner-cover-page">
+	</xsl:template>
+	
+	<xsl:template name="toc_and_boilerplate">
+		<xsl:param name="num"/>
+		<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:clause[@type = 'toc']">
+			<xsl:with-param name="num" select="$num"/>
+		</xsl:apply-templates>
+
+		<!-- <xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
+		<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
+		<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/> -->
+
+		<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/*"/>
 	</xsl:template>
 	
 	<xsl:template name="back-page">
