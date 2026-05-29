@@ -490,11 +490,13 @@
 		<xsl:apply-templates select="/mn:metanorma/mn:preface/mn:clause[@type = 'toc']">
 			<xsl:with-param name="num" select="$num"/>
 		</xsl:apply-templates>
-
+		<fo:block break-after="page"/>
+		
 		<!-- <xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:copyright-statement"/>
 		<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:legal-statement"/>
 		<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/mn:feedback-statement"/> -->
 
+		<fo:block margin-bottom="12pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
 		<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/*"/>
 	</xsl:template>
 	
@@ -655,10 +657,8 @@
 						</fo:block-container>
 					</fo:block-container>
 				
-					<fo:block break-after="page"/>
 				</xsl:if>
 			</xsl:if>
-			<fo:block margin-bottom="12pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
 		</fo:block>
 	</xsl:template>
 
