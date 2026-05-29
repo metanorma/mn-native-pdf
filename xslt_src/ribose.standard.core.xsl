@@ -968,34 +968,43 @@
 			
 			<fo:inline xsl:use-attribute-sets="term-preferred-style"><xsl:call-template name="refine_term-preferred-style"/><xsl:apply-templates /></fo:inline>
 			
-			<xsl:variable name="term_kind">
-				<xsl:choose>
-					<xsl:when test="self::mn:fmt-deprecates">
-						<xsl:call-template name="getLocalizedString">
-							<xsl:with-param name="key">deprecated</xsl:with-param>
-						</xsl:call-template>
-					</xsl:when>
-					<xsl:otherwise><xsl:value-of select="substring-after(local-name(), 'fmt-')"/></xsl:otherwise>
-				</xsl:choose>
-			</xsl:variable>
-			<xsl:variable name="kind" select="local-name()"/>
+			<xsl:call-template name="display_term_kind"/>
 			
-			<fo:inline-container text-align="center" width="29mm" >
-				<xsl:attribute name="background-color">
-					<xsl:choose>
-						<xsl:when test="$kind = 'fmt-preferred'">rgb(255, 240, 198)</xsl:when>
-						<xsl:when test="$kind = 'fmt-deprecates'">rgb(252, 221, 194)</xsl:when>
-						<xsl:when test="$kind = 'fmt-admitted'">rgb(208, 223, 239)</xsl:when>							
-					</xsl:choose>
-				</xsl:attribute>
-				<fo:block padding-top="1mm" padding-bottom="0.5mm">
-					<fo:inline xsl:use-attribute-sets="term-kind-style">
-						<xsl:call-template name="refine_term-kind-style"/>
-						<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($term_kind))"/>
-					</fo:inline>
-				</fo:block>
-			</fo:inline-container>
 		</fo:block>
+	</xsl:template>
+	
+	<xsl:template name="display_term_kind">
+		<xsl:call-template name="term_kind"/>
+	</xsl:template>
+	
+	<xsl:template name="term_kind">
+		<xsl:variable name="kind" select="substring-after(local-name(), 'fmt-')"/>
+		
+		<fo:inline-container text-align="center" width="29mm" >
+			<xsl:attribute name="background-color">
+				<xsl:choose>
+					<xsl:when test="$kind = 'preferred'">rgb(255, 240, 198)</xsl:when>
+					<xsl:when test="$kind = 'deprecates'">rgb(252, 221, 194)</xsl:when>
+					<xsl:when test="$kind = 'admitted'">rgb(208, 223, 239)</xsl:when>							
+				</xsl:choose>
+			</xsl:attribute>
+			<fo:block padding-top="1mm" padding-bottom="0.5mm">
+				<fo:inline xsl:use-attribute-sets="term-kind-style">
+					<xsl:call-template name="refine_term-kind-style"/>
+					<xsl:variable name="term_kind_display">
+					<xsl:choose>
+						<xsl:when test="self::mn:fmt-deprecates">
+							<xsl:call-template name="getLocalizedString">
+								<xsl:with-param name="key">deprecated</xsl:with-param>
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:otherwise><xsl:value-of select="substring-after(local-name(), 'fmt-')"/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+					<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($term_kind_display))"/>
+				</fo:inline>
+			</fo:block>
+		</fo:inline-container>
 	</xsl:template>
 	
 	<xsl:template match="mn:references[not(@normative='true')]" priority="3">
