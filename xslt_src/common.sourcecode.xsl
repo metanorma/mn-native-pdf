@@ -128,6 +128,7 @@
 	</xsl:attribute-set> <!-- sourcecode-style -->
 
 	<xsl:template name="refine_sourcecode-style">
+		<xsl:call-template name="setKeepAttributes"/>
 		<xsl:if test="$namespace = 'rsd'"> <!-- background for image -->
 			<xsl:if test="starts-with((mn:fmt-name//text())[1], 'Figure ')">
 				<xsl:attribute name="background-color">rgb(236,242,246)</xsl:attribute>
