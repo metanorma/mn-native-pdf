@@ -1896,7 +1896,8 @@
 					<g id="UrTavla">
 						<circle style="fill:{$color_design};" cx="250" cy="250" r="250">
 						</circle>
-						<text x="50%" y="67%" text-anchor="middle" style="fill:white" dy="20em" font-size="{$font-size}" font-family="Lato" letter-spacing="25"><xsl:value-of select="translate($sectionNum,'.','')"/></text>
+						<text x="50%" y="70%" text-anchor="middle" style="fill:white" font-size="{$font-size}" font-family="Lato" letter-spacing="25"><xsl:value-of select="translate($sectionNum,'.','')"/></text>
+						<!-- dy="20em" -->
 					</g>
 				</svg>
 			</fo:instream-foreign-object>						
