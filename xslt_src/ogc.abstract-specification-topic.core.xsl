@@ -1,1 +1,0 @@
-ogc.standard.core.xsl

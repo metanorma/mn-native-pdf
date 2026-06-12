@@ -46,21 +46,7 @@ XSLT_GENERATED := xslt/iec.international-standard.xsl \
 	xslt/itu.service-publication.xsl \
 	xslt/itu.in-force.xsl \
 	xslt/jis.international-standard.xsl \
-	xslt/ogc.abstract-specification-topic.xsl \
-	xslt/ogc.best-practice.xsl \
-	xslt/ogc.change-request-supporting-document.xsl \
-	xslt/ogc.community-practice.xsl \
-	xslt/ogc.community-standard.xsl \
-	xslt/ogc.discussion-paper.xsl \
-	xslt/ogc.draft-standard.xsl \
-	xslt/ogc.engineering-report.xsl \
-	xslt/ogc.other.xsl \
-	xslt/ogc.policy.xsl \
-	xslt/ogc.reference-model.xsl \
-	xslt/ogc.release-notes.xsl \
 	xslt/ogc.standard.xsl \
-	xslt/ogc.test-suite.xsl \
-	xslt/ogc.user-guide.xsl \
 	xslt/ogc.white-paper.xsl \
 	xslt/plateau.international-standard.xsl \
 	xslt/cc.standard.xsl \
