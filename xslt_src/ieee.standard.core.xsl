@@ -1512,6 +1512,18 @@
 								</xsl:if>
 								<xsl:call-template name="insertListOf_Item"/>
 							</xsl:for-each>
+							
+							<!-- List of Examples -->
+							<xsl:for-each select="$contents//mnx:examples/mnx:example">
+								<xsl:if test="position() = 1">
+									<!-- <fo:block break-after="page"/> -->
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-examples"/>
+									</xsl:call-template>
+								</xsl:if>
+								<xsl:call-template name="insertListOf_Item"/>
+							</xsl:for-each>
+							
 						</xsl:when> <!-- 'standard' or 'draft' -->
 						
 						<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
@@ -1525,14 +1537,14 @@
 								</xsl:choose>
 							</xsl:variable>
 							
-							<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true'][@level &lt;= $toc_level or @type = 'figure' or @type = 'table']">
+							<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true'][@level &lt;= $toc_level or @type = 'figure' or @type = 'table' or @type = 'example']">
 								<fo:block role="TOCI">
 									<xsl:if test="@level = 1">
 										<xsl:attribute name="margin-top">12pt</xsl:attribute>
 										<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 									</xsl:if>
 									
-									<xsl:if test="@type = 'figure' or @type = 'table' and preceding-sibling::mnx:item[1][@type = 'figure' or @type = 'table']">
+									<xsl:if test="@type = 'figure' or @type = 'table' or @type = 'example' and preceding-sibling::mnx:item[1][@type = 'figure' or @type = 'table' or @type = 'example']">
 										<xsl:attribute name="margin-top">0pt</xsl:attribute>
 										<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 									</xsl:if>

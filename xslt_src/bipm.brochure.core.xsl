@@ -2034,6 +2034,16 @@
 								<xsl:call-template name="insertListOf_Item"/>
 							</xsl:for-each>
 							
+							<!-- List of Examples -->
+							<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:examples/mnx:example">
+								<xsl:if test="position() = 1">
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-examples"/>
+									</xsl:call-template>
+								</xsl:if>
+								<xsl:call-template name="insertListOf_Item"/>
+							</xsl:for-each>
+							
 						</fo:table-body>
 					</fo:table>
 				</xsl:if>

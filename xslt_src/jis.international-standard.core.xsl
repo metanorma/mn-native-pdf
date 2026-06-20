@@ -1054,7 +1054,7 @@
 				<xsl:call-template name="refine_toc-style"/>
 			
 				<xsl:if test="$updated_contents_xml/mnx:doc[@num = $num]//mnx:item[@display = 'true']">
-					<xsl:for-each select="$updated_contents_xml/mnx:doc[@num = $num]//mnx:item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table']">
+					<xsl:for-each select="$updated_contents_xml/mnx:doc[@num = $num]//mnx:item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table' or @type = 'example']">
 						<fo:block role="TOCI">
 							<xsl:choose>
 								<xsl:when test="@type = 'annex' or @type = 'bibliography'">

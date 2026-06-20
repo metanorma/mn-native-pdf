@@ -162,6 +162,37 @@
 								</xsl:for-each>
 							</fo:bookmark>
 						</xsl:if>
+						
+						<xsl:if test="(//mn:metanorma/mn:metanorma-extension/mn:toc[@type='example']/mn:title)">
+							<xsl:variable name="list_of_examples_">
+								<xsl:for-each select="//mn:example[@id and mn:fmt-name and not(@unnumbered = 'true')]">
+									<example id="{@id}"><xsl:apply-templates select="mn:fmt-name" mode="bookmarks"/></example>
+								</xsl:for-each>
+							</xsl:variable>
+							<xsl:variable name="list_of_examples" select="xalan:nodeset($list_of_examples_)"/>
+						
+							<xsl:if test="$list_of_examples/example">
+								<fo:bookmark internal-destination="empty_bookmark">
+									<fo:bookmark-title>—————</fo:bookmark-title>
+								</fo:bookmark>
+							</xsl:if>
+							
+							<xsl:if test="$list_of_examples//example">
+								<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
+									<fo:bookmark-title>
+										<xsl:call-template name="getLocalizedString">
+											<xsl:with-param name="key">Example.pl</xsl:with-param>
+										</xsl:call-template>
+									</fo:bookmark-title>
+									<xsl:for-each select="$list_of_examples//example">
+										<fo:bookmark internal-destination="{@id}">
+											<fo:bookmark-title><xsl:value-of select="."/></fo:bookmark-title>
+										</fo:bookmark>
+									</xsl:for-each>
+								</fo:bookmark>
+							</xsl:if>
+						</xsl:if>
+						
 					</xsl:with-param>
 				</xsl:call-template>
 				
