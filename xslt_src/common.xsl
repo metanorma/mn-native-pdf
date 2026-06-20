@@ -192,6 +192,16 @@
 		</xsl:if>
 	</xsl:variable>
 	
+	<xsl:variable name="title-list-examples">
+		<xsl:variable name="toc_example_title" select="//mn:metanorma/mn:metanorma-extension/mn:toc[@type='example']/mn:title"/>
+		<xsl:value-of select="$toc_example_title"/>
+		<xsl:if test="normalize-space($toc_example_title) = ''">
+			<xsl:call-template name="getLocalizedString">
+				<xsl:with-param name="key">toc_examples</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:variable>
+	
 	<xsl:variable name="title-list-recommendations">
 		<xsl:variable name="toc_requirement_title" select="//mn:metanorma/mn:metanorma-extension/mn:toc[@type='requirement']/mn:title"/>
 		<xsl:value-of select="$toc_requirement_title"/>

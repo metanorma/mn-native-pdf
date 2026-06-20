@@ -1391,6 +1391,13 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 			</xsl:if>
 			<xsl:call-template name="insertListOf_Item"/>
 		</xsl:for-each>
+		
+		<xsl:for-each select="$contents//mnx:examples/mnx:example">
+			<xsl:if test="position() = 1">
+				<fo:block margin-bottom="5pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
+			</xsl:if>
+			<xsl:call-template name="insertListOf_Item"/>
+		</xsl:for-each>
 				
 			<!-- </fo:block>
 		</fo:block-container> -->

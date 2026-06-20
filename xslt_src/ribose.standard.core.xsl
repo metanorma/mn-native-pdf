@@ -654,6 +654,18 @@
 								</fo:block>
 							</xsl:if>
 							
+							<!-- List of Examples -->
+							<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:examples/mnx:example">
+								<xsl:call-template name="insertListOf_Title">
+									<xsl:with-param name="title" select="$title-list-examples"/>
+								</xsl:call-template>
+								<fo:block role="TOC">
+									<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:examples/mnx:example">
+										<xsl:call-template name="insertListOf_Item"/>
+									</xsl:for-each>
+								</fo:block>
+							</xsl:if>
+							
 						</fo:block-container>
 					</fo:block-container>
 				

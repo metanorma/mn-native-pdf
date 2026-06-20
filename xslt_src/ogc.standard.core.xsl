@@ -356,7 +356,7 @@
 				<xsl:call-template name="addBookmarks">
 					<xsl:with-param name="contents" select="$contents"/>
 					<xsl:with-param name="contents_addon">
-						<xsl:if test="$contents//mnx:tables/mnx:table or $contents//mnx:figures/mnx:figure or $toc_recommendations//*[normalize-space(@id) != '']">
+						<xsl:if test="$contents//mnx:tables/mnx:table or $contents//mnx:figures/mnx:figure or $contents//mnx:examples/mnx:example or $toc_recommendations//*[normalize-space(@id) != '']">
 							<fo:bookmark internal-destination="empty_bookmark">
 								<fo:bookmark-title>—————</fo:bookmark-title>
 							</fo:bookmark>
@@ -384,6 +384,22 @@
 									<xsl:value-of select="$title-list-figures"/>
 								</fo:bookmark-title>
 								<xsl:for-each select="$contents//mnx:figures/mnx:figure">
+									<fo:bookmark internal-destination="{@id}">
+										<xsl:variable name="title">
+											<xsl:apply-templates select="mn:name | mn:fmt-name" mode="bookmarks"/>
+										</xsl:variable>
+										<fo:bookmark-title><xsl:value-of select="$title"/></fo:bookmark-title>
+									</fo:bookmark>
+								</xsl:for-each>
+							</fo:bookmark>
+						</xsl:if>
+						
+						<xsl:if test="$contents//mnx:examples/mnx:example">
+							<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
+								<fo:bookmark-title>
+									<xsl:value-of select="$title-list-examples"/>
+								</fo:bookmark-title>
+								<xsl:for-each select="$contents//mnx:examples/mnx:example">
 									<fo:bookmark internal-destination="{@id}">
 										<xsl:variable name="title">
 											<xsl:apply-templates select="mn:name | mn:fmt-name" mode="bookmarks"/>
@@ -1056,6 +1072,18 @@
 					</xsl:call-template>
 					<fo:block-container line-height="130%" role="TOC">
 						<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:figures/mnx:figure">
+							<xsl:call-template name="insertListOf_Item"/>
+						</xsl:for-each>
+					</fo:block-container>
+				</xsl:if>
+				
+				<!-- List of Examples -->
+				<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:examples/mnx:example">
+					<xsl:call-template name="insertListOf_Title">
+						<xsl:with-param name="title" select="$title-list-examples"/>
+					</xsl:call-template>
+					<fo:block-container line-height="130%" role="TOC">
+						<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:examples/mnx:example">
 							<xsl:call-template name="insertListOf_Item"/>
 						</xsl:for-each>
 					</fo:block-container>

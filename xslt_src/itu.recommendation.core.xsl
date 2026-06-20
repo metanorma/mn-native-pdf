@@ -1972,6 +1972,19 @@
 								</xsl:if>
 								<xsl:call-template name="insertListOf_Item"/>
 							</xsl:for-each>
+							
+							<!-- List of Examples -->
+							<xsl:for-each select="$contents//mnx:examples/mnx:example">
+								<xsl:if test="position() = 1">
+									<xsl:call-template name="insertListOf_Title">
+										<xsl:with-param name="title" select="$title-list-examples"/>
+									</xsl:call-template>
+									<fo:block margin-top="6pt" text-align="end" font-weight="bold" keep-with-next="always">
+										<xsl:value-of select="$i18n_page"/>
+									</fo:block>
+								</xsl:if>
+								<xsl:call-template name="insertListOf_Item"/>
+							</xsl:for-each>
 						
 						</xsl:if>
 					</fo:block>
