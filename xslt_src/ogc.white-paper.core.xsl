@@ -489,6 +489,7 @@
 						<fo:block font-size="11pt" margin-top="8pt">&#xA0;</fo:block>
 						<fo:block font-size="11pt" margin-top="8pt">&#xA0;</fo:block>							
 						<fo:block xsl:use-attribute-sets="toc-title-style">
+							<xsl:call-template name="refine_toc-title-style"/>
 							<!-- <xsl:text>Table of Figures</xsl:text> -->
 							<xsl:call-template name="getLocalizedString">
 								<xsl:with-param name="key">table_of_figures</xsl:with-param>
@@ -513,6 +514,7 @@
 
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<fo:block xsl:use-attribute-sets="toc-title-style" role="H1">
+			<xsl:call-template name="refine_toc-title-style"/>
 			<!-- <xsl:call-template name="getTitle">
 				<xsl:with-param name="name" select="'title-toc'"/>
 			</xsl:call-template> -->

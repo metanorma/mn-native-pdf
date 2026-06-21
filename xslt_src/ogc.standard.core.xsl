@@ -1129,6 +1129,7 @@
 		<fo:block-container margin-left="-18mm" margin-bottom="40pt">
 			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 				<fo:block xsl:use-attribute-sets="toc-title-style">
+					<xsl:call-template name="refine_toc-title-style"/>
 					<xsl:call-template name="addLetterSpacing">
 						<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new($title-toc))"/>
 						<xsl:with-param name="letter-spacing" select="1.1"/>
