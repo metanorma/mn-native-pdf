@@ -487,6 +487,7 @@
 
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<fo:block xsl:use-attribute-sets="toc-title-style">
+			<xsl:call-template name="refine_toc-title-style"/>
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>

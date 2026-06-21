@@ -1440,6 +1440,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 	
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<fo:block xsl:use-attribute-sets="toc-title-style">
+			<xsl:call-template name="refine_toc-title-style"/>
 			<xsl:call-template name="addLetterSpacing">
 				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(.))"/>
 			</xsl:call-template>

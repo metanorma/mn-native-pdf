@@ -89,6 +89,18 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 			<xsl:attribute name="margin-bottom">82pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="font-size">18pt</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'pas'">
+			<xsl:attribute name="span">all</xsl:attribute>
+			<xsl:attribute name="font-size">31pt</xsl:attribute>
+			<xsl:attribute name="font-weight">300</xsl:attribute>
+			<xsl:attribute name="margin-bottom">12mm</xsl:attribute>
+			<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
@@ -175,6 +187,12 @@
 	</xsl:attribute-set>
 	
 	<xsl:template name="refine_toc-title-style">
+		<xsl:if test="$namespace = 'ieee'">
+			<xsl:if test="($current_template = 'standard' or $current_template = 'draft') and
+					($stage = 'published' or $stage = 'approved' or $stage_published = 'true')">
+				<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'jis'">
 			<xsl:if test="not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
@@ -192,6 +210,10 @@
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="font-family">Arial</xsl:attribute>
 			<xsl:attribute name="role">SKIP</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="keep-together.within-line">always</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
