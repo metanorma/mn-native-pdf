@@ -462,20 +462,18 @@
 		</xsl:for-each>
 	</xsl:template>
 
-
-
-	
 	<!-- default: ignore title in sections/p -->
 	<xsl:template match="mn:sections/mn:p[starts-with(@class, 'zzSTDTitle')]" priority="3" />
-	
-
 	
 	<xsl:template match="mn:pagebreak">
 		<fo:block break-after="page"/>
 		<fo:block>&#xA0;</fo:block>
 		<fo:block break-after="page"/>
 	</xsl:template>
-
+	
+	<xsl:template match="mn:pagebreak[ancestor::mn:table]" priority="2">
+		<fo:block break-after="page"/>
+	</xsl:template>
 	
 	<xsl:variable name="font_main_root_style">
 		<root-style xsl:use-attribute-sets="root-style">
