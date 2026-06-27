@@ -516,11 +516,10 @@
 			<xsl:attribute name="font-family">Arial</xsl:attribute>
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="$namespace = 'ogc'">							
+		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="text-align">left</xsl:attribute>
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
-			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
@@ -639,6 +638,12 @@
 				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="color_text_title">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_text_title</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:if test="$doctype = 'technical-report'">
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -695,7 +700,6 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'ogc'">
-			<xsl:attribute name="background-color"><xsl:value-of select="$color_table_header_row"/></xsl:attribute>
 			<xsl:attribute name="color">white</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
@@ -784,6 +788,13 @@
 				<xsl:attribute name="border-top">none</xsl:attribute>
 				<xsl:attribute name="border-bottom">none</xsl:attribute>
 			</xsl:if>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="color_table_header_row">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_table_header_row</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="background-color"><xsl:value-of select="$color_table_header_row"/></xsl:attribute>
 		</xsl:if>
 		
 		<xsl:call-template name="setNoBordersForTableList"/>
@@ -899,6 +910,12 @@
 	
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:variable name="number"><xsl:number/></xsl:variable>
+			<xsl:variable name="color_table_row_even">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_table_row_even</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="color_table_row_odd">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_table_row_odd</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:attribute name="background-color">
 				<xsl:choose>
 					<xsl:when test="$number mod 2 = 0"><xsl:value-of select="$color_table_row_even"/></xsl:when>

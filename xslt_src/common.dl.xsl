@@ -70,6 +70,9 @@
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:if test="not(ancestor::mn:sourcecode)">
 				<!-- <xsl:attribute name="border-left">1pt solid <xsl:value-of select="$color_design"/></xsl:attribute> -->
+				<xsl:variable name="color_dl_dt">
+					<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_dl_dt</xsl:with-param></xsl:call-template>
+				</xsl:variable>
 				<xsl:attribute name="background-color"><xsl:value-of select="$color_dl_dt"/></xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -160,7 +163,6 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">							
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
-			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="color">rgb(68, 84, 106)</xsl:attribute>
@@ -184,6 +186,12 @@
 	</xsl:attribute-set> <!-- dl-name-style -->
 	
 	<xsl:template name="refine_dl-name-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="color_text_title">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_text_title</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
 			<xsl:if test="ancestor::mn:tfoot and ../@key = 'true'">
 				<xsl:attribute name="margin-left">-<xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
@@ -203,6 +211,9 @@
 	<xsl:template name="refine_dd-cell-style">
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:if test="not(ancestor::mn:sourcecode)">
+				<xsl:variable name="color_dl_dd">
+					<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_dl_dd</xsl:with-param></xsl:call-template>
+				</xsl:variable>
 				<xsl:attribute name="background-color"><xsl:value-of select="$color_dl_dd"/></xsl:attribute>
 			</xsl:if>
 		</xsl:if>

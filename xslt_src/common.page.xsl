@@ -436,6 +436,12 @@
 				<xsl:attribute name="initial-page-number">3</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="color_main">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_main</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_main"/></xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="master-reference">
 				<xsl:text>document</xsl:text>
@@ -668,6 +674,10 @@
 				<xsl:text>document</xsl:text>
 				<xsl:call-template name="getPageSequenceOrientation"/>
 			</xsl:attribute>
+			<xsl:variable name="color_main">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_main</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_main"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="master-reference">

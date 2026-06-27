@@ -194,7 +194,6 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">							
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
-			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="color">rgb(68, 84, 106)</xsl:attribute>
@@ -218,6 +217,12 @@
 	</xsl:attribute-set> <!-- list-name-style -->
 	
 	<xsl:template name="refine_list-name-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="color_text_title">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_text_title</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:attribute-set name="list-item-style">
@@ -408,7 +413,7 @@
 				<label>•</label>
 			</xsl:when>
 			<xsl:when test="$namespace = 'ogc'">
-				<label color="{$color_design}">•</label>
+				<label>•</label> <!--  color="{$color_design}" -->
 			</xsl:when>
 			<xsl:when test="$namespace = 'ogc-white-paper'">
 				<label>&#x2014;</label> <!-- em dash -->
@@ -483,6 +488,12 @@
 	</xsl:template>
 	<xsl:template match="label" mode="ul_labels">
 		<xsl:copy-of select="@*[not(local-name() = 'level')]"/>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="color_design">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_design</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_design"/></xsl:attribute>
+		</xsl:if>
 		<xsl:value-of select="."/>
 	</xsl:template>
 

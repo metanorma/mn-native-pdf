@@ -212,7 +212,6 @@
 			<xsl:attribute name="keep-with-previous">always</xsl:attribute>
 		</xsl:if>		
 		<xsl:if test="$namespace = 'ogc'">
-			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 			<!-- <xsl:attribute name="margin-top">12pt</xsl:attribute> -->
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="space-after">12pt</xsl:attribute>
@@ -358,6 +357,13 @@
 			<xsl:if test="not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">IPAexGothic</xsl:attribute>
 			</xsl:if>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="color_text_title">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_text_title</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'plateau'">
