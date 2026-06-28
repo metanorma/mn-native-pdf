@@ -28,6 +28,9 @@
 	
 	<xsl:template name="refine_copyright-statement-style">
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '1989'">
 				<xsl:attribute name="font-size">8pt</xsl:attribute>
 			</xsl:if>
@@ -73,6 +76,9 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '1989'">
 					<xsl:attribute name="font-size">11pt</xsl:attribute>
 				</xsl:if>

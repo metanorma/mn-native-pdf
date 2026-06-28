@@ -211,6 +211,9 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="not(mn:fmt-name)">
 				<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			</xsl:if>
@@ -395,6 +398,9 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="*[local-name()='thead']">
 				<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 			</xsl:if>
@@ -619,6 +625,9 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$continued = 'true'">
 				<xsl:attribute name="margin-bottom">2pt</xsl:attribute>
 			</xsl:if>
@@ -1422,6 +1431,9 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="ancestor::mn:tfoot">
 				<xsl:attribute name="border">solid black 0</xsl:attribute>
 			</xsl:if>
@@ -1549,6 +1561,9 @@
 			<xsl:attribute name="border">0.75pt solid <xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="border-top"><xsl:value-of select="$table-border"/></xsl:attribute>
 			</xsl:if>
@@ -1692,6 +1707,9 @@
 	
 	<xsl:template name="refine_table-fn-style">
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 				<xsl:if test="position() = last()">
@@ -1790,6 +1808,9 @@
 			<xsl:attribute name="font-size">4.5pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="alignment-baseline">auto</xsl:attribute>
 				<xsl:attribute name="baseline-shift">15%</xsl:attribute>
@@ -2158,6 +2179,9 @@
 								$namespace = 'rsd'">
 					<fo:table table-layout="fixed" width="100%" xsl:use-attribute-sets="table-container-style" role="SKIP">
 						<xsl:if test="$namespace = 'iso'">
+							<xsl:variable name="layoutVersion">
+								<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+							</xsl:variable>
 							<xsl:if test="$layoutVersion = '1951'">
 								<xsl:attribute name="font-size">inherit</xsl:attribute>
 							</xsl:if>

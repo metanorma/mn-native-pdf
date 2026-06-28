@@ -386,6 +386,12 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="revision_date_num">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:call-template name="setBlockAttributes">
 				<!-- <xsl:with-param name="text_align_default">justify</xsl:with-param> -->
 				<xsl:with-param name="skip_text_align_default">true</xsl:with-param>

@@ -68,6 +68,9 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:if test="normalize-space(@width) != 'text-width'">
 					<xsl:attribute name="span">all</xsl:attribute>

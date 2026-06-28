@@ -661,6 +661,15 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="doctype">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="revision_date_num">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			
 			<xsl:if test="$level = 2">
 				<xsl:attribute name="font-size">12pt</xsl:attribute>

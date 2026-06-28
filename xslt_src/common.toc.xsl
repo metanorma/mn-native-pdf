@@ -56,6 +56,12 @@
 	<xsl:template name="refine_toc-style">
 		<xsl:copy-of select="@id"/>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="revision_date_num">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '1987'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 				<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -419,6 +425,9 @@
 			</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="@level = 1">
 				<xsl:attribute name="margin-top">5pt</xsl:attribute>
 			</xsl:if>

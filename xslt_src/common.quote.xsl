@@ -55,6 +55,9 @@
 	
 	<xsl:template name="refine_quote-style">
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="doctype">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$doctype = 'amendment' and (mn:note or mn:termnote)">
 				<xsl:attribute name="margin-left">7mm</xsl:attribute>
 				<xsl:attribute name="margin-right">0mm</xsl:attribute>

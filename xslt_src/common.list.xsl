@@ -382,6 +382,9 @@
 				<label level="3" font-size="75%">o</label> <!-- white circle -->
 			</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
+				<xsl:variable name="layoutVersion">
+					<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+				</xsl:variable>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
 						<label>&#x2013;</label> <!-- en dash -->
@@ -525,6 +528,9 @@
 						</xsl:if>
 						<xsl:if test="$type = 'alphabet'">
 							<xsl:if test="$namespace = 'iso'">
+								<xsl:variable name="layoutVersion">
+									<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+								</xsl:variable>
 								<xsl:if test="$layoutVersion = '1951'">(</xsl:if> <!-- Example: (a) -->
 							</xsl:if>
 						</xsl:if>
@@ -577,6 +583,9 @@
 				
 				<xsl:choose>
 					<xsl:when test="$namespace = 'iso'">
+						<xsl:variable name="layoutVersion">
+							<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+						</xsl:variable>
 						<xsl:choose>
 							<xsl:when test="$layoutVersion = '1951' and $type = 'alphabet'">(<fo:inline font-style="italic"><xsl:value-of select="@label"/></fo:inline>)</xsl:when>
 							<xsl:otherwise>
@@ -718,6 +727,9 @@
 						</fo:block-container>
 					</xsl:when>
 					<xsl:when test="$namespace = 'iso'">
+						<xsl:variable name="layoutVersion">
+							<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+						</xsl:variable>
 						<xsl:choose>
 							<xsl:when test="$layoutVersion = '1951' and self::mn:ul">
 								<fo:block-container margin-left="8mm">
@@ -893,6 +905,9 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '1951' and self::mn:ul">
 				<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
 			</xsl:if>

@@ -17,6 +17,9 @@
 	
 	<xsl:template name="refine_footnote-separator-block-style">
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>
@@ -43,6 +46,9 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="leader-length">51mm</xsl:attribute>
 				<xsl:attribute name="rule-thickness">0.5pt</xsl:attribute>
@@ -369,6 +375,12 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="revision_date_num">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '1951'">
 				<xsl:if test="$revision_date_num &gt;= 19680101">
 					<xsl:attribute name="font-size">9pt</xsl:attribute>
@@ -555,6 +567,9 @@
 		<xsl:variable name="current_fn_number_text">
 			<xsl:choose>
 				<xsl:when test="$namespace = 'iso'">
+					<xsl:variable name="layoutVersion">
+						<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+					</xsl:variable>
 					<xsl:choose>
 						<xsl:when test="$layoutVersion = '1951' and translate($current_fn_number, '0123456789', '') = ''">
 							<!-- replace number to asterisks -->
@@ -607,6 +622,9 @@
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'iso'">
+					<xsl:variable name="layoutVersion">
+						<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+					</xsl:variable>
 					<xsl:if test="$layoutVersion = '2024'">
 						<xsl:attribute name="font-size">70%</xsl:attribute>
 					</xsl:if>

@@ -187,7 +187,7 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
+	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
 	<xsl:template match="mn:indexsect" />
 	<xsl:template match="/" mode="index">
 		<xsl:param name="num"/>
@@ -195,6 +195,8 @@
 			<xsl:with-param name="num" select="$num"/>
 		</xsl:apply-templates>
 	</xsl:template>
+	</xsl:if>
+	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
 	<xsl:template match="mn:indexsect" mode="index">
 		<xsl:param name="num"/>
 		<fo:page-sequence master-reference="index" force-page-count="no-force">

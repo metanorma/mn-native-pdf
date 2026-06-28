@@ -62,6 +62,9 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="(ancestor::mn:copyright-statement and contains(@target, 'mailto:')) or
 							($layoutVersion = '2024' and ancestor::mn:fmt-termsource)">
 				<xsl:attribute name="color">inherit</xsl:attribute>

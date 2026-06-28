@@ -67,6 +67,9 @@
 			</xsl:if>
 			<xsl:if test="$namespace = 'ieee'">1</xsl:if>
 			<xsl:if test="$namespace = 'iso'">
+				<xsl:variable name="layoutVersion">
+					<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+				</xsl:variable>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">2</xsl:when>
 					<xsl:when test="$depth = 2">3</xsl:when>
@@ -162,6 +165,9 @@
 		</xsl:variable>
 		
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '1951' and $depth = 1">.</xsl:if>
 		</xsl:if>
 		<xsl:choose>

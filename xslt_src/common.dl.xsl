@@ -116,6 +116,9 @@
 	
 	<xsl:template name="refine_dt-block-style">
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="margin-bottom">9pt</xsl:attribute>
 			</xsl:if>

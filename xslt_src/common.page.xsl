@@ -81,6 +81,9 @@
 			<xsl:when test="$namespace = 'ieee'">31.7</xsl:when>
 			<xsl:when test="$namespace = 'iho'">24.5</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
+				<xsl:variable name="layoutVersion">
+					<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+				</xsl:variable>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">36</xsl:when>
 					<xsl:when test="$layoutVersion = '2024'">15.2</xsl:when>
@@ -127,6 +130,9 @@
 			<xsl:when test="$namespace = 'ieee'">31.7</xsl:when>
 			<xsl:when test="$namespace = 'iho'">25</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
+				<xsl:variable name="layoutVersion">
+					<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+				</xsl:variable>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">29</xsl:when>
 					<xsl:when test="$layoutVersion = '2024'">15.2</xsl:when>
@@ -172,6 +178,9 @@
 			<xsl:when test="$namespace = 'ieee'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
+				<xsl:variable name="layoutVersion">
+					<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+				</xsl:variable>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '2024'">23.5</xsl:when>
 					<xsl:otherwise>27.4</xsl:otherwise>
@@ -216,6 +225,9 @@
 			<xsl:when test="$namespace = 'ieee'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
+				<xsl:variable name="layoutVersion">
+					<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+				</xsl:variable>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">25.5</xsl:when>
 					<xsl:when test="$layoutVersion = '2024'">19.5</xsl:when>

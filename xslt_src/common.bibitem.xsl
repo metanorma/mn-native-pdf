@@ -85,6 +85,9 @@
 	
 	<xsl:template name="refine_bibliography-title-style">
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">14pt</xsl:attribute>
 				<xsl:attribute name="span">all</xsl:attribute>
@@ -200,6 +203,9 @@
 	
 	<xsl:template name="refine_bibitem-normative-style">
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 			</xsl:if>
@@ -430,6 +436,9 @@
 	
 	<xsl:template name="refine_bibitem-non-normative-list-item-style">
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 			</xsl:if>

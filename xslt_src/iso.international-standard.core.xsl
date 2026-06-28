@@ -28,21 +28,6 @@
 	
 	<xsl:variable name="debug">false</xsl:variable>
 	
-	<xsl:variable name="revision_date" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:version/mn:revision-date)"/>
-	<xsl:variable name="revision_date_num" select="number(translate($revision_date,'-',''))"/>
-	
-	<!-- TO DO: move inside 'variables' -->
-	<xsl:variable name="layoutVersion_">
-		<xsl:choose>
-			<xsl:when test="$document_scheme = ''">2024</xsl:when>
-			<xsl:when test="$document_scheme = '1951' or $document_scheme = '1972' or $document_scheme = '1979' or $document_scheme = '1987' or $document_scheme = '1989' or $document_scheme = '2012' or $document_scheme = '2013' or $document_scheme = '2024'"><xsl:value-of select="$document_scheme"/></xsl:when>
-			<xsl:otherwise>default</xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-	<xsl:variable name="layoutVersion" select="normalize-space($layoutVersion_)"/>
-	
-	<xsl:variable name="doctype" select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:doctype"/>
-	
 	<xsl:variable name="variables_">
 		<xsl:for-each select="//mn:metanorma">
 			<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
@@ -54,6 +39,21 @@
 			<xsl:for-each select="xalan:nodeset($current_document)">
 				<mnx:doc num="{$num}">
 					<!-- <mnx:variables> -->
+					
+						<!---examples: 2013, 2024 -->
+						<xsl:variable name="document_scheme" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:document-scheme)"/>
+					
+						<xsl:variable name="layoutVersion_">
+							<xsl:choose>
+								<xsl:when test="$document_scheme = ''">2024</xsl:when>
+								<xsl:when test="$document_scheme = '1951' or $document_scheme = '1972' or $document_scheme = '1979' or $document_scheme = '1987' or $document_scheme = '1989' or $document_scheme = '2012' or $document_scheme = '2013' or $document_scheme = '2024'"><xsl:value-of select="$document_scheme"/></xsl:when>
+								<xsl:otherwise>default</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<xsl:variable name="layoutVersion" select="normalize-space($layoutVersion_)"/>
+						<layoutVersion><xsl:value-of select="$layoutVersion"/></layoutVersion>
+					
+						<isAuthorOrganizationAbbreviationISO><xsl:value-of select="normalize-space(/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'author']/mn:organization/mn:abbreviation = 'ISO')"/></isAuthorOrganizationAbbreviationISO>
 					
 						<i18n_reference_number_abbrev><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number_abbrev</xsl:with-param></xsl:call-template></i18n_reference_number_abbrev>
 						<i18n_reference_number><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">reference_number</xsl:with-param></xsl:call-template></i18n_reference_number>
@@ -288,9 +288,6 @@
 						<stagename_localized_firstpage><xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:status/mn:stage[@language = $lang and @type = 'firstpage']/node()"/></stagename_localized_firstpage>
 						
 						
-						
-						
-
 						<xsl:variable name="stage-fullname">
 							<xsl:choose>
 								<xsl:when test="$stagename_localized != ''"> <!--  and $layoutVersion != '2024' -->
@@ -487,15 +484,6 @@
 						<revision_date><xsl:value-of select="$revision_date"/></revision_date>
 						<revision_date_num><xsl:value-of select="number(translate($revision_date,'-',''))"/></revision_date_num>
 						
-						<xsl:variable name="layoutVersion_">
-							<xsl:choose>
-								<xsl:when test="$document_scheme = ''">2024</xsl:when>
-								<xsl:when test="$document_scheme = '1951' or $document_scheme = '1972' or $document_scheme = '1979' or $document_scheme = '1987' or $document_scheme = '1989' or $document_scheme = '2012' or $document_scheme = '2013' or $document_scheme = '2024'"><xsl:value-of select="$document_scheme"/></xsl:when>
-								<xsl:otherwise>default</xsl:otherwise>
-							</xsl:choose>
-						</xsl:variable>
-						<layoutVersion><xsl:value-of select="normalize-space($layoutVersion_)"/></layoutVersion>
-						
 						<xsl:variable name="color_secondary_value" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:color-secondary)"/>
 						<color_secondary>
 							<xsl:choose>
@@ -510,6 +498,12 @@
 		</xsl:for-each>
 	</xsl:variable>
 	<xsl:variable name="variables" select="xalan:nodeset($variables_)"/>
+	
+	<xsl:template name="getVariable">
+		<xsl:param name="variable"/>
+		<xsl:variable name="num" select="number(java:org.metanorma.fop.global.Variables.getVariable('num'))"/>
+		<xsl:value-of select="$variables/mnx:doc[@num = $num]/*[local-name() = $variable]"/>
+	</xsl:template>
 	
 	<xsl:variable name="COLUMN_GAP">8.5mm</xsl:variable>
 	
@@ -757,6 +751,13 @@
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
 			
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="doctype">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			
 			<!-- first page -->
 			<fo:simple-page-master master-name="preface_firstpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
 				<fo:region-body margin-top="{$marginTop}mm" margin-bottom="{$marginBottom}mm" margin-left="{$marginLeftRight2}mm" margin-right="{$marginLeftRight1}mm" column-count="{$layout_columns}" column-gap="{$COLUMN_GAP}"/>
@@ -963,30 +964,7 @@
 			<xsl:variable name="root-style">
 				<root-style xsl:use-attribute-sets="root-style">
 				
-					<xsl:if test="$layoutVersion = '1951'">
-						<xsl:attribute name="font-size">10pt</xsl:attribute>
-						<xsl:if test="$revision_date_num &gt;= 19680101">
-							<xsl:attribute name="font-size">9pt</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-				
-					<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979'">
-						<xsl:attribute name="font-family">Univers, Times New Roman, Cambria Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
-						<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
-						<xsl:attribute name="font-size">10pt</xsl:attribute>
-						<xsl:if test="$layout_columns = 2">
-							<xsl:attribute name="font-size">9pt</xsl:attribute>
-						</xsl:if>
-					</xsl:if>
-					<xsl:if test="$layoutVersion = '1987' or $layoutVersion = '1989'">
-						<xsl:attribute name="font-family">Arial, Times New Roman, Cambria Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
-						<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
-						<xsl:attribute name="font-size">10pt</xsl:attribute>
-					</xsl:if>
-					
-					<xsl:if test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))">
-						<xsl:attribute name="font-size">8.5pt</xsl:attribute>
-					 </xsl:if>
+					<!-- <xsl:call-template name="refinePageSequenceCommon"/> -->
 					
 					<xsl:if test="$lang = 'zh'">
 						<!-- <xsl:attribute name="font-family">Source Han Sans, Times New Roman, Cambria Math</xsl:attribute> -->
@@ -997,10 +975,6 @@
 			<xsl:call-template name="insertRootStyle">
 				<xsl:with-param name="root-style" select="$root-style"/>
 			</xsl:call-template>
-			
-			<xsl:if test="$layoutVersion = '2024' and /mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'author']/mn:organization/mn:abbreviation = 'ISO'">
-				<xsl:attribute name="color">rgb(35,31,32)</xsl:attribute>
-			</xsl:if>
 			
 			<xsl:if test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:linenumbers = 'true'">
 				<xsl:processing-instruction name="add_line_numbers">true</xsl:processing-instruction>
@@ -1050,6 +1024,8 @@
 			<xsl:for-each select="xalan:nodeset($updated_xml)//mn:metanorma">
 				<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
 			
+				<xsl:variable name="setVariable" select="java:org.metanorma.fop.global.Variables.setVariable('num', $num)"/>
+			
 				<xsl:variable name="current_document">
 					<xsl:copy-of select="."/>
 				</xsl:variable>
@@ -1075,6 +1051,7 @@
 				</xsl:if>
 			
 				<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+				<xsl:variable name="doctype" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
 				<xsl:variable name="revision_date" select="$variables/mnx:doc[@num = $num]/revision_date"/>
 				<xsl:variable name="revision_date_num" select="$variables/mnx:doc[@num = $num]/revision_date_num"/>
 				<xsl:variable name="ISOnumber" select="$variables/mnx:doc[@num = $num]/ISOnumber"/>
@@ -1095,6 +1072,7 @@
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
 						<fo:page-sequence master-reference="document{$document-master-reference_addon}" initial-page-number="auto" force-page-count="no-force">
+							<xsl:call-template name="refinePageSequenceCommon"/>
 							
 							<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 							
@@ -1125,6 +1103,7 @@
 					
 					<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))">
 						<fo:page-sequence master-reference="preface-1987_TR" force-page-count="no-force" xsl:use-attribute-sets="page-sequence-preface">
+							<xsl:call-template name="refinePageSequenceCommon"/>
 							<xsl:call-template name="refine_page-sequence-preface"/>
 							
 							<xsl:call-template name="insertHeaderFooter">
@@ -1292,6 +1271,7 @@
 							<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 							
 								<fo:page-sequence force-page-count="no-force" xsl:use-attribute-sets="page-sequence-preface">
+									<xsl:call-template name="refinePageSequenceCommon"/>
 									<xsl:call-template name="refine_page-sequence-preface"/>
 								
 									<xsl:attribute name="master-reference">
@@ -1359,6 +1339,7 @@
 				
 						<!-- BODY -->
 						<fo:page-sequence force-page-count="no-force" xsl:use-attribute-sets="page-sequence-main">
+							<xsl:call-template name="refinePageSequenceCommon"/>
 							<xsl:call-template name="refine_page-sequence-main">
 								<xsl:with-param name="layoutVersion" select="$layoutVersion"/>
 							</xsl:call-template>
@@ -1538,6 +1519,9 @@
 	
 
 	<xsl:template name="printAddendumTitle">
+		<xsl:variable name="doctype">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($doctype))"/>
 		<xsl:text>&#xa0;</xsl:text>
 		<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@addendum"/>
@@ -1571,6 +1555,10 @@
 			
 		<!-- <xsl:if test="$debug = 'true'"><xsl:message>START updated_xml_step_move_pagebreak</xsl:message></xsl:if>
 		<xsl:variable name="startTime1" select="java:getTime(java:java.util.Date.new())"/> -->
+		
+		<xsl:variable name="doctype">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		
 		<xsl:variable name="updated_xml_step_move_pagebreak">
 			<xsl:element name="{$root_element}" namespace="{$namespace_full}">
@@ -1633,6 +1621,7 @@
 		<xsl:if test="$isGenerateTableIF = 'false'"> <!-- no need cover page for auto-layout algorithm -->
 		
 			<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+			<xsl:variable name="doctype" select="$variables/mnx:doc[@num = $num]/doctype"/>
 			<xsl:variable name="revision_date_num" select="$variables/mnx:doc[@num = $num]/revision_date_num"/>
 			<xsl:variable name="docnumber_with_prefix" select="$variables/mnx:doc[@num = $num]/docnumber_with_prefix"/>
 			<xsl:variable name="docidentifierISO" select="$variables/mnx:doc[@num = $num]/docidentifierISO"/>
@@ -1681,6 +1670,7 @@
 				
 				<xsl:when test="$layoutVersion = '1951'">
 					<fo:page-sequence master-reference="cover-page_1951" force-page-count="no-force" initial-page-number="1">
+						<xsl:call-template name="refinePageSequenceCommon"/>
 						<fo:static-content flow-name="cover-page-header" font-family="Times New Roman" font-size="8.5pt" font-weight="bold">
 							<xsl:if test="$revision_date_num &lt; 19680101">
 								<xsl:attribute name="font-family">Arial</xsl:attribute>
@@ -1775,6 +1765,7 @@
 				
 				<xsl:when test="$layoutVersion = '1972' or ($layoutVersion = '1979' and not($doctype = 'addendum'))">
 					<fo:page-sequence master-reference="cover-page_1972" force-page-count="no-force" initial-page-number="1">
+						<xsl:call-template name="refinePageSequenceCommon"/>
 						<fo:static-content flow-name="cover-page-footer" font-size="7pt">
 							<xsl:call-template name="insertSingleLine"/>
 							<fo:block font-size="11pt" font-weight="bold" text-align-last="justify" margin-right="1mm">
@@ -1913,6 +1904,7 @@
 				<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))"><!-- see preface pages below --></xsl:when>
 				<xsl:when test="$layoutVersion = '1987'">
 					<fo:page-sequence master-reference="cover-page_1987" force-page-count="no-force" initial-page-number="1">
+						<xsl:call-template name="refinePageSequenceCommon"/>
 						<fo:static-content flow-name="right-region" >
 							<fo:block-container height="50%">
 								<fo:block-container margin-top="8mm" margin-left="2mm">
@@ -1997,6 +1989,7 @@
 			
 				<xsl:when test="$layoutVersion = '2024'">
 					<fo:page-sequence master-reference="cover-page_2024" force-page-count="no-force" initial-page-number="1">
+						<xsl:call-template name="refinePageSequenceCommon"/>
 						<fo:flow flow-name="xsl-region-body">
 							<xsl:call-template name="insert_firstpage_id"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 							
@@ -2404,6 +2397,7 @@
 				
 				<xsl:when test="$stage-abbreviation != ''">
 					<fo:page-sequence master-reference="cover-page" force-page-count="no-force" initial-page-number="1">
+						<xsl:call-template name="refinePageSequenceCommon"/>
 						<fo:static-content flow-name="cover-page-footer" font-size="10pt">
 							<xsl:if test="$layoutVersion = '1989'">
 								<xsl:attribute name="font-size">9pt</xsl:attribute>
@@ -2923,6 +2917,7 @@
 					
 				<xsl:when test="$isPublished = 'true'">
 					<fo:page-sequence master-reference="cover-page-published" force-page-count="no-force" initial-page-number="1">
+						<xsl:call-template name="refinePageSequenceCommon"/>
 						<fo:static-content flow-name="cover-page-footer" font-size="10pt">
 							<xsl:call-template name="insertTripleLine"/>
 							<fo:table table-layout="fixed" width="100%" margin-bottom="3mm" role="SKIP">
@@ -3024,6 +3019,7 @@
 				</xsl:when> <!-- $isPublished = 'true' -->
 				<xsl:otherwise>
 					<fo:page-sequence master-reference="cover-page-nonpublished" force-page-count="no-force" initial-page-number="1">
+						<xsl:call-template name="refinePageSequenceCommon"/>
 						<fo:static-content flow-name="cover-page-header" font-size="10pt">
 							<fo:block-container height="24mm" display-align="before">
 								<fo:block padding-top="12.5mm">
@@ -3133,9 +3129,17 @@
 	<xsl:template name="inner-cover-page">
 		<xsl:param name="num"/>
 		
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="revision_date_num">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		
 		<xsl:if test="normalize-space(/mn:metanorma/mn:boilerplate/mn:copyright-statement) != ''">
 		
 			<fo:page-sequence force-page-count="no-force" xsl:use-attribute-sets="page-sequence-preface">
+				<xsl:call-template name="refinePageSequenceCommon"/>
 				<xsl:call-template name="refine_page-sequence-preface"/>
 				<!-- The first instance of a running page header should be tagged - later instances should be marked as Artifact. -->
 				<xsl:variable name="document-master-reference_addon" select="$variables/mnx:doc[@num = $num]/document-master-reference_addon"/>
@@ -3227,6 +3231,9 @@
 	<xsl:template match="mn:preface/mn:introduction" mode="update_xml_step1" priority="3">
 		<xsl:param name="num"/>
 		<xsl:param name="process">false</xsl:param>
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'">
 				<xsl:if test="$process = 'true'">
@@ -3251,6 +3258,9 @@
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" mode="update_xml_step1"/>
 		</xsl:copy>
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:if test="$layoutVersion = '1951'">
 			<xsl:apply-templates select="../../mn:preface/mn:introduction" mode="update_xml_step1">
 				<xsl:with-param name="process">true</xsl:with-param>
@@ -3260,6 +3270,9 @@
 		
 	<!-- transform NOTE to Note for smallcaps feature working -->
 	<xsl:template match="mn:note/mn:name/text() | mn:example/mn:name/text() | mn:note/mn:fmt-name/text() | mn:example/mn:fmt-name/text()" mode="update_xml_step1" priority="3">
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'"> <!--  and $revision_date_num &lt; 19680101 -->
 				<xsl:value-of select="substring(., 1, 1)"/>
@@ -3340,6 +3353,12 @@
 	<xsl:template name="insertLogoImage">
 		<xsl:param name="num"/>
 		<xsl:param name="content-height"/>
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="revision_date_num">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="mn:logo/mn:image">
 				<xsl:apply-templates select="mn:logo/mn:image"/>
@@ -3548,6 +3567,9 @@
 				<xsl:call-template name="printEdition"/>
 			</xsl:if>
 		</xsl:variable>
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:value-of select="$edition"/>
 		<xsl:variable name="date">
 			<xsl:choose>
@@ -3663,6 +3685,9 @@
 		<xsl:variable name="stagename_abbreviation" select="$variables/mnx:doc[@num = $num]/stagename_abbreviation"/>
 		<xsl:variable name="i18n_fast_track_procedure" select="$variables/mnx:doc[@num = $num]/i18n_fast_track_procedure"/>
 		<xsl:variable name="i18n_iso_cen_parallel" select="$variables/mnx:doc[@num = $num]/i18n_iso_cen_parallel"/>
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:if test="$stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FCD' or 
 											$stage-abbreviation = 'DIS' or $stage-abbreviation = 'FDIS' or $stage-abbreviation = 'DAMD' or $stage-abbreviation = 'DAM' or $stagename_abbreviation = 'DIS' or $stagename_abbreviation = 'FDIS'">
 			<xsl:variable name="text">
@@ -3740,6 +3765,12 @@
 	
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" name="toc" priority="3">
 		<xsl:param name="num"/>
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="doctype">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$isGenerateTableIF = 'true'"/>
 			<xsl:when test="$toc_level = 0"/>
@@ -3942,6 +3973,9 @@
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']/mn:fmt-title" priority="3">
 		<xsl:param name="num"/>
 		<xsl:variable name="i18n_locality_page" select="$variables/mnx:doc[@num = $num]/i18n_locality_page"/>
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<fo:block xsl:use-attribute-sets="toc-title-style">
 			<xsl:call-template name="refine_toc-title-style"/>
 			<xsl:if test="$layoutVersion = '2024'">
@@ -4022,6 +4056,9 @@
 	<!-- display titles       -->
 	<!-- ==================== -->
 	<xsl:template match="mn:bibdata/mn:title[@type = 'title-intro']">
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'">
 				<fo:block text-transform="uppercase"><xsl:apply-templates /></fo:block>
@@ -4035,6 +4072,12 @@
 
 	<xsl:template match="mn:bibdata/mn:title[@type = 'title-main']">
 		<xsl:param name="body">false</xsl:param>
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="revision_date_num">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'">
 				<fo:block text-transform="uppercase" font-weight="bold" margin-top="5mm">
@@ -4068,6 +4111,9 @@
 		<xsl:param name="isMainLang">false</xsl:param>
 		<xsl:variable name="part" select="$variables/mnx:doc[@num = $num]/part"/>
 		<!-- <xsl:variable name="i18n_locality_part" select="$variables/mnx:doc[@num = $num]/i18n_locality_part"/> -->
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$part != ''">
 				<!-- <xsl:text> — </xsl:text> -->
@@ -4154,6 +4200,9 @@
 		<xsl:param name="isMainBody">false</xsl:param>
 		<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
 		<xsl:variable name="doctype_uppercased" select="$variables/mnx:doc[@num = $num]/doctype_uppercased"/>
+		<xsl:variable name="doctype">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:if test="$doctype = 'amendment'">
 			<fo:block margin-right="-5mm" margin-top="6pt" role="H1">
 				<xsl:if test="$isMainLang = 'true'">
@@ -4185,6 +4234,15 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:sections//mn:p[@class = 'zzSTDTitle1']" priority="4">
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="doctype">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="revision_date_num">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'">
 				<fo:block font-size="13pt" font-weight="bold" text-align="center" margin-top="49mm" margin-bottom="20mm" text-transform="uppercase" line-height="1.1" role="P/Title">
@@ -4253,6 +4311,9 @@
 	
 	<xsl:template match="mn:sections//mn:p[@class = 'zzSTDTitle1']/mn:span[@class = 'nonboldtitle']" priority="3">
 		<!-- Example: <span class="nonboldtitle">Part 1:</span> -->
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979'">
 				<fo:inline font-weight="bold" role="SKIP">
@@ -4268,12 +4329,18 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:sections//mn:p[@class = 'zzSTDTitle2']" priority="4">
+		<xsl:variable name="doctype">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<!-- Example: <p class="zzSTDTitle2" displayorder="3">AMENDMENT 1: Mass fraction of extraneous matter, milled rice (nonglutinous), sample dividers and recommendations relating to storage and transport conditions</p> -->
 		<xsl:if test="$doctype = 'amendment'">
 			<fo:block font-size="18pt" margin-top="12pt" margin-bottom="20pt" margin-right="0mm" font-weight="normal" line-height="1.1" role="P/Title">
+				<xsl:variable name="layoutVersion">
+					<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+				</xsl:variable>
 				<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
-				<xsl:attribute name="font-size">16pt</xsl:attribute>
-			</xsl:if>
+					<xsl:attribute name="font-size">16pt</xsl:attribute>
+				</xsl:if>
 				<!-- <xsl:if test="$layoutVersion = '2024'">
 					<xsl:attribute name="font-size">17.2pt</xsl:attribute>
 				</xsl:if> -->
@@ -4391,6 +4458,9 @@
 
 	<xsl:template match="mn:strong/text()" mode="contents_item">
 		<xsl:param name="element"/>
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1987' and $element = 'annex' and not(../preceding-sibling::node())"> <!-- omit Annex -->
 					<xsl:value-of select="substring-after(., ' ')"/><xsl:text>&#xa0;&#xa0;</xsl:text>
@@ -4403,6 +4473,9 @@
 	
 	<xsl:template match="mn:span[@class = 'obligation']/text()" mode="contents_item">
 		<xsl:param name="element"/>
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1987' and $element = 'annex'"></xsl:when>
 			<xsl:otherwise>
@@ -4430,6 +4503,9 @@
 			</fo:block> -->
 	
 	<xsl:template match="mn:copyright-statement/mn:clause[1]/mn:fmt-title" priority="2">
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'">
 				<fo:block><xsl:apply-templates /></fo:block> <!--  font-weight="bold" -->
@@ -4473,6 +4549,12 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:copyright-statement//mn:p" priority="2">
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="doctype">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'">
 				<xsl:choose>
@@ -4547,6 +4629,16 @@
 		</xsl:variable>
 		
 		<xsl:variable name="title_styles"><styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"><xsl:with-param name="element-name" select="$element-name"/></xsl:call-template></styles></xsl:variable>
+		
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="doctype">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="revision_date_num">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		
 		<xsl:choose>
 			<xsl:when test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum')) and parent::mn:foreword"><!-- skip Foreword title --></xsl:when>
@@ -4684,6 +4776,9 @@
 	
 	<xsl:template match="mn:fmt-title[../@inline-header = 'true'][following-sibling::*[1][self::mn:p]]" priority="3">
 		<xsl:param name="without_number">false</xsl:param>
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1"/> <!-- don't show 'title' with inline-header='true' if next element is 'p' -->
 			<xsl:otherwise>
@@ -4698,6 +4793,9 @@
 	<!-- ====== -->
 
 	<xsl:template match="mn:clause[normalize-space() != '' or mn:figure]" priority="2">
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and
 				self::mn:clause and count(node()) = 0 and following-sibling::*[1][self::mn:fmt-title and not(@id)]"></xsl:when> <!-- @id will be added to title -->
@@ -4736,6 +4834,10 @@
 			
 			<xsl:copy-of select="$p_styles/styles/@*"/>
 			
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+		
 			<!-- put inline title in the first paragraph -->
 			<xsl:if test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989') and $layout_columns != 1">
 				<!-- <xsl:if test="preceding-sibling::*[1]/@inline-header = 'true' and preceding-sibling::*[1][self::mn:title]"> -->
@@ -4824,6 +4926,9 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:note/mn:fmt-name/text()" priority="5">
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951' and not(translate(.,'0123456789','') = .)"> <!-- NOTE with number -->
 				<fo:inline padding-right="2mm" role="SKIP">
@@ -4843,6 +4948,9 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:example/mn:fmt-name/text()" priority="5">
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951'"> <!--  and $revision_date_num &lt; 19610101 -->
 				<xsl:call-template name="smallcaps"/>
@@ -4853,6 +4961,9 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:figure/mn:fmt-name/text()" priority="5">
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951' and not(ancestor::mn:figure[1]/@unnumbered = 'true') and not(preceding-sibling::node())">
 				<xsl:choose>
@@ -4871,6 +4982,9 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:table/mn:fmt-name/text()" priority="5">
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951' and not(ancestor::mn:table[1]/@unnumbered = 'true') and not(preceding-sibling::node())">
 				<xsl:choose>
@@ -4916,6 +5030,13 @@
 			
 			<xsl:call-template name="addTagElementT"/>
 			
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="revision_date_num">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+			
 			<xsl:if test="$layoutVersion = '1951' and $revision_date_num &gt;= 19680101">
 				<xsl:attribute name="space-before">6pt</xsl:attribute>
 				<xsl:if test="self::mn:introduction">
@@ -4957,6 +5078,12 @@
 			<xsl:call-template name="getLevel">
 				<xsl:with-param name="depth" select="mn:fmt-title/@depth"/>
 			</xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="revision_date_num">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
 		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1951' and ($revision_date_num &gt;= 19690101 or $level &gt;= 2) and ancestor::*[self::mn:sections or self::mn:annex] and not(self::mn:introduction)">
@@ -5024,6 +5151,7 @@
 	<xsl:template match="mn:indexsect" mode="index">
 		<xsl:param name="num"/>
 		<fo:page-sequence master-reference="index" force-page-count="no-force">
+			<xsl:call-template name="refinePageSequenceCommon"/>
 			<!-- <xsl:variable name="header-title">
 				<xsl:choose>
 					<xsl:when test="./mn:title[1]/mn:tab">
@@ -5053,6 +5181,9 @@
 	
 	
 	<xsl:template match="mn:xref | mn:fmt-xref" priority="2">
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:call-template name="insert_basic_link">
 			<xsl:with-param name="element">
 				<fo:basic-link internal-destination="{@target}" fox:alt-text="{@target}" xsl:use-attribute-sets="xref-style">
@@ -5093,6 +5224,9 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:sup[mn:fmt-xref[@type = 'footnote']]" priority="2">
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<fo:inline font-size="80%">
 			<xsl:choose>
 				<xsl:when test="$layoutVersion = '2024'">
@@ -5164,6 +5298,10 @@
 		<xsl:param name="is_header">true</xsl:param>
 		<xsl:param name="border_around_page">false</xsl:param>
 		<xsl:param name="insert_header_first">true</xsl:param>
+		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+		<xsl:variable name="doctype">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:call-template name="insertHeaderEven">
 			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="border_around_page" select="$border_around_page"/>
@@ -5187,6 +5325,10 @@
 		<xsl:param name="font-weight" select="'bold'"/>
 		<xsl:param name="is_footer">false</xsl:param>
 		<xsl:param name="insert_footer_last">true</xsl:param>
+		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+		<xsl:variable name="revision_date_num">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:if test="($layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or ($layoutVersion = '1989' and $revision_date_num &lt;= 19981231)) and $is_footer = 'true'">
 			<xsl:call-template name="insertFooterFirst1972_1998">
 				<xsl:with-param name="num" select="$num"/>
@@ -5205,18 +5347,26 @@
 	</xsl:template> <!-- END: insertFooter -->
 	
 	
-	<xsl:variable name="font-size_header">
+	<xsl:template name="get_font-size_header">
+		<xsl:param name="layoutVersion"/>
 		<xsl:choose>
 			<xsl:when test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">11pt</xsl:when>
 			<xsl:otherwise>12pt</xsl:otherwise>
 		</xsl:choose>
-	</xsl:variable>
+	</xsl:template>
+	
 	<xsl:template name="insertHeaderEven">
 		<xsl:param name="num"/>
 		<xsl:param name="is_header">true</xsl:param>
 		<xsl:param name="border_around_page">false</xsl:param>
 		<xsl:param name="header_region_name">header-even</xsl:param>
 		<xsl:variable name="ISOnumber" select="$variables/mnx:doc[@num = $num]/ISOnumber"/>
+		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+		<xsl:variable name="font-size_header">
+			<xsl:call-template name="get_font-size_header">
+				<xsl:with-param name="layoutVersion" select="$layoutVersion"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<fo:static-content flow-name="{$header_region_name}">
 			<xsl:choose>
 				<xsl:when test="$header_region_name = 'header-even'">
@@ -5268,6 +5418,12 @@
 		<xsl:variable name="stagename_localized_firstpage" select="$variables/mnx:doc[@num = $num]/stagename_localized_firstpage"/>
 		<xsl:variable name="stagename-header-firstpage" select="$variables/mnx:doc[@num = $num]/stagename-header-firstpage"/>
 		<xsl:variable name="stagename-header-firstpage-uppercased" select="$variables/mnx:doc[@num = $num]/stagename-header-firstpage-uppercased"/>
+		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+		<xsl:variable name="font-size_header">
+			<xsl:call-template name="get_font-size_header">
+				<xsl:with-param name="layoutVersion" select="$layoutVersion"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<!-- The first instance of a running page header should be tagged - later instances should be marked as Artifact. -->
 		<fo:static-content flow-name="header-first" role="SKIP"> <!-- role="artifact" -->
 			<xsl:choose>
@@ -5357,6 +5513,12 @@
 		<xsl:param name="is_header">true</xsl:param>
 		<xsl:param name="border_around_page">false</xsl:param>
 		<xsl:variable name="ISOnumber" select="$variables/mnx:doc[@num = $num]/ISOnumber"/>
+		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+		<xsl:variable name="font-size_header">
+			<xsl:call-template name="get_font-size_header">
+				<xsl:with-param name="layoutVersion" select="$layoutVersion"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<xsl:if test="$layoutVersion = '1951' and $border_around_page = 'true'">
 				<!-- box around page -->
@@ -5397,6 +5559,15 @@
 		<xsl:param name="is_header"/>
 		<xsl:param name="odd_or_even"/>
 		<xsl:variable name="ISOnumber" select="$variables/mnx:doc[@num = $num]/ISOnumber"/>
+		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+		<xsl:variable name="revision_date_num">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="font-size_header">
+			<xsl:call-template name="get_font-size_header">
+				<xsl:with-param name="layoutVersion" select="$layoutVersion"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<fo:block-container font-size="{$font-size_header}" font-weight="bold" text-align="right" padding-top="12.5mm" line-height="1.1">
 			<xsl:call-template name="insertLayoutVersionAttributesTop">
 				<xsl:with-param name="num" select="$num"/>
@@ -5446,6 +5617,7 @@
 		<xsl:param name="font-weight" select="'bold'"/>
 		<xsl:variable name="copyrightText" select="$variables/mnx:doc[@num = $num]/copyrightText"/>
 		<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
+		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
 		<fo:static-content flow-name="footer-preface-first_1972-1998" role="artifact">
 			<fo:block-container display-align="after" height="86mm">
 				
@@ -5493,6 +5665,10 @@
 		<xsl:param name="insert_footer_last">true</xsl:param>
 		<xsl:variable name="copyrightText" select="$variables/mnx:doc[@num = $num]/copyrightText"/>
 		<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
+		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+		<xsl:variable name="revision_date_num">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<fo:static-content flow-name="footer-even" role="artifact">
 			<fo:block-container>
 				<xsl:choose>
@@ -5558,6 +5734,10 @@
 		<xsl:param name="font-weight" select="'bold'"/>
 		<xsl:variable name="copyrightText" select="$variables/mnx:doc[@num = $num]/copyrightText"/>
 		<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
+		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+		<xsl:variable name="revision_date_num">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<fo:static-content flow-name="footer-odd" role="artifact">
 			<fo:block-container>
 				<xsl:choose>
@@ -5615,6 +5795,9 @@
 		<xsl:attribute name="text-align">center</xsl:attribute>
 		<xsl:variable name="i18n_date_first_printing" select="$variables/mnx:doc[@num = $num]/i18n_date_first_printing"/>
 		<xsl:variable name="i18n_price" select="$variables/mnx:doc[@num = $num]/i18n_price"/>
+		<xsl:variable name="revision_date_num">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<fo:block-container margin-left="-13mm" margin-right="-13mm">
 			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 				<fo:table table-layout="fixed" width="100%" margin-bottom="5mm">
@@ -5711,6 +5894,10 @@
 	<xsl:template name="insertLayoutVersionAttributesTop">
 		<xsl:param name="num"/>
 		<xsl:param name="odd_or_even"/>
+		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+		<xsl:variable name="revision_date_num">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:if test="$layoutVersion = '1951'">
 			<xsl:attribute name="font-family">Arial</xsl:attribute>
 			<xsl:attribute name="font-size">8pt</xsl:attribute>
@@ -5766,6 +5953,9 @@
 	<xsl:template name="back-page">
 		<xsl:param name="num"/>
 		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+		<xsl:variable name="doctype">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<xsl:variable name="isPublished" select="$variables/mnx:doc[@num = $num]/isPublished"/>
 		<xsl:choose>
 			<xsl:when test="$isGenerateTableIF = 'true'"><!-- skip last page --></xsl:when>
@@ -5790,7 +5980,12 @@
 		<xsl:variable name="i18n_descriptors" select="$variables/mnx:doc[@num = $num]/i18n_descriptors"/>
 		<xsl:variable name="copyrightText" select="$variables/mnx:doc[@num = $num]/copyrightText"/>
 		<xsl:variable name="udc" select="$variables/mnx:doc[@num = $num]/udc"/>
+		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
+		<xsl:variable name="revision_date_num">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+		</xsl:variable>
 		<fo:page-sequence master-reference="back-page" force-page-count="no-force">
+			<xsl:call-template name="refinePageSequenceCommon"/>
 			<xsl:call-template name="insertHeaderEven"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 			<fo:static-content flow-name="back-page-footer" font-size="10pt">
 				<fo:table table-layout="fixed" width="100%">
@@ -5911,6 +6106,7 @@
 		<xsl:variable name="substage" select="$variables/mnx:doc[@num = $num]/substage"/>
 		<xsl:variable name="copyrightTextLastPage2024" select="$variables/mnx:doc[@num = $num]/copyrightTextLastPage2024"/>
 		<fo:page-sequence master-reference="back-page_2024" force-page-count="no-force">
+			<xsl:call-template name="refinePageSequenceCommon"/>
 			<fo:flow flow-name="xsl-region-body">
 				<xsl:variable name="fo_last_page">
 				<fo:table table-layout="fixed" width="100%" margin-bottom="-1mm">
@@ -6287,6 +6483,7 @@
 
 	<xsl:template name="insertSmallHorizontalLine">
 		<xsl:param name="num"/>
+		<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = $num]/layoutVersion"/>
 		<xsl:if test="($layoutVersion = '1951' or $layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989')">
 			<!-- small horizontal line -->
 			<fo:block text-align="center" margin-top="12mm" keep-with-previous="always" role="SKIP">
@@ -6309,6 +6506,51 @@
 	<xsl:template name="insertLastBlock">
 		<xsl:param name="num"/>
 		<fo:block id="lastBlock{$num}" font-size="1pt" keep-with-previous="always" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
+	</xsl:template>
+
+	<xsl:template name="refinePageSequenceCommon">
+		<xsl:variable name="layoutVersion">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="doctype">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="revision_date_num">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		<xsl:variable name="isAuthorOrganizationAbbreviationISO">
+			<xsl:call-template name="getVariable"><xsl:with-param name="variable">isAuthorOrganizationAbbreviationISO</xsl:with-param></xsl:call-template>
+		</xsl:variable>
+		
+		<xsl:if test="$layoutVersion = '1951'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:if test="$revision_date_num &gt;= 19680101">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	
+		<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979'">
+			<xsl:attribute name="font-family">Univers, Times New Roman, Cambria Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:if test="$layout_columns = 2">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$layoutVersion = '1987' or $layoutVersion = '1989'">
+			<xsl:attribute name="font-family">Arial, Times New Roman, Cambria Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
+			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+		</xsl:if>
+		
+		<xsl:if test="(($layoutVersion = '1987' and $doctype = 'technical-report') or ($layoutVersion = '1979' and $doctype = 'addendum'))">
+			<xsl:attribute name="font-size">8.5pt</xsl:attribute>
+		</xsl:if>
+		 
+		<xsl:if test="$layoutVersion = '2024' and $isAuthorOrganizationAbbreviationISO = 'true'">
+			<xsl:attribute name="color">rgb(35,31,32)</xsl:attribute>
+		</xsl:if>
+		 
 	</xsl:template>
 
 	<xsl:include href="./common.xsl"/>
