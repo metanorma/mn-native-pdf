@@ -751,12 +751,8 @@
 				</fo:repeatable-page-master-alternatives>
 			</fo:page-sequence-master>
 			
-			<xsl:variable name="layoutVersion">
-				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
-			</xsl:variable>
-			<xsl:variable name="doctype">
-				<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
-			</xsl:variable>
+			<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = 1]/layoutVersion"/>
+			<xsl:variable name="doctype" select="$variables/mnx:doc[@num = 1]/doctype"/>
 			
 			<!-- first page -->
 			<fo:simple-page-master master-name="preface_firstpage" page-width="{$pageWidth}mm" page-height="{$pageHeight}mm">
