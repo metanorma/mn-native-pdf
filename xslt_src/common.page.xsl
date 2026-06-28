@@ -81,6 +81,7 @@
 			<xsl:when test="$namespace = 'ieee'">31.7</xsl:when>
 			<xsl:when test="$namespace = 'iho'">24.5</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
+				<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = 1]/layoutVersion"/>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">36</xsl:when>
 					<xsl:when test="$layoutVersion = '2024'">15.2</xsl:when>
@@ -127,6 +128,7 @@
 			<xsl:when test="$namespace = 'ieee'">31.7</xsl:when>
 			<xsl:when test="$namespace = 'iho'">25</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
+				<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = 1]/layoutVersion"/>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">29</xsl:when>
 					<xsl:when test="$layoutVersion = '2024'">15.2</xsl:when>
@@ -172,6 +174,7 @@
 			<xsl:when test="$namespace = 'ieee'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
+				<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = 1]/layoutVersion"/>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '2024'">23.5</xsl:when>
 					<xsl:otherwise>27.4</xsl:otherwise>
@@ -216,6 +219,7 @@
 			<xsl:when test="$namespace = 'ieee'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'iho'">25.4</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
+				<xsl:variable name="layoutVersion" select="$variables/mnx:doc[@num = 1]/layoutVersion"/>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">25.5</xsl:when>
 					<xsl:when test="$layoutVersion = '2024'">19.5</xsl:when>
@@ -435,6 +439,12 @@
 			 <xsl:if test="position() = 1">
 				<xsl:attribute name="initial-page-number">3</xsl:attribute>
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="color_main">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_main</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_main"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="master-reference">
@@ -668,6 +678,10 @@
 				<xsl:text>document</xsl:text>
 				<xsl:call-template name="getPageSequenceOrientation"/>
 			</xsl:attribute>
+			<xsl:variable name="color_main">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_main</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_main"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="master-reference">

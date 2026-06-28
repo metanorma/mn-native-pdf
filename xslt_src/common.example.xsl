@@ -63,6 +63,9 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 			</xsl:if>
@@ -103,6 +106,9 @@
 
 	<xsl:template name="refine_termexample-name-style">
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '2024' and translate(.,'0123456789','') = ."> <!-- EXAMPLE without number -->
 				<xsl:attribute name="padding-right">8mm</xsl:attribute>
 			</xsl:if>
@@ -191,6 +197,9 @@
 
 	<xsl:template name="refine_example-style">
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '1972' or $layoutVersion = '1979' or $layoutVersion = '1987' or $layoutVersion = '1989'">
 				<xsl:attribute name="font-size">9pt</xsl:attribute>
 			</xsl:if>
@@ -322,6 +331,9 @@
 
 	<xsl:template name="refine_example-name-style">
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '2024' and translate(.,'0123456789','') = ."> <!-- EXAMPLE without number -->
 				<xsl:attribute name="padding-right">8mm</xsl:attribute>
 			</xsl:if>
@@ -560,6 +572,12 @@
 																$namespace = 'ogc' or 
 																$namespace = 'rsd'">inline</xsl:when> <!-- display first Example paragraph on the same line as EXAMPLE title -->
 							<xsl:when test="$namespace = 'iso'">
+								<xsl:variable name="layoutVersion">
+									<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+								</xsl:variable>
+								<xsl:variable name="revision_date_num">
+									<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+								</xsl:variable>
 								<xsl:choose>
 									<xsl:when test="$layoutVersion = '1951' and $revision_date_num &lt; 19610101">list</xsl:when>
 									<xsl:otherwise>inline</xsl:otherwise>
@@ -729,6 +747,12 @@
 		<xsl:variable name="num"><xsl:number/></xsl:variable>
 		<xsl:variable name="element">
 			<xsl:if test="$namespace = 'iso'">
+				<xsl:variable name="layoutVersion">
+					<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+				</xsl:variable>
+				<xsl:variable name="revision_date_num">
+					<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+				</xsl:variable>
 				<xsl:choose>
 					<xsl:when test="$num = 1 and not(contains($fo_element, 'block'))">inline</xsl:when>
 					<xsl:otherwise>

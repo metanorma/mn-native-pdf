@@ -95,7 +95,6 @@
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="font-size">18pt</xsl:attribute>
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
-			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="font-family">Lato</xsl:attribute>
@@ -114,6 +113,12 @@
 	</xsl:attribute-set> <!-- indexsect-title-style -->
 	
 	<xsl:template name="refine_indexsect-title-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="color_text_title">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_text_title</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:attribute-set name="indexsect-clause-title-style">
@@ -182,7 +187,7 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
+	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'iso' or $namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
 	<xsl:template match="mn:indexsect" />
 	<xsl:template match="/" mode="index">
 		<xsl:param name="num"/>
@@ -190,6 +195,8 @@
 			<xsl:with-param name="num" select="$num"/>
 		</xsl:apply-templates>
 	</xsl:template>
+	</xsl:if>
+	<xsl:if test="$namespace = 'csa' or $namespace = 'csd' or $namespace = 'itu' or $namespace = 'nist-cswp' or $namespace = 'nist-sp' or $namespace = 'ogc-white-paper' or $namespace = 'rsd'">
 	<xsl:template match="mn:indexsect" mode="index">
 		<xsl:param name="num"/>
 		<fo:page-sequence master-reference="index" force-page-count="no-force">

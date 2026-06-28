@@ -133,7 +133,6 @@
 			<xsl:attribute name="font-size">18pt</xsl:attribute>
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'ogc-white-paper'">
@@ -662,6 +661,15 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="doctype">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="revision_date_num">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			
 			<xsl:if test="$level = 2">
 				<xsl:attribute name="font-size">12pt</xsl:attribute>
@@ -1165,6 +1173,11 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'ogc'">
+
+			<xsl:variable name="color_text_title">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_text_title</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 		
 			<xsl:if test="$level = 1">
 				<xsl:attribute name="space-before">36pt</xsl:attribute>

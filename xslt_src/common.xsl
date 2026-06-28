@@ -824,6 +824,12 @@
 	<xsl:template match="//mn:metanorma/mn:preface/*" priority="2" name="preface_node"> <!-- /*/mn:preface/* -->
 		<xsl:choose>
 			<xsl:when test="$namespace = 'iso'">
+				<xsl:variable name="layoutVersion">
+					<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+				</xsl:variable>
+				<xsl:variable name="doctype">
+					<xsl:call-template name="getVariable"><xsl:with-param name="variable">doctype</xsl:with-param></xsl:call-template>
+				</xsl:variable>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951' and (self::mn:clause or self::mn:introduction)"></xsl:when>
 					<xsl:when test="$layoutVersion = '1987' and $doctype = 'technical-report'"></xsl:when>
@@ -1122,6 +1128,9 @@
 		<xsl:variable name="edition_i18n" select="normalize-space((//mn:metanorma)[1]/mn:bibdata/mn:edition[normalize-space(@language) != ''])"/>
 		<xsl:if test="$namespace = 'jcgm'"><xsl:text>&#xA0;</xsl:text></xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion != '1972' and $layoutVersion != '1979' and $layoutVersion != '2024'">
 				<xsl:text>&#xA0;</xsl:text>
 			</xsl:if>

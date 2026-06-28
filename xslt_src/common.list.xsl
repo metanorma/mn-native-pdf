@@ -194,7 +194,6 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">							
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
-			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="color">rgb(68, 84, 106)</xsl:attribute>
@@ -218,6 +217,12 @@
 	</xsl:attribute-set> <!-- list-name-style -->
 	
 	<xsl:template name="refine_list-name-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="color_text_title">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_text_title</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:attribute-set name="list-item-style">
@@ -377,6 +382,9 @@
 				<label level="3" font-size="75%">o</label> <!-- white circle -->
 			</xsl:when>
 			<xsl:when test="$namespace = 'iso'">
+				<xsl:variable name="layoutVersion">
+					<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+				</xsl:variable>
 				<xsl:choose>
 					<xsl:when test="$layoutVersion = '1951'">
 						<label>&#x2013;</label> <!-- en dash -->
@@ -408,7 +416,7 @@
 				<label>•</label>
 			</xsl:when>
 			<xsl:when test="$namespace = 'ogc'">
-				<label color="{$color_design}">•</label>
+				<label>•</label> <!--  color="{$color_design}" -->
 			</xsl:when>
 			<xsl:when test="$namespace = 'ogc-white-paper'">
 				<label>&#x2014;</label> <!-- em dash -->
@@ -483,6 +491,12 @@
 	</xsl:template>
 	<xsl:template match="label" mode="ul_labels">
 		<xsl:copy-of select="@*[not(local-name() = 'level')]"/>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="color_design">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_design</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_design"/></xsl:attribute>
+		</xsl:if>
 		<xsl:value-of select="."/>
 	</xsl:template>
 
@@ -514,6 +528,9 @@
 						</xsl:if>
 						<xsl:if test="$type = 'alphabet'">
 							<xsl:if test="$namespace = 'iso'">
+								<xsl:variable name="layoutVersion">
+									<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+								</xsl:variable>
 								<xsl:if test="$layoutVersion = '1951'">(</xsl:if> <!-- Example: (a) -->
 							</xsl:if>
 						</xsl:if>
@@ -566,6 +583,9 @@
 				
 				<xsl:choose>
 					<xsl:when test="$namespace = 'iso'">
+						<xsl:variable name="layoutVersion">
+							<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+						</xsl:variable>
 						<xsl:choose>
 							<xsl:when test="$layoutVersion = '1951' and $type = 'alphabet'">(<fo:inline font-style="italic"><xsl:value-of select="@label"/></fo:inline>)</xsl:when>
 							<xsl:otherwise>
@@ -707,6 +727,9 @@
 						</fo:block-container>
 					</xsl:when>
 					<xsl:when test="$namespace = 'iso'">
+						<xsl:variable name="layoutVersion">
+							<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+						</xsl:variable>
 						<xsl:choose>
 							<xsl:when test="$layoutVersion = '1951' and self::mn:ul">
 								<fo:block-container margin-left="8mm">
@@ -882,6 +905,9 @@
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '1951' and self::mn:ul">
 				<xsl:attribute name="provisional-distance-between-starts">5mm</xsl:attribute>
 			</xsl:if>

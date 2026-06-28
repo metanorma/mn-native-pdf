@@ -580,6 +580,9 @@
 		<xsl:variable name="ratio_">
 			<xsl:choose>
 				<xsl:when test="$namespace = 'iso'">
+					<xsl:variable name="layoutVersion">
+						<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+					</xsl:variable>
 					<xsl:choose>
 						<xsl:when test="$layoutVersion = '1951'">0.9</xsl:when>
 						<xsl:when test="$layoutVersion = '2024'">0.8</xsl:when>

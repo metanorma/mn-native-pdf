@@ -465,6 +465,9 @@
 				<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 					<xsl:attribute name="font-weight">normal</xsl:attribute>
 					<xsl:if test="parent::*[local-name()='thead']"> <!-- and not(ancestor::mn:table[@class = 'recommendation' or @class='requirement' or @class='permission']) -->
+						<xsl:variable name="color_table_header_row">
+							<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_table_header_row</xsl:with-param></xsl:call-template>
+						</xsl:variable>
 						<xsl:attribute name="background-color"><xsl:value-of select="$color_table_header_row"/></xsl:attribute>
 					</xsl:if>
 					<xsl:if test="starts-with(*[local-name()='td'][1], 'Requirement ')">

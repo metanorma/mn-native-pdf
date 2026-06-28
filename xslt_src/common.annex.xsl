@@ -91,6 +91,9 @@
 	<xsl:template name="refine_annex-title-style">
 		<xsl:if test="$namespace = 'iso'">
 			<!-- <xsl:call-template name="setIDforNamedDestination"/> -->
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="line-height">1.1</xsl:attribute>
 				<!-- <xsl:attribute name="margin-bottom">52pt</xsl:attribute> -->

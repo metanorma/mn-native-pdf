@@ -17,6 +17,9 @@
 	
 	<xsl:template name="refine_footnote-separator-block-style">
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			</xsl:if>
@@ -43,6 +46,9 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="leader-length">51mm</xsl:attribute>
 				<xsl:attribute name="rule-thickness">0.5pt</xsl:attribute>
@@ -327,7 +333,6 @@
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="font-size">10pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
-			<xsl:attribute name="color"><xsl:value-of select="$color_main"/></xsl:attribute>
 			<xsl:attribute name="line-height">124%</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
@@ -370,6 +375,12 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="revision_date_num">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">revision_date_num</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '1951'">
 				<xsl:if test="$revision_date_num &gt;= 19680101">
 					<xsl:attribute name="font-size">9pt</xsl:attribute>
@@ -392,6 +403,12 @@
 			<xsl:if test="not($vertical_layout = 'true')">
 				<xsl:attribute name="font-family">IPAexMincho</xsl:attribute> <!-- prevent font for footnote in Times New Roman main text -->
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="color_main">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_main</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_main"/></xsl:attribute>
 		</xsl:if>
 	</xsl:template> <!-- refine_fn-body-style -->
 	
@@ -550,6 +567,9 @@
 		<xsl:variable name="current_fn_number_text">
 			<xsl:choose>
 				<xsl:when test="$namespace = 'iso'">
+					<xsl:variable name="layoutVersion">
+						<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+					</xsl:variable>
 					<xsl:choose>
 						<xsl:when test="$layoutVersion = '1951' and translate($current_fn_number, '0123456789', '') = ''">
 							<!-- replace number to asterisks -->
@@ -602,6 +622,9 @@
 				</xsl:if>
 				
 				<xsl:if test="$namespace = 'iso'">
+					<xsl:variable name="layoutVersion">
+						<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+					</xsl:variable>
 					<xsl:if test="$layoutVersion = '2024'">
 						<xsl:attribute name="font-size">70%</xsl:attribute>
 					</xsl:if>

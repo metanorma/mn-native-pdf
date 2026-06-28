@@ -28,6 +28,9 @@
 	
 	<xsl:template name="refine_copyright-statement-style">
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '1989'">
 				<xsl:attribute name="font-size">8pt</xsl:attribute>
 			</xsl:if>
@@ -57,7 +60,6 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
-			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 			<xsl:attribute name="margin-top">24pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
@@ -74,12 +76,21 @@
 			</xsl:if>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
 			<xsl:if test="$layoutVersion = '1989'">
 					<xsl:attribute name="font-size">11pt</xsl:attribute>
 				</xsl:if>
 			<xsl:if test="$layoutVersion = '2024'">
 				<xsl:attribute name="margin-bottom">3.5mm</xsl:attribute>
 			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="color_text_title">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_text_title</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 		</xsl:if>
 	</xsl:template>
 	
@@ -194,7 +205,6 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
-			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="font-family">Lato</xsl:attribute>
@@ -205,6 +215,12 @@
 	</xsl:attribute-set> <!-- license-statement-title-style -->
 	
 	<xsl:template name="refine_license-statement-title-style">
+		<xsl:if test="$namespace = 'ogc'">
+			<xsl:variable name="color_text_title">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_text_title</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:attribute name="color"><xsl:value-of select="$color_text_title"/></xsl:attribute>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:attribute-set name="license-statement-p-style">
@@ -465,6 +481,7 @@
 					<xsl:call-template name="getLevel"/>
 				</xsl:variable>
 				<fo:block role="H{$level}" xsl:use-attribute-sets="copyright-statement-title-style">
+					<xsl:call-template name="refine_copyright-statement-title-style"/>
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:when>

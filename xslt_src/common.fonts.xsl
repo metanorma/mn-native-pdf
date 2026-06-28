@@ -95,7 +95,6 @@
 			<xsl:attribute name="font-family">Lato, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
 			<xsl:attribute name="font-family-generic">Sans</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
-			<xsl:attribute name="color"><xsl:value-of select="$color_main"/></xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="font-family">Roboto, STIX Two Math, <xsl:value-of select="$font_noto_sans"/></xsl:attribute>
