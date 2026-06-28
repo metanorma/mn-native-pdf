@@ -212,6 +212,8 @@
 				<xsl:for-each select="xalan:nodeset($updated_xml)//mn:metanorma">
 					<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
 				
+					<xsl:variable name="setVariable" select="java:org.metanorma.fop.global.Variables.setVariable('num', $num)"/>
+				
 					<xsl:variable name="current_document">
 						<xsl:copy-of select="."/>
 					</xsl:variable>
