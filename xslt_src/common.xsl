@@ -175,11 +175,12 @@
 	<xsl:variable name="toc_title_lists_">
 		<xsl:for-each select="//mn:metanorma">
 			<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
+			<xsl:variable name="docid"><xsl:call-template name="getDocumentId"/></xsl:variable>
 			<xsl:variable name="current_document">
 				<xsl:copy-of select="."/>
 			</xsl:variable>
 			<xsl:for-each select="xalan:nodeset($current_document)">
-				<mnx:doc num="{$num}">
+				<mnx:doc id="{$docid}" num="{$num}">
 					<mnx:title-list-tables>
 						<xsl:variable name="toc_table_title" select="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:toc[@type='table']/mn:title"/>
 						<xsl:value-of select="$toc_table_title"/>
