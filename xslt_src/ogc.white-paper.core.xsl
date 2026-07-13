@@ -170,7 +170,7 @@
 							</fo:bookmark>
 						</xsl:if>
 						
-						<xsl:if test="(//mn:metanorma/mn:metanorma-extension/mn:toc[@type='example']/mn:title)">
+						<xsl:if test="(//mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:toc[@type='example']/mn:title)">
 							<xsl:variable name="list_of_examples_">
 								<xsl:for-each select="//mn:example[@id and mn:fmt-name and not(@unnumbered = 'true')]">
 									<example id="{@id}"><xsl:apply-templates select="mn:fmt-name" mode="bookmarks"/></example>

@@ -212,7 +212,7 @@
 			<xsl:for-each select="xalan:nodeset($current_document)">
 				<mnx:doc num="{$num}">
 				
-					<xsl:if test="//mn:metanorma/mn:metanorma-extension/mn:toc[@type='recommendation']/mn:title">
+					<xsl:if test="//mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:toc[@type='recommendation']/mn:title">
 						<xsl:for-each select="//mn:table[.//mn:p[@class = 'RecommendationTitle']]">
 							<xsl:variable name="table_id" select="@id"/>
 							<recommendation alt-text="{.//mn:p[@class = 'RecommendationTitle'][1]}">
@@ -389,7 +389,7 @@
 						<xsl:if test="$contents//mnx:tables/mnx:table">
 							<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
 								<fo:bookmark-title>
-									<xsl:value-of select="$title-list-tables"/>
+									<xsl:value-of select="$toc_title_lists/mnx:doc[@num = 1]/mnx:title-list-tables"/>
 								</fo:bookmark-title>
 								<xsl:for-each select="$contents//mnx:tables/mnx:table">
 									<fo:bookmark internal-destination="{@id}">
@@ -405,7 +405,7 @@
 						<xsl:if test="$contents//mnx:figures/mnx:figure">
 							<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
 								<fo:bookmark-title>
-									<xsl:value-of select="$title-list-figures"/>
+									<xsl:value-of select="$toc_title_lists/mnx:doc[@num = 1]/mnx:title-list-figures"/>
 								</fo:bookmark-title>
 								<xsl:for-each select="$contents//mnx:figures/mnx:figure">
 									<fo:bookmark internal-destination="{@id}">
@@ -421,7 +421,7 @@
 						<xsl:if test="$contents//mnx:examples/mnx:example">
 							<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
 								<fo:bookmark-title>
-									<xsl:value-of select="$title-list-examples"/>
+									<xsl:value-of select="$toc_title_lists/mnx:doc[@num = 1]/mnx:title-list-examples"/>
 								</fo:bookmark-title>
 								<xsl:for-each select="$contents//mnx:examples/mnx:example">
 									<fo:bookmark internal-destination="{@id}">
@@ -437,7 +437,7 @@
 						<xsl:if test="$toc_recommendations//*[normalize-space(@id) != '']">							
 							<fo:bookmark internal-destination="empty_bookmark" starting-state="hide">
 								<fo:bookmark-title>
-									<xsl:value-of select="$title-list-recommendations"/>
+									<xsl:value-of select="$toc_title_lists/mnx:doc[@num = 1]/mnx:title-list-recommendations"/>
 								</fo:bookmark-title>
 								<xsl:for-each select="$toc_recommendations//*[normalize-space(@id) != '']">
 									<fo:bookmark internal-destination="{@id}">
@@ -1098,7 +1098,7 @@
 				<!-- List of Tables -->
 				<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:tables/mnx:table">
 					<xsl:call-template name="insertListOf_Title">
-						<xsl:with-param name="title" select="$title-list-tables"/>
+						<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-tables"/>
 					</xsl:call-template>
 					<fo:block-container line-height="130%" role="TOC">
 						<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:tables/mnx:table">
@@ -1110,7 +1110,7 @@
 				<!-- List of Figures -->
 				<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:figures/mnx:figure">
 					<xsl:call-template name="insertListOf_Title">
-						<xsl:with-param name="title" select="$title-list-figures"/>
+						<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-figures"/>
 					</xsl:call-template>
 					<fo:block-container line-height="130%" role="TOC">
 						<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:figures/mnx:figure">
@@ -1122,7 +1122,7 @@
 				<!-- List of Examples -->
 				<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:examples/mnx:example">
 					<xsl:call-template name="insertListOf_Title">
-						<xsl:with-param name="title" select="$title-list-examples"/>
+						<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-examples"/>
 					</xsl:call-template>
 					<fo:block-container line-height="130%" role="TOC">
 						<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:examples/mnx:example">
@@ -1136,7 +1136,7 @@
 				<!-- List of Recommendations -->
 				<xsl:if test="$toc_recommendations/mnx:doc[@num = $num]/*[normalize-space(@id) != '']">							
 					<xsl:call-template name="insertListOf_Title">
-						<xsl:with-param name="title" select="$title-list-recommendations"/>
+						<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-recommendations"/>
 					</xsl:call-template>
 					<fo:block-container line-height="130%" role="TOC">
 						<xsl:for-each select="$toc_recommendations/mnx:doc[@num = $num]/*[normalize-space(@id) != '']">
