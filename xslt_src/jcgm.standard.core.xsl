@@ -649,30 +649,30 @@
 					</xsl:for-each>	
 					
 					<!-- List of Tables -->
-					<xsl:for-each select="$contents//mnx:tables/mnx:table">
+					<xsl:for-each select="$contents/mnx:doc[@id=$docid]//mnx:tables/mnx:table">
 						<xsl:if test="position() = 1">
 							<xsl:call-template name="insertListOf_Title">
-								<xsl:with-param name="title" select="$title-list-tables"/>
+								<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-tables"/>
 							</xsl:call-template>
 						</xsl:if>
 						<xsl:call-template name="insertListOf_Item"/>
 					</xsl:for-each>
 					
 					<!-- List of Figures -->
-					<xsl:for-each select="$contents//mnx:figures/mnx:figure">
+					<xsl:for-each select="$contents/mnx:doc[@id=$docid]//mnx:figures/mnx:figure">
 						<xsl:if test="position() = 1">
 						<xsl:call-template name="insertListOf_Title">
-							<xsl:with-param name="title" select="$title-list-figures"/>
+							<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-figures"/>
 						</xsl:call-template>
 						</xsl:if>
 						<xsl:call-template name="insertListOf_Item"/>
 					</xsl:for-each>
 					
 					<!-- List of Examples -->
-					<xsl:for-each select="$contents//mnx:examples/mnx:example">
+					<xsl:for-each select="$contents/mnx:doc[@id=$docid]//mnx:examples/mnx:example">
 						<xsl:if test="position() = 1">
 						<xsl:call-template name="insertListOf_Title">
-							<xsl:with-param name="title" select="$title-list-examples"/>
+							<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-examples"/>
 						</xsl:call-template>
 						</xsl:if>
 						<xsl:call-template name="insertListOf_Item"/>

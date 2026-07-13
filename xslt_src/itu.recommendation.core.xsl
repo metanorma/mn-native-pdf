@@ -1951,7 +1951,7 @@
 							<xsl:for-each select="$contents//mnx:tables/mnx:table">
 								<xsl:if test="position() = 1">
 									<xsl:call-template name="insertListOf_Title">
-										<xsl:with-param name="title" select="$title-list-tables"/>
+										<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-tables"/>
 									</xsl:call-template>
 									<fo:block xsl:use-attribute-sets="toc-title-page-style">
 										<xsl:value-of select="$i18n_page"/>
@@ -1964,7 +1964,7 @@
 							<xsl:for-each select="$contents//mnx:figures/mnx:figure">
 								<xsl:if test="position() = 1">
 									<xsl:call-template name="insertListOf_Title">
-										<xsl:with-param name="title" select="$title-list-figures"/>
+										<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-figures"/>
 									</xsl:call-template>
 									<fo:block margin-top="6pt" text-align="end" font-weight="bold" keep-with-next="always">
 										<xsl:value-of select="$i18n_page"/>
@@ -1977,7 +1977,7 @@
 							<xsl:for-each select="$contents//mnx:examples/mnx:example">
 								<xsl:if test="position() = 1">
 									<xsl:call-template name="insertListOf_Title">
-										<xsl:with-param name="title" select="$title-list-examples"/>
+										<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-examples"/>
 									</xsl:call-template>
 									<fo:block margin-top="6pt" text-align="end" font-weight="bold" keep-with-next="always">
 										<xsl:value-of select="$i18n_page"/>
