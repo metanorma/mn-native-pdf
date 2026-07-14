@@ -4,7 +4,6 @@
 											xmlns:mn="https://www.metanorma.org/ns/standoc" 
 											xmlns:mnx="https://www.metanorma.org/ns/xslt" 
 											xmlns:mathml="http://www.w3.org/1998/Math/MathML" 
-											xmlns:svg="http://www.w3.org/2000/svg" 
 											xmlns:xalan="http://xml.apache.org/xalan"  
 											xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" 
 											xmlns:redirect="http://xml.apache.org/xalan/redirect"
@@ -1520,7 +1519,7 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="mn:image/@href | svg:image/@href" mode="svg_update">
+	<xsl:template match="*[local-name() = 'image']/@href" mode="svg_update">
 		<xsl:attribute name="href" namespace="http://www.w3.org/1999/xlink">
 			<xsl:value-of select="."/>
 		</xsl:attribute>
