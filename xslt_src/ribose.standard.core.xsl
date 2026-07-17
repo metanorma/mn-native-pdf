@@ -579,8 +579,11 @@
 					<xsl:call-template name="setAltText">
 						<xsl:with-param name="value" select="@alt-text"/>
 					</xsl:call-template>
-					<!-- mnx:table/mn:fmt-name, mnx:figure/mn:fmt-name, mnx:example/mn:fmt-name -->
-					<xsl:apply-templates select="mn:fmt-name/node()"/>
+					<xsl:variable name="item">
+						<!-- mnx:table/mn:fmt-name, mnx:figure/mn:fmt-name, mnx:example/mn:fmt-name -->
+						<xsl:apply-templates select="mn:fmt-name" mode="contents_item"/>
+					</xsl:variable>
+					<xsl:apply-templates select="xalan:nodeset($item)/node()"/>
 					<xsl:text> &#xA0;</xsl:text>
 					<fo:inline role="SKIP">
 						<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
