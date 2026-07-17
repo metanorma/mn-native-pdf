@@ -1615,6 +1615,18 @@
 		</xsl:copy>		
 	</xsl:template>
 	
+	<xsl:template match="mn:tt" mode="contents_item">
+		<xsl:copy>
+			<xsl:apply-templates mode="contents_item"/>
+		</xsl:copy>		
+	</xsl:template>
+	
+	<xsl:template match="*[local-name() = 'keep-together_within-line']" mode="contents_item">
+		<xsl:copy>
+			<xsl:apply-templates mode="contents_item"/>
+		</xsl:copy>		
+	</xsl:template>
+	
 	<xsl:template match="mn:stem" mode="contents_item"/>
 	<xsl:template match="mn:fmt-stem" mode="contents_item">
 		<xsl:copy-of select="." />

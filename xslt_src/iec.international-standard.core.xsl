@@ -1407,7 +1407,11 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 		<fo:block xsl:use-attribute-sets="toc-listof-item-style">
 			<xsl:variable name="alt_text" select="normalize-space(translate(normalize-space(mn:fmt-name), '&#xa0;—', ' -'))"/>
 			<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}"> <!-- {local-name()} {@id} -->
-				<xsl:apply-templates select="." mode="contents"/>
+				<xsl:variable name="item">
+					<!-- mnx:table/mn:fmt-name, mnx:figure/mn:fmt-name, mnx:example/mn:fmt-name -->
+					<xsl:apply-templates select="mn:fmt-name" mode="contents_item"/>
+				</xsl:variable>
+				<xsl:apply-templates select="xalan:nodeset($item)/node()"/>
 				<fo:inline keep-together.within-line="always" role="SKIP">
 					<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 					<fo:wrapper role="artifact">

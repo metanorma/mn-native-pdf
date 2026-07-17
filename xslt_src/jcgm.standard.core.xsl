@@ -613,7 +613,11 @@
 					<xsl:with-param name="value" select="@alt-text"/>
 				</xsl:call-template>
 				<fo:inline>
-					<xsl:apply-templates select="." mode="contents"/>
+					<xsl:variable name="item">
+						<!-- mnx:table/mn:fmt-name, mnx:figure/mn:fmt-name, mnx:example/mn:fmt-name -->
+						<xsl:apply-templates select="mn:fmt-name" mode="contents_item"/>
+					</xsl:variable>
+					<xsl:apply-templates select="xalan:nodeset($item)/node()"/>
 				</fo:inline>
 				<xsl:text> </xsl:text>
 				<fo:inline keep-together.within-line="always" font-weight="normal">
