@@ -2225,7 +2225,11 @@
 									<xsl:call-template name="setAltText">
 										<xsl:with-param name="value" select="@alt-text"/>
 									</xsl:call-template>
-									<xsl:apply-templates select="." mode="contents"/>
+									<xsl:variable name="item">
+										<!-- mnx:table/mn:fmt-name, mnx:figure/mn:fmt-name, mnx:example/mn:fmt-name -->
+										<xsl:apply-templates select="mn:fmt-name" mode="contents_item"/>
+									</xsl:variable>
+									<xsl:apply-templates select="xalan:nodeset($item)/node()"/>
 									<fo:inline keep-together.within-line="always">
 										<fo:leader font-weight="normal" leader-pattern="dots"/>
 										<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
@@ -2257,7 +2261,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mnx:figures/mnx:figure/mn:fmt-name/text()[1] |
-								mnx:tables/mnx:table/mn:fmt-name/text()[1]" mode="contents" priority="3">
+								mnx:tables/mnx:table/mn:fmt-name/text()[1]" mode="contents_item" priority="3">
 		<xsl:choose>
 			<xsl:when test="$current_template = 'standard' and contains(.,'—')"><xsl:value-of select="substring-after(.,'—')"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>

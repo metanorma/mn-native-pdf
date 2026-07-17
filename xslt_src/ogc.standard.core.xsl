@@ -1002,7 +1002,11 @@
 					<xsl:with-param name="value" select="@alt-text"/>
 				</xsl:call-template>
 				<!-- <xsl:copy-of select="node()"/> -->
-				<xsl:apply-templates select="." mode="contents"/>
+				<xsl:variable name="item">
+					<!-- mnx:table/mn:fmt-name, mnx:figure/mn:fmt-name, mnx:example/mn:fmt-name -->
+					<xsl:apply-templates select="mn:fmt-name" mode="contents_item"/>
+				</xsl:variable>
+				<xsl:apply-templates select="xalan:nodeset($item)/node()"/>
 				<fo:inline keep-together.within-line="always">
 					<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 					<fo:page-number-citation ref-id="{@id}"/>
