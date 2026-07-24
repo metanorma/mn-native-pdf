@@ -14,6 +14,7 @@
 	
 	<!-- admonition -->
 	<xsl:attribute-set name="admonition-style">
+		<xsl:attribute name="role">Note</xsl:attribute>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="border">0.5pt solid rgb(79, 129, 189)</xsl:attribute>
 			<xsl:attribute name="color">rgb(79, 129, 189)</xsl:attribute>
@@ -119,6 +120,7 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="admonition-container-style">
+		<xsl:attribute name="role">SKIP</xsl:attribute>
 		<xsl:attribute name="margin-left">0mm</xsl:attribute>
 		<xsl:attribute name="margin-right">0mm</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
@@ -183,6 +185,7 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="admonition-name-style">
+		<xsl:attribute name="role">Lbl</xsl:attribute>
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
@@ -378,7 +381,7 @@
 					</xsl:when>
 					<xsl:otherwise>	<!-- BSI -->
 						<xsl:call-template name="setNamedDestination"/>
-						<fo:block-container id="{@id}" xsl:use-attribute-sets="admonition-style" role="SKIP">
+						<fo:block-container id="{@id}" xsl:use-attribute-sets="admonition-style">
 						
 							<xsl:call-template name="refine_admonition-style"/>
 						
@@ -388,7 +391,7 @@
 								<xsl:attribute name="border">0.25pt solid black</xsl:attribute>
 							</xsl:if>
 							<xsl:attribute name="margin-right">5mm</xsl:attribute>
-							<fo:block-container xsl:use-attribute-sets="admonition-container-style" role="SKIP">
+							<fo:block-container xsl:use-attribute-sets="admonition-container-style">
 							
 								<xsl:call-template name="refine_admonition-container-style"/>
 							
@@ -507,7 +510,7 @@
 						</xsl:when>
 						
 						<xsl:otherwise>
-							<fo:block-container xsl:use-attribute-sets="admonition-container-style" role="SKIP">
+							<fo:block-container xsl:use-attribute-sets="admonition-container-style">
 							
 								<xsl:call-template name="refine_admonition-container-style"/>
 							
