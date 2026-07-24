@@ -13,6 +13,7 @@
 											version="1.0">
 	
 	<xsl:attribute-set name="note-style">
+		<xsl:attribute name="role">Note</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
 			<xsl:attribute name="font-style">italic</xsl:attribute>
@@ -233,6 +234,7 @@
 	<xsl:variable name="note-body-indent-table">5mm</xsl:variable>
 	
 	<xsl:attribute-set name="note-name-style">
+		<xsl:attribute name="role">Lbl</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
 		</xsl:if>
@@ -355,6 +357,9 @@
 	</xsl:attribute-set>
 	
 	<xsl:template name="refine_table-note-name-style">
+		<xsl:if test="self::mn:note">
+			<xsl:attribute name="role">Lbl</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="text-decoration">underline</xsl:attribute>
@@ -379,6 +384,7 @@
 				
 	
 	<xsl:attribute-set name="note-p-style">
+		<xsl:attribute name="role">P</xsl:attribute>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">12pt</xsl:attribute>
@@ -444,6 +450,7 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="termnote-style">
+		<xsl:attribute name="role">Note</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
 			<xsl:attribute name="text-align">justify</xsl:attribute>
@@ -539,6 +546,7 @@
 	</xsl:template> <!-- refine_termnote-style -->
 
 	<xsl:attribute-set name="termnote-name-style">
+		<xsl:attribute name="role">Lbl</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
 			<xsl:attribute name="padding-right">1.5mm</xsl:attribute>
 		</xsl:if>
@@ -579,6 +587,7 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="termnote-p-style">
+		<xsl:attribute name="role">P</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="text-align">justify</xsl:attribute>
 		</xsl:if>
@@ -600,7 +609,7 @@
 		<xsl:choose>
 			<xsl:when test="$namespace = 'jis'">
 				<xsl:call-template name="setNamedDestination"/>
-				<fo:block xsl:use-attribute-sets="note-style" role="SKIP">
+				<fo:block xsl:use-attribute-sets="note-style">
 					<xsl:if test="not(parent::mn:references)">
 						<xsl:copy-of select="@id"/>
 					</xsl:if>
@@ -608,7 +617,7 @@
 					
 					<xsl:call-template name="refine_note-style"/>
 					
-					<fo:list-block>
+					<fo:list-block role="SKIP">
 						<xsl:attribute name="provisional-distance-between-starts">
 							<xsl:choose>
 								<!-- if last char is digit -->
@@ -616,8 +625,8 @@
 								<xsl:otherwise><xsl:value-of select="10 + $text_indent"/>mm</xsl:otherwise>
 							</xsl:choose>
 						</xsl:attribute>
-						<fo:list-item>
-							<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
+						<fo:list-item role="SKIP">
+							<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()" role="SKIP">
 								<xsl:if test="$vertical_layout = 'true'">
 									<xsl:attribute name="start-indent">0mm</xsl:attribute>
 								</xsl:if>
@@ -626,8 +635,8 @@
 									<xsl:apply-templates select="mn:fmt-name" />
 								</fo:block>
 							</fo:list-item-label>
-							<fo:list-item-body start-indent="body-start()">
-								<fo:block>
+							<fo:list-item-body start-indent="body-start()" role="SKIP">
+								<fo:block role="SKIP">
 									<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
 								</fo:block>
 							</fo:list-item-body>
@@ -639,7 +648,7 @@
 			
 				<xsl:call-template name="setNamedDestination"/>
 				
-				<fo:block-container xsl:use-attribute-sets="note-style" role="SKIP">
+				<fo:block-container xsl:use-attribute-sets="note-style">
 					<xsl:if test="not(parent::mn:references)">
 						<xsl:copy-of select="@id"/>
 					</xsl:if>
@@ -680,11 +689,11 @@
 							</xsl:when>
 							
 							<xsl:otherwise>
-								<fo:block>
+								<fo:block role="SKIP">
 									
 									<xsl:call-template name="refine_note_block_style"/>
 									
-									<fo:inline xsl:use-attribute-sets="note-name-style" role="SKIP">
+									<fo:inline xsl:use-attribute-sets="note-name-style">
 										
 										<xsl:apply-templates select="mn:fmt-name/mn:tab" mode="tab"/>
 									
@@ -707,7 +716,15 @@
 										
 									</fo:inline>
 									
-									<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
+									<xsl:choose>
+										<xsl:when test="parent::mn:formattedref and ancestor::mn:bibitem">
+											<fo:inline role="P"><xsl:apply-templates select="node()[not(self::mn:fmt-name)]" /></fo:inline>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
+										</xsl:otherwise>
+									</xsl:choose>
+									
 								</fo:block>
 							</xsl:otherwise>
 						</xsl:choose>
@@ -733,7 +750,7 @@
 			<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1987'">
 				<xsl:if test="following-sibling::*[1][self::mn:note] and not(preceding-sibling::*[1][self::mn:note])">
 					<!-- NOTES -->
-					<fo:block font-size="9.5pt" keep-with-next="always" margin-bottom="6pt" text-transform="uppercase">
+					<fo:block font-size="9.5pt" keep-with-next="always" margin-bottom="6pt" text-transform="uppercase" role="Lbl">
 						<xsl:variable name="i18n_notes">
 							<xsl:call-template name="getLocalizedString">
 								<xsl:with-param name="key">Note.pl</xsl:with-param>
@@ -781,13 +798,13 @@
 		<xsl:variable name="num"><xsl:number/></xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$num = 1"> <!-- display first NOTE's paragraph in the same line with label NOTE -->
-				<fo:inline xsl:use-attribute-sets="note-p-style" role="SKIP">
+				<fo:inline xsl:use-attribute-sets="note-p-style">
 					<xsl:call-template name="refine_note-p-style"/>
 					<xsl:apply-templates />
 				</fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
-				<fo:block xsl:use-attribute-sets="note-p-style" role="SKIP">
+				<fo:block xsl:use-attribute-sets="note-p-style">
 					<xsl:call-template name="refine_note-p-style"/>
 					<xsl:apply-templates />
 				</fo:block>

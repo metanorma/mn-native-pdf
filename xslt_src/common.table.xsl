@@ -1637,6 +1637,9 @@
 	</xsl:attribute-set><!-- table-note-style -->
 	
 	<xsl:template name="refine_table-note-style">
+		<xsl:if test="self::mn:note">
+			<xsl:attribute name="role">Note</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'bipm'">					
 			<xsl:if test="ancestor::mn:preface">
 				<xsl:attribute name="margin-top">18pt</xsl:attribute>
@@ -3619,9 +3622,12 @@
 			<xsl:when test="$namespace = 'jis'">
 				<xsl:call-template name="setNamedDestination"/>
 				<fo:list-block id="{@id}" xsl:use-attribute-sets="table-note-style" provisional-distance-between-starts="{9 + $text_indent}mm"> <!-- 12 -->
-					<fo:list-item>
-						<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()">
+					<fo:list-item role="SKIP">
+						<fo:list-item-label start-indent="{$text_indent}mm" end-indent="label-end()" role="SKIP">
 							<fo:block>
+								<xsl:if test="self::mn:note">
+									<xsl:attribute name="role">Lbl</xsl:attribute>
+								</xsl:if>
 								<xsl:apply-templates select="mn:fmt-name" />
 							</fo:block>
 						</fo:list-item-label>
@@ -3653,7 +3659,7 @@
 					
 					<xsl:if test="$namespace = 'bipm'">
 						<xsl:if test="ancestor::mn:preface">
-							<fo:block>&#xA0;</fo:block>
+							<fo:block role="SKIP">&#xA0;</fo:block>
 						</xsl:if>
 					</xsl:if>
 					
@@ -3666,7 +3672,7 @@
 	
 	<xsl:template match="mn:table/*[self::mn:note or self::mn:example]/mn:p |
 	mn:table/mn:tfoot//*[self::mn:note or self::mn:example]/mn:p" priority="2">
-		<xsl:apply-templates/>
+		<fo:inline role="P"><xsl:apply-templates/></fo:inline>
 	</xsl:template>
 	
 	
