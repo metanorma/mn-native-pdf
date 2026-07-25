@@ -916,7 +916,7 @@
 	<xsl:template match="mn:annex[normalize-space() != '']">
 		<xsl:choose>
 			<xsl:when test="@continue = 'true'"> <!-- it's using for figure/table on top level for block span -->
-				<fo:block>
+				<fo:block role="SKIP">
 					<xsl:apply-templates />
 				</fo:block>
 			</xsl:when>
