@@ -681,22 +681,25 @@
 	</xsl:attribute-set>
 	
 	<xsl:attribute-set name="clause-style">
-		
+		<xsl:attribute name="role">Sect</xsl:attribute>
 	</xsl:attribute-set>
 	
 	<xsl:template name="refine_clause-style">
-		<!-- commented for https://github.com/metanorma/metanorma-ribose/issues/421 -->
-		<!-- <xsl:if test="$namespace = 'rsd'">
-			<xsl:variable name="level">
-				<xsl:call-template name="getLevel">
-					<xsl:with-param name="depth" select="mn:fmt-title/@depth"/>
-				</xsl:call-template>
-			</xsl:variable>
-			<xsl:if test="$level &gt;= 4">
-				<xsl:attribute name="margin-left">13mm</xsl:attribute>
+		<xsl:if test="parent::mn:copyright-statement">
+			<xsl:attribute name="role">SKIP</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu' or $namespace = 'jcgm'">
+			<xsl:if test="@inline-header='true'">
+				<xsl:attribute name="text-align">justify</xsl:attribute>
 			</xsl:if>
-		</xsl:if> -->
-	</xsl:template>
+		</xsl:if>
+	</xsl:template> <!-- refine_clause-style -->
 	
 	<!-- main sections -->
 	<xsl:template match="/*/mn:sections/*" name="sections_node" priority="2">
@@ -893,36 +896,21 @@
 	
 	<xsl:template match="mn:clause[normalize-space() != '' or mn:figure or @id]" name="template_clause"> <!-- if clause isn't empty -->
 		<xsl:call-template name="setNamedDestination"/>
-		<fo:block>
-			<xsl:if test="parent::mn:copyright-statement">
-				<xsl:attribute name="role">SKIP</xsl:attribute>
-			</xsl:if>
+		<fo:block role="Sect">
 			
 			<xsl:call-template name="setId"/>
 			
+			<xsl:call-template name="addTagElementT"/>
+			
 			<xsl:call-template name="setBlockSpanAll"/>
 			
-			<xsl:call-template name="refine_clause_style"/>
+			<xsl:call-template name="refine_clause-style"/>
 			
 			<xsl:call-template name="addReviewHelper"/>
 			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
-	
-	<xsl:template name="refine_clause_style">
-		<xsl:if test="$namespace = 'bipm'">
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
-			<xsl:attribute name="keep-with-next">always</xsl:attribute>
-		</xsl:if>
-		<xsl:if test="$namespace = 'itu' or $namespace = 'jcgm'">
-			<xsl:if test="@inline-header='true'">
-				<xsl:attribute name="text-align">justify</xsl:attribute>
-			</xsl:if>
-		</xsl:if>
-	</xsl:template> <!-- refine_clause_style -->
 	
 	
 	<xsl:template match="mn:annex[normalize-space() != '']">
@@ -937,16 +925,18 @@
 				<fo:block break-after="page"/>
 				<xsl:call-template name="setNamedDestination"/>
 				
-				<fo:block id="{@id}">
+				<fo:block>
 				
-					<xsl:if test="$namespace = 'iso'">
-						<xsl:attribute name="role">Sect</xsl:attribute>
-						<xsl:call-template name="addTagElementT"/>
-					</xsl:if>
+					<xsl:call-template name="setId"/>
+				
+					<!-- <xsl:if test="$namespace = 'iso'"> -->
+					<xsl:attribute name="role">Sect</xsl:attribute>
+					<xsl:call-template name="addTagElementT"/>
+					<!-- </xsl:if> -->
 					
 					<xsl:call-template name="setBlockSpanAll"/>
 					
-					<xsl:call-template name="refine_annex_style"/>
+					<xsl:call-template name="refine_annex-style"/>
 					
 				</fo:block>
 				
@@ -959,7 +949,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template name="refine_annex_style">
+	<xsl:template name="refine_annex-style">
 		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
 			<xsl:variable name="num"><xsl:number /></xsl:variable>
 			<xsl:if test="$num = 1">
@@ -1090,6 +1080,13 @@
 	<xsl:template name="addTagElementT">
 		<xsl:variable name="title_">
 			<xsl:apply-templates select="mn:fmt-title"/>
+			<xsl:if test="not(mn:fmt-title) and self::mn:term">
+				<name>
+					<xsl:apply-templates select="mn:fmt-name"/>
+					<xsl:text> </xsl:text>
+					<xsl:apply-templates select="mn:fmt-preferred/node()[1]"/>
+				</name>
+			</xsl:if>
 		</xsl:variable>
 		<xsl:variable name="title__">
 			<xsl:for-each select="xalan:nodeset($title_)/*/node()">
@@ -1099,7 +1096,7 @@
 				</xsl:choose>
 			</xsl:for-each>
 		</xsl:variable>
-		<xsl:variable name="title" select="normalize-space($title__)"/>
+		<xsl:variable name="title" select="normalize-space(translate($title__, concat($em_space,'&#xa0;'), '  '))"/>
 		<xsl:if test="$title != ''">
 			<xsl:attribute name="fox:title">
 				<xsl:if test="ancestor::mn:sections">
