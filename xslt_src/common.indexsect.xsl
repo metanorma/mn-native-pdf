@@ -482,10 +482,10 @@
 	<xsl:template name="fo_inline_bookmark">
 		<xsl:param name="bookmark_id"/>
 		<!-- <fo:inline id="{@id}" font-size="1pt"/> -->
-		<fo:inline id="{@id}" font-size="1pt"><xsl:if test="preceding-sibling::node()[self::mn:fmt-annotation-start][@source = $bookmark_id] and 
-				following-sibling::node()[self::mn:fmt-annotation-end][@source = $bookmark_id]"><xsl:attribute name="line-height">0.1</xsl:attribute></xsl:if><xsl:value-of select="$hair_space"/></fo:inline>
+		<fo:inline id="{@id}" font-size="1pt" role="SKIP"><xsl:if test="preceding-sibling::node()[self::mn:fmt-annotation-start][@source = $bookmark_id] and 
+				following-sibling::node()[self::mn:fmt-annotation-end][@source = $bookmark_id]"><xsl:attribute name="line-height">0.1</xsl:attribute></xsl:if><fo:wrapper role="artifact"><xsl:value-of select="$hair_space"/></fo:wrapper></fo:inline>
 		<!-- we need to add zero-width space, otherwise this fo:inline is missing in IF xml -->
-		<xsl:if test="not(following-sibling::node()[normalize-space() != ''])"><fo:inline font-size="1pt">&#xA0;</fo:inline></xsl:if>
+		<xsl:if test="not(following-sibling::node()[normalize-space() != ''])"><fo:inline font-size="1pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:inline></xsl:if>
 	</xsl:template>
 	<!-- =================== -->
 	<!-- End of Index processing -->
