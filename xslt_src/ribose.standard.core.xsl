@@ -881,7 +881,9 @@
 		<xsl:if test="not(ancestor::*[@type = 'terms'])">
 			<fo:block break-after="page"/>
 		</xsl:if>
-		<fo:block id="{@id}">
+		<fo:block id="{@id}" xsl:use-attribute-sets="terms-style">
+			<xsl:call-template name="addTagElementT"/>
+			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -972,7 +974,7 @@
 		<fo:block xsl:use-attribute-sets="term-preferred-block-style">
 			<xsl:call-template name="refine_term-preferred-block-style"/>
 			<xsl:if test="preceding-sibling::*[1][self::mn:fmt-name]">
-				<fo:inline xsl:use-attribute-sets="term-number-style">
+				<fo:inline xsl:use-attribute-sets="term-number-style" role="SKIP">
 					<xsl:call-template name="refine_term-number-style"/>
 					
 					<xsl:for-each select="ancestor::mn:term[1]/mn:fmt-name"><!-- change context -->
@@ -1100,21 +1102,6 @@
 		<xsl:variable name="content4" select="java:replaceAll(java:java.lang.String.new($content3), '\u200b{2,}', '&#x200B;')"/>
 		
 		<xsl:value-of select="$content4"/>
-	</xsl:template>
-	
-	<xsl:template match="mn:clause" priority="2">
-		<fo:block-container xsl:use-attribute-sets="clause-style">
-			<xsl:call-template name="refine_clause-style"/>
-      
-			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
-				<xsl:call-template name="setNamedDestination"/>
-				<fo:block role="SKIP">
-					<xsl:call-template name="setId"/>
-					<xsl:call-template name="addReviewHelper"/>
-					<xsl:apply-templates />
-				</fo:block>
-			</fo:block-container>
-		</fo:block-container>
 	</xsl:template>
 	
 	

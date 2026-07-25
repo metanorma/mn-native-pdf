@@ -5062,7 +5062,9 @@
 			
 			<xsl:call-template name="setBlockSpanAll"/>
 			
-			<xsl:call-template name="refine_clause_style"/>
+			<xsl:call-template name="addTagElementT"/>
+			
+			<xsl:call-template name="refine_clause-style"/>
 			
 			<xsl:call-template name="addReviewHelper"/>
 			

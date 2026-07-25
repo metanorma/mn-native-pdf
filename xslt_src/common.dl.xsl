@@ -17,6 +17,7 @@
 	<!-- ========================== -->
 	
 	<xsl:attribute-set name="dl-block-style">
+		<xsl:attribute name="role">SKIP</xsl:attribute>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="margin-bottom">8pt</xsl:attribute>
 		</xsl:if>
@@ -37,6 +38,7 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="dt-row-style">
+		<xsl:attribute name="role">LI</xsl:attribute>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="min-height">8.5mm</xsl:attribute>
 		</xsl:if>
@@ -54,6 +56,7 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="dt-cell-style">
+		<xsl:attribute name="role">Lbl</xsl:attribute>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
 			<xsl:attribute name="padding-right">5mm</xsl:attribute>
@@ -79,6 +82,7 @@
 	</xsl:template> <!-- refine_dt-cell-style -->
 	
 	<xsl:attribute-set name="dt-block-style">
+		<xsl:attribute name="role">SKIP</xsl:attribute>
 		<xsl:attribute name="margin-top">0pt</xsl:attribute>
 		<xsl:if test="$namespace = 'csd'">
 			<xsl:attribute name="margin-left">7mm</xsl:attribute>
@@ -205,6 +209,7 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="dd-cell-style">
+		<xsl:attribute name="role">LBody</xsl:attribute>
 		<xsl:attribute name="padding-left">2mm</xsl:attribute>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="padding-top">0.5mm</xsl:attribute>
@@ -288,7 +293,7 @@
 		<xsl:variable name="isAdded" select="@added"/>
 		<xsl:variable name="isDeleted" select="@deleted"/>
 		<!-- <dl><xsl:copy-of select="."/></dl> -->
-		<fo:block-container xsl:use-attribute-sets="dl-block-style" role="SKIP">
+		<fo:block-container xsl:use-attribute-sets="dl-block-style">
 		
 			<xsl:call-template name="refine_dl-block-style"/>
 			
@@ -484,7 +489,7 @@
 								<fo:block id="{concat('table_if_start_',@id)}" keep-with-next="always" font-size="1pt">Start table '<xsl:value-of select="@id"/>'.</fo:block>
 							</xsl:if>
 							
-							<fo:table width="95%" table-layout="fixed">
+							<fo:table width="95%" table-layout="fixed" role="L">
 							
 								<xsl:if test="$isGenerateTableIF = 'true'">
 									<xsl:attribute name="wrap-option">no-wrap</xsl:attribute>
@@ -571,7 +576,7 @@
 											<xsl:with-param name="table_or_dl">dl</xsl:with-param>
 										</xsl:apply-templates>
 										
-									</xsl:when>
+									</xsl:when> <!-- $isGenerateTableIF = 'true' -->
 									<xsl:otherwise>
 								
 										<xsl:variable name="simple-table">
@@ -674,7 +679,7 @@
 											</xsl:otherwise>
 										</xsl:choose>
 										
-										<fo:table-body>
+										<fo:table-body role="SKIP">
 											
 											<!-- DEBUG -->
 											<xsl:if test="$table_if_debug = 'true'">
@@ -964,8 +969,8 @@
 			<td number-columns-spanned="2">NOTE <xsl:apply-templates /> </td>
 		</tr> 
 		-->
-		<fo:table-row>
-			<fo:table-cell number-columns-spanned="2">
+		<fo:table-row role="SKIP">
+			<fo:table-cell number-columns-spanned="2" role="SKIP">
 				<fo:block role="SKIP">
 					<xsl:call-template name="note"/>
 				</fo:block>
@@ -1063,7 +1068,7 @@
 			<xsl:call-template name="refine_dt-cell-style"/>
 			
 			<xsl:call-template name="setNamedDestination"/>
-			<fo:block xsl:use-attribute-sets="dt-block-style" role="SKIP">
+			<fo:block xsl:use-attribute-sets="dt-block-style">
 			
 				<xsl:choose>
 					<xsl:when test="$isGenerateTableIF = 'true'">
@@ -1179,7 +1184,7 @@
 		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="$is_inline_element_after_where = 'true'">
-				<fo:inline><xsl:text> </xsl:text><xsl:apply-templates /></fo:inline>
+				<fo:inline role="SKIP"><xsl:text> </xsl:text><xsl:apply-templates /></fo:inline>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates select="."/>

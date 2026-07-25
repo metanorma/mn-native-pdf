@@ -14,6 +14,7 @@
 	
 	<!-- Characters -->
 	<xsl:variable name="linebreak">&#x2028;</xsl:variable>
+	<xsl:variable name="em_space">&#x2003;</xsl:variable>
 	<xsl:variable name="tab_zh">&#x3000;</xsl:variable>
 	<xsl:variable name="non_breaking_hyphen">&#x2011;</xsl:variable>
 	<xsl:variable name="thin_space">&#x2009;</xsl:variable>	

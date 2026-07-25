@@ -12,7 +12,15 @@
 											extension-element-prefixes="redirect"
 											version="1.0">
 	
+	<xsl:attribute-set name="terms-style">
+		<xsl:attribute name="role">Sect</xsl:attribute>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_terms-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="term-style">
+		<xsl:attribute name="role">Sect</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iho' or $namespace = 'iso' or $namespace = 'jcgm'">
 			<xsl:attribute name="margin-bottom">10pt</xsl:attribute>
 		</xsl:if>
@@ -378,7 +386,10 @@
 	<xsl:template match="mn:terms">
 		<!-- <xsl:message>'terms' <xsl:number/> processing...</xsl:message> -->
 		<xsl:call-template name="setNamedDestination"/>
-		<fo:block id="{@id}">
+		<fo:block id="{@id}" xsl:use-attribute-sets="terms-style">
+			<xsl:call-template name="refine_terms-style"/>
+			<xsl:call-template name="addTagElementT"/>
+			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
@@ -387,6 +398,7 @@
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block id="{@id}" xsl:use-attribute-sets="term-style">
 			<xsl:call-template name="refine_term-style"/>
+			<xsl:call-template name="addTagElementT"/>
 
 			<xsl:if test="$namespace = 'gb'">
 				<fo:block font-family="SimHei" font-size="11pt" keep-with-next="always" margin-top="10pt" margin-bottom="8pt" line-height="1.1">
@@ -670,7 +682,9 @@
 	
 	<xsl:template match="mn:definitions">
 		<xsl:call-template name="setNamedDestination"/>
-		<fo:block id="{@id}">
+		<fo:block id="{@id}" role="Sect">
+			<xsl:call-template name="addTagElementT"/>
+			
 			<xsl:apply-templates />
 		</fo:block>
 	</xsl:template>
