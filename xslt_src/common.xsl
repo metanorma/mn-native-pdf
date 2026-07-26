@@ -717,9 +717,9 @@
 			
 			<xsl:call-template name="sections_element_style"/>
 			
-			<xsl:if test="$namespace = 'rsd'">
-				<xsl:call-template name="addTagElementT"/>
-			</xsl:if>
+			<!-- <xsl:if test="$namespace = 'rsd'"> -->
+			<xsl:call-template name="addTagElementT"/>
+			<!-- </xsl:if> -->
 			
 			<xsl:call-template name="addReviewHelper"/>
 			
@@ -913,51 +913,6 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="mn:annex[normalize-space() != '']">
-		<xsl:choose>
-			<xsl:when test="@continue = 'true'"> <!-- it's using for figure/table on top level for block span -->
-				<fo:block role="SKIP">
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:when>
-			<xsl:otherwise>
-			
-				<fo:block break-after="page"/>
-				<xsl:call-template name="setNamedDestination"/>
-				
-				<fo:block>
-				
-					<xsl:call-template name="setId"/>
-				
-					<!-- <xsl:if test="$namespace = 'iso'"> -->
-					<xsl:attribute name="role">Sect</xsl:attribute>
-					<xsl:call-template name="addTagElementT"/>
-					<!-- </xsl:if> -->
-					
-					<xsl:call-template name="setBlockSpanAll"/>
-					
-					<xsl:call-template name="refine_annex-style"/>
-					
-				</fo:block>
-				
-				<xsl:apply-templates select="mn:fmt-title[@columns = 1]"/>
-				
-				<fo:block>
-					<xsl:apply-templates select="node()[not(self::mn:fmt-title and @columns = 1)]" />
-				</fo:block>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	
-	<xsl:template name="refine_annex-style">
-		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
-			<xsl:variable name="num"><xsl:number /></xsl:variable>
-			<xsl:if test="$num = 1">
-				<xsl:attribute name="margin-top">3pt</xsl:attribute>
-			</xsl:if>
-		</xsl:if>
-	</xsl:template>
-
 	<xsl:template match="mn:name/text() | mn:fmt-name/text()">
 		<!-- 0xA0 to space replacement -->
 		<xsl:value-of select="java:replaceAll(java:java.lang.String.new(.),' ',' ')"/>
@@ -1096,7 +1051,7 @@
 				</xsl:choose>
 			</xsl:for-each>
 		</xsl:variable>
-		<xsl:variable name="title" select="normalize-space(translate($title__, concat($em_space,'&#xa0;'), '  '))"/>
+		<xsl:variable name="title" select="normalize-space(translate($title__, concat($em_space,'&#xa0;&#8232;'), '   '))"/>
 		<xsl:if test="$title != ''">
 			<xsl:attribute name="fox:title">
 				<xsl:if test="ancestor::mn:sections">

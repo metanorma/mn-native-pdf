@@ -1028,8 +1028,9 @@
 	
 	<xsl:template match="mn:references[not(@normative='true')]" priority="3">
 		<fo:block break-after="page"/>
-		<fo:block id="{@id}" role="SKIP">
-			<fo:table width="100%" table-layout="fixed" role="Sect">
+		<fo:block id="{@id}" role="Sect">
+			<xsl:call-template name="addTagElementT"/>
+			<fo:table width="100%" table-layout="fixed" role="SKIP">
 				<fo:table-column column-width="100%"/>				
 				<fo:table-header role="SKIP">
 					<!-- repeat table header on each page -->
