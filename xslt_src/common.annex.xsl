@@ -12,6 +12,19 @@
 											extension-element-prefixes="redirect"
 											version="1.0">
 	
+	<xsl:attribute-set name="annex-style">
+		<xsl:attribute name="role">Sect</xsl:attribute>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_annex-style">
+		<xsl:if test="$namespace = 'unece' or $namespace = 'unece-rec'">
+			<xsl:variable name="num"><xsl:number /></xsl:variable>
+			<xsl:if test="$num = 1">
+				<xsl:attribute name="margin-top">3pt</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:attribute-set name="annex-title-style">
 		<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi'">
@@ -111,5 +124,38 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template match="mn:annex[normalize-space() != '']">
+		<xsl:choose>
+			<xsl:when test="@continue = 'true'"> <!-- it's using for figure/table on top level for block span -->
+				<fo:block role="SKIP">
+					<xsl:apply-templates />
+				</fo:block>
+			</xsl:when>
+			<xsl:otherwise>
+			
+				<fo:block break-after="page"/>
+				<xsl:call-template name="setNamedDestination"/>
+				
+				<fo:block xsl:use-attribute-sets="annex-style">
+				
+					<xsl:call-template name="setId"/>
+				
+					<!-- <xsl:if test="$namespace = 'iso'"> -->
+					<xsl:call-template name="addTagElementT"/>
+					<!-- </xsl:if> -->
+					
+					<xsl:call-template name="setBlockSpanAll"/>
+					
+					<xsl:call-template name="refine_annex-style"/>
+					
+					<xsl:apply-templates select="mn:fmt-title[@columns = 1]"/>
+					
+					<fo:block role="SKIP">
+						<xsl:apply-templates select="node()[not(self::mn:fmt-title and @columns = 1)]" />
+					</fo:block>
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 </xsl:stylesheet>
