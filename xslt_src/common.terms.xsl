@@ -74,6 +74,7 @@
 			<xsl:attribute name="space-after">2pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 			<xsl:attribute name="padding-right">1mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- term-name-style -->
@@ -130,6 +131,7 @@
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="color">black</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -164,11 +166,7 @@
 					<xsl:otherwise>12pt</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
-			<xsl:variable name="levelTerm">
-				<xsl:call-template name="getLevelTermName"/>
-			</xsl:variable>
 			<xsl:attribute name="font-size"><xsl:value-of select="$font-size"/></xsl:attribute>
-			<xsl:attribute name="role">H<xsl:value-of select="$levelTerm"/></xsl:attribute>
 			<xsl:if test="preceding-sibling::*[1][self::mn:fmt-name]">
 				<xsl:attribute name="space-before">11mm</xsl:attribute>
 			</xsl:if>
@@ -208,6 +206,7 @@
 			<xsl:attribute name="font-weight">normal</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 			<xsl:attribute name="padding-right">4mm</xsl:attribute>
 		</xsl:if>
 	</xsl:attribute-set> <!-- preferred-term-style -->

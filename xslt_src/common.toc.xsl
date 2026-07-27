@@ -12,6 +12,13 @@
 											extension-element-prefixes="redirect"
 											version="1.0">
 	
+	<xsl:attribute-set name="toc-container-style">
+		<xsl:attribute name="role">Sect</xsl:attribute>
+	</xsl:attribute-set>
+	
+	<xsl:template name="refine_toc-container-style">
+	</xsl:template>
+	
 	<xsl:attribute-set name="toc-style">
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="line-height">135%</xsl:attribute>
