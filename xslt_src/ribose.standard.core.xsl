@@ -284,7 +284,7 @@
 								<xsl:with-param name="num" select="$num"/>
 								<xsl:with-param name="section">toc</xsl:with-param>
 							</xsl:call-template>
-							<fo:flow flow-name="xsl-region-body">
+							<fo:flow flow-name="xsl-region-body" role="SKIP">
 							
 								<xsl:copy-of select="$toc_and_boilerplate"/>
 							
@@ -598,7 +598,10 @@
 	
 	<xsl:template match="mn:preface/mn:clause[@type = 'toc']" name="toc" priority="3">
 		<xsl:param name="num"/>
-		<fo:block role="SKIP">
+		<fo:block xsl:use-attribute-sets="toc-container-style">
+			<xsl:call-template name="refine_toc-container-style"/>
+			<xsl:call-template name="addTagElementT"/>
+			
 			<xsl:copy-of select="@id"/>
 			<xsl:apply-templates />	
 			
