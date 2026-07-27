@@ -968,28 +968,40 @@
 	</xsl:template>
 	
 	
-	
+	<!-- https://github.com/metanorma/mn-native-pdf/issues/1068:
+		single H3 covering the term, the preferred term, and the admitted term -->
 	<xsl:template match="mn:fmt-preferred | mn:fmt-deprecates | mn:fmt-admitted" priority="2">
-  
-		<fo:block xsl:use-attribute-sets="term-preferred-block-style">
-			<xsl:call-template name="refine_term-preferred-block-style"/>
-			<xsl:if test="preceding-sibling::*[1][self::mn:fmt-name]">
-				<fo:inline xsl:use-attribute-sets="term-number-style" role="SKIP">
-					<xsl:call-template name="refine_term-number-style"/>
-					
-					<xsl:for-each select="ancestor::mn:term[1]/mn:fmt-name"><!-- change context -->
-						<xsl:call-template name="setIDforNamedDestination"/>
-					</xsl:for-each>
-					
-					<xsl:apply-templates select="ancestor::mn:term[1]/mn:fmt-name" />
-				</fo:inline>
-			</xsl:if>
-			
-			<fo:inline xsl:use-attribute-sets="term-preferred-style"><xsl:call-template name="refine_term-preferred-style"/><xsl:apply-templates /></fo:inline>
-			
-			<xsl:call-template name="display_term_kind"/>
-			
-		</fo:block>
+		<!-- only for first item fmt-preferred, fmt-deprecates or fmt-admitted -->
+		<xsl:if test="not(preceding-sibling::mn:fmt-preferred) and
+									not(preceding-sibling::mn:fmt-deprecates) and
+									not(preceding-sibling::mn:fmt-admitted)">
+			<xsl:variable name="levelTerm">
+				<xsl:call-template name="getLevelTermName"/>
+			</xsl:variable>
+			<fo:block role="H{$levelTerm}">
+				<xsl:for-each select=". | following-sibling::*[self::mn:fmt-preferred or self::mn:fmt-deprecates or self::mn:fmt-admitted]">
+					<fo:block xsl:use-attribute-sets="term-preferred-block-style">
+						<xsl:call-template name="refine_term-preferred-block-style"/>
+						<xsl:if test="preceding-sibling::*[1][self::mn:fmt-name]">
+							<fo:inline xsl:use-attribute-sets="term-number-style">
+								<xsl:call-template name="refine_term-number-style"/>
+								
+								<xsl:for-each select="ancestor::mn:term[1]/mn:fmt-name"><!-- change context -->
+									<xsl:call-template name="setIDforNamedDestination"/>
+								</xsl:for-each>
+								
+								<xsl:apply-templates select="ancestor::mn:term[1]/mn:fmt-name" />
+							</fo:inline>
+						</xsl:if>
+						
+						<fo:inline xsl:use-attribute-sets="term-preferred-style"><xsl:call-template name="refine_term-preferred-style"/><xsl:apply-templates /></fo:inline>
+						
+						<xsl:call-template name="display_term_kind"/>
+						
+					</fo:block>
+				</xsl:for-each>
+			</fo:block>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template name="display_term_kind">
