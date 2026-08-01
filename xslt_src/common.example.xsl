@@ -465,6 +465,7 @@
 		<xsl:variable name="element">inline
 			<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">block</xsl:if>
 			<xsl:if test="$namespace = 'ieee'">block</xsl:if>
+			<xsl:value-of select="$example_display_in"/>
 		</xsl:variable>		
 		<xsl:choose>			
 			<xsl:when test="contains($element, 'block')">
