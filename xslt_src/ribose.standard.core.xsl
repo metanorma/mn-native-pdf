@@ -1062,7 +1062,24 @@
 					<fo:table-row role="SKIP">
 						<fo:table-cell text-align="left" role="SKIP">
 							<fo:block role="L">
-								<xsl:apply-templates select="node()[not(self::mn:fmt-title)]" />
+								<!-- <xsl:apply-templates select="node()[not(self::mn:fmt-title)]" /> -->
+								<xsl:for-each select="node()[not(self::mn:fmt-title)]">
+									<xsl:choose>
+										<xsl:when test="self::mn:bibitem">
+											<xsl:apply-templates select="." />
+										</xsl:when>
+										<xsl:otherwise> <!-- for instance, self::mn:admonition -->
+											<xsl:variable name="item_content"><xsl:apply-templates select="." /></xsl:variable>
+											<xsl:if test="normalize-space($item_content) != ''">
+												<fo:block role="LI">
+													<fo:block role="LBody">
+														<xsl:copy-of select="$item_content"/>
+													</fo:block>
+												</fo:block>
+											</xsl:if>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:for-each>
 							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
