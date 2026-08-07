@@ -1793,10 +1793,12 @@
 								mn:image/mn:fmt-name">
 		<xsl:if test="normalize-space() != ''">			
 			<fo:block xsl:use-attribute-sets="figure-name-style">
-			
 				<xsl:call-template name="refine_figure-name-style"/>
 				
-				<xsl:apply-templates />
+				<!-- <Caption><P> tags, see https://github.com/metanorma/metanorma-pdfa/issues/81 -->
+				<fo:block role="P">
+					<xsl:apply-templates />
+				</fo:block>
 			</fo:block>
 		</xsl:if>
 	</xsl:template>

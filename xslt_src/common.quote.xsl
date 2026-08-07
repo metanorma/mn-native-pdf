@@ -101,7 +101,7 @@
 		</xsl:if>
 	</xsl:template> <!-- refine_quote-style -->
 
-	<xsl:attribute-set name="quote-source-style">		
+	<xsl:attribute-set name="quote-source-style">
 		<xsl:attribute name="role">Caption</xsl:attribute>
 		<xsl:attribute name="text-align">right</xsl:attribute>
 		<xsl:attribute name="margin-right">-12mm</xsl:attribute>
@@ -162,11 +162,15 @@
 					<fo:block-container margin-left="0mm" margin-right="0mm" role="SKIP">
 						<fo:block xsl:use-attribute-sets="quote-source-style">
 							<xsl:call-template name="refine_quote-source-style"/>
-							<!-- — ISO, ISO 7301:2011, Clause 1 -->
-							<xsl:apply-templates select="mn:author"/>
-							<xsl:apply-templates select="mn:fmt-source"/>
-							<!-- added for https://github.com/metanorma/isodoc/issues/607 -->
-							<xsl:apply-templates select="mn:attribution/mn:p/node()"/>
+							
+							<!-- <Caption><P> tags, see https://github.com/metanorma/metanorma-pdfa/issues/81 -->
+							<fo:block role="P">
+								<!-- — ISO, ISO 7301:2011, Clause 1 -->
+								<xsl:apply-templates select="mn:author"/>
+								<xsl:apply-templates select="mn:fmt-source"/>
+								<!-- added for https://github.com/metanorma/isodoc/issues/607 -->
+								<xsl:apply-templates select="mn:attribution/mn:p/node()"/>
+							</fo:block>
 						</fo:block>
 					</fo:block-container>
 				</xsl:if>
