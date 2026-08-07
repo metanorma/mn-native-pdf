@@ -2334,52 +2334,55 @@
 				<xsl:otherwise>
 				
 					<fo:block xsl:use-attribute-sets="table-name-style">
-
 						<xsl:call-template name="refine_table-name-style">
 							<xsl:with-param name="continued" select="$continued"/>
 						</xsl:call-template>
-					
-						<xsl:choose>
-							<xsl:when test="$continued = 'true'"> 
-								<xsl:if test="$namespace = 'jcgm'"> <!-- $namespace = 'iso' or  -->
-									<xsl:apply-templates />
-								</xsl:if>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates />
-							</xsl:otherwise>
-						</xsl:choose>
+							
+						<!-- <Caption><P> tags, see https://github.com/metanorma/metanorma-pdfa/issues/81 -->
+						<fo:block role="P">
 						
-						<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
-							<xsl:if test="not(ancestor::mn:table/@class = 'corrigenda') and 
-							not(contains(ancestor::mn:clause[1]/mn:fmt-title, 'Amendments/corrigenda'))">
+							<xsl:choose>
+								<xsl:when test="$continued = 'true'"> 
+									<xsl:if test="$namespace = 'jcgm'"> <!-- $namespace = 'iso' or  -->
+										<xsl:apply-templates />
+									</xsl:if>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:apply-templates />
+								</xsl:otherwise>
+							</xsl:choose>
+							
+							<xsl:if test="$namespace = 'bsi' or $namespace = 'pas'">
+								<xsl:if test="not(ancestor::mn:table/@class = 'corrigenda') and 
+								not(contains(ancestor::mn:clause[1]/mn:fmt-title, 'Amendments/corrigenda'))">
+									<xsl:if test="$continued = 'true'">
+										<fo:inline font-weight="bold" font-style="normal" role="SKIP">
+											<xsl:if test="$namespace = 'pas'">
+												<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
+											</xsl:if>
+											<fo:retrieve-table-marker retrieve-class-name="table_number"/>
+										</fo:inline>
+										<fo:inline font-style="italic" role="SKIP">
+											<xsl:text> </xsl:text>
+											<fo:retrieve-table-marker retrieve-class-name="table_continued"/>
+										</fo:inline>
+									</xsl:if>
+								</xsl:if>
+							</xsl:if>
+							
+							<xsl:if test="$namespace = 'iec' or $namespace = 'iso'">
 								<xsl:if test="$continued = 'true'">
 									<fo:inline font-weight="bold" font-style="normal" role="SKIP">
-										<xsl:if test="$namespace = 'pas'">
-											<xsl:attribute name="color"><xsl:value-of select="$color_secondary_shade_1_PAS"/></xsl:attribute>
-										</xsl:if>
 										<fo:retrieve-table-marker retrieve-class-name="table_number"/>
 									</fo:inline>
-									<fo:inline font-style="italic" role="SKIP">
+									<fo:inline font-weight="normal" font-style="italic" role="SKIP">
 										<xsl:text> </xsl:text>
 										<fo:retrieve-table-marker retrieve-class-name="table_continued"/>
 									</fo:inline>
 								</xsl:if>
 							</xsl:if>
-						</xsl:if>
 						
-						<xsl:if test="$namespace = 'iec' or $namespace = 'iso'">
-							<xsl:if test="$continued = 'true'">
-								<fo:inline font-weight="bold" font-style="normal" role="SKIP">
-									<fo:retrieve-table-marker retrieve-class-name="table_number"/>
-								</fo:inline>
-								<fo:inline font-weight="normal" font-style="italic" role="SKIP">
-									<xsl:text> </xsl:text>
-									<fo:retrieve-table-marker retrieve-class-name="table_continued"/>
-								</fo:inline>
-							</xsl:if>
-						</xsl:if>
-						
+						</fo:block>
 					</fo:block>
 					
 					<!-- <xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iec' or $namespace = 'iso'"> -->
