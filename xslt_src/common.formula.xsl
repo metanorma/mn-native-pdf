@@ -132,6 +132,7 @@
 	</xsl:template>
 
 	<xsl:attribute-set name="mathml-style">
+		<xsl:attribute name="role">Formula</xsl:attribute>
 		<xsl:attribute name="font-family">STIX Two Math</xsl:attribute>
 		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso' or $namespace = 'jcgm' or $namespace = 'm3d'">
 			<xsl:attribute name="font-family">Cambria Math</xsl:attribute>
