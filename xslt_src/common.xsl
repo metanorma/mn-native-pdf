@@ -862,11 +862,8 @@
 			</xsl:otherwise>
 		</xsl:choose>
 		<xsl:call-template name="setNamedDestination"/>
-		<fo:block>
-			<xsl:if test="$namespace = 'iso'">
-				<xsl:attribute name="role">Sect</xsl:attribute>
-				<xsl:call-template name="addTagElementT"/>
-			</xsl:if>
+		<fo:block role="Sect">
+			<xsl:call-template name="addTagElementT"/>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
 			<xsl:apply-templates />
