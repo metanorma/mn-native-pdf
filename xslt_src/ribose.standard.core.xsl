@@ -612,29 +612,7 @@
 					<fo:block-container xsl:use-attribute-sets="toc-style">
 						<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 							<fo:block role="TOC">
-								<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']">
-									<fo:block xsl:use-attribute-sets="toc-item-style">
-										
-										<xsl:call-template name="refine_toc-item-style"/>
-										
-										<fo:block text-align-last="justify" role="SKIP">
-											<fo:inline role="Lbl"><xsl:value-of select="@section"/></fo:inline>
-											<fo:wrapper role="Reference">
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
-													<xsl:if test="@section != ''">
-														<xsl:text> </xsl:text>
-													</xsl:if>
-													<xsl:apply-templates select="mnx:title"/>
-													<xsl:text> &#xA0;</xsl:text>
-													<fo:inline role="SKIP">
-														<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
-														<fo:inline xsl:use-attribute-sets="toc-pagenumber-style"><fo:page-number-citation ref-id="{@id}" role="SKIP"/></fo:inline> <!-- <fo:wrapper role="artifact"> </fo:wrapper> -->
-													</fo:inline>
-												</fo:basic-link>
-											</fo:wrapper>
-										</fo:block>
-									</fo:block>
-								</xsl:for-each>
+								<xsl:apply-templates select="$contents/mnx:doc[@num = $num]/mnx:contents/mnx:item[@display = 'true']"/>
 							</fo:block>
 							
 							<!-- List of Tables -->
@@ -688,6 +666,43 @@
 				<xsl:with-param name="key">table_of_contents</xsl:with-param>
 			</xsl:call-template> -->
 			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+
+	<!-- <xsl:template match="mnx:contents//mnx:item"/> -->
+	<xsl:template match="mnx:contents//mnx:item[@display = 'true']">
+		<fo:block xsl:use-attribute-sets="toc-item-style"> <!--  border="0.5pt solid black" -->
+			
+			<xsl:call-template name="refine_toc-item-style"/>
+			
+			<fo:block text-align-last="justify" role="SKIP">
+				<xsl:if test="mnx:item[@display = 'true']">
+					<!-- if there is(are) child(s), then keep the title with child title on the same page -->
+					<xsl:attribute name="keep-with-next.within-page">always</xsl:attribute>
+					<!-- <xsl:attribute name="widows">0</xsl:attribute>
+					<xsl:attribute name="orphans">0</xsl:attribute> -->
+				</xsl:if>
+			
+				<fo:inline role="Lbl"><xsl:value-of select="@section"/></fo:inline>
+				<fo:wrapper role="Reference">
+					<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+						<xsl:if test="@section != ''">
+							<xsl:text> </xsl:text>
+						</xsl:if>
+						<xsl:apply-templates select="mnx:title"/>
+						<xsl:text> &#xA0;</xsl:text>
+						<fo:inline role="SKIP">
+							<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
+							<fo:inline xsl:use-attribute-sets="toc-pagenumber-style"><fo:page-number-citation ref-id="{@id}" role="SKIP"/></fo:inline> <!-- <fo:wrapper role="artifact"> </fo:wrapper> -->
+						</fo:inline>
+					</fo:basic-link>
+				</fo:wrapper>
+			</fo:block>
+			<xsl:if test="mnx:item[@display = 'true']">
+				<fo:block role="TOC">
+					<xsl:apply-templates select="mnx:item[@display = 'true']"/>
+				</fo:block>
+			</xsl:if>
 		</fo:block>
 	</xsl:template>
 

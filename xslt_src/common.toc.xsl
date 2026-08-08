@@ -495,7 +495,7 @@
 				</xsl:if>
 				<xsl:attribute name="space-after">4pt</xsl:attribute>
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
-				<xsl:attribute name="keep-with-next">always</xsl:attribute>
+				<!-- <xsl:attribute name="keep-with-next">always</xsl:attribute> -->
 				<xsl:attribute name="color">black</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="@level &gt;= 2">
