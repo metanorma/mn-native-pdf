@@ -230,6 +230,68 @@
 		</xsl:if>
 	</xsl:template> <!-- refine_note-style -->
 	
+	<xsl:attribute-set name="note-block-style">
+		<xsl:attribute name="role">SKIP</xsl:attribute>
+	</xsl:attribute-set> <!-- note-block-style -->
+	
+	<xsl:template name="refine_note-block-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:if test="@parent-type = 'quote'">
+				<xsl:attribute name="font-family">Arial</xsl:attribute>
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+				<xsl:attribute name="line-height">130%</xsl:attribute>
+				<xsl:attribute name="text-align">justify</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:variable name="layoutVersion">
+				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
+			</xsl:variable>
+			<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1987'">
+				<xsl:if test="following-sibling::*[1][self::mn:note] and not(preceding-sibling::*[1][self::mn:note])">
+					<!-- NOTES -->
+					<fo:block font-size="9.5pt" keep-with-next="always" margin-bottom="6pt" text-transform="uppercase" role="Lbl">
+						<xsl:variable name="i18n_notes">
+							<xsl:call-template name="getLocalizedString">
+								<xsl:with-param name="key">Note.pl</xsl:with-param>
+							</xsl:call-template>
+						</xsl:variable>
+						<xsl:choose>
+							<xsl:when test="$layoutVersion = '1951'">
+								<xsl:call-template name="smallcaps">
+									<xsl:with-param name="txt" select="$i18n_notes"/>
+								</xsl:call-template>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="$i18n_notes"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</fo:block>
+				</xsl:if>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'itu'">
+			<xsl:if test="ancestor::mn:figure">
+				<xsl:attribute name="keep-with-previous">always</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'unece-rec' or $namespace = 'unece'">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:attribute name="text-indent">0</xsl:attribute>
+			<xsl:attribute name="padding-top">1.5mm</xsl:attribute>							
+			<xsl:if test="../@type = 'source' or ../@type = 'abbreviation'">
+				<xsl:attribute name="font-size">9pt</xsl:attribute>
+				<xsl:attribute name="text-align">justify</xsl:attribute>
+				<xsl:attribute name="padding-top">0mm</xsl:attribute>					
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="$namespace = 'plateau'">
+			<xsl:if test="ancestor::mn:figure">
+				<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template> <!-- refine_note-block-style -->	
+	
 	<xsl:variable name="note-body-indent">10mm</xsl:variable>
 	<xsl:variable name="note-body-indent-table">5mm</xsl:variable>
 	
@@ -689,9 +751,9 @@
 							</xsl:when>
 							
 							<xsl:otherwise>
-								<fo:block role="SKIP">
+								<fo:block xsl:use-attribute-sets="note-block-style">
 									
-									<xsl:call-template name="refine_note_block_style"/>
+									<xsl:call-template name="refine_note-block-style"/>
 									
 									<fo:inline xsl:use-attribute-sets="note-name-style">
 										
@@ -734,65 +796,6 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template name="refine_note_block_style">
-		<xsl:if test="$namespace = 'bipm'">
-			<xsl:if test="@parent-type = 'quote'">
-				<xsl:attribute name="font-family">Arial</xsl:attribute>
-				<xsl:attribute name="font-size">9pt</xsl:attribute>
-				<xsl:attribute name="line-height">130%</xsl:attribute>
-				<xsl:attribute name="text-align">justify</xsl:attribute>
-			</xsl:if>
-		</xsl:if>
-		<xsl:if test="$namespace = 'iso'">
-			<xsl:variable name="layoutVersion">
-				<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
-			</xsl:variable>
-			<xsl:if test="$layoutVersion = '1951' or $layoutVersion = '1987'">
-				<xsl:if test="following-sibling::*[1][self::mn:note] and not(preceding-sibling::*[1][self::mn:note])">
-					<!-- NOTES -->
-					<fo:block font-size="9.5pt" keep-with-next="always" margin-bottom="6pt" text-transform="uppercase" role="Lbl">
-						<xsl:variable name="i18n_notes">
-							<xsl:call-template name="getLocalizedString">
-								<xsl:with-param name="key">Note.pl</xsl:with-param>
-							</xsl:call-template>
-						</xsl:variable>
-						<xsl:choose>
-							<xsl:when test="$layoutVersion = '1951'">
-								<xsl:call-template name="smallcaps">
-									<xsl:with-param name="txt" select="$i18n_notes"/>
-								</xsl:call-template>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of select="$i18n_notes"/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</fo:block>
-				</xsl:if>
-			</xsl:if>
-		</xsl:if>
-		<xsl:if test="$namespace = 'itu'">
-			<xsl:if test="ancestor::mn:figure">
-				<xsl:attribute name="keep-with-previous">always</xsl:attribute>
-			</xsl:if>
-		</xsl:if>
-		<xsl:if test="$namespace = 'unece-rec' or $namespace = 'unece'">
-			<xsl:attribute name="font-size">10pt</xsl:attribute>
-			<xsl:attribute name="text-indent">0</xsl:attribute>
-			<xsl:attribute name="padding-top">1.5mm</xsl:attribute>							
-			<xsl:if test="../@type = 'source' or ../@type = 'abbreviation'">
-				<xsl:attribute name="font-size">9pt</xsl:attribute>
-				<xsl:attribute name="text-align">justify</xsl:attribute>
-				<xsl:attribute name="padding-top">0mm</xsl:attribute>					
-			</xsl:if>
-		</xsl:if>
-		<xsl:if test="$namespace = 'plateau'">
-			<xsl:if test="ancestor::mn:figure">
-				<xsl:attribute name="margin-left"><xsl:value-of select="$tableAnnotationIndent"/></xsl:attribute>
-			</xsl:if>
-		</xsl:if>
-	</xsl:template> <!-- refine_note_block_style -->
-	
-
 	
 	<xsl:template match="mn:note/mn:p">
 		<xsl:variable name="num"><xsl:number/></xsl:variable>
