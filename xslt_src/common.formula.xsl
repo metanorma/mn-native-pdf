@@ -418,7 +418,7 @@
 			<xsl:apply-templates select="." mode="mathml"/>
 		</xsl:variable>
 			
-		<fo:instream-foreign-object fox:alt-text="Math" fox:actual-text="Math">
+		<fo:instream-foreign-object fox:alt-text="Math" fox:actual-text="Math" fox:placement="inline">
 					
 			<xsl:call-template name="refine_mathml_insteam_object_style"/>
 			
