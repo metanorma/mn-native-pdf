@@ -502,7 +502,7 @@
 		<xsl:param name="value"/>
 		<xsl:variable name="add_width" select="string-length($value) * 20" />
 		<xsl:variable name="maxwidth" select="60 + $add_width"/>
-			<fo:instream-foreign-object fox:alt-text="OpeningTag" baseline-shift="-10%"><!-- alignment-baseline="middle" -->
+			<fo:instream-foreign-object fox:alt-text="OpeningTag" baseline-shift="-10%" fox:placement="Inline"><!-- alignment-baseline="middle" -->
 				<xsl:attribute name="height">3.5mm</xsl:attribute> <!-- 5mm -->
 				<xsl:attribute name="content-width">100%</xsl:attribute>
 				<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
@@ -765,7 +765,7 @@
 						<xsl:attribute name="margin-top">0pt</xsl:attribute>
 						<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
 					</xsl:if>
-					<fo:instream-foreign-object fox:alt-text="{.}" content-width="95%">
+					<fo:instream-foreign-object fox:alt-text="{.}" content-width="95%" fox:placement="Inline">
 						<math xmlns="http://www.w3.org/1998/Math/MathML">
 							<mtext><xsl:value-of select="."/></mtext>
 						</math>

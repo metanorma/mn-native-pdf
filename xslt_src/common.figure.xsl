@@ -936,7 +936,7 @@
 					
 					<!-- debug scale='<xsl:value-of select="$scale"/>', indent='<xsl:value-of select="$indent"/>' -->
 					
-					<fo:external-graphic src="{$src}" vertical-align="middle" fox:placement="inline">
+					<fo:external-graphic src="{$src}" vertical-align="middle" fox:placement="Inline">
 						<xsl:call-template name="addAltText"/>
 						
 						<xsl:if test="parent::mn:logo"> <!-- publisher's logo -->
@@ -1001,7 +1001,7 @@
 					<xsl:choose>
 						<xsl:when test="$isDeleted = 'true'">
 							<!-- enclose in svg -->
-							<fo:instream-foreign-object>
+							<fo:instream-foreign-object fox:placement="Block">
 								<xsl:attribute name="width">100%</xsl:attribute>
 								<xsl:attribute name="content-height">100%</xsl:attribute>
 								<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
@@ -1022,7 +1022,7 @@
 							<xsl:value-of select="concat('scale=', $scale,', indent=', $indent)"/>
 							</fo:block> -->
 							
-							<fo:external-graphic src="{$src}">
+							<fo:external-graphic src="{$src}" fox:placement="Block">
 								<xsl:call-template name="addAltText"/>
 								
 								<xsl:choose>
@@ -1401,7 +1401,7 @@
 											</xsl:if>
 											<fo:block text-depth="0" line-height="0" font-size="0">
 
-												<fo:instream-foreign-object fox:alt-text="{$alt-text}">
+												<fo:instream-foreign-object fox:alt-text="{$alt-text}" fox:placement="Block">
 													<xsl:attribute name="width">100%</xsl:attribute>
 													<xsl:attribute name="content-height">100%</xsl:attribute>
 													<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
@@ -1450,7 +1450,7 @@
 					<xsl:copy>
 						<xsl:copy-of select="@*"/>
 					<!-- <fo:block xsl:use-attribute-sets="image-style"> -->
-						<fo:instream-foreign-object fox:alt-text="{$alt-text}">
+						<fo:instream-foreign-object fox:alt-text="{$alt-text}" fox:placement="Block">
 						
 							<xsl:choose>
 								<xsl:when test="$image_class = 'corrigenda-tag'">
@@ -1516,7 +1516,7 @@
 							</xsl:if>
 							
 							<xsl:if test="self::fo:inline">
-								<xsl:attribute name="fox:placement">inline</xsl:attribute>
+								<xsl:attribute name="fox:placement">Inline</xsl:attribute>
 							</xsl:if>
 							
 							<xsl:copy-of select="$svg_content"/>

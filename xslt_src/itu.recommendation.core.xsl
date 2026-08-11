@@ -776,7 +776,7 @@
 								<xsl:if test="$doctype != 'service-publication'">
 									<fo:block margin-top="3.4mm">
 										<xsl:call-template name="setWritingMode"/>
-										<fo:instream-foreign-object fox:alt-text="Color bar">
+										<fo:instream-foreign-object fox:alt-text="Color bar" fox:placement="Block">
 											<xsl:call-template name="insertImageCoverColorBand">
 												<xsl:with-param name="bureau" select="$bureau"/>
 												<xsl:with-param name="doctype" select="$doctype"/>
@@ -793,7 +793,7 @@
 							<xsl:if test="$lang = 'ar'">
 								<xsl:attribute name="text-align">left</xsl:attribute>
 							</xsl:if>
-							<fo:instream-foreign-object content-width="20.5mm" fox:alt-text="Image Logo">
+							<fo:instream-foreign-object content-width="20.5mm" fox:alt-text="Image Logo" fox:placement="Block">
 								<xsl:call-template name="Image-ITU-Globe-Logo-Blue">
 									<xsl:with-param name="color_cover_itu_logo" select="$color_cover_itu_logo"/>
 								</xsl:call-template>
@@ -1250,7 +1250,7 @@
 												<xsl:attribute name="padding-right">0mm</xsl:attribute>
 												<xsl:attribute name="padding-left">6mm</xsl:attribute>
 											</xsl:if>
-											<fo:instream-foreign-object content-height="18.5mm" content-width="16.1mm"  fox:alt-text="Image Logo">
+											<fo:instream-foreign-object content-height="18.5mm" content-width="16.1mm"  fox:alt-text="Image Logo" fox:placement="Block">
 												<xsl:copy-of select="$Image-ITU-Globe-Logo"/>
 											</fo:instream-foreign-object>
 										</fo:inline>
@@ -1397,11 +1397,11 @@
 								<fo:block text-align="right" margin-right="19mm">
 									<xsl:choose>
 										<xsl:when test="$doctype = 'resolution'">
-											<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo_resolution))}" content-height="21mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo"/>
+											<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo_resolution))}" content-height="21mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo" fox:placement="Block"/>
 										</xsl:when>
 										<xsl:otherwise>
 											<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo))}" content-height="17.7mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo"/> -->
-											<fo:instream-foreign-object content-width="24.1mm"  fox:alt-text="Image Logo ITU">
+											<fo:instream-foreign-object content-width="24.1mm"  fox:alt-text="Image Logo ITU" fox:placement="Block">
 												<xsl:call-template name="Image-ITU-Globe-Logo-Blue">
 													<xsl:with-param name="color_cover_itu_logo" select="$color_cover_itu_logo"/>
 												</xsl:call-template>
@@ -1413,7 +1413,7 @@
 						
 							<fo:block-container absolute-position="fixed" left="-7mm" top="0" font-size="0">
 								<fo:block text-align="left">
-									<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Fond-Rec))}" width="43.6mm" content-height="299.2mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Cover Page"/>
+									<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Fond-Rec))}" width="43.6mm" content-height="299.2mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Cover Page" fox:placement="Block"/>
 								</fo:block>
 							</fo:block-container>
 							<fo:block-container font-family="Arial">

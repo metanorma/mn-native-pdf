@@ -1263,7 +1263,7 @@
 	</xsl:template>
 	
 	<xsl:template match="mn:logo[@type = 'desc' or @type = 'mark' or @type = 'sign']">
-		<fo:instream-foreign-object content-width="25.9mm" fox:alt-text="Image Logo IHO">
+		<fo:instream-foreign-object content-width="25.9mm" fox:alt-text="Image Logo IHO" fox:placement="Block">
 			<xsl:if test="@type = 'desc'"><xsl:attribute name="content-width">25.8mm</xsl:attribute></xsl:if>
 			<xsl:copy-of select="mn:image/*[local-name() = 'svg']"/>
 			<xsl:if test="not(mn:image/*[local-name() = 'svg'])">

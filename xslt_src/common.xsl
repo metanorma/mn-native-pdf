@@ -956,7 +956,7 @@
 	
 	<xsl:template match="mn:blacksquare" name="blacksquare">
 		<fo:inline padding-right="2.5mm" baseline-shift="5%">
-			<fo:instream-foreign-object content-height="2mm" content-width="2mm"  fox:alt-text="Quad">
+			<fo:instream-foreign-object content-height="2mm" content-width="2mm"  fox:alt-text="Quad" fox:placement="Inline">
 					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
 					viewBox="0 0 2 2">
 						<rect x="0" y="0" width="2" height="2" fill="black"  />
@@ -2021,13 +2021,13 @@
 		<xsl:param name="bitmap_width" select="$pageWidth"/>
 		<xsl:choose>
 			<xsl:when test="*[local-name() = 'svg'] or java:endsWith(java:java.lang.String.new(@src), '.svg')">
-				<fo:instream-foreign-object fox:alt-text="Image Front">
+				<fo:instream-foreign-object fox:alt-text="Image Front" fox:placement="Block">
 					<xsl:attribute name="content-height"><xsl:value-of select="$svg_content_height"/>mm</xsl:attribute>
 					<xsl:call-template name="getSVG"/>
 				</fo:instream-foreign-object>
 			</xsl:when>
 			<xsl:when test="starts-with(@src, 'data:application/pdf;base64')">
-				<fo:external-graphic src="{@src}" fox:alt-text="Image Front"/>
+				<fo:external-graphic src="{@src}" fox:alt-text="Image Front" fox:placement="Block"/>
 			</xsl:when>
 			<xsl:otherwise> <!-- bitmap image -->
 				<xsl:variable name="coverimage_src" select="normalize-space(@src)"/>
@@ -2037,7 +2037,7 @@
 							<xsl:with-param name="src" select="$coverimage_src"/>
 						</xsl:call-template>
 					</xsl:variable>
-					<fo:external-graphic src="{$coverpage}" width="{$bitmap_width}mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
+					<fo:external-graphic src="{$coverpage}" width="{$bitmap_width}mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front" fox:placement="Block"/>
 				</xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
