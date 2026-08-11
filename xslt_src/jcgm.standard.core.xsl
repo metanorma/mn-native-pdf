@@ -1756,7 +1756,8 @@
 															@class = 'fmt-caption-label' or 
 															@class = 'fmt-element-name' or
 															@class = 'fmt-caption-delim' or
-															@class = 'fmt-autonum-delim']" mode="flatxml_step1" priority="3">
+															@class = 'fmt-autonum-delim' or
+															@class = 'fmt-clause-delim']" mode="flatxml_step1" priority="3">
 		<xsl:apply-templates mode="flatxml_step1"/>
 	</xsl:template>
 	
