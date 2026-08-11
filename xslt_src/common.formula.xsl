@@ -158,6 +158,45 @@
 		</xsl:if>
 	</xsl:template>
 
+	<xsl:attribute-set name="mathml-instream-foreign-object-style">
+		<xsl:attribute name="fox:alt-text">Math</xsl:attribute>
+		<xsl:attribute name="fox:actual-text">Math</xsl:attribute>
+		<xsl:attribute name="fox:placement">Inline</xsl:attribute>
+	</xsl:attribute-set> <!-- mathml-instream-foreign-object-style -->
+	
+	<xsl:template name="refine_mathml-instream-foreign-object-style">
+		<xsl:if test="$namespace = 'bipm'">
+			<xsl:if test="local-name(../..) = 'formula'">
+				<xsl:attribute name="width">95%</xsl:attribute>
+				<xsl:attribute name="content-height">100%</xsl:attribute>
+				<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
+				<xsl:attribute name="scaling">uniform</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso'">
+			<xsl:if test="count(ancestor::mn:table) &gt; 1">
+				<xsl:attribute name="width">95%</xsl:attribute>
+				<xsl:attribute name="content-height">100%</xsl:attribute>
+				<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
+				<xsl:attribute name="scaling">uniform</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		
+		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:if test="local-name(../..) = 'formula' or (local-name(../..) = 'td' and count(../../*) = 1)">
+				<xsl:attribute name="width">95%</xsl:attribute>
+				<xsl:attribute name="content-height">100%</xsl:attribute>
+				<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
+				<xsl:attribute name="scaling">uniform</xsl:attribute>
+			</xsl:if>
+		</xsl:if>
+		<xsl:if test="ancestor::mn:formula">
+			<xsl:attribute name="fox:placement">Block</xsl:attribute>
+		</xsl:if>
+	</xsl:template> <!-- refine_mathml-instream-foreign-object-style -->
+
+
 
 	<!-- ====== -->
 	<!-- formula  -->
@@ -418,9 +457,9 @@
 			<xsl:apply-templates select="." mode="mathml"/>
 		</xsl:variable>
 			
-		<fo:instream-foreign-object fox:alt-text="Math" fox:actual-text="Math" fox:placement="inline">
+		<fo:instream-foreign-object xsl:use-attribute-sets="mathml-instream-foreign-object-style">
 					
-			<xsl:call-template name="refine_mathml_insteam_object_style"/>
+			<xsl:call-template name="refine_mathml-instream-foreign-object-style"/>
 			
 			<xsl:if test="$isGenerateTableIF = 'false'">
 				<!-- put MathML in Actual Text -->
@@ -444,34 +483,6 @@
 		</fo:instream-foreign-object>
 	</xsl:template>
 
-	<xsl:template name="refine_mathml_insteam_object_style">
-		<xsl:if test="$namespace = 'bipm'">
-			<xsl:if test="local-name(../..) = 'formula'">
-				<xsl:attribute name="width">95%</xsl:attribute>
-				<xsl:attribute name="content-height">100%</xsl:attribute>
-				<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
-				<xsl:attribute name="scaling">uniform</xsl:attribute>
-			</xsl:if>
-		</xsl:if>
-		
-		<xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iso'">
-			<xsl:if test="count(ancestor::mn:table) &gt; 1">
-				<xsl:attribute name="width">95%</xsl:attribute>
-				<xsl:attribute name="content-height">100%</xsl:attribute>
-				<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
-				<xsl:attribute name="scaling">uniform</xsl:attribute>
-			</xsl:if>
-		</xsl:if>
-		
-		<xsl:if test="$namespace = 'jcgm'">
-			<xsl:if test="local-name(../..) = 'formula' or (local-name(../..) = 'td' and count(../../*) = 1)">
-				<xsl:attribute name="width">95%</xsl:attribute>
-				<xsl:attribute name="content-height">100%</xsl:attribute>
-				<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
-				<xsl:attribute name="scaling">uniform</xsl:attribute>
-			</xsl:if>
-		</xsl:if>
-	</xsl:template> <!-- refine_mathml_insteam_object_style -->
 
 	<xsl:template match="mathml:*" mode="mathml_actual_text">
 		<!-- <xsl:text>a+b</xsl:text> -->

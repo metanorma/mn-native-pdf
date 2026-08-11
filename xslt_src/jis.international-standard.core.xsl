@@ -1194,7 +1194,7 @@
 						<xsl:attribute name="id">firstpage_id_0</xsl:attribute>
 					</xsl:if>
 					<fo:block id="firstpage_id_{$num}">
-						<fo:instream-foreign-object content-width="81mm" fox:alt-text="JIS Logo">
+						<fo:instream-foreign-object content-width="81mm" fox:alt-text="JIS Logo" fox:placement="Block">
 							<xsl:copy-of select="$JIS-Logo"/>
 						</fo:instream-foreign-object>
 					</fo:block>
@@ -1264,7 +1264,7 @@
 						<xsl:if test="$first = 'true'">
 							<xsl:attribute name="id">firstpage_id_<xsl:value-of select="$num"/></xsl:attribute>
 						</xsl:if>
-						<fo:external-graphic fox:alt-text="Image Cover">
+						<fo:external-graphic fox:alt-text="Image Cover" fox:placement="Block">
 							<xsl:attribute name="src">
 								<xsl:text>data:application/pdf;base64,</xsl:text>
 								<xsl:choose>
@@ -1571,7 +1571,7 @@
 				<xsl:attribute name="left"><xsl:value-of select="$left"/></xsl:attribute>
 			</xsl:if>
 			<fo:block>
-				<fo:instream-foreign-object content-height="{$pageHeight}mm" fox:alt-text="Background color">
+				<fo:instream-foreign-object content-height="{$pageHeight}mm" fox:alt-text="Background color" fox:placement="Block">
 					<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="{$width}" height="{$pageHeight}mm">
 						<rect width="{$pageWidth}mm" height="{$pageHeight}mm" style="fill:{$color_background};stroke-width:0;fill-opacity:{$opacity}"/>
 					</svg>

@@ -488,7 +488,7 @@
 								<!-- crossing lines -->					
 								<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0">
 									<fo:block>
-										<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines">
+										<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines" fox:placement="Block">
 											<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
 												<line x1="230" y1="0" x2="2159" y2="490" stroke="{$color_design_light}"/>
 												<line x1="0" y1="395" x2="820" y2="0" stroke="{$color_design_light}"/>
@@ -547,7 +547,7 @@
 											<!-- crossing lines -->
 											<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0">
 												<fo:block>
-													<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines">
+													<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines" fox:placement="Block">
 														<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
 															<line x1="0" y1="545" x2="2084" y2="0" stroke="{$color_design_light}"/>
 															<line x1="0" y1="1374" x2="355" y2="0" stroke="{$color_design_light}"/>
@@ -682,7 +682,7 @@
 						<!-- background image -->
 						<fo:block-container absolute-position="fixed" left="0mm" top="0mm" font-size="0">
 							<fo:block>
-								<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="{$pageWidth}mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
+								<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="{$pageWidth}mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front" fox:placement="Block"/>
 							</fo:block>
 						</fo:block-container>
 						
@@ -1900,7 +1900,7 @@
 		<xsl:for-each select="$logo/mn:image"><!-- set context -->
 			<xsl:choose>
 				<xsl:when test="@mimetype = 'image/svg+xml'">
-					<fo:instream-foreign-object content-width="39mm" fox:alt-text="Image Logo">
+					<fo:instream-foreign-object content-width="39mm" fox:alt-text="Image Logo" fox:placement="Block">
 						<xsl:call-template name="getSVG"/>
 					</fo:instream-foreign-object>
 				</xsl:when>
@@ -1910,7 +1910,7 @@
 							<xsl:with-param name="src" select="@src"/>
 						</xsl:call-template>
 					</xsl:variable>
-					<fo:external-graphic src="{$logo_url}" width="39mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo"/>
+					<fo:external-graphic src="{$logo_url}" width="39mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo" fox:placement="Block"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:for-each>
@@ -1925,7 +1925,7 @@
 			<xsl:choose>
 				<xsl:when test="@mimetype = 'image/svg+xml'">
 					<fo:block text-align="right"  margin-right="-1mm" margin-top="-1mm" margin-bottom="6mm">
-						<fo:instream-foreign-object content-width="29mm" fox:alt-text="Image Logo">
+						<fo:instream-foreign-object content-width="29mm" fox:alt-text="Image Logo" fox:placement="Block">
 							<xsl:call-template name="getSVG"/>
 						</fo:instream-foreign-object>
 					</fo:block>
@@ -1937,7 +1937,7 @@
 						</xsl:call-template>
 					</xsl:variable>
 					<fo:block text-align="right" margin-right="-1mm" margin-top="-1mm" margin-bottom="1mm">
-						<fo:external-graphic src="{$logo_url}" width="29mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo"/>
+						<fo:external-graphic src="{$logo_url}" width="29mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo" fox:placement="Block"/>
 					</fo:block>
 				</xsl:otherwise>
 			</xsl:choose>
@@ -1987,7 +1987,7 @@
 		
 		<!-- orange circle 14mm -->
 		<fo:block>
-			<fo:instream-foreign-object content-height="14mm" content-width="14mm"  fox:alt-text="Circle">
+			<fo:instream-foreign-object content-height="14mm" content-width="14mm" fox:alt-text="Circle" fox:placement="Block">
 				<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
 				viewBox="0 0 500 500">
 					<g id="UrTavla">
@@ -2009,7 +2009,7 @@
 				<xsl:variable name="color_background_page">
 					<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_background_page</xsl:with-param></xsl:call-template>
 				</xsl:variable>
-				<fo:instream-foreign-object content-height="{$pageHeight}mm" fox:alt-text="Background color">
+				<fo:instream-foreign-object content-height="{$pageHeight}mm" fox:alt-text="Background color" fox:placement="Block">
 					<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="{$pageWidth}mm" height="{$pageHeight}mm">
 						<rect width="{$pageWidth}mm" height="{$pageHeight}mm" style="fill:{$color_background_page};stroke-width:0;fill-opacity:{$opacity}"/>
 					</svg>
@@ -2025,7 +2025,7 @@
 		</xsl:variable>
 		<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0">
 			<fo:block>
-				<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines">
+				<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines" fox:placement="Block">
 					<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
 						<line x1="0" y1="300" x2="2159" y2="675" stroke="{$color_design}" />
 						<line x1="1215" y1="0" x2="2159" y2="1380" stroke="{$color_design}" />

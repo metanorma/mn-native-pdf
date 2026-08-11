@@ -353,8 +353,8 @@
 						</fo:static-content>
 						<fo:flow flow-name="xsl-region-body">
 							<fo:block-container absolute-position="fixed" left="18mm" top="107mm">
-									<fo:block>
-									<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="192mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
+								<fo:block>
+									<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Cover-Background))}" width="192mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front" fox:placement="Block"/>
 								</fo:block>
 							</fo:block-container>
 							<xsl:call-template name="insertCoverPart1"/>
@@ -935,7 +935,7 @@
 										<fo:table-row>
 											<fo:table-cell>
 												<fo:block>
-													<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="17.8mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front"/>
+													<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Attention))}" width="17.8mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Front" fox:placement="Block"/>
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell font-size="10pt" font-weight="bold" display-align="after">
@@ -1131,7 +1131,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 				<fo:block-container height="6mm">
 					<fo:block text-align="right" margin-top="-4.5mm" margin-right="-1mm">
 						<xsl:if test="//mn:metanorma/mn:bibdata/mn:ext/mn:accessibility-color-inside = 'true'">
-							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Colour-Inside))}" width="19mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/>
+							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Colour-Inside))}" width="19mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC" fox:placement="Block"/>
 						</xsl:if>
 					</fo:block>
 				</fo:block-container>
@@ -1308,13 +1308,13 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 		<xsl:choose>
 			<xsl:when test=". = 'IEC'">
 				<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-IEC))}" content-height="18mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/> -->
-				<fo:instream-foreign-object content-height="18mm" fox:alt-text="Image Logo IEC">
+				<fo:instream-foreign-object content-height="18mm" fox:alt-text="Image Logo IEC" fox:placement="Block">
 					<xsl:copy-of select="$Image-Logo-IEC-SVG"/>
 				</fo:instream-foreign-object>
 			</xsl:when>
 			<xsl:when test=". = 'ISO'">
 				<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-ISO))}" content-height="18mm" content-width="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo ISO"/> -->
-				<fo:instream-foreign-object content-height="18mm" fox:alt-text="Image Logo IEC">
+				<fo:instream-foreign-object content-height="18mm" fox:alt-text="Image Logo IEC" fox:placement="Block">
 					<xsl:call-template name="insert_Image-ISO-Logo-SVG">
 						<xsl:with-param name="copyright_year" select="$copyright_year"/>
 					</xsl:call-template>
@@ -2190,13 +2190,13 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 	
 	<xsl:template name="insertCheckBoxOff">
 		<fo:inline padding-right="1mm">
-			<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Checkbox-Off))}" width="2.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Checkbox off" baseline-shift="-5%"/>
+			<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Checkbox-Off))}" width="2.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Checkbox off" baseline-shift="-5%" fox:placement="Inline"/>
 		</fo:inline>
 	</xsl:template>
 	
 	<xsl:template name="insertCheckBoxOn">
 		<fo:inline padding-right="1mm">
-			<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Checkbox-On))}" width="2.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Checkbox off" baseline-shift="-5%"/>
+			<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Checkbox-On))}" width="2.5mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Checkbox off" baseline-shift="-5%" fox:placement="Inline"/>
 		</fo:inline>
 	</xsl:template>
 	

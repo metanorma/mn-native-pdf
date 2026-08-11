@@ -315,7 +315,7 @@
 						<fo:block-container absolute-position="fixed" left="11mm" top="245mm">
 							<fo:block>
 								<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo))}" width="42mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}"/> -->
-								<fo:instream-foreign-object content-width="42mm" fox:alt-text="CSA Logo">
+								<fo:instream-foreign-object content-width="42mm" fox:alt-text="CSA Logo" fox:placement="Block">
 									<xsl:copy-of select="$Image-Logo-SVG"/>
 								</fo:instream-foreign-object>
 							</fo:block>
@@ -598,7 +598,7 @@
 			
 			<xsl:if test="$level = 2">
 				<fo:inline padding-right="1mm">							
-					<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Title))}" width="15mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}" vertical-align="middle"/>
+					<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Title))}" width="15mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image {@alt}" vertical-align="middle" fox:placement="Inline"/>
 				</fo:inline>
 			</xsl:if>
 			

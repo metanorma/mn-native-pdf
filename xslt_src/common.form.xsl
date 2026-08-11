@@ -100,7 +100,7 @@
 			<xsl:call-template name="set_id_metanorma_form_item">
 				<xsl:with-param name="form_item_type" select="$form_item_type"/>
 			</xsl:call-template>
-			<fo:instream-foreign-object fox:alt-text="Box" baseline-shift="-10%">
+			<fo:instream-foreign-object fox:alt-text="Box" baseline-shift="-10%" fox:placement="Inline">
 				<xsl:attribute name="height">3.5mm</xsl:attribute>
 				<xsl:attribute name="content-width">100%</xsl:attribute>
 				<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>
@@ -127,7 +127,7 @@
 			<xsl:call-template name="set_id_metanorma_form_item">
 				<xsl:with-param name="form_item_type" select="$form_item_type"/>
 			</xsl:call-template>
-			<fo:instream-foreign-object fox:alt-text="Box" baseline-shift="-10%">
+			<fo:instream-foreign-object fox:alt-text="Box" baseline-shift="-10%" fox:placement="Inline">
 				<xsl:attribute name="height">3.5mm</xsl:attribute>
 				<xsl:attribute name="content-width">100%</xsl:attribute>
 				<xsl:attribute name="content-width">scale-down-to-fit</xsl:attribute>

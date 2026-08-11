@@ -733,7 +733,7 @@
 							<xsl:if test="$doctype = 'technical-report'">
 								<xsl:attribute name="margin-left">5.5mm</xsl:attribute>
 							</xsl:if>
-							<fo:instream-foreign-object content-width="24mm" fox:alt-text="PLATEAU Logo">
+							<fo:instream-foreign-object content-width="24mm" fox:alt-text="PLATEAU Logo" fox:placement="Block">
 								<xsl:if test="$doctype = 'technical-report'">
 									<xsl:attribute name="content-width">20.5mm</xsl:attribute>
 								</xsl:if>
@@ -1241,14 +1241,14 @@
 								</xsl:when> -->
 								<xsl:when test="parent::mn:ul and $list_item_label = '→'">
 									<fo:inline>
-										<fo:instream-foreign-object content-width="2.5mm" fox:alt-text="ul list label">
+										<fo:instream-foreign-object content-width="2.5mm" fox:alt-text="ul list label" fox:placement="Inline">
 											<xsl:copy-of select="$list_label_arrow"/>
 										</fo:instream-foreign-object>
 									</fo:inline>
 								</xsl:when>
 								<xsl:when test="parent::mn:ul and $list_item_label = '☆'">
 									<fo:inline>
-										<fo:instream-foreign-object content-width="2.5mm" fox:alt-text="ul list label">
+										<fo:instream-foreign-object content-width="2.5mm" fox:alt-text="ul list label" fox:placement="Inline">
 											<xsl:copy-of select="$list_label_star"/>
 										</fo:instream-foreign-object>
 									</fo:inline>
