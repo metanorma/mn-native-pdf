@@ -716,6 +716,7 @@
 			<xsl:call-template name="setId"/>
 			
 			<xsl:call-template name="sections_element_style"/>
+			<xsl:copy-of select="@role"/>
 			
 			<!-- <xsl:if test="$namespace = 'rsd'"> -->
 			<xsl:call-template name="addTagElementT"/>
@@ -863,6 +864,7 @@
 		</xsl:choose>
 		<xsl:call-template name="setNamedDestination"/>
 		<fo:block role="Sect">
+			<xsl:copy-of select="@role"/>
 			<xsl:call-template name="addTagElementT"/>
 			<xsl:call-template name="setId"/>
 			<xsl:call-template name="addReviewHelper"/>
@@ -902,6 +904,7 @@
 			<xsl:call-template name="setBlockSpanAll"/>
 			
 			<xsl:call-template name="refine_clause-style"/>
+			<xsl:copy-of select="@role"/>
 			
 			<xsl:call-template name="addReviewHelper"/>
 			
