@@ -305,6 +305,7 @@
 							
 							<fo:page-sequence xsl:use-attribute-sets="page-sequence-main">
 								<xsl:call-template name="refine_page-sequence-main"/>
+								<xsl:copy-of select="@role"/>
 							
 								<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 								
