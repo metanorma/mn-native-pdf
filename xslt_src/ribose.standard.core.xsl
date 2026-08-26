@@ -691,7 +691,7 @@
 							<xsl:text> </xsl:text>
 						</xsl:if>
 						<xsl:apply-templates select="mnx:title"/>
-						<xsl:text> &#xA0;</xsl:text>
+						<fo:wrapper role="artifact"><xsl:text> &#xA0;</xsl:text></fo:wrapper>
 						<fo:inline role="SKIP">
 							<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
 							<fo:inline xsl:use-attribute-sets="toc-pagenumber-style"><fo:page-number-citation ref-id="{@id}" role="SKIP"/></fo:inline> <!-- <fo:wrapper role="artifact"> </fo:wrapper> -->
