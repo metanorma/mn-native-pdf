@@ -5033,10 +5033,11 @@
 	<!-- main sections -->
 	<xsl:template match="/*/mn:sections/*" name="sections_node_iso" priority="3">
 		<xsl:call-template name="setNamedDestination"/>
-		<fo:block>
+		<fo:block role="Sect">
 			<xsl:call-template name="setId"/>
 			
 			<xsl:call-template name="sections_element_style"/>
+			<xsl:copy-of select="@role"/>
 			
 			<xsl:call-template name="addTagElementT"/>
 			
@@ -5063,7 +5064,7 @@
 	
 	<xsl:template match="*[self::mn:sections or self::mn:annex]//mn:clause[normalize-space() != '' or mn:figure or @id]" name="template_clause_iso"> <!-- if clause isn't empty -->
 		<xsl:call-template name="setNamedDestination"/>
-		<fo:block>
+		<fo:block role="Sect">
 			<xsl:if test="parent::mn:copyright-statement">
 				<xsl:attribute name="role">SKIP</xsl:attribute>
 			</xsl:if>
@@ -5075,6 +5076,7 @@
 			<xsl:call-template name="addTagElementT"/>
 			
 			<xsl:call-template name="refine_clause-style"/>
+			<xsl:copy-of select="@role"/>
 			
 			<xsl:call-template name="addReviewHelper"/>
 			
