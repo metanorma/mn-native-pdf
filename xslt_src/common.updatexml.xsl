@@ -1240,9 +1240,9 @@
 		
 		<xsl:variable name="updated_xml_step_move_pagebreak_filename" select="concat($output_path,'_main_', java:getTime(java:java.util.Date.new()), '.xml')"/>
 		
-		<!-- <redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
+		<redirect:write file="{$updated_xml_step_move_pagebreak_filename}">
 			<xsl:copy-of select="$updated_xml_step_move_pagebreak"/>
-		</redirect:write> -->
+		</redirect:write>
 		
 		<xsl:copy-of select="document($updated_xml_step_move_pagebreak_filename)"/>
 		
