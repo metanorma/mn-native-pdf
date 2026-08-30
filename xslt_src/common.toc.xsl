@@ -488,7 +488,7 @@
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:variable name="margin-left">3.9</xsl:variable>
 			<!-- <xsl:attribute name="margin-left"><xsl:value-of select="(@level - 1) * $margin-left"/>mm</xsl:attribute> -->
-			<xsl:attribute name="margin-left"><xsl:value-of select="0mm"/></xsl:attribute>
+			<xsl:attribute name="margin-left">0mm</xsl:attribute>
 			<xsl:if test="@level &gt; 1">
 				<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left"/>mm</xsl:attribute>
 			</xsl:if>
