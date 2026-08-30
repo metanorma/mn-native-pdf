@@ -2341,6 +2341,10 @@
 						<!-- <Caption><P> tags, see https://github.com/metanorma/metanorma-pdfa/issues/81 -->
 						<fo:block role="P">
 						
+							<xsl:if test="$continued = 'true'">
+								<xsl:attribute name="role">SKIP</xsl:attribute>
+							</xsl:if>
+						
 							<xsl:choose>
 								<xsl:when test="$continued = 'true'"> 
 									<xsl:if test="$namespace = 'jcgm'"> <!-- $namespace = 'iso' or  -->
@@ -2383,7 +2387,7 @@
 							</xsl:if>
 						
 						</fo:block>
-					</fo:block>
+					</fo:block> <!-- END: Table name -->
 					
 					<!-- <xsl:if test="$namespace = 'bsi' or $namespace = 'pas' or $namespace = 'iec' or $namespace = 'iso'"> -->
 					<xsl:if test="$continued = 'true'">

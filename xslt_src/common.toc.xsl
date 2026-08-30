@@ -38,6 +38,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-sp'">
 			<xsl:attribute name="font-family">Arial</xsl:attribute>
@@ -45,6 +46,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="line-height">130%</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:attribute name="line-height">1.08</xsl:attribute>
@@ -485,7 +487,11 @@
 		
 		<xsl:if test="$namespace = 'ogc-white-paper'">
 			<xsl:variable name="margin-left">3.9</xsl:variable>
-			<xsl:attribute name="margin-left"><xsl:value-of select="(@level - 1) * $margin-left"/>mm</xsl:attribute>
+			<!-- <xsl:attribute name="margin-left"><xsl:value-of select="(@level - 1) * $margin-left"/>mm</xsl:attribute> -->
+			<xsl:attribute name="margin-left">0mm</xsl:attribute>
+			<xsl:if test="@level &gt; 1">
+				<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left"/>mm</xsl:attribute>
+			</xsl:if>
 		</xsl:if>
 		
 		<xsl:if test="$namespace = 'rsd'">

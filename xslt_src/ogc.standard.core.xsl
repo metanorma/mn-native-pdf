@@ -486,15 +486,17 @@
 							<fo:flow flow-name="xsl-region-body">
 							
 								<!-- crossing lines -->					
-								<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0">
-									<fo:block>
-										<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines" fox:placement="Block">
-											<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
-												<line x1="230" y1="0" x2="2159" y2="490" stroke="{$color_design_light}"/>
-												<line x1="0" y1="395" x2="820" y2="0" stroke="{$color_design_light}"/>
-												<circle style="fill:{$color_design_light};" cx="614" cy="100" r="15" />
-											</svg>
-										</fo:instream-foreign-object>
+								<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0" role="SKIP">
+									<fo:block role="SKIP">
+										<fo:wrapper role="artifact">
+											<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines" fox:placement="Block">
+												<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
+													<line x1="230" y1="0" x2="2159" y2="490" stroke="{$color_design_light}"/>
+													<line x1="0" y1="395" x2="820" y2="0" stroke="{$color_design_light}"/>
+													<circle style="fill:{$color_design_light};" cx="614" cy="100" r="15" />
+												</svg>
+											</fo:instream-foreign-object>
+										</fo:wrapper>
 									</fo:block>
 								</fo:block-container>
 								
@@ -541,19 +543,21 @@
 									<xsl:call-template name="insertHeaderFooter">
 										<xsl:with-param name="num" select="$num"/>
 									</xsl:call-template>
-									<fo:flow flow-name="xsl-region-body">
+									<fo:flow flow-name="xsl-region-body" role="SKIP">
 									
 										<xsl:if test="position() = 1">
 											<!-- crossing lines -->
-											<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0">
-												<fo:block>
-													<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines" fox:placement="Block">
-														<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
-															<line x1="0" y1="545" x2="2084" y2="0" stroke="{$color_design_light}"/>
-															<line x1="0" y1="1374" x2="355" y2="0" stroke="{$color_design_light}"/>
-															<circle style="fill:{$color_design_light};" cx="227" cy="487" r="15" />
-														</svg>
-													</fo:instream-foreign-object>
+											<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0" role="SKIP">
+												<fo:block role="SKIP">
+													<fo:wrapper role="artifact">
+														<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines" fox:placement="Block">
+															<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
+																<line x1="0" y1="545" x2="2084" y2="0" stroke="{$color_design_light}"/>
+																<line x1="0" y1="1374" x2="355" y2="0" stroke="{$color_design_light}"/>
+																<circle style="fill:{$color_design_light};" cx="227" cy="487" r="15" />
+															</svg>
+														</fo:instream-foreign-object>
+													</fo:wrapper>
 												</fo:block>
 											</fo:block-container>
 										</xsl:if>
@@ -583,7 +587,7 @@
 											<!-- <xsl:if test="not(local-name() = 'clause' and @type = 'toc')">
 												<xsl:attribute name="line-height">125%</xsl:attribute>
 											</xsl:if> -->
-										<fo:block>
+										<fo:block role="SKIP">
 											<xsl:apply-templates>
 												<xsl:with-param name="num" select="$num"/>
 											</xsl:apply-templates>
@@ -1020,8 +1024,10 @@
 		<xsl:variable name="color_text_title">
 			<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_text_title</xsl:with-param></xsl:call-template>
 		</xsl:variable>
-		<fo:block color="{$color_text_title}">
-						
+		<fo:block color="{$color_text_title}" xsl:use-attribute-sets="toc-container-style">
+			<xsl:call-template name="refine_toc-container-style"/>
+			<xsl:call-template name="addTagElementT"/>
+		
 			<xsl:apply-templates />			
 			
 			<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
@@ -1030,72 +1036,8 @@
 					<xsl:call-template name="refine_toc-style"/>
 					<fo:block role="TOC">
 						
-						<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true' and normalize-space(@id) != '']">
-							
-							<fo:block xsl:use-attribute-sets="toc-item-style">
-							
-								<xsl:call-template name="refine_toc-item-style"/>
-								
-								<xsl:choose>
-									<xsl:when test="@level = 1">
-										<fo:list-block provisional-distance-between-starts="8mm">
-											<xsl:if test="@type = 'annex' or (@type = 'references' and normalize-space(@section) = '')">
-												<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
-											</xsl:if>
-											<fo:list-item>
-												<fo:list-item-label end-indent="label-end()">
-													<fo:block>												
-														<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@section))"/>
-													</fo:block>
-												</fo:list-item-label>
-												<fo:list-item-body start-indent="body-start()">
-													<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm">
-														<fo:basic-link internal-destination="{@id}">
-															<xsl:variable name="sectionTitle">
-																<xsl:apply-templates select="mnx:title"/>
-															</xsl:variable>
-															<xsl:call-template name="setAltText">
-																<xsl:with-param name="value" select="concat(@section, $sectionTitle)"/>
-															</xsl:call-template>
-															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($sectionTitle))"/>															
-															<xsl:text> </xsl:text>															
-															<fo:inline keep-together.within-line="always">
-																<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
-																<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-															</fo:inline>
-														</fo:basic-link>
-													</fo:block>
-												</fo:list-item-body>
-											</fo:list-item>
-										</fo:list-block>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:variable name="margin-left">
-											<xsl:choose>
-												<xsl:when test="number(@level) != 'NaN'"><xsl:value-of select="(@level - 1) * 8"/></xsl:when>
-												<xsl:otherwise>8</xsl:otherwise>
-											</xsl:choose>
-										</xsl:variable>
-										<fo:block text-align-last="justify" margin-left="{$margin-left}mm">
-											<fo:basic-link internal-destination="{@id}">
-												<xsl:call-template name="setAltText">
-													<xsl:with-param name="value" select="text()"/>
-												</xsl:call-template>
-												<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@section))"/>
-												<xsl:text> </xsl:text>
-												<xsl:apply-templates select="mnx:title"/>
-												<xsl:text> </xsl:text>
-												<fo:inline keep-together.within-line="always">
-													<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
-													<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-												</fo:inline>
-											</fo:basic-link>
-										</fo:block>
-									</xsl:otherwise>
-								</xsl:choose>
-								
-							</fo:block>
-						</xsl:for-each>
+						<xsl:apply-templates select="$contents/mnx:doc[@num = $num]/mnx:contents/mnx:item[@display = 'true' and normalize-space(@id) != '']"/>
+						
 					</fo:block>
 				</fo:block-container>	
 						
@@ -1184,6 +1126,83 @@
 				<xsl:call-template name="insertBigHorizontalLine"/>
 			</fo:block-container>
 		</fo:block-container>
+	</xsl:template>
+	
+	
+	<xsl:template match="mnx:contents//mnx:item[@display = 'true' and normalize-space(@id) != '']">
+	
+		<fo:block xsl:use-attribute-sets="toc-item-style">
+							
+			<xsl:call-template name="refine_toc-item-style"/>
+			
+			<xsl:choose>
+				<xsl:when test="@level = 1">
+					<fo:list-block provisional-distance-between-starts="8mm" role="SKIP">
+						<xsl:if test="@type = 'annex' or (@type = 'references' and normalize-space(@section) = '')">
+							<xsl:attribute name="provisional-distance-between-starts">0mm</xsl:attribute>
+						</xsl:if>
+						<fo:list-item role="SKIP">
+							<fo:list-item-label end-indent="label-end()">
+								<fo:block role="SKIP">
+									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(@section))"/>
+								</fo:block>
+							</fo:list-item-label>
+							<fo:list-item-body start-indent="body-start()" role="SKIP">
+								<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm" role="Reference">
+									<fo:basic-link internal-destination="{@id}">
+										<xsl:variable name="sectionTitle">
+											<xsl:apply-templates select="mnx:title"/>
+										</xsl:variable>
+										<xsl:call-template name="setAltText">
+											<xsl:with-param name="value" select="concat(@section, $sectionTitle)"/>
+										</xsl:call-template>
+										<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($sectionTitle))"/>															
+										<xsl:text> </xsl:text>															
+										<fo:inline keep-together.within-line="always" role="SKIP">
+											<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
+											<fo:inline role="SKIP"><fo:page-number-citation ref-id="{@id}" role="SKIP"/></fo:inline>
+										</fo:inline>
+									</fo:basic-link>
+								</fo:block>
+							</fo:list-item-body>
+						</fo:list-item>
+					</fo:list-block>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:variable name="margin-left">
+						<xsl:choose>
+							<xsl:when test="number(@level) != 'NaN'"><xsl:value-of select="(@level - 1) * 8"/></xsl:when>
+							<xsl:otherwise>8</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<fo:block text-align-last="justify" margin-left="{$margin-left}mm" role="SKIP">
+						<fo:inline role="Lbl">
+							<xsl:value-of select="concat(java:toUpperCase(java:java.lang.String.new(@section)), '&#xa0;')"/>
+						</fo:inline>
+						<fo:inline role="Reference">
+							<fo:basic-link internal-destination="{@id}">
+								<xsl:call-template name="setAltText">
+									<xsl:with-param name="value" select="text()"/>
+								</xsl:call-template>
+								<xsl:apply-templates select="mnx:title"/>
+								<xsl:text> </xsl:text>
+								<fo:inline keep-together.within-line="always" role="SKIP">
+									<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
+									<fo:inline role="SKIP"><fo:page-number-citation ref-id="{@id}" role="SKIP"/></fo:inline>
+								</fo:inline>
+							</fo:basic-link>
+						</fo:inline>
+					</fo:block>
+				</xsl:otherwise>
+			</xsl:choose>
+			
+			<xsl:if test="mnx:item[@display = 'true' and normalize-space(@id) != '']">
+				<fo:block role="TOC">
+					<xsl:apply-templates select="mnx:item[@display = 'true' and normalize-space(@id) != '']"/>
+				</fo:block>
+			</xsl:if>
+			
+		</fo:block>
 	</xsl:template>
 	
 	<!-- Lato font doesn't contain 'thin space' glyph -->
@@ -1326,16 +1345,16 @@
 		</xsl:if>
 		
 		
-		<fo:page-sequence xsl:use-attribute-sets="page-sequence-main">
+		<fo:page-sequence xsl:use-attribute-sets="page-sequence-main" role="SKIP">
 			<xsl:call-template name="refine_page-sequence-main"/>
 		
 			<xsl:call-template name="insertFootnoteSeparator"/>
 			<xsl:call-template name="insertHeaderFooter">
 				<xsl:with-param name="num" select="$num"/>
 			</xsl:call-template>		
-			<fo:flow flow-name="xsl-region-body">
+			<fo:flow flow-name="xsl-region-body" role="SKIP">
 				
-				<fo:block line-height="125%">
+				<fo:block line-height="125%" role="SKIP">
 					<!-- <xsl:apply-templates select="."/> -->
 					
 					<xsl:choose>
@@ -2004,16 +2023,18 @@
 	<xsl:template name="insertBackgroundColor">
 		<xsl:param name="opacity">1</xsl:param>
 		<!-- background color -->
-		<fo:block-container absolute-position="fixed" left="0" top="0" font-size="0">
-			<fo:block>
+		<fo:block-container absolute-position="fixed" left="0" top="0" font-size="0" role="SKIP">
+			<fo:block role="SKIP">
 				<xsl:variable name="color_background_page">
 					<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_background_page</xsl:with-param></xsl:call-template>
 				</xsl:variable>
-				<fo:instream-foreign-object content-height="{$pageHeight}mm" fox:alt-text="Background color" fox:placement="Block">
-					<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="{$pageWidth}mm" height="{$pageHeight}mm">
-						<rect width="{$pageWidth}mm" height="{$pageHeight}mm" style="fill:{$color_background_page};stroke-width:0;fill-opacity:{$opacity}"/>
-					</svg>
-				</fo:instream-foreign-object>
+				<fo:wrapper role="artifact">
+					<fo:instream-foreign-object content-height="{$pageHeight}mm" fox:alt-text="Background color" fox:placement="Block">
+						<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="{$pageWidth}mm" height="{$pageHeight}mm">
+							<rect width="{$pageWidth}mm" height="{$pageHeight}mm" style="fill:{$color_background_page};stroke-width:0;fill-opacity:{$opacity}"/>
+						</svg>
+					</fo:instream-foreign-object>
+				</fo:wrapper>
 			</fo:block>
 		</fo:block-container>
 	</xsl:template>
@@ -2023,19 +2044,21 @@
 		<xsl:variable name="color_design">
 			<xsl:call-template name="getVariable"><xsl:with-param name="variable">color_design</xsl:with-param></xsl:call-template>
 		</xsl:variable>
-		<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0">
-			<fo:block>
-				<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines" fox:placement="Block">
-					<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
-						<line x1="0" y1="300" x2="2159" y2="675" stroke="{$color_design}" />
-						<line x1="1215" y1="0" x2="2159" y2="1380" stroke="{$color_design}" />
-						<line x1="0" y1="1850" x2="2159" y2="2390" stroke="{$color_design}" />
-						<line x1="0" y1="2280" x2="2159" y2="1155" stroke="{$color_design}" />
-						<circle style="fill:{$color_design};" cx="1610" cy="580" r="15" />
-						<circle style="fill:{$color_design};" cx="2045" cy="1215" r="15" />
-						<circle style="fill:{$color_design};" cx="562" cy="1990" r="15" />
-					</svg>
-				</fo:instream-foreign-object>
+		<fo:block-container absolute-position="fixed" width="{$pageWidth}mm" height="{$pageHeight}mm" font-size="0" role="SKIP">
+			<fo:block role="SKIP">
+				<fo:wrapper role="artifact">
+					<fo:instream-foreign-object content-height="{$pageHeight}mm" content-width="{$pageWidth}mm" fox:alt-text="Crossing lines" fox:placement="Block">
+						<svg viewBox="0 0 2159 2794" xmlns="http://www.w3.org/2000/svg" width="{$pageWidth}mm" height="{$pageHeight}mm">
+							<line x1="0" y1="300" x2="2159" y2="675" stroke="{$color_design}" />
+							<line x1="1215" y1="0" x2="2159" y2="1380" stroke="{$color_design}" />
+							<line x1="0" y1="1850" x2="2159" y2="2390" stroke="{$color_design}" />
+							<line x1="0" y1="2280" x2="2159" y2="1155" stroke="{$color_design}" />
+							<circle style="fill:{$color_design};" cx="1610" cy="580" r="15" />
+							<circle style="fill:{$color_design};" cx="2045" cy="1215" r="15" />
+							<circle style="fill:{$color_design};" cx="562" cy="1990" r="15" />
+						</svg>
+					</fo:instream-foreign-object>
+				</fo:wrapper>
 			</fo:block>
 		</fo:block-container>
 	</xsl:template>
