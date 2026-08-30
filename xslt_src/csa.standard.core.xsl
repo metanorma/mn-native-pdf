@@ -420,31 +420,9 @@
 				
 				<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 					<fo:block margin-left="-3mm" role="TOC">
-						<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']">
-							<fo:block role="TOCI">
-								<fo:list-block xsl:use-attribute-sets="toc-item-block-style">
-									<xsl:call-template name="refine_toc-item-block-style"/>
-									<fo:list-item>
-										<fo:list-item-label end-indent="label-end()">
-											<fo:block font-size="1pt">&#x200a;</fo:block>
-										</fo:list-item-label>
-										<fo:list-item-body start-indent="body-start()">
-											<fo:block xsl:use-attribute-sets="toc-item-style">
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
-													<fo:inline padding-right="2mm"><xsl:value-of select="@section"/></fo:inline>
-													<xsl:apply-templates select="mnx:title"/>
-													<fo:inline keep-together.within-line="always">
-														<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
-														<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-													</fo:inline>
-												</fo:basic-link>
-											</fo:block>
-										</fo:list-item-body>
-									</fo:list-item>
-								</fo:list-block>
-							</fo:block>
-						</xsl:for-each>
-						
+					
+						<xsl:apply-templates select="$contents/mnx:doc[@num = $num]/mnx:contents/mnx:item[@display = 'true']"/>
+					
 						<!-- List of Tables -->
 						<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:tables/mnx:table">
 							<xsl:call-template name="insertListOf_Title">
@@ -493,6 +471,39 @@
 		<fo:block xsl:use-attribute-sets="toc-title-style">
 			<xsl:call-template name="refine_toc-title-style"/>
 			<xsl:apply-templates />
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="mnx:contents//mnx:item[@display = 'true']">
+		<fo:block role="TOCI">
+			<fo:list-block xsl:use-attribute-sets="toc-item-block-style" role="SKIP">
+				<xsl:call-template name="refine_toc-item-block-style"/>
+				<fo:list-item role="SKIP">
+					<fo:list-item-label end-indent="label-end()" role="SKIP">
+						<fo:block font-size="1pt" role="SKIP"><fo:wrapper role="artifact">&#x200a;</fo:wrapper></fo:block>
+					</fo:list-item-label>
+					<fo:list-item-body start-indent="body-start()" role="SKIP">
+						<fo:block xsl:use-attribute-sets="toc-item-style">
+							<fo:inline role="Lbl"><xsl:value-of select="@section"/></fo:inline>
+							<fo:wrapper role="Reference">
+								<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+									<xsl:apply-templates select="mnx:title"/>
+									<fo:inline keep-together.within-line="always" role="SKIP">
+										<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
+										<fo:inline role="SKIP"><fo:page-number-citation ref-id="{@id}" role="SKIP"/></fo:inline>
+									</fo:inline>
+								</fo:basic-link>
+							</fo:wrapper>
+						</fo:block>
+					</fo:list-item-body>
+				</fo:list-item>
+			</fo:list-block>
+			
+			<xsl:if test="mnx:item[@display = 'true']">
+				<fo:block role="TOC">
+					<xsl:apply-templates select="mnx:item[@display = 'true']"/>
+				</fo:block>
+			</xsl:if>
 		</fo:block>
 	</xsl:template>
 
