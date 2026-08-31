@@ -22,6 +22,7 @@
 	<xsl:attribute-set name="toc-style">
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="line-height">135%</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
@@ -134,6 +135,7 @@
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-bottom">22pt</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:attribute name="font-family">Arial</xsl:attribute>

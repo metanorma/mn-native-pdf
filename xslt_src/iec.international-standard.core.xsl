@@ -1339,44 +1339,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 					</xsl:call-template>
 				</fo:block> -->
 				
-		<xsl:for-each select="xalan:nodeset($contents)//mnx:item[@display = 'true']"><!-- [@display = 'true']
-																																									[@level &lt;= 3]
-																																									[not(@level = 2 and starts-with(@section, '0'))] skip clause from preface -->
-			<fo:block role="TOCI">
-				<fo:basic-link internal-destination="{@id}" fox:alt-text="{@section} {mnx:title}"> <!-- link at this level needs for PDF structure tags -->
-				
-					<fo:list-block xsl:use-attribute-sets="toc-item-style">
-						
-						<xsl:call-template name="refine_toc-item-style"/>
-						
-						<fo:list-item role="SKIP">
-							<fo:list-item-label end-indent="label-end()" role="SKIP">
-								<fo:block>
-									<xsl:value-of select="@section"/>											
-								</fo:block>
-							</fo:list-item-label>
-							<fo:list-item-body start-indent="body-start()" role="SKIP">
-								<fo:block text-align-last="justify" role="SKIP">
-									<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}" role="SKIP">
-										<xsl:variable name="title">
-											<xsl:apply-templates select="mnx:title"/>
-										</xsl:variable>
-										<xsl:call-template name="addLetterSpacing">
-											<xsl:with-param name="text" select="$title"/>
-										</xsl:call-template>
-										<xsl:text> </xsl:text>
-										<fo:inline keep-together.within-line="always" role="SKIP">
-											<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
-											<fo:inline role="SKIP"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}"/></fo:wrapper></fo:inline>
-										</fo:inline>
-									</fo:basic-link>
-								</fo:block>
-							</fo:list-item-body>
-						</fo:list-item>
-					</fo:list-block>
-				</fo:basic-link>
-			</fo:block>
-		</xsl:for-each>
+		<xsl:apply-templates select="xalan:nodeset($contents)/mnx:contents/mnx:item[@display = 'true']"/>
 		
 		<xsl:for-each select="$contents//mnx:figures/mnx:figure">
 			<xsl:if test="position() = 1">
@@ -1403,22 +1366,65 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 		</fo:block-container> -->
 	</xsl:template> <!-- END: insertTOCpages -->
 	
+	<xsl:template match="mnx:contents//mnx:item[@display = 'true']">
+		<fo:block role="TOCI">
+			<!-- <fo:basic-link internal-destination="{@id}" fox:alt-text="{@section} {mnx:title}"> --> <!-- link at this level needs for PDF structure tags -->
+			
+				<fo:list-block xsl:use-attribute-sets="toc-item-style">
+					
+					<xsl:call-template name="refine_toc-item-style"/>
+					
+					<fo:list-item role="SKIP">
+						<fo:list-item-label end-indent="label-end()" role="SKIP">
+							<fo:block role="Lbl">
+								<xsl:value-of select="@section"/>											
+							</fo:block>
+						</fo:list-item-label>
+						<fo:list-item-body start-indent="body-start()" role="SKIP">
+							<fo:block text-align-last="justify" role="Reference">
+								<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+									<xsl:variable name="title">
+										<xsl:apply-templates select="mnx:title"/>
+									</xsl:variable>
+									<xsl:call-template name="addLetterSpacing">
+										<xsl:with-param name="text" select="$title"/>
+									</xsl:call-template>
+									<xsl:text> </xsl:text>
+									<fo:inline keep-together.within-line="always" role="SKIP">
+										<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
+										<fo:inline role="SKIP"><fo:page-number-citation ref-id="{@id}" role="SKIP"/></fo:inline>
+									</fo:inline>
+								</fo:basic-link>
+							</fo:block>
+						</fo:list-item-body>
+					</fo:list-item>
+				</fo:list-block>
+			<!-- </fo:basic-link> -->
+			
+			<xsl:if test="mnx:item[@display = 'true']">
+				<fo:block role="TOC">
+					<xsl:apply-templates select="mnx:item[@display = 'true']"/>
+				</fo:block>
+			</xsl:if>
+		</fo:block>
+	</xsl:template>
+	
 	<xsl:template name="insertListOf_Item">
 		<fo:block xsl:use-attribute-sets="toc-listof-item-style">
 			<xsl:variable name="alt_text" select="normalize-space(translate(normalize-space(mn:fmt-name), '&#xa0;—', ' -'))"/>
-			<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}"> <!-- {local-name()} {@id} -->
-				<xsl:variable name="item">
-					<!-- mnx:table/mn:fmt-name, mnx:figure/mn:fmt-name, mnx:example/mn:fmt-name -->
-					<xsl:apply-templates select="mn:fmt-name" mode="contents_item"/>
-				</xsl:variable>
-				<xsl:apply-templates select="xalan:nodeset($item)/node()"/>
-				<fo:inline keep-together.within-line="always" role="SKIP">
-					<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
-					<fo:wrapper role="artifact">
-						<fo:page-number-citation ref-id="{@id}"/>
-					</fo:wrapper>
-				</fo:inline>
-			</fo:basic-link>
+			<fo:wrapper role="Reference">
+				<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}"> <!-- {local-name()} {@id} -->
+					<xsl:variable name="item">
+						<!-- mnx:table/mn:fmt-name, mnx:figure/mn:fmt-name, mnx:example/mn:fmt-name -->
+						<xsl:apply-templates select="mn:fmt-name" mode="contents_item"/>
+					</xsl:variable>
+					<xsl:apply-templates select="xalan:nodeset($item)/node()"/>
+					<fo:inline keep-together.within-line="always" role="SKIP">
+						<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
+						<fo:page-number-citation ref-id="{@id}" role="SKIP"/>
+					</fo:inline>
+				</fo:basic-link>
+			</fo:wrapper>
 		</fo:block>
 	</xsl:template>
 
