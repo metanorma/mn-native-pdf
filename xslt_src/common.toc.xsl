@@ -45,6 +45,7 @@
 		<xsl:if test="$namespace = 'nist-sp'">
 			<xsl:attribute name="font-family">Arial</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="line-height">130%</xsl:attribute>
@@ -348,6 +349,8 @@
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+		</xsl:if>
 		<xsl:if test="$namespace = 'nist-sp'">
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 			<xsl:attribute name="margin-left">12mm</xsl:attribute>
@@ -637,11 +640,13 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="role">H2</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:attribute name="role">H2</xsl:attribute>
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
