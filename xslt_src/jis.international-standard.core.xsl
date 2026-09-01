@@ -1054,66 +1054,7 @@
 				<xsl:call-template name="refine_toc-style"/>
 			
 				<xsl:if test="$updated_contents_xml/mnx:doc[@num = $num]//mnx:item[@display = 'true']">
-					<xsl:for-each select="$updated_contents_xml/mnx:doc[@num = $num]//mnx:item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table' or @type = 'example']">
-						<fo:block role="TOCI">
-							<xsl:choose>
-								<xsl:when test="@type = 'annex' or @type = 'bibliography'">
-									<fo:block space-after="5pt" role="SKIP">
-										<xsl:if test="$vertical_layout = 'true'">
-											<xsl:attribute name="space-after">8pt</xsl:attribute>
-										</xsl:if>
-										<xsl:call-template name="insertTocItem"/>
-									</fo:block>
-								</xsl:when>
-								<xsl:otherwise>
-									<fo:list-block space-after="5pt" role="SKIP">
-										<xsl:if test="$vertical_layout = 'true'">
-											<xsl:attribute name="space-after">8pt</xsl:attribute>
-										</xsl:if>
-										<xsl:choose>
-											<xsl:when test="$vertical_layout = 'true'">
-												<xsl:attribute name="provisional-distance-between-starts">15mm</xsl:attribute> <!-- 10 isn't enought for 3 chars numbers -->
-											</xsl:when>
-											<xsl:otherwise>
-												<xsl:variable name="provisional-distance-between-starts">
-													<xsl:choose>
-														<xsl:when test="string-length(@section) = 1">5</xsl:when>
-														<xsl:when test="string-length(@section) &gt;= 2"><xsl:value-of select="5 + (string-length(@section) - 1) * 2"/></xsl:when>
-														<xsl:when test="@type = 'annex'">16</xsl:when>
-														<xsl:otherwise>5</xsl:otherwise>
-													</xsl:choose>
-												</xsl:variable>
-												<xsl:attribute name="provisional-distance-between-starts">
-													<xsl:choose>
-														<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
-															<xsl:value-of select="concat($provisional-distance-between-starts * 1.5, 'mm')"/>
-														</xsl:when>
-														<xsl:otherwise>
-															<xsl:value-of select="concat($provisional-distance-between-starts, 'mm')"/>
-														</xsl:otherwise>
-													</xsl:choose>
-												</xsl:attribute>
-												</xsl:otherwise>
-											</xsl:choose>
-										<fo:list-item role="SKIP">
-											<fo:list-item-label end-indent="label-end()" role="SKIP">
-												<fo:block role="SKIP">
-													<xsl:if test="not($vertical_layout = 'true') and @section != '' and @type != 'annex'">
-														<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
-														<xsl:attribute name="font-weight">bold</xsl:attribute>
-													</xsl:if>
-													<xsl:value-of select="@section"/>
-												</fo:block>
-											</fo:list-item-label>
-											<fo:list-item-body start-indent="body-start()" role="SKIP">
-												<xsl:call-template name="insertTocItem"/>
-											</fo:list-item-body>
-										</fo:list-item>
-									</fo:list-block>
-								</xsl:otherwise>
-							</xsl:choose>
-						</fo:block>
-					</xsl:for-each>
+					<xsl:apply-templates select="$updated_contents_xml/mnx:doc[@num = $num]/mnx:contents/mnx:item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table' or @type = 'example']"/>
 				</xsl:if>
 			</fo:block>
 		</xsl:if>
@@ -1146,30 +1087,98 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="mnx:contents//mnx:item[@display = 'true']">
+		<fo:block role="TOCI">
+			<xsl:choose>
+				<xsl:when test="@type = 'annex' or @type = 'bibliography'">
+					<fo:block space-after="5pt" role="SKIP">
+						<xsl:if test="$vertical_layout = 'true'">
+							<xsl:attribute name="space-after">8pt</xsl:attribute>
+						</xsl:if>
+						<xsl:call-template name="insertTocItem"/>
+					</fo:block>
+				</xsl:when>
+				<xsl:otherwise>
+					<fo:list-block space-after="5pt" role="SKIP">
+						<xsl:if test="$vertical_layout = 'true'">
+							<xsl:attribute name="space-after">8pt</xsl:attribute>
+						</xsl:if>
+						<xsl:choose>
+							<xsl:when test="$vertical_layout = 'true'">
+								<xsl:attribute name="provisional-distance-between-starts">15mm</xsl:attribute> <!-- 10 isn't enought for 3 chars numbers -->
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:variable name="provisional-distance-between-starts">
+									<xsl:choose>
+										<xsl:when test="string-length(@section) = 1">5</xsl:when>
+										<xsl:when test="string-length(@section) &gt;= 2"><xsl:value-of select="5 + (string-length(@section) - 1) * 2"/></xsl:when>
+										<xsl:when test="@type = 'annex'">16</xsl:when>
+										<xsl:otherwise>5</xsl:otherwise>
+									</xsl:choose>
+								</xsl:variable>
+								<xsl:attribute name="provisional-distance-between-starts">
+									<xsl:choose>
+										<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
+											<xsl:value-of select="concat($provisional-distance-between-starts * 1.5, 'mm')"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="concat($provisional-distance-between-starts, 'mm')"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:attribute>
+								</xsl:otherwise>
+							</xsl:choose>
+						<fo:list-item role="SKIP">
+							<fo:list-item-label end-indent="label-end()">
+								<fo:block role="SKIP">
+									<xsl:if test="not($vertical_layout = 'true') and @section != '' and @type != 'annex'">
+										<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+										<xsl:attribute name="font-weight">bold</xsl:attribute>
+									</xsl:if>
+									<xsl:value-of select="@section"/>
+								</fo:block>
+							</fo:list-item-label>
+							<fo:list-item-body start-indent="body-start()" role="SKIP">
+								<xsl:call-template name="insertTocItem"/>
+							</fo:list-item-body>
+						</fo:list-item>
+					</fo:list-block>
+				</xsl:otherwise>
+			</xsl:choose>
+			
+			<xsl:if test="mnx:item[@display = 'true']">
+				<fo:block role="TOC">
+					<xsl:apply-templates select="mnx:item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table' or @type = 'example']"/>
+				</fo:block>
+			</xsl:if>
+		</fo:block>
+	</xsl:template>
 	
 	<xsl:template name="insertTocItem">
 		<fo:block xsl:use-attribute-sets="toc-item-style">
-			<fo:basic-link internal-destination="{@id}" fox:alt-text="{normalize-space(mnx:title)}">
-				<fo:inline>
-					<xsl:if test="$vertical_layout = 'true'">
-						<xsl:attribute name="padding-right">7.5mm</xsl:attribute>
-					</xsl:if>
-					<xsl:apply-templates select="mnx:title" />
-				</fo:inline>
-				<fo:inline keep-together.within-line="always">
-					<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
-					<fo:inline>
-						<xsl:if test="not($vertical_layout = 'true')">
-							<xsl:attribute name="font-size">8pt</xsl:attribute>
-							<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
-						</xsl:if>
+			<fo:wrapper role="Reference">
+				<fo:basic-link internal-destination="{@id}" fox:alt-text="{normalize-space(mnx:title)}">
+					<fo:inline role="SKIP">
 						<xsl:if test="$vertical_layout = 'true'">
-							<xsl:attribute name="padding-left">6mm</xsl:attribute>
+							<xsl:attribute name="padding-right">7.5mm</xsl:attribute>
 						</xsl:if>
-						<fo:page-number-citation ref-id="{@id}"/>
+						<xsl:apply-templates select="mnx:title" />
 					</fo:inline>
-				</fo:inline>
-			</fo:basic-link>
+					<fo:inline keep-together.within-line="always" role="SKIP">
+						<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
+						<fo:inline role="SKIP">
+							<xsl:if test="not($vertical_layout = 'true')">
+								<xsl:attribute name="font-size">8pt</xsl:attribute>
+								<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+							</xsl:if>
+							<xsl:if test="$vertical_layout = 'true'">
+								<xsl:attribute name="padding-left">6mm</xsl:attribute>
+							</xsl:if>
+							<fo:page-number-citation ref-id="{@id}" role="SKIP"/>
+						</fo:inline>
+					</fo:inline>
+				</fo:basic-link>
+			</fo:wrapper>
 		</fo:block>
 	</xsl:template>
 	

@@ -177,6 +177,7 @@
 			<xsl:attribute name="font-size">14pt</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">8.5mm</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-sp'">
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
