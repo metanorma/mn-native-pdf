@@ -36,6 +36,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="line-height">115%</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -150,7 +151,7 @@
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 			<xsl:attribute name="margin-top">4pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">7.5pt</xsl:attribute>
-			<xsl:attribute name="role">SKIP</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
@@ -618,7 +619,7 @@
 			 <xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="role">TOCI</xsl:attribute>
+			<xsl:attribute name="role">H2</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -629,6 +630,7 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="role">H2</xsl:attribute>
 			<xsl:attribute name="space-before">36pt</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
