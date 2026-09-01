@@ -364,6 +364,7 @@
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
