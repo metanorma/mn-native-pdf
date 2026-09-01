@@ -22,6 +22,7 @@
 	<xsl:attribute-set name="toc-style">
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="line-height">135%</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
@@ -35,6 +36,7 @@
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
 			<xsl:attribute name="line-height">115%</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -43,6 +45,7 @@
 		<xsl:if test="$namespace = 'nist-sp'">
 			<xsl:attribute name="font-family">Arial</xsl:attribute>
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ogc'">
 			<xsl:attribute name="line-height">130%</xsl:attribute>
@@ -134,6 +137,7 @@
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-bottom">22pt</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'ieee'">
 			<xsl:attribute name="font-family">Arial</xsl:attribute>
@@ -148,7 +152,7 @@
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 			<xsl:attribute name="margin-top">4pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">7.5pt</xsl:attribute>
-			<xsl:attribute name="role">SKIP</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
@@ -173,6 +177,7 @@
 			<xsl:attribute name="font-size">14pt</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="margin-top">8.5mm</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-sp'">
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
@@ -345,6 +350,8 @@
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'jcgm'">
+		</xsl:if>
 		<xsl:if test="$namespace = 'nist-sp'">
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 			<xsl:attribute name="margin-left">12mm</xsl:attribute>
@@ -358,6 +365,7 @@
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'plateau'">
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
@@ -616,7 +624,7 @@
 			 <xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'iho'">
-			<xsl:attribute name="role">TOCI</xsl:attribute>
+			<xsl:attribute name="role">H2</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -627,17 +635,20 @@
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
+			<xsl:attribute name="role">H2</xsl:attribute>
 			<xsl:attribute name="space-before">36pt</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="role">H2</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="margin-top">12pt</xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'nist-sp'">
+			<xsl:attribute name="role">H2</xsl:attribute>
 			<xsl:attribute name="font-size">12pt</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align">center</xsl:attribute>

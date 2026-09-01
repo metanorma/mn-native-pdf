@@ -515,119 +515,133 @@
 		<xsl:apply-templates />
 		<xsl:if test="count(*) = 1 and mn:fmt-title"> <!-- if there isn't user ToC -->
 			<!-- fill ToC -->
-			<fo:block role="TOC" xsl:use-attribute-sets="toc-style">
+			<fo:block role="SKIP" xsl:use-attribute-sets="toc-style">
 			
 				<xsl:call-template name="refine_toc-style"/>
 				
 				<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']">
-					<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table' or @type = 'example']">
-						<fo:block role="TOCI">
-							<xsl:choose>
-								<xsl:when test="$doctype = 'technical-report'">
-									<fo:block space-after="5pt">
-										<xsl:variable name="margin-left">
-											<xsl:choose>
-												<xsl:when test="@level = 1">1</xsl:when>
-												<xsl:when test="@level = 2">3.5</xsl:when>
-												<xsl:when test="@level = 3">7</xsl:when>
-												<xsl:otherwise>10</xsl:otherwise>
-											</xsl:choose>
-										</xsl:variable>
-										<xsl:attribute name="margin-left">
-											<xsl:choose>
-												<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
-													<xsl:value-of select="concat($margin-left * 1.5, 'mm')"/>
-												</xsl:when>
-												<xsl:otherwise>
-													<xsl:value-of select="concat($margin-left, 'mm')"/>
-												</xsl:otherwise>
-											</xsl:choose>
-										</xsl:attribute>
-										<xsl:call-template name="insertTocItem">
-											<xsl:with-param name="printSection">true</xsl:with-param>
-										</xsl:call-template>
-									</fo:block>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:choose>
-										<xsl:when test="@type = 'annex' or @type = 'bibliography' or @type = 'index'">
-											<fo:block space-after="5pt">
-												<xsl:call-template name="insertTocItem"/>
-											</fo:block>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:variable name="margin_left" select="number(@level - 1) * 3"/>
-											<fo:list-block space-after="2pt" margin-left="{$margin_left}mm">
-												<xsl:variable name="provisional-distance-between-starts">
-													<xsl:choose>
-														<xsl:when test="@level = 1">7</xsl:when>
-														<xsl:when test="@level = 2">10</xsl:when>
-														<xsl:when test="@level = 3">14</xsl:when>
-														<xsl:otherwise>14</xsl:otherwise>
-													</xsl:choose>
-												</xsl:variable>
-													
-												<xsl:attribute name="provisional-distance-between-starts">
-													<xsl:choose>
-														<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
-															<xsl:value-of select="concat($provisional-distance-between-starts * 1.5, 'mm')"/>
-														</xsl:when>
-														<xsl:otherwise>
-															<xsl:value-of select="concat($provisional-distance-between-starts, 'mm')"/>
-														</xsl:otherwise>
-													</xsl:choose>
-												</xsl:attribute>
-												<fo:list-item>
-													<fo:list-item-label end-indent="label-end()">
-														<fo:block>
-															<xsl:choose>
-																<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
-																	<xsl:call-template name="insertVerticalChar">
-																		<xsl:with-param name="str" select="@section"/>
-																	</xsl:call-template>
-																</xsl:when>
-																<xsl:otherwise>
-																	<xsl:value-of select="@section"/>
-																</xsl:otherwise>
-															</xsl:choose>
-														</fo:block>
-													</fo:list-item-label>
-													<fo:list-item-body start-indent="body-start()">
-														<xsl:call-template name="insertTocItem"/>
-													</fo:list-item-body>
-												</fo:list-item>
-											</fo:list-block>
-										</xsl:otherwise>
-									</xsl:choose>
-								</xsl:otherwise>
-							</xsl:choose>
-						</fo:block>
-					</xsl:for-each>
+					<fo:block role="TOC">
+						<xsl:apply-templates select="$contents/mnx:doc[@num = $num]/mnx:contents/mnx:item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table' or @type = 'example']"/>
+					</fo:block>
 				</xsl:if>
 			</fo:block>
 		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="mn:clause[@type = 'toc']/mn:fmt-title" priority="3"/>
-		
+	
+	<xsl:template match="mnx:contents//mnx:item[@display = 'true']">
+		<fo:block role="TOCI">
+			<xsl:choose>
+				<xsl:when test="$doctype = 'technical-report'">
+					<fo:block space-after="5pt" role="SKIP">
+						<xsl:variable name="margin-left">
+							<xsl:choose>
+								<xsl:when test="@level = 1">1</xsl:when>
+								<xsl:when test="@level = 2">3.5</xsl:when>
+								<xsl:when test="@level = 3">7</xsl:when>
+								<xsl:otherwise>10</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<xsl:attribute name="margin-left">
+							<xsl:choose>
+								<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
+									<xsl:value-of select="concat($margin-left * 1.5, 'mm')"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="concat($margin-left, 'mm')"/>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+						<xsl:call-template name="insertTocItem">
+							<xsl:with-param name="printSection">true</xsl:with-param>
+						</xsl:call-template>
+					</fo:block>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:choose>
+						<xsl:when test="@type = 'annex' or @type = 'bibliography' or @type = 'index'">
+							<fo:block space-after="5pt" role="SKIP">
+								<xsl:call-template name="insertTocItem"/>
+							</fo:block>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:variable name="margin_left" select="number(@level - 1) * 3"/>
+							<fo:list-block space-after="2pt" margin-left="{$margin_left}mm" role="SKIP">
+								<xsl:variable name="provisional-distance-between-starts">
+									<xsl:choose>
+										<xsl:when test="@level = 1">7</xsl:when>
+										<xsl:when test="@level = 2">10</xsl:when>
+										<xsl:when test="@level = 3">14</xsl:when>
+										<xsl:otherwise>14</xsl:otherwise>
+									</xsl:choose>
+								</xsl:variable>
+									
+								<xsl:attribute name="provisional-distance-between-starts">
+									<xsl:choose>
+										<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
+											<xsl:value-of select="concat($provisional-distance-between-starts * 1.5, 'mm')"/>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="concat($provisional-distance-between-starts, 'mm')"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:attribute>
+								<fo:list-item role="SKIP">
+									<fo:list-item-label end-indent="label-end()">
+										<fo:block role="SKIP">
+											<xsl:choose>
+												<xsl:when test="$vertical_layout_rotate_clause_numbers = 'true'">
+													<xsl:call-template name="insertVerticalChar">
+														<xsl:with-param name="str" select="@section"/>
+													</xsl:call-template>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:value-of select="@section"/>
+												</xsl:otherwise>
+											</xsl:choose>
+										</fo:block>
+									</fo:list-item-label>
+									<fo:list-item-body start-indent="body-start()" role="SKIP">
+										<xsl:call-template name="insertTocItem"/>
+									</fo:list-item-body>
+								</fo:list-item>
+							</fo:list-block>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+			
+			<xsl:if test="mnx:item[@display = 'true']">
+				<fo:block role="TOC">
+					<xsl:apply-templates select="mnx:item[@display = 'true'][@level &lt;= $toc_level or @type='figure' or @type = 'table' or @type = 'example']"/>
+				</fo:block>
+			</xsl:if>
+		</fo:block>
+	</xsl:template>
+	
 	<xsl:template name="insertTocItem">
 		<xsl:param name="printSection">false</xsl:param>
 		<fo:block xsl:use-attribute-sets="toc-item-style">
-			<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
-				<xsl:if test="$printSection = 'true' and @section != ''">
-					<xsl:value-of select="@section"/>
-					<xsl:text>. </xsl:text>
-				</xsl:if>
-				<fo:inline><xsl:apply-templates select="mnx:title" /><xsl:text> </xsl:text></fo:inline>
-				<fo:inline keep-together.within-line="always">
-					<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
-					<fo:inline>
-						<xsl:if test="$doctype = 'technical-report'"><xsl:text>- </xsl:text></xsl:if>
-						<fo:page-number-citation ref-id="{@id}"/>
-						<xsl:if test="$doctype = 'technical-report'"><xsl:text> -</xsl:text></xsl:if>
+			<fo:wrapper role="Reference">
+				<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+					<xsl:if test="$printSection = 'true' and @section != ''">
+						<fo:inline role="Lbl">
+							<xsl:value-of select="@section"/>
+							<xsl:text>. </xsl:text>
+						</fo:inline>
+					</xsl:if>
+					<fo:inline role="SKIP"><xsl:apply-templates select="mnx:title" /><xsl:text> </xsl:text></fo:inline>
+					<fo:inline keep-together.within-line="always" role="SKIP">
+						<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
+						<fo:inline role="SKIP">
+							<xsl:if test="$doctype = 'technical-report'"><xsl:text>- </xsl:text></xsl:if>
+							<fo:page-number-citation ref-id="{@id}" role="SKIP"/>
+							<xsl:if test="$doctype = 'technical-report'"><xsl:text> -</xsl:text></xsl:if>
+						</fo:inline>
 					</fo:inline>
-				</fo:inline>
-			</fo:basic-link>
+				</fo:basic-link>
+			</fo:wrapper>
 		</fo:block>
 	</xsl:template>
 	
