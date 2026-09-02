@@ -605,7 +605,6 @@
 								</xsl:for-each>
 							</xsl:for-each>
 							
-							
 							<xsl:for-each select="/*/mn:preface/mn:clause[@type = 'toc']">
 								<fo:page-sequence master-reference="document-draft" xsl:use-attribute-sets="page-sequence-preface">
 									<xsl:call-template name="refine_page-sequence-preface"/>
@@ -668,13 +667,14 @@
 								</fo:static-content>
 								<fo:flow flow-name="xsl-region-body">
 								
-									<fo:block-container margin-left="47mm" margin-top="10mm"> <!-- margin-top="27mm" -->
-									
+									<fo:block-container margin-left="47mm" margin-top="10mm" role="SKIP"> <!-- margin-top="27mm" -->
 										<fo:block-container xsl:use-attribute-sets="reset-margins-style">
-										
-											<xsl:apply-templates select="/*/mn:preface/mn:clause[@type = 'toc']">
-												<xsl:with-param name="num" select="$num"/>
-											</xsl:apply-templates>
+											<fo:block role="SKIP">
+												
+												<xsl:apply-templates select="/*/mn:preface/mn:clause[@type = 'toc']">
+													<xsl:with-param name="num" select="$num"/>
+												</xsl:apply-templates>
+											</fo:block>
 										
 										</fo:block-container>
 									</fo:block-container>
@@ -745,7 +745,7 @@
 							</fo:flow>
 						</fo:page-sequence>
 					</xsl:if>
-				
+			
 				</xsl:for-each>
 			</xsl:for-each> <!-- END of //metanorma (former ieee-standard) iteration -->
 			
@@ -756,7 +756,6 @@
 					</fo:flow>
 				</fo:page-sequence>
 			</xsl:if>
-			
 			
 		</fo:root>
 	</xsl:template>
@@ -1403,91 +1402,11 @@
 							
 							<xsl:choose>
 								<xsl:when test="$stage = 'draft'">
-								
-									<xsl:variable name="margin-left">4</xsl:variable>
-									
-									<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']">
-										<fo:block role="TOCI">
-											<xsl:if test="@level = 1">
-												<xsl:attribute name="margin-top">12pt</xsl:attribute>
-											</xsl:if>
-											
-											<fo:block text-align-last="justify" role="SKIP">
-												<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left * (@level - 1)"/>mm</xsl:attribute>
-												<xsl:if test="@type = 'annex'">
-													<xsl:attribute name="font-weight">normal</xsl:attribute>
-												</xsl:if>
-												
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
-												
-													<xsl:value-of select="@section"/>
-													<!-- <xsl:if test="normalize-space(@section) != '' and @level = 1">.</xsl:if> -->
-													<xsl:if test="normalize-space(@section) != ''"><xsl:text>&#xa0;</xsl:text></xsl:if>
-													
-													<xsl:apply-templates select="mnx:title"/>
-												
-													<fo:inline keep-together.within-line="always">
-														<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
-														<fo:inline>
-															<fo:page-number-citation ref-id="{@id}"/>
-														</fo:inline>
-													</fo:inline>
-												
-												</fo:basic-link>
-											</fo:block>
-										</fo:block>
-									</xsl:for-each>
+									<xsl:apply-templates select="$contents/mnx:doc[@num = $num]/mnx:contents/mnx:item[@display = 'true']" mode="toc_draft"/>
 								</xsl:when> <!-- $stage = 'draft' -->
 								
 								<xsl:when test="$stage = 'published' or $stage = 'approved' or $stage_published = 'true'">
-								
-									<xsl:variable name="provisional-distance-between-starts">10</xsl:variable>
-									
-									<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']">
-									
-										<fo:list-block provisional-distance-between-starts="{$provisional-distance-between-starts}mm" role="TOCI">
-										
-											<xsl:if test="@level = 1">
-												<xsl:attribute name="margin-top">12pt</xsl:attribute>
-												<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-											</xsl:if>
-											
-											<xsl:attribute name="margin-left"><xsl:value-of select="$provisional-distance-between-starts * (@level - 1)"/>mm</xsl:attribute>
-	
-											<fo:list-item role="SKIP">
-												<fo:list-item-label end-indent="label-end()" role="SKIP">
-													<fo:block role="SKIP">
-														<xsl:value-of select="@section"/>
-													</fo:block>
-												</fo:list-item-label>
-												<fo:list-item-body start-indent="body-start()" role="SKIP">
-													<fo:block text-align-last="justify" role="SKIP">
-												
-														<xsl:if test="@type = 'annex'">
-															<xsl:attribute name="font-weight">normal</xsl:attribute>
-															<xsl:if test="@level = 1">
-																<xsl:attribute name="margin-left">-<xsl:value-of select="$provisional-distance-between-starts"/>mm</xsl:attribute>
-															</xsl:if>
-														</xsl:if>
-														
-														<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
-															
-															<xsl:apply-templates select="mnx:title"/>
-														
-															<fo:inline keep-together.within-line="always">
-																<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
-																<fo:inline>
-																	<fo:page-number-citation ref-id="{@id}"/>
-																</fo:inline>
-															</fo:inline>
-														
-														</fo:basic-link>
-													</fo:block>
-												</fo:list-item-body>
-											</fo:list-item>
-									
-										</fo:list-block>
-									</xsl:for-each>
+									<xsl:apply-templates select="$contents/mnx:doc[@num = $num]/mnx:contents/mnx:item[@display = 'true']" mode="toc_published"/>
 								</xsl:when> <!-- $stage = 'published' or 'approved' -->
 							</xsl:choose>
 					
@@ -1523,70 +1442,10 @@
 								</xsl:if>
 								<xsl:call-template name="insertListOf_Item"/>
 							</xsl:for-each>
-							
 						</xsl:when> <!-- 'standard' or 'draft' -->
 						
 						<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
-							<xsl:attribute name="font-size">10pt</xsl:attribute>
-						
-							<xsl:variable name="margin-left">
-								<xsl:choose>
-									<xsl:when test="@level = 2">4.5mm</xsl:when>
-									<xsl:when test="@level &gt;= 3">7.5mm</xsl:when>
-									<xsl:otherwise>0mm</xsl:otherwise>
-								</xsl:choose>
-							</xsl:variable>
-							
-							<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true'][@level &lt;= $toc_level or @type = 'figure' or @type = 'table' or @type = 'example']">
-								<fo:block role="TOCI">
-									<xsl:if test="@level = 1">
-										<xsl:attribute name="margin-top">12pt</xsl:attribute>
-										<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
-									</xsl:if>
-									
-									<xsl:if test="@type = 'figure' or @type = 'table' or @type = 'example' and preceding-sibling::mnx:item[1][@type = 'figure' or @type = 'table' or @type = 'example']">
-										<xsl:attribute name="margin-top">0pt</xsl:attribute>
-										<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
-									</xsl:if>
-									
-									<fo:block text-align-last="justify">
-										<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left"/>mm</xsl:attribute>
-										<xsl:if test="@type = 'annex'">
-											<xsl:attribute name="font-weight">normal</xsl:attribute>
-										</xsl:if>
-										
-										<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
-										
-											<xsl:value-of select="@section"/>
-											<xsl:if test="normalize-space(@section) != ''"><xsl:text>&#xa0;</xsl:text></xsl:if>
-											
-											<xsl:variable name="section_title">
-												<xsl:apply-templates select="mnx:title"/>
-											</xsl:variable>
-											
-											<!-- DEBUG=<xsl:copy-of select="$title"/> -->
-											
-											<xsl:choose>
-												<xsl:when test="@level = 1">
-													<xsl:apply-templates select="xalan:nodeset($section_title)" mode="uppercase"/>
-												</xsl:when>
-												<xsl:otherwise>
-													<xsl:apply-templates select="xalan:nodeset($section_title)" mode="smallcaps"/>
-												</xsl:otherwise>
-											</xsl:choose>
-											
-											<fo:inline keep-together.within-line="always">
-												<fo:leader font-weight="normal" leader-pattern="dots"/>
-												<fo:inline>
-													<fo:page-number-citation ref-id="{@id}"/>
-												</fo:inline>
-											</fo:inline>
-										
-										</fo:basic-link>
-									</fo:block>
-								</fo:block>
-							</xsl:for-each>
-						
+							<xsl:apply-templates select="$contents/mnx:doc[@num = $num]/mnx:contents/mnx:item[@display = 'true'][@level &lt;= $toc_level or @type = 'figure' or @type = 'table' or @type = 'example']" mode="toc_whitepaper"/>
 						</xsl:when>
 					</xsl:choose>
 				</xsl:if>
@@ -1609,6 +1468,171 @@
 		</xsl:choose>
 	
 	</xsl:template>
+	
+	<xsl:template match="mnx:contents//mnx:item[@display = 'true']" mode="toc_draft">
+		<fo:block role="TOCI">
+			<xsl:if test="@level = 1">
+				<xsl:attribute name="margin-top">12pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:variable name="margin-left">4</xsl:variable>
+			
+			<fo:block text-align-last="justify" role="SKIP">
+				<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left * (@level - 1)"/>mm</xsl:attribute>
+				<xsl:if test="@type = 'annex'">
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+				</xsl:if>
+				
+				<fo:inline role="Lbl">
+					<xsl:value-of select="@section"/>
+					<!-- <xsl:if test="normalize-space(@section) != '' and @level = 1">.</xsl:if> -->
+					<xsl:if test="normalize-space(@section) != ''"><xsl:text>&#xa0;</xsl:text></xsl:if>
+				</fo:inline>
+					
+				<fo:wrapper role="Reference">
+					<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+					
+						<xsl:apply-templates select="mnx:title"/>
+					
+						<fo:inline keep-together.within-line="always" role="SKIP">
+							<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
+							<fo:inline role="SKIP">
+								<fo:page-number-citation ref-id="{@id}" role="SKIP"/>
+							</fo:inline>
+						</fo:inline>
+					</fo:basic-link>
+				</fo:wrapper>
+			</fo:block>
+			
+			<xsl:if test="mnx:item[@display = 'true']">
+				<fo:block role="TOC">
+					<xsl:apply-templates select="mnx:item[@display = 'true']" mode="toc_draft"/>
+				</fo:block>
+			</xsl:if>
+		</fo:block>
+	</xsl:template>
+	
+	<xsl:template match="mnx:contents//mnx:item[@display = 'true']" mode="toc_published">
+		<xsl:variable name="provisional-distance-between-starts">10</xsl:variable>
+		<fo:block role="TOCI">
+			<fo:list-block provisional-distance-between-starts="{$provisional-distance-between-starts}mm" role="SKIP">
+			
+				<xsl:if test="@level = 1">
+					<xsl:attribute name="margin-top">12pt</xsl:attribute>
+					<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+				</xsl:if>
+				
+				<xsl:attribute name="margin-left"><xsl:value-of select="$provisional-distance-between-starts * (@level - 1)"/>mm</xsl:attribute>
+
+				<fo:list-item role="SKIP">
+					<fo:list-item-label end-indent="label-end()">
+						<fo:block role="SKIP">
+							<xsl:value-of select="@section"/>
+						</fo:block>
+					</fo:list-item-label>
+					<fo:list-item-body start-indent="body-start()" role="SKIP">
+						<fo:block text-align-last="justify" role="Reference">
+					
+							<xsl:if test="@type = 'annex'">
+								<xsl:attribute name="font-weight">normal</xsl:attribute>
+								<xsl:if test="@level = 1">
+									<xsl:attribute name="margin-left">-<xsl:value-of select="$provisional-distance-between-starts"/>mm</xsl:attribute>
+								</xsl:if>
+							</xsl:if>
+							
+							<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+								
+								<xsl:apply-templates select="mnx:title"/>
+							
+								<fo:inline keep-together.within-line="always" role="SKIP">
+									<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
+									<fo:inline role="SKIP">
+										<fo:page-number-citation ref-id="{@id}" role="SKIP"/>
+									</fo:inline>
+								</fo:inline>
+							
+							</fo:basic-link>
+						</fo:block>
+					</fo:list-item-body>
+				</fo:list-item>
+			</fo:list-block>
+			
+			<xsl:if test="mnx:item[@display = 'true']">
+				<fo:block role="TOC">
+					<xsl:apply-templates select="mnx:item[@display = 'true']" mode="toc_published"/>
+				</fo:block>
+			</xsl:if>
+		</fo:block>
+	</xsl:template> <!-- END: toc_published -->
+	
+	<xsl:template match="mnx:contents//mnx:item[@display = 'true']" mode="toc_whitepaper">
+		<xsl:variable name="margin-left">
+			<xsl:choose>
+				<xsl:when test="@level = 2">4.5</xsl:when>
+				<xsl:when test="@level &gt;= 3">7.5</xsl:when>
+				<xsl:otherwise>0</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<fo:block role="TOCI">
+			<xsl:attribute name="font-size">10pt</xsl:attribute>
+			<xsl:if test="@level = 1">
+				<xsl:attribute name="margin-top">12pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">6pt</xsl:attribute>
+			</xsl:if>
+			
+			<xsl:if test="@type = 'figure' or @type = 'table' or @type = 'example' and preceding-sibling::mnx:item[1][@type = 'figure' or @type = 'table' or @type = 'example']">
+				<xsl:attribute name="margin-top">0pt</xsl:attribute>
+				<xsl:attribute name="margin-bottom">0pt</xsl:attribute>
+			</xsl:if>
+			
+			<fo:block text-align-last="justify" role="SKIP">
+				<xsl:attribute name="margin-left"><xsl:value-of select="$margin-left"/>mm</xsl:attribute>
+				<xsl:if test="@type = 'annex'">
+					<xsl:attribute name="font-weight">normal</xsl:attribute>
+				</xsl:if>
+				
+				<fo:inline role="Lbl">
+					<xsl:value-of select="@section"/>
+					<xsl:if test="normalize-space(@section) != ''"><xsl:text>&#xa0;</xsl:text></xsl:if>
+				</fo:inline>
+				
+				<fo:wrapper role="Reference">
+					<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+						
+						<xsl:variable name="section_title">
+							<xsl:apply-templates select="mnx:title"/>
+						</xsl:variable>
+						
+						<!-- DEBUG=<xsl:copy-of select="$title"/> -->
+						
+						<xsl:choose>
+							<xsl:when test="@level = 1">
+								<xsl:apply-templates select="xalan:nodeset($section_title)" mode="uppercase"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:apply-templates select="xalan:nodeset($section_title)" mode="smallcaps"/>
+							</xsl:otherwise>
+						</xsl:choose>
+						
+						<fo:inline keep-together.within-line="always" role="SKIP">
+							<fo:leader font-weight="normal" leader-pattern="dots" role="SKIP"/>
+							<fo:inline role="SKIP">
+								<fo:page-number-citation ref-id="{@id}" role="SKIP"/>
+							</fo:inline>
+						</fo:inline>
+					
+					</fo:basic-link>
+				</fo:wrapper>
+			</fo:block>
+			
+			<xsl:if test="mnx:item[@display = 'true']">
+				<fo:block role="TOC">
+					<xsl:apply-templates select="mnx:item[@display = 'true'][@level &lt;= $toc_level or @type = 'figure' or @type = 'table' or @type = 'example']" mode="toc_whitepaper"/>
+				</fo:block>
+			</xsl:if>
+		</fo:block>
+	</xsl:template> <!-- END: toc_whitepaper -->
+	
 	
 	<xsl:template match="mn:boilerplate/mn:copyright-statement//mn:p" priority="2">
 		<fo:block xsl:use-attribute-sets="copyright-statement-p-style">
@@ -2204,23 +2228,23 @@
 	</xsl:template>
 	
 	<xsl:template name="insertListOf_Item">
-	
 		<xsl:choose>
 			<xsl:when test="$current_template = 'standard'">
 				<fo:list-block xsl:use-attribute-sets="toc-listof-item-style" role="TOCI">
 					<fo:list-item role="SKIP">
-						<fo:list-item-label end-indent="label-end()" role="SKIP">
+						<fo:list-item-label end-indent="label-end()">
 							<fo:block role="SKIP">
-								<fo:basic-link internal-destination="{@id}">
+								<!-- <fo:basic-link internal-destination="{@id}">
 									<xsl:call-template name="setAltText">
 										<xsl:with-param name="value" select="@alt-text"/>
 									</xsl:call-template>
 									<xsl:value-of select="substring-before(.,'—')"/>
-								</fo:basic-link>
+								</fo:basic-link> -->
+								<xsl:value-of select="substring-before(.,'—')"/>
 							</fo:block>
 						</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()" role="SKIP">
-							<fo:block text-align-last="justify" role="SKIP">
+							<fo:block text-align-last="justify" role="Reference">
 								<fo:basic-link internal-destination="{@id}">
 									<xsl:call-template name="setAltText">
 										<xsl:with-param name="value" select="@alt-text"/>
@@ -2230,9 +2254,9 @@
 										<xsl:apply-templates select="mn:fmt-name" mode="contents_item"/>
 									</xsl:variable>
 									<xsl:apply-templates select="xalan:nodeset($item)/node()"/>
-									<fo:inline keep-together.within-line="always">
+									<fo:inline keep-together.within-line="always" role="SKIP">
 										<fo:leader font-weight="normal" leader-pattern="dots"/>
-										<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
+										<fo:inline role="SKIP"><fo:page-number-citation ref-id="{@id}" role="SKIP"/></fo:inline>
 									</fo:inline>
 								</fo:basic-link>
 							</fo:block>
@@ -2243,21 +2267,21 @@
 			
 			<xsl:otherwise>
 				<fo:block role="TOCI" font-weight="normal" text-align-last="justify" margin-left="12mm">
-					<fo:basic-link internal-destination="{@id}">
-						<xsl:call-template name="setAltText">
-							<xsl:with-param name="value" select="@alt-text"/>
-						</xsl:call-template>
-						<xsl:apply-templates select="." mode="contents"/>
-						<fo:inline keep-together.within-line="always">
-							<fo:leader font-weight="normal" leader-pattern="dots"/>
-							<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-						</fo:inline>
-					</fo:basic-link>
+					<fo:wrapper role="Reference">
+						<fo:basic-link internal-destination="{@id}">
+							<xsl:call-template name="setAltText">
+								<xsl:with-param name="value" select="@alt-text"/>
+							</xsl:call-template>
+							<xsl:apply-templates select="." mode="contents"/>
+							<fo:inline keep-together.within-line="always" role="SKIP">
+								<fo:leader font-weight="normal" leader-pattern="dots"/>
+								<fo:inline role="SKIP"><fo:page-number-citation ref-id="{@id}" role="SKIP"/></fo:inline>
+							</fo:inline>
+						</fo:basic-link>
+					</fo:wrapper>
 				</fo:block>		
 			</xsl:otherwise>
-
 		</xsl:choose>
-		
 	</xsl:template>
 	
 	<xsl:template match="mnx:figures/mnx:figure/mn:fmt-name/text()[1] |
