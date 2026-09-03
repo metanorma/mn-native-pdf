@@ -327,6 +327,7 @@
 	<xsl:attribute-set name="toc-item-style">
 		<xsl:attribute name="role">TOCI</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
