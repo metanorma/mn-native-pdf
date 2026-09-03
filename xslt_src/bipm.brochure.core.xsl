@@ -1992,13 +1992,13 @@
 				<!-- <xsl:copy-of select="$contents"/> -->
 				
 				<xsl:if test="$contents/mnx:doc[@id = $docid]//mnx:item[@display='true']">
-					<fo:table table-layout="fixed" width="100%" id="__internal_layout__toc_{generate-id()}" role="SKIP">
-						<fo:table-column column-width="127mm"/>
-						<fo:table-column column-width="12mm"/>
-						<fo:table-body role="SKIP">											
-							<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:item[@display='true' and not(@type = 'annex') and not(@type = 'index') and not(@parent = 'annex')]">
+					
+							<!-- <xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:item[@display='true' and not(@type = 'annex') and not(@type = 'index') and not(@parent = 'annex')]">
 								<xsl:call-template name="insertContentItem"/>								
-							</xsl:for-each>
+							</xsl:for-each> -->
+							
+							<xsl:apply-templates select="$contents/mnx:doc[@id = $docid]/mnx:contents/mnx:item[@display = 'true' and not(@type = 'annex') and not(@type = 'index') and not(@parent = 'annex')]" />
+							
 							<!-- insert page break between main sections and appendixes in ToC -->
 							<!-- <xsl:if test="$doctype ='brochure'">
 								<fo:table-row>
@@ -2007,16 +2007,26 @@
 									</fo:table-cell>
 								</fo:table-row>
 							</xsl:if> -->
-							<xsl:variable name="num" select="$contents/mnx:doc[@id = $docid]/@num"/>
-							<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:item[@display='true' and (@type = 'annex')]"> <!--  or (@level = 2 and @parent = 'annex') -->
+							
+							<!--  or (@level = 2 and @parent = 'annex') -->
+							<!-- <xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:item[@display='true' and (@type = 'annex')]">
 								<xsl:call-template name="insertContentItem">
 									<xsl:with-param name="keep-with-next">true</xsl:with-param>
 								</xsl:call-template>
-							</xsl:for-each>
-							<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:item[@display='true' and (@type = 'index')]">
-								<xsl:call-template name="insertContentItem"/>								
-							</xsl:for-each>
+							</xsl:for-each> -->
+							<xsl:apply-templates select="$contents/mnx:doc[@id = $docid]/mnx:contents/mnx:item[@display = 'true' and @type = 'annex']">
+								<xsl:with-param name="keep-with-next">true</xsl:with-param>
+								<xsl:with-param name="part">annex</xsl:with-param>
+							</xsl:apply-templates>
 							
+							<!-- <xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:item[@display='true' and (@type = 'index')]">
+								<xsl:call-template name="insertContentItem"/>								
+							</xsl:for-each> -->
+							<xsl:apply-templates select="$contents/mnx:doc[@id = $docid]/mnx:contents/mnx:item[@display = 'true' and @type = 'index']">
+								<xsl:with-param name="part">index</xsl:with-param>
+							</xsl:apply-templates>
+							
+							<xsl:variable name="num" select="$contents/mnx:doc[@id = $docid]/@num"/>
 							<!-- List of Tables -->
 							<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:tables/mnx:table">
 								<xsl:if test="position() = 1">
@@ -2046,104 +2056,152 @@
 								</xsl:if>
 								<xsl:call-template name="insertListOf_Item"/>
 							</xsl:for-each>
-							
-						</fo:table-body>
-					</fo:table>
+						
 				</xsl:if>
 			</fo:block>
 		</fo:block-container>
 	</xsl:template>
-		
+	
+	<xsl:template match="mnx:contents//mnx:item[@display = 'true']">
+		<xsl:param name="keep-with-next"/>
+		<xsl:call-template name="insertContentItem">
+			<xsl:with-param name="keep-with-next" select="$keep-with-next"/>
+		</xsl:call-template>
+	</xsl:template>
+	
 	<xsl:template name="insertContentItem">
 		<xsl:param name="keep-with-next"/>
-		<fo:table-row xsl:use-attribute-sets="toc-item-style">
+		
+		<fo:block role="TOCI">
 			<xsl:if test="$keep-with-next = 'true'">
 				<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			</xsl:if>
-			<xsl:variable name="space-before">
-				<xsl:if test="@level = 1">
-					<xsl:if test="@type = 'annex'">14pt</xsl:if>
-				</xsl:if>
-			</xsl:variable>
-			<xsl:variable name="space-after">
-				<xsl:choose>
-					<xsl:when test="@level = 1 and @type = 'annex'">0pt</xsl:when>
-					<xsl:when test="@level = 1">6pt</xsl:when>
-					<xsl:when test="@level = 2 and not(following-sibling::mnx:item[@display='true']) and not(mnx:item[@display='true']) and not(position() = last())">12pt</xsl:when>
-					<xsl:when test="@level = 3 and not(following-sibling::mnx:item[@display='true']) and not(../following-sibling::mnx:item[@display='true']) and not(position() = last())">12pt</xsl:when>
-				</xsl:choose>
-			</xsl:variable>
 			
-			<fo:table-cell role="SKIP">
+			<fo:table table-layout="fixed" width="100%" id="__internal_layout__toc_{generate-id()}" role="SKIP">
+				<xsl:variable name="space-before">
+					<xsl:if test="@level = 1">
+						<xsl:if test="@type = 'annex'">14pt</xsl:if>
+					</xsl:if>
+				</xsl:variable>
+				<xsl:variable name="space-after">
+					<xsl:choose>
+						<xsl:when test="@level = 1 and @type = 'annex'">0pt</xsl:when>
+						<xsl:when test="@level = 1">6pt</xsl:when>
+						<!-- last 2nd level item -->
+						<xsl:when test="@level = 2 and not(following-sibling::mnx:item[@display='true']) and not(mnx:item[@display='true']) and following::mnx:item[@display='true']">12pt</xsl:when> <!-- not(position() = last()) -->
+						<!-- last 3rd level item -->
+						<xsl:when test="@level = 3 and not(following-sibling::mnx:item[@display='true']) and not(../following-sibling::mnx:item[@display='true']) and following::mnx:item[@display='true']">12pt</xsl:when><!-- not(position() = last()) -->
+					</xsl:choose>
+				</xsl:variable>
 				<xsl:if test="normalize-space($space-before) != ''">
-					<xsl:attribute name="padding-top"><xsl:value-of select="normalize-space($space-before)"/></xsl:attribute>
+					<xsl:attribute name="margin-top"><xsl:value-of select="normalize-space($space-before)"/></xsl:attribute>
 				</xsl:if>
 				<xsl:if test="normalize-space($space-after) != ''">
-					<xsl:attribute name="padding-bottom"><xsl:value-of select="normalize-space($space-after)"/></xsl:attribute>
-				</xsl:if>				
-				<fo:block role="SKIP">
-					
-					<xsl:call-template name="refine_toc-item-style"/>
-					
-					<fo:list-block role="SKIP">
-						<xsl:attribute name="provisional-distance-between-starts">
-							<xsl:choose>
-								<xsl:when test="@section = '' or @level &gt; 3">0mm</xsl:when>
-								<xsl:when test="@level = 2 and @parent = 'annex'">0mm</xsl:when>
-								<xsl:when test="@level = 2">8mm</xsl:when>								
-								<xsl:when test="@type = 'annex' and @level = 1">25mm</xsl:when>
-								<xsl:otherwise>7mm</xsl:otherwise>
-							</xsl:choose>
-						</xsl:attribute>
-						
-						<fo:list-item role="SKIP">
-						
-							<fo:list-item-label end-indent="label-end()" role="SKIP">
-								<fo:block role="SKIP">
-									<xsl:if test="@level = 1 or (@level = 2 and not(@parent = 'annex'))">
-										<xsl:value-of select="@section"/>
-										<xsl:if test="normalize-space(@section) != '' and @type = 'annex'">.</xsl:if>
-									</xsl:if>
-								</fo:block>
-							</fo:list-item-label>
-							
-							<fo:list-item-body start-indent="body-start()" role="SKIP">
-								<fo:block role="SKIP">
-									<xsl:if test="@level &gt;= 3">
-										<xsl:attribute name="margin-left">11mm</xsl:attribute>
-										<xsl:attribute name="text-indent">-11mm</xsl:attribute>
-									</xsl:if>
-									<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}" role="SKIP">
-										<xsl:if test="@level &gt;= 3">
-											<fo:inline padding-right="2mm" role="SKIP"><xsl:value-of select="@section"/></fo:inline>
-										</xsl:if>
-										
-										<fo:inline role="SKIP">
-											<xsl:apply-templates select="mnx:title"/>
-										</fo:inline>
-										
-									</fo:basic-link>
-								</fo:block>
-							</fo:list-item-body>
-						</fo:list-item>
-					</fo:list-block>
-				</fo:block>				
-			</fo:table-cell>
-			<fo:table-cell text-align="right" role="SKIP">
-				<xsl:if test="normalize-space($space-before) != ''">
-					<xsl:attribute name="padding-top"><xsl:value-of select="normalize-space($space-before)"/></xsl:attribute>
+					<xsl:attribute name="margin-bottom"><xsl:value-of select="normalize-space($space-after)"/></xsl:attribute>
 				</xsl:if>
-				<xsl:if test="normalize-space($space-after) != ''">
-					<xsl:attribute name="padding-bottom"><xsl:value-of select="normalize-space($space-after)"/></xsl:attribute>
-				</xsl:if>
-				<fo:block role="SKIP">
-					<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}" role="SKIP">
-						<fo:inline xsl:use-attribute-sets="toc-pagenumber-style" role="SKIP"><fo:wrapper role="artifact"><fo:page-number-citation ref-id="{@id}" /></fo:wrapper></fo:inline>
-					</fo:basic-link>
-				</fo:block>
-			</fo:table-cell>
-		</fo:table-row>
-	</xsl:template>
+			
+				<fo:table-column column-width="127mm"/>
+				<fo:table-column column-width="12mm"/>
+				<fo:table-body role="SKIP">
+				
+					<fo:table-row xsl:use-attribute-sets="toc-item-style">
+						
+						<fo:table-cell role="SKIP">
+							<!-- <xsl:if test="normalize-space($space-before) != ''">
+								<xsl:attribute name="padding-top"><xsl:value-of select="normalize-space($space-before)"/></xsl:attribute>
+							</xsl:if>
+							<xsl:if test="normalize-space($space-after) != ''">
+								<xsl:attribute name="padding-bottom"><xsl:value-of select="normalize-space($space-after)"/></xsl:attribute>
+							</xsl:if> -->
+							<fo:block role="SKIP">
+								
+								<xsl:call-template name="refine_toc-item-style"/>
+								
+								<fo:list-block role="SKIP">
+									<xsl:attribute name="provisional-distance-between-starts">
+										<xsl:choose>
+											<xsl:when test="@section = '' or @level &gt; 3">0mm</xsl:when>
+											<xsl:when test="@level = 2 and @parent = 'annex'">0mm</xsl:when>
+											<xsl:when test="@level = 2">8mm</xsl:when>								
+											<xsl:when test="@type = 'annex' and @level = 1">25mm</xsl:when>
+											<xsl:otherwise>7mm</xsl:otherwise>
+										</xsl:choose>
+									</xsl:attribute>
+									
+									<fo:list-item role="SKIP">
+									
+										<fo:list-item-label end-indent="label-end()" role="SKIP">
+											<fo:block role="Lbl">
+												<xsl:if test="@level = 1 or (@level = 2 and not(@parent = 'annex'))">
+													<xsl:value-of select="@section"/>
+													<xsl:if test="normalize-space(@section) != '' and @type = 'annex'">.</xsl:if>
+												</xsl:if>
+											</fo:block>
+										</fo:list-item-label>
+										
+										<fo:list-item-body start-indent="body-start()" role="SKIP">
+											<fo:block role="Reference">
+												<xsl:if test="@level &gt;= 3">
+													<xsl:attribute name="margin-left">11mm</xsl:attribute>
+													<xsl:attribute name="text-indent">-11mm</xsl:attribute>
+												</xsl:if>
+												<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+													<xsl:if test="@level &gt;= 3">
+														<fo:inline padding-right="2mm" role="SKIP"><xsl:value-of select="@section"/></fo:inline>
+													</xsl:if>
+													
+													<fo:inline role="SKIP">
+														<xsl:apply-templates select="mnx:title"/>
+													</fo:inline>
+													
+												</fo:basic-link>
+											</fo:block>
+										</fo:list-item-body>
+									</fo:list-item>
+								</fo:list-block>
+							</fo:block>				
+						</fo:table-cell>
+						<fo:table-cell text-align="right" role="SKIP">
+							<!-- <xsl:if test="normalize-space($space-before) != ''">
+								<xsl:attribute name="padding-top"><xsl:value-of select="normalize-space($space-before)"/></xsl:attribute>
+							</xsl:if>
+							<xsl:if test="normalize-space($space-after) != ''">
+								<xsl:attribute name="padding-bottom"><xsl:value-of select="normalize-space($space-after)"/></xsl:attribute>
+							</xsl:if> -->
+							<fo:block role="Reference">
+								<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+									<fo:inline xsl:use-attribute-sets="toc-pagenumber-style" role="SKIP"><fo:page-number-citation ref-id="{@id}" role="SKIP"/></fo:inline>
+								</fo:basic-link>
+							</fo:block>
+						</fo:table-cell>
+					</fo:table-row>
+				
+				</fo:table-body>
+			</fo:table>
+			
+			<xsl:choose>
+				<xsl:when test="@type = 'annex'">
+					<xsl:if test="mnx:item[@display = 'true' and @type = 'annex']">
+						<fo:block role="TOC">
+							<xsl:apply-templates select="mnx:item[@display = 'true' and @type = 'annex']"/>
+						</fo:block>
+					</xsl:if>
+				</xsl:when>
+				<xsl:when test="@type = 'index'">
+					<xsl:if test="mnx:item[@display = 'true' and @type = 'index']">
+						<fo:block role="TOC">
+							<xsl:apply-templates select="mnx:item[@display = 'true' and @type = 'index']"/>
+						</fo:block>
+					</xsl:if>
+				</xsl:when>
+				<xsl:when test="mnx:item[@display = 'true']">
+					<fo:block role="TOC">
+						<xsl:apply-templates select="mnx:item[@display = 'true']"/>
+					</fo:block>
+				</xsl:when>
+			</xsl:choose>
+		</fo:block>
+	</xsl:template><!-- insertContentItem -->
 	
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
