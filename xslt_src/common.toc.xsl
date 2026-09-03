@@ -225,6 +225,9 @@
 	</xsl:template>
 	
 	<xsl:attribute-set name="toc-title-page-style">
+		<xsl:if test="$namespace = 'bsi'">
+			<xsl:attribute name="role">P</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="text-align">right</xsl:attribute>
 			<xsl:attribute name="font-size">9pt</xsl:attribute>
