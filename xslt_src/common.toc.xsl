@@ -1743,6 +1743,11 @@
 		<xsl:value-of select="normalize-space($link)"/>
 	</xsl:template>
 
+	<xsl:template match="mn:image" mode="contents_item">
+		<xsl:copy-of select="." />
+	</xsl:template>
+
+	
 	<!-- =================== -->
 	<!-- Table of Contents (ToC) processing -->
 	<!-- =================== -->
