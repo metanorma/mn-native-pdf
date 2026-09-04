@@ -13,6 +13,7 @@
 											version="1.0">
 	
 	<!-- Characters -->
+	<xsl:variable name="nbsp">&#xa0;</xsl:variable>
 	<xsl:variable name="linebreak">&#x2028;</xsl:variable>
 	<xsl:variable name="em_space">&#x2003;</xsl:variable>
 	<xsl:variable name="tab_zh">&#x3000;</xsl:variable>
