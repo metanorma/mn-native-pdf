@@ -835,7 +835,8 @@
 					</fo:list-item-label>
 					<fo:list-item-body start-indent="body-start()" role="SKIP">
 						<fo:block xsl:use-attribute-sets="toc-item-style" role="Reference">
-							<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+							<xsl:variable name="alt_text"><xsl:apply-templates select="mnx:title" mode="bookmarks"/></xsl:variable>
+							<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}">
 								<xsl:apply-templates select="mnx:title"/>
 								<fo:inline keep-together.within-line="always" role="SKIP">
 									<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>

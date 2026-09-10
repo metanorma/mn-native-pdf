@@ -1996,8 +1996,9 @@
 						</fo:block>
 					</fo:list-item-label>
 						<fo:list-item-body start-indent="body-start()" role="SKIP">
-							<fo:block text-align-last="justify" role="Reference">															
-								<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+							<fo:block text-align-last="justify" role="Reference">
+								<xsl:variable name="alt_text"><xsl:apply-templates select="mnx:title" mode="bookmarks"/></xsl:variable>
+								<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}">
 									<xsl:apply-templates select="mnx:title"/>
 									<fo:inline keep-together.within-line="always" role="SKIP">
 										<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>

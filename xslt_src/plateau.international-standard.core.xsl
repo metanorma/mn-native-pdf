@@ -624,7 +624,8 @@
 		<xsl:param name="printSection">false</xsl:param>
 		<fo:block xsl:use-attribute-sets="toc-item-style">
 			<fo:wrapper role="Reference">
-				<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+				<xsl:variable name="alt_text"><xsl:apply-templates select="mnx:title" mode="bookmarks"/></xsl:variable>
+				<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}">
 					<xsl:if test="$printSection = 'true' and @section != ''">
 						<fo:inline role="Lbl">
 							<xsl:value-of select="@section"/>

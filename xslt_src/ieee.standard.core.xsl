@@ -1490,7 +1490,8 @@
 				</fo:inline>
 					
 				<fo:wrapper role="Reference">
-					<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+					<xsl:variable name="alt_text"><xsl:apply-templates select="mnx:title" mode="bookmarks"/></xsl:variable>
+					<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}">
 					
 						<xsl:apply-templates select="mnx:title"/>
 					
@@ -1540,7 +1541,8 @@
 								</xsl:if>
 							</xsl:if>
 							
-							<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+							<xsl:variable name="alt_text"><xsl:apply-templates select="mnx:title" mode="bookmarks"/></xsl:variable>
+							<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}">
 								
 								<xsl:apply-templates select="mnx:title"/>
 							
@@ -1597,7 +1599,8 @@
 				</fo:inline>
 				
 				<fo:wrapper role="Reference">
-					<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+					<xsl:variable name="alt_text"><xsl:apply-templates select="mnx:title" mode="bookmarks"/></xsl:variable>
+					<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}">
 						
 						<xsl:variable name="section_title">
 							<xsl:apply-templates select="mnx:title"/>
