@@ -1638,6 +1638,10 @@
 	<xsl:template match="mn:tab" mode="contents_item">
 		<xsl:text> </xsl:text>
 	</xsl:template>
+	
+	<xsl:template match="mn:br | mn:tab" mode="bookmarks">
+		<xsl:text> </xsl:text>
+	</xsl:template>
 
 	<xsl:template match="mn:strong" mode="contents_item">
 		<xsl:param name="element"/>
@@ -1648,29 +1652,13 @@
 		</xsl:copy>		
 	</xsl:template>
 	
-	<xsl:template match="mn:em" mode="contents_item">
+	<xsl:template match="mn:em | mn:sub | mn:sup | mn:tt | mn:underline | mn:hi | mn:strike | mn:span[@class] | mn:smallcap" mode="contents_item">
 		<xsl:copy>
+			<xsl:copy-of select="@*"/>
 			<xsl:apply-templates mode="contents_item"/>
 		</xsl:copy>		
 	</xsl:template>
 	
-	<xsl:template match="mn:sub" mode="contents_item">
-		<xsl:copy>
-			<xsl:apply-templates mode="contents_item"/>
-		</xsl:copy>		
-	</xsl:template>
-	
-	<xsl:template match="mn:sup" mode="contents_item">
-		<xsl:copy>
-			<xsl:apply-templates mode="contents_item"/>
-		</xsl:copy>		
-	</xsl:template>
-	
-	<xsl:template match="mn:tt" mode="contents_item">
-		<xsl:copy>
-			<xsl:apply-templates mode="contents_item"/>
-		</xsl:copy>		
-	</xsl:template>
 	
 	<xsl:template match="*[local-name() = 'keep-together_within-line']" mode="contents_item">
 		<xsl:copy>
