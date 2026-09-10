@@ -2105,7 +2105,7 @@
 				<fo:table-body role="SKIP">
 				
 					<fo:table-row xsl:use-attribute-sets="toc-item-style">
-						
+						<xsl:variable name="alt_text"><xsl:apply-templates select="mnx:title" mode="bookmarks"/></xsl:variable>
 						<fo:table-cell role="SKIP">
 							<!-- <xsl:if test="normalize-space($space-before) != ''">
 								<xsl:attribute name="padding-top"><xsl:value-of select="normalize-space($space-before)"/></xsl:attribute>
@@ -2145,7 +2145,7 @@
 													<xsl:attribute name="margin-left">11mm</xsl:attribute>
 													<xsl:attribute name="text-indent">-11mm</xsl:attribute>
 												</xsl:if>
-												<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+												<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}">
 													<xsl:if test="@level &gt;= 3">
 														<fo:inline padding-right="2mm" role="SKIP"><xsl:value-of select="@section"/></fo:inline>
 													</xsl:if>
@@ -2169,7 +2169,7 @@
 								<xsl:attribute name="padding-bottom"><xsl:value-of select="normalize-space($space-after)"/></xsl:attribute>
 							</xsl:if> -->
 							<fo:block role="Reference">
-								<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+								<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}">
 									<fo:inline xsl:use-attribute-sets="toc-pagenumber-style" role="SKIP"><fo:page-number-citation ref-id="{@id}" role="SKIP"/></fo:inline>
 								</fo:basic-link>
 							</fo:block>

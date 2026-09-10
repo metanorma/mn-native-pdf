@@ -1034,25 +1034,16 @@
 	
 	<xsl:template name="addTagElementT">
 		<xsl:variable name="title_">
-			<xsl:apply-templates select="mn:fmt-title"/>
+			<xsl:apply-templates select="mn:fmt-title" mode="bookmarks"/>
 			<xsl:if test="not(mn:fmt-title) and self::mn:term">
 				<name>
-					<xsl:apply-templates select="mn:fmt-name"/>
+					<xsl:apply-templates select="mn:fmt-name" mode="bookmarks"/>
 					<xsl:text> </xsl:text>
 					<xsl:apply-templates select="mn:fmt-preferred/node()[1]"/>
 				</name>
 			</xsl:if>
 		</xsl:variable>
-		<xsl:variable name="title__">
-			<!--  <xsl:for-each select="xalan:nodeset($title_)/*/node()">
-				<xsl:choose>
-					<xsl:when test="self::text()"><xsl:text> </xsl:text><xsl:value-of select="."/><xsl:text> </xsl:text></xsl:when>
-					<xsl:otherwise><xsl:text> </xsl:text><xsl:copy-of select="."/><xsl:text> </xsl:text></xsl:otherwise>
-				</xsl:choose
-			</xsl:for-each> -->
-			<xsl:apply-templates select="xalan:nodeset($title_)" mode="addTagElementT"/>
-		</xsl:variable>
-		<xsl:variable name="title" select="normalize-space(translate($title__, concat($em_space,'&#xa0;&#8232;'), '   '))"/>
+		<xsl:variable name="title" select="normalize-space(translate($title_, concat($em_space,'&#xa0;&#8232;'), '   '))"/>
 		<xsl:if test="$title != ''">
 			<xsl:attribute name="fox:title">
 				<xsl:if test="ancestor::mn:sections">
@@ -1060,13 +1051,6 @@
 				</xsl:if>
 				<xsl:value-of select="$title"/></xsl:attribute>
 		</xsl:if>
-	</xsl:template>
-	
-	<xsl:template match="node()" mode="addTagElementT">
-		<xsl:apply-templates select="node()" mode="addTagElementT"/>
-	</xsl:template>
-	<xsl:template match="text()" mode="addTagElementT">
-		<xsl:value-of select="concat(' ', ., ' ')"/>
 	</xsl:template>
 	
 	<xsl:template name="replaceChar">

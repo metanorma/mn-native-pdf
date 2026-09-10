@@ -686,7 +686,8 @@
 			
 				<fo:inline role="Lbl"><xsl:value-of select="@section"/></fo:inline>
 				<fo:wrapper role="Reference">
-					<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+					<xsl:variable name="alt_text"><xsl:apply-templates select="mnx:title" mode="bookmarks"/></xsl:variable>
+					<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}"> <!-- mnx:title -->
 						<xsl:if test="@section != ''">
 							<xsl:text> </xsl:text>
 						</xsl:if>

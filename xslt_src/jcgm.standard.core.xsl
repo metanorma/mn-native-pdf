@@ -1079,7 +1079,8 @@
 					</fo:list-item-label>
 					<fo:list-item-body start-indent="body-start()" role="SKIP">
 						<fo:block text-align-last="justify" margin-left="12mm" text-indent="-12mm" role="Reference">
-							<fo:basic-link internal-destination="{@id}" fox:alt-text="{mnx:title}">
+							<xsl:variable name="alt_text"><xsl:apply-templates select="mnx:title" mode="bookmarks"/></xsl:variable>
+							<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}">
 								<fo:inline role="SKIP">
 									<xsl:if test="@level = 1">
 										<xsl:attribute name="font-weight">bold</xsl:attribute>

@@ -1322,6 +1322,7 @@
 	<xsl:template match="mn:figure[not(mn:image) and *[local-name() = 'svg']]/mn:fmt-name/mn:bookmark" priority="2"/>
 	<xsl:template match="mn:figure[not(mn:image)]/*[local-name() = 'svg']" priority="2" name="image_svg">
 		<xsl:param name="name"/>
+		<xsl:param name="inline_image">false</xsl:param>
 		
 		<xsl:variable name="svg_content">
 			<xsl:apply-templates select="." mode="svg_update"/>
@@ -1433,7 +1434,7 @@
 						<xsl:when test="ancestor::*[local-name() = 'tr'] and $isGenerateTableIF = 'true'">
 							<fo:inline xsl:use-attribute-sets="image-style" text-align="left"/>
 						</xsl:when>
-						<xsl:when test="not(ancestor::mn:figure)">
+						<xsl:when test="not(ancestor::mn:figure) or ancestor::mn:fmt-name">
 							<fo:inline xsl:use-attribute-sets="image-style" text-align="left"/>
 						</xsl:when>
 						<xsl:otherwise>
@@ -1462,7 +1463,7 @@
 									<xsl:attribute name="height">3.5mm</xsl:attribute>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:if test="$isGenerateTableIF = 'false'">
+									<xsl:if test="$isGenerateTableIF = 'false' and normalize-space($inline_image) = 'false'">
 										<xsl:attribute name="width">100%</xsl:attribute>
 									</xsl:if>
 									<xsl:attribute name="content-height">100%</xsl:attribute>
@@ -1659,9 +1660,12 @@
 	</xsl:template>
 	
 	<!-- For the structures like: <dt><image src="" mimetype="image/svg+xml" height="" width=""><svg xmlns="http://www.w3.org/2000/svg" ... -->
-	<xsl:template match="*[not(self::mn:figure)]/mn:image[*[local-name() = 'svg']]" priority="3">
+	<!-- Note: count(ancestor::*) = 0 for image in mnx:figures/mnx:figure/fmt-name, when fmt-name is context/root node in template insertListOf_Item -->
+	<xsl:template match="*[not(self::mn:figure)]/mn:image[*[local-name() = 'svg']] | mn:image[count(ancestor::*) = 0][*[local-name() = 'svg']]" priority="3">
 		<xsl:for-each select="*[local-name() = 'svg']">
-			<xsl:call-template name="image_svg" />
+			<xsl:call-template name="image_svg">
+				<xsl:with-param name="inline_image" select="not(ancestor::mn:bibdata)"/>
+			</xsl:call-template>
 		</xsl:for-each>
 	</xsl:template>
 	
