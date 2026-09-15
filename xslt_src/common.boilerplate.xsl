@@ -172,6 +172,7 @@
 	</xsl:template>
 
 	<xsl:attribute-set name="license-statement-style">
+		<xsl:attribute name="role">SKIP</xsl:attribute>
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
 			<xsl:attribute name="font-size">10.5pt</xsl:attribute>

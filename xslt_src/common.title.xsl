@@ -621,9 +621,9 @@
 					<xsl:copy-of select="@id"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:for-each select="parent::mn:clause">
+					<!-- <xsl:for-each select="parent::mn:clause">
 						<xsl:call-template name="setId"/>
-					</xsl:for-each>
+					</xsl:for-each> -->
 				</xsl:otherwise>
 			</xsl:choose>
 			
