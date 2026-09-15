@@ -257,6 +257,9 @@
 	
 	<xsl:template name="refine_bibitem-normative-list-style">
 		<xsl:if test="$namespace = 'iho'">
+			<xsl:if test="ancestor::mn:references[@normative = 'true']">
+				<xsl:attribute name="role">SKIP</xsl:attribute>
+			</xsl:if>
 			<xsl:variable name="docidentifier">
 				<xsl:apply-templates select="mn:biblio-tag">
 					<xsl:with-param name="biblio_tag_part">first</xsl:with-param>
@@ -490,6 +493,9 @@
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="line-height">145%</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="role">Sect</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="line-height">120%</xsl:attribute>
 		</xsl:if>
@@ -498,7 +504,7 @@
 	<xsl:template name="refine_references-non-normative-style">
 	</xsl:template>
 	
-		<!-- ======================= -->
+	<!-- ======================= -->
 	<!-- Bibliography rendering -->
 	<!-- ======================= -->
 	
@@ -529,8 +535,21 @@
 		</xsl:if>
 		
 		<xsl:call-template name="setNamedDestination"/>
-		<fo:block id="{@id}">
-			<xsl:apply-templates />
+		<fo:block id="{@id}" role="Sect">
+		
+			<xsl:choose>
+				<xsl:when test="$namespace = 'iho'">
+					<xsl:copy-of select="@role"/>
+					<xsl:call-template name="addTagElementT"/>
+					<xsl:apply-templates select="mn:fmt-title"/>
+					<fo:block role="L">
+						<xsl:apply-templates select="node()[not(self::mn:fmt-title)]"/>
+					</fo:block>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates />
+				</xsl:otherwise>
+			</xsl:choose>
 			
 			<xsl:if test="$namespace = 'jis'">
 				<!-- render footnotes after references -->
@@ -573,6 +592,9 @@
 		
 		<fo:block xsl:use-attribute-sets="references-non-normative-style">
 			<xsl:call-template name="refine_references-non-normative-style"/>
+			<xsl:copy-of select="@role"/>
+			<xsl:call-template name="addTagElementT"/>
+			
 			<xsl:apply-templates select="node()[not(self::mn:fmt-title and @columns = 1)]" />
 			
 			<xsl:if test="$namespace = 'jis'">
@@ -624,8 +646,8 @@
 					
 					<fo:list-item>
 						<fo:list-item-label end-indent="label-end()">
-							<fo:block>
-								<fo:inline>
+							<fo:block role="SKIP">
+								<fo:inline role="SKIP">
 									<xsl:copy-of select="$docidentifier"/>
 								</fo:inline>
 							</fo:block>

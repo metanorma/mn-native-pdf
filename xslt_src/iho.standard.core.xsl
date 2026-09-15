@@ -286,7 +286,9 @@
 									<xsl:with-param name="orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:with-param>
 								</xsl:call-template>
 								<fo:flow flow-name="xsl-region-body">
-									
+									<xsl:if test="@type = 'toc'">
+										<xsl:attribute name="role">SKIP</xsl:attribute>
+									</xsl:if>
 									
 									<!-- <xsl:if test="position() = 1">
 										<fo:block-container margin-left="-1.5mm" margin-right="-1mm">
@@ -332,7 +334,7 @@
 									<xsl:with-param name="font-weight">normal</xsl:with-param>
 									<xsl:with-param name="orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:with-param>
 								</xsl:call-template>
-								<fo:flow flow-name="xsl-region-body">
+								<fo:flow flow-name="xsl-region-body" role="SKIP">
 									
 									<!-- Foreword, Introduction -->
 									<xsl:apply-templates select="*[self::mn:foreword or self::mn:introduction]"/>
@@ -365,8 +367,8 @@
 										<xsl:with-param name="month_year" select="$month_year"/>
 										<xsl:with-param name="orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:with-param>
 									</xsl:call-template>
-									<fo:flow flow-name="xsl-region-body">
-										<fo:block-container>
+									<fo:flow flow-name="xsl-region-body" role="SKIP">
+										<fo:block-container role="SKIP">
 											
 											<!-- <fo:block font-size="16pt" font-weight="bold" margin-bottom="18pt" role="H1"><xsl:value-of select="$title-en"/></fo:block> -->
 											
@@ -642,12 +644,12 @@
 						<xsl:with-param name="month_year" select="$month_year"/>
 						<xsl:with-param name="font-weight">normal</xsl:with-param>
 					</xsl:call-template>
-					<fo:flow flow-name="xsl-region-body">
-						<fo:block-container margin-left="-1.5mm" margin-right="-1mm">
-							<fo:block-container xsl:use-attribute-sets="reset-margins-style" border="0.5pt solid black" >
-								<fo:block-container margin-top="6.5mm" margin-left="7.5mm" margin-right="8.5mm" margin-bottom="7.5mm">
-									<fo:block-container margin="0">
-										<fo:block text-align="justify">
+					<fo:flow flow-name="xsl-region-body" role="SKIP">
+						<fo:block-container margin-left="-1.5mm" margin-right="-1mm" role="SKIP">
+							<fo:block-container xsl:use-attribute-sets="reset-margins-style" border="0.5pt solid black" role="SKIP">
+								<fo:block-container margin-top="6.5mm" margin-left="7.5mm" margin-right="8.5mm" margin-bottom="7.5mm" role="SKIP">
+									<fo:block-container margin="0" role="SKIP">
+										<fo:block text-align="justify" role="SKIP">
 											<xsl:apply-templates select="/mn:metanorma/mn:boilerplate/*[not(self::mn:feedback-statement)]"/>
 										</fo:block>
 									</fo:block-container>
@@ -743,7 +745,10 @@
 	<xsl:template match="mn:preface//mn:clause[@type = 'toc']" name="toc" priority="4">
 		<xsl:param name="num"/>
 		<!-- Table of Contents -->
-		<fo:block role="SKIP">
+		<fo:block xsl:use-attribute-sets="toc-container-style">
+			<xsl:call-template name="refine_toc-container-style"/>
+			<xsl:call-template name="addTagElementT"/>
+			
 			<xsl:copy-of select="@id"/>
 		
 			<xsl:apply-templates />
@@ -1011,19 +1016,25 @@
 		<xsl:if test="parent::mn:preface or (parent::mn:page_sequence and local-name(../..) = 'preface')">
 			<fo:block break-after="page"/>
 		</xsl:if>
-		<xsl:choose>
+		<!-- <xsl:choose>
 			<xsl:when test="mn:fmt-title">
 				<xsl:apply-templates />
 			</xsl:when>
-			<xsl:otherwise>
-				<xsl:call-template name="setNamedDestination"/>
-				<fo:block>
-					<xsl:call-template name="setId"/>
-					<xsl:call-template name="addReviewHelper"/>
-					<xsl:apply-templates />
-				</fo:block>
-			</xsl:otherwise>
-		</xsl:choose>
+			<xsl:otherwise> -->
+		<xsl:call-template name="setNamedDestination"/>
+		<fo:block>
+			<xsl:call-template name="setId"/>
+			
+			<xsl:call-template name="sections_element_style"/>
+			
+			<xsl:copy-of select="@role"/>
+			
+			<xsl:call-template name="addReviewHelper"/>
+			<xsl:call-template name="addTagElementT"/>
+			<xsl:apply-templates />
+		</fo:block>
+			<!-- </xsl:otherwise>
+		</xsl:choose> -->
 	</xsl:template>
 	
 	<xsl:template match="mn:fmt-title" name="title">
@@ -1042,6 +1053,7 @@
 		</xsl:variable>
 		
 		<xsl:element name="{$element-name}">
+			<!-- Note: space-before and margin-top added to parent fo:block -->
 			<xsl:copy-of select="xalan:nodeset($title_styles)/styles/@*"/>
 			
 			<xsl:call-template name="setIDforNamedDestinationInline"/>

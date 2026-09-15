@@ -790,6 +790,17 @@
 				</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iho'">
+			<xsl:attribute name="role">Sect</xsl:attribute>
+			<xsl:if test="ancestor::mn:sections or ancestor::mn:annex">
+				<xsl:variable name="title_styles">
+					<xsl:for-each select="mn:fmt-title">
+						<styles xsl:use-attribute-sets="title-style"><xsl:call-template name="refine_title-style"/></styles>
+					</xsl:for-each>
+				</xsl:variable>
+				<xsl:copy-of select="xalan:nodeset($title_styles)//styles/@*[local-name() = 'space-before' or local-name() = 'margin-top']"/>
+			</xsl:if>
+		</xsl:if>
 		<xsl:if test="$namespace = 'iso'">
 			<xsl:attribute name="role">Sect</xsl:attribute>
 		</xsl:if>
