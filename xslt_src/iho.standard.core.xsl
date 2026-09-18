@@ -685,12 +685,14 @@
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
 		<fo:block xsl:use-attribute-sets="toc-listof-title-style">
+			<xsl:call-template name="refine_toc-listof-title-style"/>
 			<xsl:value-of select="$title"/>
 		</fo:block>
 	</xsl:template>
 	
 	<xsl:template name="insertListOf_Item">
 		<fo:block xsl:use-attribute-sets="toc-listof-item-style">
+			<xsl:call-template name="refine_toc-listof-item-style"/>
 			<fo:basic-link internal-destination="{@id}">
 				<xsl:call-template name="setAltText">
 					<xsl:with-param name="value" select="@alt-text"/>
@@ -842,6 +844,7 @@
 					</fo:list-item-label>
 					<fo:list-item-body start-indent="body-start()" role="SKIP">
 						<fo:block xsl:use-attribute-sets="toc-item-style" role="Reference">
+							<xsl:call-template name="refine_toc-item-style"/>
 							<xsl:variable name="alt_text"><xsl:apply-templates select="mnx:title" mode="bookmarks"/></xsl:variable>
 							<fo:basic-link internal-destination="{@id}" fox:alt-text="{$alt_text}">
 								<xsl:apply-templates select="mnx:title"/>
