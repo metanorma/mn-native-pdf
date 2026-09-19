@@ -3821,11 +3821,19 @@
 								<xsl:with-param name="process">true</xsl:with-param>
 							</xsl:apply-templates>
 							
+							<!-- 1st element in fn ('p' usually) -->
 							<fo:inline xsl:use-attribute-sets="table-fn-body-style">
 								<xsl:call-template name="refine_table-fn-body-style"/>
 								<!-- <xsl:copy-of select="./node()"/> -->
-								<xsl:apply-templates />
+								<xsl:apply-templates select="node()[normalize-space() != '' or self::*][1]"/>
 							</fo:inline>
+							<!-- 2th, 3rd ... -->
+							<xsl:if test="node()[position() &gt; 1][normalize-space() != '' or self::*]">
+								<fo:block xsl:use-attribute-sets="table-fn-body-style">
+									<xsl:call-template name="refine_table-fn-body-style"/>
+									<xsl:apply-templates select="node()[position() &gt; 1]"/>
+								</fo:block>
+							</xsl:if>
 							
 						</fo:block>
 					</xsl:otherwise>
