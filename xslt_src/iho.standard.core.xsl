@@ -302,10 +302,10 @@
 									<xsl:with-param name="font-weight">normal</xsl:with-param>
 									<xsl:with-param name="orientation"><xsl:call-template name="getPageSequenceOrientation"/></xsl:with-param>
 								</xsl:call-template>
-								<fo:flow flow-name="xsl-region-body">
-									<xsl:if test="@type = 'toc'">
+								<fo:flow flow-name="xsl-region-body" role="SKIP">
+									<!-- <xsl:if test="@type = 'toc'">
 										<xsl:attribute name="role">SKIP</xsl:attribute>
-									</xsl:if>
+									</xsl:if> -->
 									
 									<!-- <xsl:if test="position() = 1">
 										<fo:block-container margin-left="-1.5mm" margin-right="-1mm">
