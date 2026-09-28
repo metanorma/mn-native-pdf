@@ -107,6 +107,7 @@
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 			<xsl:attribute name="margin-bottom">82pt</xsl:attribute>
+			<xsl:attribute name="role">H1</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'bsi'">
 			<xsl:attribute name="font-size">18pt</xsl:attribute>
@@ -706,6 +707,7 @@
 		<xsl:if test="$namespace = 'bipm'">
 			<xsl:attribute name="font-size">10.5pt</xsl:attribute>
 			<xsl:attribute name="margin-left">8mm</xsl:attribute>
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'csa'">
 			<xsl:attribute name="text-align-last">justify</xsl:attribute>
@@ -745,6 +747,7 @@
 			<xsl:attribute name="margin-top">6pt</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
+			<xsl:attribute name="text-align-last">justify</xsl:attribute>
 			<xsl:attribute name="margin-left">17mm</xsl:attribute>
 			<xsl:attribute name="text-indent">-12mm</xsl:attribute>
 		</xsl:if>

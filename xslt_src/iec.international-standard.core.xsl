@@ -1339,28 +1339,11 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 					</xsl:call-template>
 				</fo:block> -->
 				
-		<xsl:apply-templates select="xalan:nodeset($contents)/mnx:contents/mnx:item[@display = 'true']"/>
+		<xsl:apply-templates select="xalan:nodeset($contents)//mnx:contents/mnx:item[@display = 'true']"/>
 		
-		<xsl:for-each select="$contents//mnx:figures/mnx:figure">
-			<xsl:if test="position() = 1">
-				<fo:block margin-bottom="5pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
-			</xsl:if>
-			<xsl:call-template name="insertListOf_Item"/>
-		</xsl:for-each>
-		
-		<xsl:for-each select="$contents//mnx:tables/mnx:table">
-			<xsl:if test="position() = 1">
-				<fo:block margin-bottom="5pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
-			</xsl:if>
-			<xsl:call-template name="insertListOf_Item"/>
-		</xsl:for-each>
-		
-		<xsl:for-each select="$contents//mnx:examples/mnx:example">
-			<xsl:if test="position() = 1">
-				<fo:block margin-bottom="5pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
-			</xsl:if>
-			<xsl:call-template name="insertListOf_Item"/>
-		</xsl:for-each>
+		<xsl:call-template name="insertListsOf">
+			<xsl:with-param name="contents" select="$contents"/>
+		</xsl:call-template>
 				
 			<!-- </fo:block>
 		</fo:block-container> -->
@@ -1456,6 +1439,54 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 				<xsl:with-param name="text" select="java:toUpperCase(java:java.lang.String.new(.))"/>
 			</xsl:call-template>
 		</fo:block>
+	</xsl:template>
+	
+	<xsl:template name="insertListsOf">
+		<xsl:param name="contents"/>
+		<!-- List of Tables -->
+		<xsl:call-template name="insertListOfTables">
+			<xsl:with-param name="contents" select="$contents"/>
+		</xsl:call-template>
+		
+		<!-- List of Figures -->
+		<xsl:call-template name="insertListOfFigures">
+			<xsl:with-param name="contents" select="$contents"/>
+		</xsl:call-template>
+		
+		<!-- List of Examples -->
+		<xsl:call-template name="insertListOfExamples">
+			<xsl:with-param name="contents" select="$contents"/>
+		</xsl:call-template>
+	</xsl:template>
+
+	<xsl:template name="insertListOfTables">
+		<xsl:param name="contents"/>
+		<xsl:for-each select="$contents//mnx:figures/mnx:figure">
+			<xsl:if test="position() = 1">
+				<fo:block margin-bottom="5pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
+			</xsl:if>
+			<xsl:call-template name="insertListOf_Item"/>
+		</xsl:for-each>
+	</xsl:template>
+		
+	<xsl:template name="insertListOfFigures">
+		<xsl:param name="contents"/>
+		<xsl:for-each select="$contents//mnx:tables/mnx:table">
+			<xsl:if test="position() = 1">
+				<fo:block margin-bottom="5pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
+			</xsl:if>
+			<xsl:call-template name="insertListOf_Item"/>
+		</xsl:for-each>
+	</xsl:template>
+		
+	<xsl:template name="insertListOfExamples">
+		<xsl:param name="contents"/>
+		<xsl:for-each select="$contents//mnx:examples/mnx:example">
+			<xsl:if test="position() = 1">
+				<fo:block margin-bottom="5pt" role="SKIP"><fo:wrapper role="artifact">&#xA0;</fo:wrapper></fo:block>
+			</xsl:if>
+			<xsl:call-template name="insertListOf_Item"/>
+		</xsl:for-each>
 	</xsl:template>
 	
 	<xsl:template match="mn:preface/mn:pagebreak" priority="3">
