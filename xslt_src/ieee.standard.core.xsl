@@ -1410,38 +1410,6 @@
 								</xsl:when> <!-- $stage = 'published' or 'approved' -->
 							</xsl:choose>
 					
-							<!-- List of Tables -->
-							<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:tables/mnx:table">
-								<xsl:if test="position() = 1">
-									<!-- <fo:block break-after="page"/> -->
-									<xsl:call-template name="insertListOf_Title">
-										<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-tables"/>
-									</xsl:call-template>
-								</xsl:if>
-								<xsl:call-template name="insertListOf_Item"/>
-							</xsl:for-each>
-							
-							<!-- List of Figures -->
-							<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:figures/mnx:figure">
-								<xsl:if test="position() = 1">
-									<!-- <fo:block break-after="page"/> -->
-									<xsl:call-template name="insertListOf_Title">
-										<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-figures"/>
-									</xsl:call-template>
-								</xsl:if>
-								<xsl:call-template name="insertListOf_Item"/>
-							</xsl:for-each>
-							
-							<!-- List of Examples -->
-							<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:examples/mnx:example">
-								<xsl:if test="position() = 1">
-									<!-- <fo:block break-after="page"/> -->
-									<xsl:call-template name="insertListOf_Title">
-										<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-examples"/>
-									</xsl:call-template>
-								</xsl:if>
-								<xsl:call-template name="insertListOf_Item"/>
-							</xsl:for-each>
 						</xsl:when> <!-- 'standard' or 'draft' -->
 						
 						<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
@@ -1450,6 +1418,14 @@
 					</xsl:choose>
 				</xsl:if>
 			</fo:block>
+			
+			<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:item[@display = 'true']">
+				<xsl:if test="$current_template = 'standard' or $current_template = 'draft'">
+					<xsl:call-template name="insertListsOf">
+						<xsl:with-param name="num" select="$num"/>
+					</xsl:call-template>
+				</xsl:if>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 									
@@ -1635,6 +1611,69 @@
 			</xsl:if>
 		</fo:block>
 	</xsl:template> <!-- END: toc_whitepaper -->
+	
+	<xsl:template name="insertListsOf">
+		<xsl:param name="num"/>
+		<!-- List of Tables -->
+		<xsl:call-template name="insertListOfTables">
+			<xsl:with-param name="num" select="$num"/>
+		</xsl:call-template>
+		
+		<!-- List of Figures -->
+		<xsl:call-template name="insertListOfFigures">
+			<xsl:with-param name="num" select="$num"/>
+		</xsl:call-template>
+		
+		<!-- List of Examples -->
+		<xsl:call-template name="insertListOfExamples">
+			<xsl:with-param name="num" select="$num"/>
+		</xsl:call-template>
+	</xsl:template>
+
+	<xsl:template name="insertListOfTables">
+		<xsl:param name="num"/>
+		<!-- List of Tables -->
+		<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:tables/mnx:table">
+			<xsl:call-template name="insertListOf_Title">
+				<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-tables"/>
+			</xsl:call-template>
+			<fo:block role="TOC">
+				<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:tables/mnx:table">
+					<xsl:call-template name="insertListOf_Item"/>
+				</xsl:for-each>
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+		
+	<xsl:template name="insertListOfFigures">
+		<xsl:param name="num"/>
+		<!-- List of Figures -->
+		<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:figures/mnx:figure">
+			<xsl:call-template name="insertListOf_Title">
+				<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-figures"/>
+			</xsl:call-template>
+			<fo:block role="TOC">
+				<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:figures/mnx:figure">
+					<xsl:call-template name="insertListOf_Item"/>
+				</xsl:for-each>
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+		
+	<xsl:template name="insertListOfExamples">
+		<xsl:param name="num"/>
+		<!-- List of Examples -->
+		<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:examples/mnx:example">
+			<xsl:call-template name="insertListOf_Title">
+				<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-examples"/>
+			</xsl:call-template>
+			<fo:block role="TOC">
+				<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:examples/mnx:example">
+					<xsl:call-template name="insertListOf_Item"/>
+				</xsl:for-each>
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
 	
 	
 	<xsl:template match="mn:boilerplate/mn:copyright-statement//mn:p" priority="2">
@@ -2275,7 +2314,8 @@
 							<xsl:call-template name="setAltText">
 								<xsl:with-param name="value" select="@alt-text"/>
 							</xsl:call-template>
-							<xsl:apply-templates select="." mode="contents"/>
+							<!-- <xsl:apply-templates select="." mode="contents"/> -->
+							<xsl:apply-templates select="mn:fmt-name" mode="contents_item"/>
 							<fo:inline keep-together.within-line="always" role="SKIP">
 								<fo:leader font-weight="normal" leader-pattern="dots"/>
 								<fo:inline role="SKIP"><fo:page-number-citation ref-id="{@id}" role="SKIP"/></fo:inline>

@@ -1001,21 +1001,23 @@
 	
 	<xsl:template name="insertListOf_Item">
 		<fo:block xsl:use-attribute-sets="toc-listof-item-style">
-			<fo:basic-link internal-destination="{@id}">
-				<xsl:call-template name="setAltText">
-					<xsl:with-param name="value" select="@alt-text"/>
-				</xsl:call-template>
-				<!-- <xsl:copy-of select="node()"/> -->
-				<xsl:variable name="item">
-					<!-- mnx:table/mn:fmt-name, mnx:figure/mn:fmt-name, mnx:example/mn:fmt-name -->
-					<xsl:apply-templates select="mn:fmt-name" mode="contents_item"/>
-				</xsl:variable>
-				<xsl:apply-templates select="xalan:nodeset($item)/node()"/>
-				<fo:inline keep-together.within-line="always">
-					<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
-					<fo:page-number-citation ref-id="{@id}"/>
-				</fo:inline>
-			</fo:basic-link>
+			<fo:wrapper role="Reference">
+				<fo:basic-link internal-destination="{@id}">
+					<xsl:call-template name="setAltText">
+						<xsl:with-param name="value" select="@alt-text"/>
+					</xsl:call-template>
+					<!-- <xsl:copy-of select="node()"/> -->
+					<xsl:variable name="item">
+						<!-- mnx:table/mn:fmt-name, mnx:figure/mn:fmt-name, mnx:example/mn:fmt-name -->
+						<xsl:apply-templates select="mn:fmt-name" mode="contents_item"/>
+					</xsl:variable>
+					<xsl:apply-templates select="xalan:nodeset($item)/node()"/>
+					<fo:inline keep-together.within-line="always" role="SKIP">
+						<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
+						<fo:page-number-citation ref-id="{@id}" role="SKIP"/>
+					</fo:inline>
+				</fo:basic-link>
+			</fo:wrapper>
 		</fo:block>
 	</xsl:template>
 	
@@ -1041,67 +1043,10 @@
 					</fo:block>
 				</fo:block-container>	
 						
-				<!-- List of Tables -->
-				<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:tables/mnx:table">
-					<xsl:call-template name="insertListOf_Title">
-						<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-tables"/>
-					</xsl:call-template>
-					<fo:block-container line-height="130%" role="TOC">
-						<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:tables/mnx:table">
-							<xsl:call-template name="insertListOf_Item"/>
-						</xsl:for-each>
-					</fo:block-container>
-				</xsl:if>
+				<xsl:call-template name="insertListsOf">
+					<xsl:with-param name="num" select="$num"/>
+				</xsl:call-template>
 				
-				<!-- List of Figures -->
-				<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:figures/mnx:figure">
-					<xsl:call-template name="insertListOf_Title">
-						<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-figures"/>
-					</xsl:call-template>
-					<fo:block-container line-height="130%" role="TOC">
-						<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:figures/mnx:figure">
-							<xsl:call-template name="insertListOf_Item"/>
-						</xsl:for-each>
-					</fo:block-container>
-				</xsl:if>
-				
-				<!-- List of Examples -->
-				<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:examples/mnx:example">
-					<xsl:call-template name="insertListOf_Title">
-						<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-examples"/>
-					</xsl:call-template>
-					<fo:block-container line-height="130%" role="TOC">
-						<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:examples/mnx:example">
-							<xsl:call-template name="insertListOf_Item"/>
-						</xsl:for-each>
-					</fo:block-container>
-				</xsl:if>
-				
-				<xsl:call-template name="debug_toc_recommendations"/>
-				
-				<!-- List of Recommendations -->
-				<xsl:if test="$toc_recommendations/mnx:doc[@num = $num]/*[normalize-space(@id) != '']">							
-					<xsl:call-template name="insertListOf_Title">
-						<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-recommendations"/>
-					</xsl:call-template>
-					<fo:block-container line-height="130%" role="TOC">
-						<xsl:for-each select="$toc_recommendations/mnx:doc[@num = $num]/*[normalize-space(@id) != '']">
-							<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
-								<fo:basic-link internal-destination="{@id}">
-									<xsl:call-template name="setAltText">
-										<xsl:with-param name="value" select="@alt-text"/>
-									</xsl:call-template>
-									<xsl:copy-of select="title/node()"/>
-									<xsl:text> </xsl:text>
-									<fo:inline keep-together.within-line="always">
-										<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
-										<fo:page-number-citation ref-id="{@id}"/>
-									</fo:inline>
-								</fo:basic-link>
-							</fo:block>
-						</xsl:for-each>
-					</fo:block-container>
-				</xsl:if>
 			</xsl:if>
 		</fo:block>
 		
@@ -1203,6 +1148,104 @@
 			</xsl:if>
 			
 		</fo:block>
+	</xsl:template>
+	
+	<xsl:template name="insertListsOf">
+		<xsl:param name="num"/>
+		<!-- List of Tables -->
+		<xsl:call-template name="insertListOfTables">
+			<xsl:with-param name="num" select="$num"/>
+		</xsl:call-template>
+		
+		<!-- List of Figures -->
+		<xsl:call-template name="insertListOfFigures">
+			<xsl:with-param name="num" select="$num"/>
+		</xsl:call-template>
+		
+		<!-- List of Examples -->
+		<xsl:call-template name="insertListOfExamples">
+			<xsl:with-param name="num" select="$num"/>
+		</xsl:call-template>
+		
+		<!-- List of Recommendations -->
+		<xsl:call-template name="insertListOfRecomendations">
+			<xsl:with-param name="num" select="$num"/>
+		</xsl:call-template>
+	</xsl:template>
+
+	<xsl:template name="insertListOfTables">
+		<xsl:param name="num"/>
+		<!-- List of Tables -->
+		<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:tables/mnx:table">
+			<xsl:call-template name="insertListOf_Title">
+				<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-tables"/>
+			</xsl:call-template>
+			<fo:block-container line-height="130%" role="TOC">
+				<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:tables/mnx:table">
+					<xsl:call-template name="insertListOf_Item"/>
+				</xsl:for-each>
+			</fo:block-container>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="insertListOfFigures">
+		<xsl:param name="num"/>
+		<!-- List of Figures -->
+		<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:figures/mnx:figure">
+			<xsl:call-template name="insertListOf_Title">
+				<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-figures"/>
+			</xsl:call-template>
+			<fo:block-container line-height="130%" role="TOC">
+				<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:figures/mnx:figure">
+					<xsl:call-template name="insertListOf_Item"/>
+				</xsl:for-each>
+			</fo:block-container>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="insertListOfExamples">
+		<xsl:param name="num"/>
+		<!-- List of Examples -->
+		<xsl:if test="$contents/mnx:doc[@num = $num]//mnx:examples/mnx:example">
+			<xsl:call-template name="insertListOf_Title">
+				<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-examples"/>
+			</xsl:call-template>
+			<fo:block-container line-height="130%" role="TOC">
+				<xsl:for-each select="$contents/mnx:doc[@num = $num]//mnx:examples/mnx:example">
+					<xsl:call-template name="insertListOf_Item"/>
+				</xsl:for-each>
+			</fo:block-container>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="insertListOfRecomendations">
+		<xsl:param name="num"/>
+		<xsl:call-template name="debug_toc_recommendations"/>
+		<!-- List of Recommendations -->
+		<xsl:if test="$toc_recommendations/mnx:doc[@num = $num]/*[normalize-space(@id) != '']">							
+			<xsl:call-template name="insertListOf_Title">
+				<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-recommendations"/>
+			</xsl:call-template>
+			<fo:block-container line-height="130%" role="TOC">
+				<xsl:for-each select="$toc_recommendations/mnx:doc[@num = $num]/*[normalize-space(@id) != '']">
+					<fo:block text-align-last="justify" margin-top="6pt" role="TOCI">
+						<fo:wrapper role="Reference">
+							<fo:basic-link internal-destination="{@id}">
+								<xsl:call-template name="setAltText">
+									<xsl:with-param name="value" select="@alt-text"/>
+								</xsl:call-template>
+								<xsl:copy-of select="title/node()"/>
+								<xsl:text> </xsl:text>
+								<fo:inline keep-together.within-line="always" role="SKIP">
+									<fo:leader xsl:use-attribute-sets="toc-leader-style"><xsl:call-template name="refine_toc-leader-style"/></fo:leader>
+									<fo:page-number-citation ref-id="{@id}" role="SKIP"/>
+								</fo:inline>
+							</fo:basic-link>
+						</fo:wrapper>
+					</fo:block>
+				</xsl:for-each>
+			</fo:block-container>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- Lato font doesn't contain 'thin space' glyph -->

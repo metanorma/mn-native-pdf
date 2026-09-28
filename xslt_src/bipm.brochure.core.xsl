@@ -1976,10 +1976,10 @@
 			<fo:block-container margin-left="0mm" margin-right="0mm"> -->
 				<fo:block xsl:use-attribute-sets="toc-title-style">
 					<xsl:call-template name="refine_toc-title-style"/>
-					<fo:inline><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:title[@language = $curr_lang and @type='title-main']"/></fo:inline>
+					<fo:inline role="SKIP"><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:title[@language = $curr_lang and @type='title-main']"/></fo:inline>
 					<fo:inline keep-together.within-line="always">
 						<fo:leader leader-pattern="space"/>
-						<fo:inline>
+						<fo:inline role="SKIP">
 							<xsl:value-of select="$title-toc"/>
 						</fo:inline>
 					</fo:inline>
@@ -2026,39 +2026,14 @@
 								<xsl:with-param name="part">index</xsl:with-param>
 							</xsl:apply-templates>
 							
-							<xsl:variable name="num" select="$contents/mnx:doc[@id = $docid]/@num"/>
-							<!-- List of Tables -->
-							<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:tables/mnx:table">
-								<xsl:if test="position() = 1">
-									<xsl:call-template name="insertListOf_Title">
-										<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-tables"/>
-									</xsl:call-template>
-								</xsl:if>
-								<xsl:call-template name="insertListOf_Item"/>
-							</xsl:for-each>
 							
-							<!-- List of Figures -->
-							<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:figures/mnx:figure">
-								<xsl:if test="position() = 1">
-									<xsl:call-template name="insertListOf_Title">
-										<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-figures"/>
-									</xsl:call-template>
-								</xsl:if>
-								<xsl:call-template name="insertListOf_Item"/>
-							</xsl:for-each>
-							
-							<!-- List of Examples -->
-							<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:examples/mnx:example">
-								<xsl:if test="position() = 1">
-									<xsl:call-template name="insertListOf_Title">
-										<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-examples"/>
-									</xsl:call-template>
-								</xsl:if>
-								<xsl:call-template name="insertListOf_Item"/>
-							</xsl:for-each>
-						
 				</xsl:if>
 			</fo:block>
+			<xsl:variable name="num" select="$contents/mnx:doc[@id = $docid]/@num"/>
+			<xsl:call-template name="insertListsOf">
+				<xsl:with-param name="num" select="$num"/>
+				<xsl:with-param name="docid" select="$docid"/>
+			</xsl:call-template>
 		</fo:block-container>
 	</xsl:template>
 	
@@ -2100,8 +2075,8 @@
 					<xsl:attribute name="margin-bottom"><xsl:value-of select="normalize-space($space-after)"/></xsl:attribute>
 				</xsl:if>
 			
-				<fo:table-column column-width="127mm"/>
-				<fo:table-column column-width="12mm"/>
+				<xsl:call-template name="insertTOCwidths"/>
+				
 				<fo:table-body role="SKIP">
 				
 					<fo:table-row xsl:use-attribute-sets="toc-item-style">
@@ -2203,60 +2178,149 @@
 		</fo:block>
 	</xsl:template><!-- insertContentItem -->
 	
+	<xsl:template name="insertTOCwidths">
+		<fo:table-column column-width="127mm"/>
+		<fo:table-column column-width="12mm"/>
+	</xsl:template>
+	
+	<xsl:template name="insertListsOf">
+		<xsl:param name="num"/>
+		<xsl:param name="docid"/>
+		<!-- List of Tables -->
+		<xsl:call-template name="insertListOfTables">
+			<xsl:with-param name="num" select="$num"/>
+			<xsl:with-param name="docid" select="$docid"/>
+		</xsl:call-template>
+		
+		<!-- List of Figures -->
+		<xsl:call-template name="insertListOfFigures">
+			<xsl:with-param name="num" select="$num"/>
+			<xsl:with-param name="docid" select="$docid"/>
+		</xsl:call-template>
+		
+		<!-- List of Examples -->
+		<xsl:call-template name="insertListOfExamples">
+			<xsl:with-param name="num" select="$num"/>
+			<xsl:with-param name="docid" select="$docid"/>
+		</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template name="insertListOfTables">
+		<xsl:param name="num"/>
+		<xsl:param name="docid"/>
+		<!-- List of Tables -->
+		<xsl:if test="$contents/mnx:doc[@id = $docid]//mnx:tables/mnx:table">
+			<xsl:call-template name="insertListOf_Title">
+				<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-tables"/>
+			</xsl:call-template>
+			<fo:block role="TOC">
+				<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:tables/mnx:table">
+					<xsl:call-template name="insertListOf_Item"/>
+				</xsl:for-each>
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+		
+	<xsl:template name="insertListOfFigures">
+		<xsl:param name="num"/>
+		<xsl:param name="docid"/>
+		<!-- List of Figures -->
+		<xsl:if test="$contents/mnx:doc[@id = $docid]//mnx:figures/mnx:figure">
+			<xsl:call-template name="insertListOf_Title">
+				<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-figures"/>
+			</xsl:call-template>
+			<fo:block role="TOC">
+				<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:figures/mnx:figure">
+					<xsl:call-template name="insertListOf_Item"/>
+				</xsl:for-each>
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="insertListOfExamples">
+		<xsl:param name="num"/>
+		<xsl:param name="docid"/>
+		<!-- List of Examples -->
+		<xsl:if test="$contents/mnx:doc[@id = $docid]//mnx:examples/mnx:example">
+			<xsl:call-template name="insertListOf_Title">
+				<xsl:with-param name="title" select="$toc_title_lists/mnx:doc[@num = $num]/mnx:title-list-examples"/>
+			</xsl:call-template>
+			<fo:block role="TOC">
+				<xsl:for-each select="$contents/mnx:doc[@id = $docid]//mnx:examples/mnx:example">
+					<xsl:call-template name="insertListOf_Item"/>
+				</xsl:for-each>
+			</fo:block>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:template name="insertListOf_Title">
 		<xsl:param name="title"/>
-		<fo:table-row keep-with-next="always">
-			<fo:table-cell xsl:use-attribute-sets="toc-listof-title-style">
-				<fo:block role="TOCI">
-					<xsl:value-of select="$title"/>
-				</fo:block>				
-			</fo:table-cell>
-			<fo:table-cell>
-				<fo:block></fo:block>
-			</fo:table-cell>
-		</fo:table-row>
+		<fo:table table-layout="fixed" width="100%" role="SKIP" id="__internal_layout__toc_{translate($title, ' ', '_')}_{generate-id()}">
+			<xsl:call-template name="insertTOCwidths"/>
+			<fo:table-body role="SKIP">
+				<fo:table-row keep-with-next="always" role="SKIP">
+					<fo:table-cell xsl:use-attribute-sets="toc-listof-title-style" role="SKIP">
+						<fo:block role="H2">
+							<xsl:value-of select="$title"/>
+						</fo:block>				
+					</fo:table-cell>
+					<fo:table-cell role="SKIP">
+						<fo:block role="SKIP"></fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+			</fo:table-body>
+		</fo:table>
 	</xsl:template>
 	
 	<xsl:template name="insertListOf_Item">
-		<fo:table-row>
-			<fo:table-cell>
-				<fo:block xsl:use-attribute-sets="toc-listof-item-style">
-					<fo:list-block provisional-distance-between-starts="8mm">
-						<fo:list-item>
-							<fo:list-item-label end-indent="label-end()">
-								<fo:block></fo:block>
-							</fo:list-item-label>
-							<fo:list-item-body start-indent="body-start()">
-								<fo:block>
-									<fo:basic-link internal-destination="{@id}">
-										<xsl:call-template name="setAltText">
-											<xsl:with-param name="value" select="@alt-text"/>
-										</xsl:call-template>
-										<fo:inline>
-											<xsl:variable name="item">
-												<!-- mnx:table/mn:fmt-name, mnx:figure/mn:fmt-name, mnx:example/mn:fmt-name -->
-												<xsl:apply-templates select="mn:fmt-name" mode="contents_item"/>
-											</xsl:variable>
-											<xsl:apply-templates select="xalan:nodeset($item)/node()"/>
-										</fo:inline>
-									</fo:basic-link>
-								</fo:block>
-							</fo:list-item-body>
-						</fo:list-item>
-					</fo:list-block>
-				</fo:block>				
-			</fo:table-cell>
-			<fo:table-cell xsl:use-attribute-sets="toc-pagenumber-style" text-align="right">
-				<fo:block>
-					<fo:basic-link internal-destination="{@id}">
-						<xsl:call-template name="setAltText">
-							<xsl:with-param name="value" select="@alt-text"/>
-						</xsl:call-template>
-						<fo:inline><fo:page-number-citation ref-id="{@id}"/></fo:inline>
-					</fo:basic-link>
-				</fo:block>
-			</fo:table-cell>
-		</fo:table-row>
+		<fo:table table-layout="fixed" width="100%" role="TOCI" id="__internal_layout__toc_{generate-id()}">
+			<xsl:call-template name="insertTOCwidths"/>
+			<fo:table-body role="SKIP">
+				<fo:table-row role="SKIP">
+					<fo:table-cell role="SKIP">
+						<fo:block xsl:use-attribute-sets="toc-listof-item-style">
+							<fo:list-block provisional-distance-between-starts="8mm" role="SKIP">
+								<fo:list-item role="SKIP">
+									<fo:list-item-label end-indent="label-end()" role="SKIP">
+										<fo:block role="SKIP"></fo:block>
+									</fo:list-item-label>
+									<fo:list-item-body start-indent="body-start()" role="SKIP">
+										<fo:block role="SKIP">
+											<fo:wrapper role="Reference">
+												<fo:basic-link internal-destination="{@id}">
+													<xsl:call-template name="setAltText">
+														<xsl:with-param name="value" select="@alt-text"/>
+													</xsl:call-template>
+													<fo:inline role="SKIP">
+														<xsl:variable name="item">
+															<!-- mnx:table/mn:fmt-name, mnx:figure/mn:fmt-name, mnx:example/mn:fmt-name -->
+															<xsl:apply-templates select="mn:fmt-name" mode="contents_item"/>
+														</xsl:variable>
+														<xsl:apply-templates select="xalan:nodeset($item)/node()"/>
+													</fo:inline>
+												</fo:basic-link>
+											</fo:wrapper>
+										</fo:block>
+									</fo:list-item-body>
+								</fo:list-item>
+							</fo:list-block>
+						</fo:block>				
+					</fo:table-cell>
+					<fo:table-cell xsl:use-attribute-sets="toc-pagenumber-style" text-align="right" role="SKIP">
+						<fo:block role="SKIP">
+							<fo:wrapper role="Reference">
+								<fo:basic-link internal-destination="{@id}">
+									<xsl:call-template name="setAltText">
+										<xsl:with-param name="value" select="@alt-text"/>
+									</xsl:call-template>
+									<fo:inline role="SKIP"><fo:page-number-citation ref-id="{@id}" role="SKIP"/></fo:inline>
+								</fo:basic-link>
+							</fo:wrapper>
+						</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+			</fo:table-body>
+		</fo:table>
 	</xsl:template>
 	
 	<xsl:template match="node()">		
