@@ -1661,6 +1661,27 @@
 	<!-- Get or calculate depth of term's name -->
 	<xsl:template name="getLevelTermName">
 		<xsl:choose>
+			<xsl:when test="self::mn:term">
+				<xsl:choose>
+					<xsl:when test="normalize-space(@depth) != ''">
+						<xsl:value-of select="@depth"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:variable name="title_level_">
+							<xsl:for-each select="preceding-sibling::mn:fmt-title[1]">
+								<xsl:call-template name="getLevel"/>
+							</xsl:for-each>
+						</xsl:variable>
+						<xsl:variable name="title_level" select="normalize-space($title_level_)"/>
+						<xsl:choose>
+							<xsl:when test="$title_level != ''"><xsl:value-of select="$title_level + 1"/></xsl:when>
+							<xsl:otherwise>
+								<xsl:call-template name="getLevel"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when><!-- end: self::mn:term -->
 			<xsl:when test="normalize-space(../@depth) != ''">
 				<xsl:value-of select="../@depth"/>
 			</xsl:when>

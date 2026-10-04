@@ -144,6 +144,9 @@
 				<xsl:attribute name="space-before">1pt</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="role">SKIP</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'itu'">
 			<xsl:variable name="levelTerm">
 				<xsl:call-template name="getLevelTermName"/>
@@ -246,6 +249,9 @@
 		<xsl:if test="$namespace = 'ogc' or $namespace = 'ogc-white-paper'">
 			<xsl:attribute name="font-size">11pt</xsl:attribute>
 		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="role">SKIP</xsl:attribute>
+		</xsl:if>
 		<xsl:if test="$namespace = 'jcgm'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
 		</xsl:if>
@@ -263,6 +269,9 @@
 			<xsl:attribute name="font-size">8pt</xsl:attribute>
 			<xsl:attribute name="margin-top">5pt</xsl:attribute>
 			<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
+		</xsl:if>
+		<xsl:if test="$namespace = 'iso'">
+			<xsl:attribute name="role">SKIP</xsl:attribute>
 		</xsl:if>
 		<xsl:if test="$namespace = 'rsd'">
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -413,7 +422,21 @@
 				<xsl:apply-templates select="mn:fmt-name" />
 			</xsl:if>
 			
-			<xsl:apply-templates select="node()[not(self::mn:fmt-name)]" />
+			<fo:block role="SKIP">
+				<xsl:if test="$namespace = 'iso'">
+					<xsl:variable name="levelTerm">
+						<xsl:call-template name="getLevelTermName"/>
+					</xsl:variable>
+					<xsl:attribute name="role">H<xsl:value-of select="$levelTerm"/></xsl:attribute>
+				</xsl:if>
+				
+				<!-- element before fmt-defition -->
+				<xsl:apply-templates select="node()[not(self::mn:fmt-name) and not(self::mn:fmt-definition) and not(preceding-sibling::mn:fmt-definition)]" />
+			</fo:block>
+				
+			<!-- elements after fmt-definition (include fmt-definition) -->
+			<xsl:apply-templates select="node()[self::mn:fmt-definition or preceding-sibling::mn:fmt-definition]" />
+			
 		</fo:block>
 	</xsl:template>
 	
