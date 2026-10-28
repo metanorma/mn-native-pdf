@@ -41,6 +41,23 @@
 
 	<xsl:variable name="root-element" select="local-name(/*)"/>
 
+	<xsl:variable name="variables_">
+		<xsl:for-each select="//mn:metanorma">
+			<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
+
+			<xsl:variable name="current_document">
+				<xsl:copy-of select="."/>
+			</xsl:variable>
+			
+			<xsl:for-each select="xalan:nodeset($current_document)">
+				<mnx:doc num="{$num}">
+
+				</mnx:doc>
+			</xsl:for-each>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:variable name="variables" select="xalan:nodeset($variables_)"/>
+
 	<xsl:variable name="contents_">
 		<xsl:choose>
 			<xsl:when test="$root-element = 'metanorma-collection'">
