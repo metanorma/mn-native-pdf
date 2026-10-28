@@ -498,13 +498,7 @@
 		</xsl:for-each>
 	</xsl:variable>
 	<xsl:variable name="variables" select="xalan:nodeset($variables_)"/>
-	
-	<xsl:template name="getVariable">
-		<xsl:param name="variable"/>
-		<xsl:variable name="num" select="number(java:org.metanorma.fop.global.Variables.getVariable('num'))"/>
-		<xsl:value-of select="$variables/mnx:doc[@num = $num]/*[local-name() = $variable]"/>
-	</xsl:template>
-	
+		
 	<xsl:variable name="COLUMN_GAP">8.5mm</xsl:variable>
 	
 	<xsl:variable name="PROOF_TEXT">PROOF/ÉPREUVE</xsl:variable>

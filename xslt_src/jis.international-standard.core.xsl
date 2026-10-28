@@ -38,6 +38,23 @@
 				starts-with(@key,'4') or starts-with(@key,'5') or starts-with(@key,'6') or starts-with(@key,'7') or starts-with(@key,'8') or starts-with(@key,'9')]"/>
 	</xsl:variable>
 	<xsl:variable name="numbers_japanese" select="xalan:nodeset($numbers_japanese_)"/>
+
+	<xsl:variable name="variables_">
+		<xsl:for-each select="//mn:metanorma">
+			<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
+
+			<xsl:variable name="current_document">
+				<xsl:copy-of select="."/>
+			</xsl:variable>
+			
+			<xsl:for-each select="xalan:nodeset($current_document)">
+				<mnx:doc num="{$num}">
+
+				</mnx:doc>
+			</xsl:for-each>
+		</xsl:for-each>
+	</xsl:variable>
+	<xsl:variable name="variables" select="xalan:nodeset($variables_)"/>
 	
 	<xsl:variable name="contents_">
 		<xsl:variable name="bundle" select="count(//mn:metanorma) &gt; 1"/>

@@ -194,13 +194,6 @@
 	</xsl:variable>
 	<xsl:variable name="variables" select="xalan:nodeset($variables_)"/>
 	
-	<xsl:template name="getVariable">
-		<xsl:param name="variable"/>
-		<xsl:variable name="num" select="number(java:org.metanorma.fop.global.Variables.getVariable('num'))"/>
-		<xsl:value-of select="$variables/mnx:doc[@num = $num]/*[local-name() = $variable]"/>
-	</xsl:template>
-	
-	
 	<xsl:variable name="toc_recommendations_">
 		<xsl:for-each select="//mn:metanorma">
 			<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>

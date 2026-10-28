@@ -57,17 +57,6 @@
 	</xsl:variable>
 	<xsl:variable name="variables" select="xalan:nodeset($variables_)"/>
 	
-	<xsl:template name="getVariable">
-		<xsl:param name="variable"/>
-		<xsl:variable name="num" select="number(java:org.metanorma.fop.global.Variables.getVariable('num'))"/>
-		<xsl:value-of select="$variables/mnx:doc[@num = $num]/*[local-name() = $variable]"/>
-	</xsl:template>
-	
-	<xsl:template name="getVariableCopyOf">
-		<xsl:param name="variable"/>
-		<xsl:variable name="num" select="number(java:org.metanorma.fop.global.Variables.getVariable('num'))"/>
-		<xsl:copy-of select="$variables/mnx:doc[@num = $num]/*[local-name() = $variable]/node()"/>
-	</xsl:template>
 	
 	<!-- Example:
 		<item level="1" id="Foreword" display="true">Foreword</item>
