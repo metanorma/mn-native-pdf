@@ -1,0 +1,13 @@
+<bibdata type="standard">
+<title language="en" type="main">Date and time — Explicit representation</title>
+<docidentifier primary="true" type="CalConnect">CC/FDS 18011:2018</docidentifier><docnumber>18011</docnumber><date type="published"><on>2018-02-10T00:00:00Z</on></date><date type="updated"><on>2018-02-10T00:00:00Z</on></date><contributor><role type="author"/><organization>
+<name>CalConnect</name>
+</organization></contributor><contributor><role type="author"><description>committee</description></role><organization>
+<name>CalConnect</name>
+<subdivision type="Technical committee">
+<name>DATETIME</name>
+</subdivision></organization></contributor><contributor><role type="publisher"/><organization>
+<name>CalConnect</name>
+</organization></contributor><edition>1</edition><version>2018-02-10T00:00:00Z</version><language>en</language><script>Latn</script><status><stage>final-draft</stage></status><copyright><from>2018</from><owner><organization>
+<name>CalConnect</name>
+</organization></owner></copyright><ext><doctype>standard</doctype><flavor>cc</flavor></ext></bibdata>

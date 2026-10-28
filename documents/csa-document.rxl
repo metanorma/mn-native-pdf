@@ -1,0 +1,19 @@
+<bibdata type="standard">
+<title language="en" format="text/plain">Information Security Management through Reflexive Security — Six Pillars in the Integration of Security, Development and Operations</title>
+<docidentifier primary="true" type="CSA">csa-01:2019</docidentifier><docnumber>csa-01</docnumber><contributor><role type="author"/><organization>
+<name>Cloud Security Alliance</name>
+<abbreviation>CSA</abbreviation></organization></contributor><contributor><role type="editor"><description>editor</description></role><person>
+<name><completename>Ronald Tse</completename></name>
+</person></contributor><contributor><role type="author"><description>full-author</description></role><person>
+<name><completename>Michael Roza</completename></name>
+</person></contributor><contributor><role type="author"><description>full-author</description></role><person>
+<name><completename>Sean Heide</completename></name>
+</person></contributor><contributor><role type="author"><description>full-author</description></role><person>
+<name><completename>David Lewis</completename></name>
+</person></contributor><contributor><role type="author"><description>full-author</description></role><person>
+<name><completename>Eric Gauthier</completename></name>
+</person></contributor><contributor><role type="publisher"/><organization>
+<name>Cloud Security Alliance</name>
+<abbreviation>CSA</abbreviation></organization></contributor><language>en</language><script>Latn</script><status><stage>published</stage></status><copyright><from>2019</from><owner><organization>
+<name>Cloud Security Alliance</name>
+<abbreviation>CSA</abbreviation></organization></owner></copyright><ext><doctype>standard</doctype><flavor>csa</flavor></ext></bibdata>
