@@ -447,7 +447,7 @@
 				</redirect:write>
 			</xsl:if>
 			
-			<xsl:call-template name="cover-page"/>
+			<xsl:call-template name="cover-pages"/>
 			
 			<xsl:call-template name="inner-cover-page"/>
 			

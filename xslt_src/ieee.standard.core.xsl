@@ -541,7 +541,7 @@
 						</fo:flow>
 					</fo:page-sequence> -->
 					
-					<xsl:call-template name="cover-page">
+					<xsl:call-template name="cover-pages">
 						<xsl:with-param name="num" select="$num"/>
 						<xsl:with-param name="document_id" select="$document_id"/>
 						<xsl:with-param name="docidentifier_draft" select="$docidentifier_draft"/>

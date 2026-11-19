@@ -269,7 +269,7 @@
 					</redirect:write>
 				</xsl:if>
 
-				<xsl:call-template name="cover-page"/>
+				<xsl:call-template name="cover-pages"/>
 				
 				<xsl:for-each select="//mn:metanorma">
 					<xsl:variable name="lang" select="mn:bibdata/mn:language[@current = 'true']"/>
