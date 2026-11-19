@@ -21,7 +21,11 @@
 	<xsl:variable name="root_element">metanorma</xsl:variable>
 	
 	<!---examples: 2013, 2024 -->
+	<!-- TO DO: delete -->
 	<xsl:variable name="document_scheme" select="normalize-space(//mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:document-scheme)"/>
+
+	<!-- string, not node. Will be evaluated via xalan:evaluate -->
+	<xsl:variable name="bibdataContextNode">/mn:metanorma/mn:bibdata</xsl:variable>
 
 	<!-- external parameters -->
 	<xsl:param name="svg_images"/> <!-- svg images array -->
@@ -1739,9 +1743,10 @@
 	</xsl:template>
 
 	<xsl:template name="getDoctype">
+		<xsl:variable name="contextNode" select="xalan:evaluate($bibdataContextNode)"/>
 		<xsl:variable name="doctype_alias" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:doctype-alias)"/>
 		<xsl:value-of select="$doctype_alias"/>
-		<xsl:if test="$doctype_alias = ''"><xsl:value-of select="/mn:metanorma/mn:bibdata/mn:ext/mn:doctype[not(@language) or @language = '']"/></xsl:if>
+		<xsl:if test="$doctype_alias = ''"><xsl:value-of select="$contextNode/mn:ext/mn:doctype[not(@language) or @language = '']"/></xsl:if>
 	</xsl:template>
 
 	<xsl:template name="getDoctypeTitle">
