@@ -545,11 +545,11 @@
 		<fo:block role="SKIP">
 			<fo:table width="100%" table-layout="fixed" role="SKIP">
 				<xsl:copy-of select="@id"/>
-					<fo:table-column column-width="8%"/>
-					<fo:table-column column-width="92%"/>
-					<fo:table-body role="SKIP">
-						<xsl:apply-templates />
-					</fo:table-body>
+				<fo:table-column column-width="8%"/>
+				<fo:table-column column-width="92%"/>
+				<fo:table-body role="SKIP">
+					<xsl:apply-templates />
+				</fo:table-body>
 			</fo:table>
 		</fo:block>
 	</xsl:template>
