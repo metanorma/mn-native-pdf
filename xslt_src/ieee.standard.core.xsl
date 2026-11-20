@@ -569,7 +569,7 @@
 						</fo:flow>
 					</fo:page-sequence> -->
 					
-					<xsl:call-template name="cover-page">
+					<xsl:call-template name="cover-pages">
 						<xsl:with-param name="num" select="$num"/>
 					</xsl:call-template>
 					
