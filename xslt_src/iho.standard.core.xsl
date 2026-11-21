@@ -265,7 +265,7 @@
 				
 				<xsl:for-each select="xalan:nodeset($current_document)">
 			
-					<xsl:call-template name="cover-page"/>
+					<xsl:call-template name="cover-pages"/>
 				
 					<xsl:call-template name="inner-cover-page"/>
 					
