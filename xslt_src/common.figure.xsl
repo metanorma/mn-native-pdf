@@ -1645,6 +1645,21 @@
 		<xsl:attribute name="{$att_name}-opacity"><xsl:value-of select="$components/mnx:item[4]"/></xsl:attribute>
 	</xsl:template>
 	
+	<xsl:template match="*[local-name() = 'text' or local-name() = 'g']/@font-family[. = 'sans-serif']" mode="svg_update">
+		<xsl:attribute name="font-family">
+			<xsl:choose>
+				<xsl:when test="$namespace = 'bsi' or $namespace = 'pas'">Tahoma</xsl:when>
+				<xsl:otherwise>Arial</xsl:otherwise>
+			</xsl:choose>
+		</xsl:attribute>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'text' or local-name() = 'g']/@font-family[. = 'serif']" mode="svg_update">
+		<xsl:attribute name="font-family">Times New Roman</xsl:attribute>
+	</xsl:template>
+	<xsl:template match="*[local-name() = 'text' or local-name() = 'g']/@font-family[. = 'monospace']" mode="svg_update">
+		<xsl:attribute name="font-family">Courier New</xsl:attribute>
+	</xsl:template>
+	
 	<!-- ============== -->
 	<!-- END: svg_update -->
 	<!-- ============== -->
