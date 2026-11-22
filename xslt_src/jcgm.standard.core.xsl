@@ -286,7 +286,7 @@
 				<xsl:with-param name="contents" select="$contents"/>
 			</xsl:call-template>
 			
-			<xsl:call-template name="cover-page"/>
+			<xsl:call-template name="cover-pages"/>
 			
 			<xsl:call-template name="inner-cover-page"/>
 			

@@ -378,7 +378,7 @@
 					
 					<xsl:variable name="i18n_keywords"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">keywords</xsl:with-param><xsl:with-param name="bibdata_updated" select="/*/mn:bibdata"/></xsl:call-template></xsl:variable>
 					
-					<xsl:call-template name="cover-page">
+					<xsl:call-template name="cover-pages">
 						<xsl:with-param name="num" select="$num"/>
 					</xsl:call-template>
 					

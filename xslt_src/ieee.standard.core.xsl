@@ -38,7 +38,176 @@
 			
 			<xsl:for-each select="xalan:nodeset($current_document)">
 				<mnx:doc num="{$num}">
-
+				
+					<xsl:variable name="designation" select="/mn:metanorma/mn:bibdata/mn:docnumber"/>
+					<designation><xsl:value-of select="$designation"/></designation>
+					<!-- IEEE Std 802.1X™-2020 -->
+					<!-- <xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="$approved_date_year"/></xsl:variable> -->
+					<xsl:variable name="standard_number_" select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IEEE']"/>
+					<xsl:variable name="regex_tm" select="concat('(', $designation, ')', '(-\d{4})?')"/>
+					<xsl:variable name="standard_number" select="java:replaceAll(java:java.lang.String.new($standard_number_), $regex_tm,'$1™$2')"/>
+					<standard_number><xsl:value-of select="$standard_number"/></standard_number>
+					
+					<copyright_year><xsl:value-of select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/></copyright_year>
+					
+					<xsl:variable name="copyright_abbreviation" select="normalize-space(/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:abbreviation)"/>
+					<xsl:variable name="copyright_holder">
+						<xsl:value-of select="$copyright_abbreviation"/>
+						<xsl:if test="$copyright_abbreviation = ''">
+							<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'publisher']/mn:organization/mn:abbreviation">
+								<xsl:value-of select="."/>
+								<xsl:if test="position() != last()">, </xsl:if>
+							</xsl:for-each>
+						</xsl:if>
+					</xsl:variable>
+					<copyright_holder><xsl:value-of select="$copyright_holder"/></copyright_holder>
+					
+					
+					
+					<!-- <xsl:variable name="draft_number" select="/mn:metanorma/mn:bibdata/mn:version/mn:draft"/> -->
+					<xsl:variable name="revision_month" select="/mn:metanorma/mn:bibdata/mn:version/mn:revision-date"/>
+					<xsl:variable name="draft_month">
+						<xsl:call-template name="getMonthLocalizedByNum">
+							<xsl:with-param name="num" select="substring($revision_month, 6, 2)"/>
+						</xsl:call-template>
+					</xsl:variable>
+					<xsl:variable name="draft_year" select="substring($revision_month, 1, 4)"/>
+					
+					<!-- <xsl:variable name="title_intro"> -->
+					<xsl:variable name="title_main">
+						<!-- Example: IEEE Standard Example Local and Metropolitan Area Networks -->
+						<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en' and @type = 'main']/node()"/>
+					</xsl:variable>
+					<title_main><xsl:copy-of select="$title_main"/></title_main>
+					
+					<xsl:variable name="docidentifier_draft" select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IEEE-draft']"/>
+					<docidentifier_draft><xsl:value-of select="$docidentifier_draft"/></docidentifier_draft>
+					
+					<xsl:variable name="title">
+						<xsl:choose>
+							<xsl:when test="$current_template = 'standard'">
+								<xsl:copy-of select="$title_main"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en' and @type = 'main']/node()"/>
+								
+								<!-- Example: Amendment # -->
+								<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
+									<xsl:value-of select="$linebreak"/>
+									<xsl:call-template name="capitalize">
+										<xsl:with-param name="str" select="$subdoctype"/>
+									</xsl:call-template>
+									<fo:inline> #</fo:inline>
+								</xsl:if>
+								
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<title><xsl:copy-of select="$title"/></title>
+					
+					
+					<!-- for page header -->
+					<xsl:variable name="document_id">
+						<xsl:choose>
+							<xsl:when test="$current_template = 'draft'">
+								<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
+									<xsl:text>IEEE </xsl:text>
+								</xsl:if>
+								<!-- <xsl:text>P</xsl:text>
+								<xsl:value-of select="$designation"/>
+								<xsl:text>/D</xsl:text>
+								<xsl:value-of select="$draft_number"/> -->
+								<xsl:value-of select="$docidentifier_draft"/>
+								<xsl:text>, </xsl:text>
+								<xsl:value-of select="$draft_month"/>
+								<xsl:text> </xsl:text>
+								<xsl:value-of select="$draft_year"/>
+							</xsl:when>
+							<xsl:when test="$current_template = 'standard'">
+								<xsl:value-of select="$standard_number"/>
+							</xsl:when>
+						</xsl:choose>
+					</xsl:variable>
+					<document_id><xsl:value-of select="$document_id"/></document_id>
+					
+					<!-- <xsl:variable name="society" select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:society"/>  -->
+					<xsl:variable name="society">
+						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'authorizer']/mn:description = 'committee'][1]/mn:organization">
+							<xsl:value-of select="normalize-space(concat(mn:abbreviation, ' ', mn:subdivision[@type = 'Society']/mn:name))"/>
+						</xsl:for-each>
+					</xsl:variable>
+					<society><xsl:value-of select="$society"/></society>
+					
+					<!-- <xsl:variable name="committee" select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"/> -->
+					<xsl:variable name="committee" select="normalize-space(/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'authorizer']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Committee']/mn:name)"/>
+					<committee><xsl:value-of select="$committee"/></committee>
+					
+					<xsl:variable name="enabler_">
+						<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'enabler']]/mn:organization/node()"/>
+					</xsl:variable>
+					<xsl:variable name="enabler" select="xalan:nodeset($enabler_)"/>
+					<enabler><xsl:copy-of select="$enabler"/></enabler>
+					
+					<xsl:variable name="approved_by">IEEE SA Standards Board</xsl:variable>
+					<approved_by><xsl:value-of select="$approved_by"/></approved_by>
+					<!-- <xsl:variable name="approved_date">
+						<xsl:call-template name="convertDate">
+							<xsl:with-param name="date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'issued'])"/>
+							<xsl:with-param name="format" select="'ddMMyyyy'"/>
+						</xsl:call-template>
+					</xsl:variable> -->
+					<xsl:variable name="approved_date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'ieee-sasb-approved' and (@format = 'ddMMMyyyy' or @format = 'text')])"/>
+					<approved_date><xsl:value-of select="$approved_date"/></approved_date>
+					
+					<!-- Example: Revision of IEEE Std 802.1X™-2010
+						Incorporating IEEE Std 802.1Xbx™-2014
+						and IEEE Std 802.1Xck™-2018 -->
+					<xsl:variable name="history_">
+						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:relation[@type = 'updates']">
+							<revision_of><xsl:value-of select="mn:bibitem/mn:docidentifier"/></revision_of>
+						</xsl:for-each>
+						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:relation[@type = 'merges']">
+							<incorporating><xsl:value-of select="mn:bibitem/mn:docidentifier"/></incorporating>
+						</xsl:for-each>
+					</xsl:variable>
+					<xsl:variable name="history" select="xalan:nodeset($history_)"/>
+					
+					<xsl:variable name="history_text">
+						<xsl:if test="string-length($history) != 0">(</xsl:if>
+						<xsl:for-each select="$history/*[normalize-space() != '']">
+							
+							<xsl:if test="local-name() = 'revision_of' and not(preceding-sibling::*[local-name() = 'revision_of'])">Revision of </xsl:if>
+							
+							<xsl:if test="local-name() = 'incorporating' and not(preceding-sibling::*[local-name() = 'incorporating'])">Incorporating </xsl:if>
+							
+							<xsl:variable name="curr" select="local-name()"/>
+							<xsl:if test="preceding-sibling::*[local-name() = $curr] and not(following-sibling::*[local-name() = $curr])">and </xsl:if>
+							
+							<xsl:value-of select="."/>
+							
+							<xsl:if test="position() != last()"><xsl:value-of select="$linebreak"/></xsl:if>
+						</xsl:for-each>
+						
+						<xsl:if test="string-length($history) != 0">)</xsl:if>
+					</xsl:variable>
+					<history_text><xsl:value-of select="$history_text"/></history_text>
+					
+					<xsl:variable name="cutoff_date">
+						<xsl:call-template name="convertDate">
+							<xsl:with-param name="date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'feedback-ended'])"/>
+							<xsl:with-param name="format" select="'ddMMyyyy'"/>
+						</xsl:call-template>
+					</xsl:variable>
+					<cutoff_date><xsl:value-of select="$cutoff_date"/></cutoff_date>
+					
+					<xsl:variable name="expiration_date">
+						<xsl:call-template name="convertDate">
+							<xsl:with-param name="date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'obsoleted'])"/>
+							<xsl:with-param name="format" select="'ddMMyyyy'"/>
+						</xsl:call-template>
+					</xsl:variable>
+					<expiration_date><xsl:value-of select="$expiration_date"/></expiration_date>
+					
 				</mnx:doc>
 			</xsl:for-each>
 		</xsl:for-each>
@@ -389,147 +558,6 @@
 				
 				
 				<xsl:for-each select=".">
-				
-					<xsl:variable name="copyright_year" select="/mn:metanorma/mn:bibdata/mn:copyright/mn:from"/>
-					
-					<xsl:variable name="designation" select="/mn:metanorma/mn:bibdata/mn:docnumber"/>
-					
-					<!-- IEEE Std 802.1X™-2020 -->
-					<!-- <xsl:variable name="standard_number">IEEE Std <xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IEEE']"/>-<xsl:value-of select="$approved_date_year"/></xsl:variable> -->
-					<xsl:variable name="standard_number_" select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IEEE']"/>
-					<xsl:variable name="regex_tm" select="concat('(', $designation, ')', '(-\d{4})?')"/>
-					<xsl:variable name="standard_number" select="java:replaceAll(java:java.lang.String.new($standard_number_), $regex_tm,'$1™$2')"/>
-					
-					<!-- <xsl:value-of select="substring(/mn:metanorma/mn:bibdata/mn:date[@type = 'published'],1,4)"/> -->
-				
-					<!-- <xsl:variable name="draft_number" select="/mn:metanorma/mn:bibdata/mn:version/mn:draft"/> -->
-					<xsl:variable name="revision_month" select="/mn:metanorma/mn:bibdata/mn:version/mn:revision-date"/>
-					<xsl:variable name="draft_month">
-						<xsl:call-template name="getMonthLocalizedByNum">
-							<xsl:with-param name="num" select="substring($revision_month, 6, 2)"/>
-						</xsl:call-template>
-					</xsl:variable>
-					<xsl:variable name="draft_year" select="substring($revision_month, 1, 4)"/>
-					
-					<!-- <xsl:variable name="title_intro"> -->
-					<xsl:variable name="title_main">
-						<!-- Example: IEEE Standard Example Local and Metropolitan Area Networks -->
-						<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en' and @type = 'main']/node()"/>
-					</xsl:variable>
-					
-					<xsl:variable name="docidentifier_draft" select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IEEE-draft']"/>
-					
-					<xsl:variable name="title">
-						<xsl:choose>
-							<xsl:when test="$current_template = 'standard'">
-								<xsl:copy-of select="$title_main"/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en' and @type = 'main']/node()"/>
-								
-								<!-- Example: Amendment # -->
-								<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
-									<xsl:value-of select="$linebreak"/>
-									<xsl:call-template name="capitalize">
-										<xsl:with-param name="str" select="$subdoctype"/>
-									</xsl:call-template>
-									<fo:inline> #</fo:inline>
-								</xsl:if>
-								
-							</xsl:otherwise>
-						</xsl:choose>
-					</xsl:variable>
-					
-					<xsl:variable name="copyright_abbreviation" select="normalize-space(/mn:metanorma/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:abbreviation)"/>
-					<xsl:variable name="copyright_holder">
-						<xsl:value-of select="$copyright_abbreviation"/>
-						<xsl:if test="$copyright_abbreviation = ''">
-							<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'publisher']/mn:organization/mn:abbreviation">
-								<xsl:value-of select="."/>
-								<xsl:if test="position() != last()">, </xsl:if>
-							</xsl:for-each>
-						</xsl:if>
-					</xsl:variable>
-					
-					<!-- for page header -->
-					<xsl:variable name="document_id">
-						<xsl:choose>
-							<xsl:when test="$current_template = 'draft'">
-								<xsl:if test="contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != ''">
-									<xsl:text>IEEE </xsl:text>
-								</xsl:if>
-								<!-- <xsl:text>P</xsl:text>
-								<xsl:value-of select="$designation"/>
-								<xsl:text>/D</xsl:text>
-								<xsl:value-of select="$draft_number"/> -->
-								<xsl:value-of select="$docidentifier_draft"/>
-								<xsl:text>, </xsl:text>
-								<xsl:value-of select="$draft_month"/>
-								<xsl:text> </xsl:text>
-								<xsl:value-of select="$draft_year"/>
-							</xsl:when>
-							<xsl:when test="$current_template = 'standard'">
-								<xsl:value-of select="$standard_number"/>
-							</xsl:when>
-						</xsl:choose>
-					</xsl:variable>
-					
-					<!-- <xsl:variable name="society" select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:society"/>  -->
-					<xsl:variable name="society">
-						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'authorizer']/mn:description = 'committee'][1]/mn:organization">
-							<xsl:value-of select="normalize-space(concat(mn:abbreviation, ' ', mn:subdivision[@type = 'Society']/mn:name))"/>
-						</xsl:for-each>
-					</xsl:variable>
-					
-					<!-- <xsl:variable name="committee" select="/mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:committee"/> -->
-					<xsl:variable name="committee" select="normalize-space(/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'authorizer']/mn:description = 'committee']/mn:organization/mn:subdivision[@type = 'Committee']/mn:name)"/>
-					
-					<xsl:variable name="enabler_">
-						<xsl:copy-of select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'enabler']]/mn:organization/node()"/>
-					</xsl:variable>
-					<xsl:variable name="enabler" select="xalan:nodeset($enabler_)"/>
-					
-					<xsl:variable name="approved_by">IEEE SA Standards Board</xsl:variable>
-					<!-- <xsl:variable name="approved_date">
-						<xsl:call-template name="convertDate">
-							<xsl:with-param name="date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'issued'])"/>
-							<xsl:with-param name="format" select="'ddMMyyyy'"/>
-						</xsl:call-template>
-					</xsl:variable> -->
-					<xsl:variable name="approved_date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'ieee-sasb-approved' and (@format = 'ddMMMyyyy' or @format = 'text')])"/>
-					
-					<!-- Example: Revision of IEEE Std 802.1X™-2010
-						Incorporating IEEE Std 802.1Xbx™-2014
-						and IEEE Std 802.1Xck™-2018 -->
-					<xsl:variable name="history_">
-						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:relation[@type = 'updates']">
-							<revision_of><xsl:value-of select="mn:bibitem/mn:docidentifier"/></revision_of>
-						</xsl:for-each>
-						<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:relation[@type = 'merges']">
-							<incorporating><xsl:value-of select="mn:bibitem/mn:docidentifier"/></incorporating>
-						</xsl:for-each>
-					</xsl:variable>
-					<xsl:variable name="history" select="xalan:nodeset($history_)"/>
-					
-					<xsl:variable name="history_text">
-						<xsl:if test="string-length($history) != 0">(</xsl:if>
-						<xsl:for-each select="$history/*[normalize-space() != '']">
-							
-							<xsl:if test="local-name() = 'revision_of' and not(preceding-sibling::*[local-name() = 'revision_of'])">Revision of </xsl:if>
-							
-							<xsl:if test="local-name() = 'incorporating' and not(preceding-sibling::*[local-name() = 'incorporating'])">Incorporating </xsl:if>
-							
-							<xsl:variable name="curr" select="local-name()"/>
-							<xsl:if test="preceding-sibling::*[local-name() = $curr] and not(following-sibling::*[local-name() = $curr])">and </xsl:if>
-							
-							<xsl:value-of select="."/>
-							
-							<xsl:if test="position() != last()"><xsl:value-of select="$linebreak"/></xsl:if>
-						</xsl:for-each>
-						
-						<xsl:if test="string-length($history) != 0">)</xsl:if>
-					</xsl:variable>
-					
 					
 					<!-- <fo:page-sequence master-reference="document-draft" force-page-count="no-force">
 						<fo:flow flow-name="xsl-region-body">
@@ -541,38 +569,12 @@
 						</fo:flow>
 					</fo:page-sequence> -->
 					
-					<xsl:call-template name="cover-page">
+					<xsl:call-template name="cover-pages">
 						<xsl:with-param name="num" select="$num"/>
-						<xsl:with-param name="document_id" select="$document_id"/>
-						<xsl:with-param name="docidentifier_draft" select="$docidentifier_draft"/>
-						<xsl:with-param name="title" select="$title"/>
-						<xsl:with-param name="society" select="$society"/>
-						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
-						<xsl:with-param name="copyright_year" select="$copyright_year"/>
-						<xsl:with-param name="designation" select="$designation"/>
-						<!-- <xsl:with-param name="draft_number" select="$draft_number"/> -->
-						<xsl:with-param name="committee" select="$committee"/>
-						<xsl:with-param name="enabler" select="$enabler"/>
-						<xsl:with-param name="approved_date" select="$approved_date"/>
-						<xsl:with-param name="approved_by" select="$approved_by"/>
-						<xsl:with-param name="title_main" select="$title_main"/>
-						<xsl:with-param name="standard_number" select="$standard_number"/>
-						<xsl:with-param name="history_text" select="$history_text"/>
 					</xsl:call-template>
 					
 					<xsl:call-template name="inner-cover-page">
-						<xsl:with-param name="document_id" select="$document_id"/>
-						<xsl:with-param name="title" select="$title"/>
-						<xsl:with-param name="society" select="$society"/>
-						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
-						<xsl:with-param name="copyright_year" select="$copyright_year"/>
-						<xsl:with-param name="committee" select="$committee"/>
-						<xsl:with-param name="enabler" select="$enabler"/>
-						<xsl:with-param name="approved_date" select="$approved_date"/>
-						<xsl:with-param name="approved_by" select="$approved_by"/>
-						<xsl:with-param name="title_main" select="$title_main"/>
-						<xsl:with-param name="standard_number" select="$standard_number"/>
-						<xsl:with-param name="history_text" select="$history_text"/>
+						<xsl:with-param name="num" select="$num"/>
 					</xsl:call-template>
 					
 					
@@ -588,7 +590,13 @@
 						<redirect:write file="contents_.xml">
 							<xsl:copy-of select="$contents"/>
 						</redirect:write>
+						<redirect:write file="variables_.xml">
+							<xsl:copy-of select="$variables"/>
+						</redirect:write>
 					</xsl:if>
+					
+					<xsl:variable name="document_id" select="$variables/mnx:doc[@num = $num]/document_id"/>
+					<xsl:variable name="title"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/title/node()"/></xsl:variable>
 					
 					<xsl:choose>
 					
@@ -605,10 +613,9 @@
 										<xsl:call-template name="insertFootnoteSeparator"/>
 										
 										<xsl:call-template name="insertHeaderFooter">
+											<xsl:with-param name="num" select="$num"/>
 											<xsl:with-param name="document_id" select="$document_id"/>
 											<xsl:with-param name="title" select="$title"/>
-											<xsl:with-param name="copyright_year" select="$copyright_year"/>
-											<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 										</xsl:call-template>
 										
 										<fo:flow flow-name="xsl-region-body">
@@ -629,10 +636,9 @@
 									<xsl:call-template name="insertFootnoteSeparator"/>
 										
 									<xsl:call-template name="insertHeaderFooter">
+										<xsl:with-param name="num" select="$num"/>
 										<xsl:with-param name="document_id" select="$document_id"/>
 										<xsl:with-param name="title" select="$title"/>
-										<xsl:with-param name="copyright_year" select="$copyright_year"/>
-										<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 									</xsl:call-template>
 									
 									<fo:flow flow-name="xsl-region-body">
@@ -656,8 +662,7 @@
 								<xsl:call-template name="refine_page-sequence-preface"/>
 							
 								<xsl:call-template name="insertHeaderFooter">
-									<xsl:with-param name="copyright_year" select="$copyright_year"/>
-									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+									<xsl:with-param name="num" select="$num"/>
 									<xsl:with-param name="hideHeader">true</xsl:with-param>
 								</xsl:call-template>
 							
@@ -712,11 +717,7 @@
 						<xsl:if test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 							<xsl:for-each select=".//mn:page_sequence[parent::mn:preface][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 								<xsl:call-template name="insert_page-sequence">
-									<xsl:with-param name="document_id" select="$document_id"/>
-									<xsl:with-param name="title" select="$title"/>
-									<xsl:with-param name="doctype" select="$doctype"/>
-									<xsl:with-param name="copyright_year" select="$copyright_year"/>
-									<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+									<xsl:with-param name="num" select="$num"/>
 									<xsl:with-param name="is_first_sequence" select="normalize-space(position() = 1)"/>
 								</xsl:call-template>
 							</xsl:for-each>
@@ -724,11 +725,7 @@
 					
 						<xsl:for-each select=".//mn:page_sequence[parent::mn:sections][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 							<xsl:call-template name="insert_page-sequence">
-								<xsl:with-param name="document_id" select="$document_id"/>
-								<xsl:with-param name="title" select="$title"/>
-								<xsl:with-param name="doctype" select="$doctype"/>
-								<xsl:with-param name="copyright_year" select="$copyright_year"/>
-								<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+								<xsl:with-param name="num" select="$num"/>
 								<xsl:with-param name="is_first_sequence" select="normalize-space(position() = 1)"/>
 							</xsl:call-template>
 						</xsl:for-each>
@@ -736,11 +733,7 @@
 						<!-- Annexes, Bibliography and Index -->
 						<xsl:for-each select=".//mn:page_sequence[not(parent::mn:preface) and not(parent::mn:sections)][normalize-space() != '' or .//mn:image or .//*[local-name() = 'svg']]">
 							<xsl:call-template name="insert_page-sequence">
-								<xsl:with-param name="document_id" select="$document_id"/>
-								<xsl:with-param name="title" select="$title"/>
-								<xsl:with-param name="doctype" select="$doctype"/>
-								<xsl:with-param name="copyright_year" select="$copyright_year"/>
-								<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+								<xsl:with-param name="num" select="$num"/>
 							</xsl:call-template>
 						</xsl:for-each>
 
@@ -864,13 +857,14 @@
 	</xsl:template> <!-- processPrefaceAndMainSectionsIEEE_items -->
 	
 	<xsl:template name="insert_page-sequence">
-		<xsl:param name="document_id" />
-		<xsl:param name="title" />
-		<xsl:param name="doctype" />
-		<xsl:param name="copyright_year" />
-		<xsl:param name="copyright_holder" />
+		<xsl:param name="num"/>
 		<xsl:param name="is_first_sequence" />
-
+		
+		<xsl:variable name="copyright_year" select="$variables/mnx:doc[@num = $num]/copyright_year"/>
+		<xsl:variable name="copyright_holder" select="$variables/mnx:doc[@num = $num]/copyright_holder"/>
+		<xsl:variable name="document_id" select="$variables/mnx:doc[@num = $num]/document_id"/>
+		<xsl:variable name="title"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/title/node()"/></xsl:variable>
+		
 		<fo:page-sequence master-reference="document-draft" force-page-count="no-force" xsl:use-attribute-sets="page-sequence-main">
 			<xsl:call-template name="refine_page-sequence-main"/>
 		
@@ -904,17 +898,15 @@
 			<xsl:choose>
 				<xsl:when test="$current_template = 'standard' or $current_template = 'draft'">
 					<xsl:call-template name="insertHeaderFooter">
+						<xsl:with-param name="num" select="$num"/>
 						<xsl:with-param name="document_id" select="$document_id"/>
 						<xsl:with-param name="title" select="$title"/>
-						<xsl:with-param name="copyright_year" select="$copyright_year"/>
-						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 						<xsl:with-param name="orientation">@orientation</xsl:with-param>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:otherwise> <!-- ($current_template = 'international-standard' and $isDraft = 'false') or $current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report' -->
 					<xsl:call-template name="insertHeaderFooter">
-						<xsl:with-param name="copyright_year" select="$copyright_year"/>
-						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+						<xsl:with-param name="num" select="$num"/>
 						<xsl:with-param name="hideHeader">true</xsl:with-param>
 					</xsl:call-template>
 				</xsl:otherwise>
@@ -973,40 +965,25 @@
 	
 	<xsl:template name="cover-page">
 		<xsl:param name="num"/>
-		<xsl:param name="document_id"/>
-		<xsl:param name="docidentifier_draft"/>
-		<xsl:param name="title"/>
-		<xsl:param name="society"/>
-		<xsl:param name="copyright_holder"/>
-		<xsl:param name="copyright_year"/>
-		<xsl:param name="designation"/>
-		<!-- <xsl:param name="draft_number"/> -->
-		<xsl:param name="committee"/>
-		<xsl:param name="enabler"/>
-		<xsl:param name="approved_date"/>
-		<xsl:param name="approved_by"/>
-		<xsl:param name="title_main"/>
-		<xsl:param name="standard_number"/>
-		<xsl:param name="history_text"/>
-		
 		<!-- ======================= -->
 		<!-- Cover page -->
 		<!-- ======================= -->
-		
-		<xsl:variable name="cutoff_date">
-			<xsl:call-template name="convertDate">
-				<xsl:with-param name="date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'feedback-ended'])"/>
-				<xsl:with-param name="format" select="'ddMMyyyy'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		
-		<xsl:variable name="expiration_date">
-			<xsl:call-template name="convertDate">
-				<xsl:with-param name="date" select="normalize-space(/mn:metanorma/mn:bibdata/mn:date[@type = 'obsoleted'])"/>
-				<xsl:with-param name="format" select="'ddMMyyyy'"/>
-			</xsl:call-template>
-		</xsl:variable>
-		
+		<xsl:variable name="copyright_year" select="$variables/mnx:doc[@num = $num]/copyright_year"/>
+		<xsl:variable name="copyright_holder" select="$variables/mnx:doc[@num = $num]/copyright_holder"/>
+		<xsl:variable name="document_id" select="$variables/mnx:doc[@num = $num]/document_id"/>
+		<xsl:variable name="docidentifier_draft" select="$variables/mnx:doc[@num = $num]/docidentifier_draft"/>
+		<xsl:variable name="designation" select="$variables/mnx:doc[@num = $num]/designation"/>
+		<xsl:variable name="standard_number" select="$variables/mnx:doc[@num = $num]/standard_number"/>
+		<xsl:variable name="history_text" select="$variables/mnx:doc[@num = $num]/history_text"/>
+		<xsl:variable name="approved_date" select="$variables/mnx:doc[@num = $num]/approved_date"/>
+		<xsl:variable name="approved_by" select="$variables/mnx:doc[@num = $num]/approved_by"/>
+		<xsl:variable name="enabler"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/enabler/node()"/></xsl:variable>
+		<xsl:variable name="committee" select="$variables/mnx:doc[@num = $num]/committee"/>
+		<xsl:variable name="society" select="$variables/mnx:doc[@num = $num]/society"/>
+		<xsl:variable name="title"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/title/node()"/></xsl:variable>
+		<xsl:variable name="title_main"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/title_main/node()"/></xsl:variable>
+		<xsl:variable name="cutoff_date" select="$variables/mnx:doc[@num = $num]/cutoff_date"/>
+		<xsl:variable name="expiration_date" select="$variables/mnx:doc[@num = $num]/expiration_date"/>
 		
 		<xsl:choose>
 			<xsl:when test="/mn:metanorma/mn:metanorma-extension/mn:presentation-metadata/mn:coverpage-image/mn:image and 
@@ -1022,10 +999,9 @@
 					<xsl:call-template name="insertFootnoteSeparator"/>
 					
 					<xsl:call-template name="insertHeaderFooter">
+						<xsl:with-param name="num" select="$num"/>
 						<xsl:with-param name="document_id" select="$document_id"/>
 						<xsl:with-param name="title" select="$title"/>
-						<xsl:with-param name="copyright_year" select="$copyright_year"/>
-						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 						<xsl:with-param name="hideFooter">true</xsl:with-param>
 					</xsl:call-template>
 					
@@ -1073,7 +1049,7 @@
 									LAN/MAN Standards Committee -->
 									<fo:block><xsl:value-of select="$sponsored_by"/></fo:block>
 									<fo:block>&#xa0;</fo:block>
-									<xsl:for-each select="$enabler/mn:subdivision">
+									<xsl:for-each select="xalan:nodeset($enabler)/mn:subdivision">
 										<fo:block font-size="11pt" font-weight="bold">
 											<xsl:value-of select="mn:subdivision/mn:name"/>
 										</fo:block>
@@ -1166,21 +1142,14 @@
 		
 			<xsl:when test="$current_template = 'standard'">
 				<xsl:call-template name="insertCoverPage_Standard">
-					<xsl:with-param name="title_main" select="$title_main"/>
-					<xsl:with-param name="society" select="$society"/>
-					<xsl:with-param name="committee" select="$committee"/>
-					<xsl:with-param name="enabler" select="$enabler"/>
-					<xsl:with-param name="standard_number" select="$standard_number"/>
-					<xsl:with-param name="history" select="$history_text"/>
-					<xsl:with-param name="cutoff_date" select="$cutoff_date"/>
-					<xsl:with-param name="expiration_date" select="$expiration_date"/>
+					<xsl:with-param name="num" select="$num"/>
 				</xsl:call-template>
 			</xsl:when>
 			
 			
 			<xsl:when test="$current_template = 'whitepaper' or $current_template = 'icap-whitepaper' or $current_template = 'industry-connection-report'">
 				<xsl:call-template name="insertCoverPage_NonStandard">
-					<xsl:with-param name="title" select="$title"/>
+					<xsl:with-param name="num" select="$num"/>
 				</xsl:call-template>
 			</xsl:when>
 			
@@ -1191,18 +1160,20 @@
 	</xsl:template> <!-- END: cover-page -->
 	
 	<xsl:template name="inner-cover-page">
-		<xsl:param name="document_id"/>
-		<xsl:param name="title"/>
-		<xsl:param name="society"/>
-		<xsl:param name="copyright_holder"/>
-		<xsl:param name="copyright_year"/>
-		<xsl:param name="committee"/>
-		<xsl:param name="enabler"/>
-		<xsl:param name="approved_date"/>
-		<xsl:param name="approved_by"/>
-		<xsl:param name="title_main"/>
-		<xsl:param name="standard_number"/>
-		<xsl:param name="history_text"/>
+		<xsl:param name="num"/>
+		
+		<xsl:variable name="copyright_year" select="$variables/mnx:doc[@num = $num]/copyright_year"/>
+		<xsl:variable name="copyright_holder" select="$variables/mnx:doc[@num = $num]/copyright_holder"/>
+		<xsl:variable name="document_id" select="$variables/mnx:doc[@num = $num]/document_id"/>
+		<xsl:variable name="standard_number" select="$variables/mnx:doc[@num = $num]/standard_number"/>
+		<xsl:variable name="history_text" select="$variables/mnx:doc[@num = $num]/history_text"/>
+		<xsl:variable name="approved_date" select="$variables/mnx:doc[@num = $num]/approved_date"/>
+		<xsl:variable name="approved_by" select="$variables/mnx:doc[@num = $num]/approved_by"/>
+		<xsl:variable name="enabler"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/enabler/node()"/></xsl:variable>
+		<xsl:variable name="committee" select="$variables/mnx:doc[@num = $num]/committee"/>
+		<xsl:variable name="society" select="$variables/mnx:doc[@num = $num]/society"/>
+		<xsl:variable name="title"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/title/node()"/></xsl:variable>
+		<xsl:variable name="title_main"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/title_main/node()"/></xsl:variable>
 		<!-- =================== -->
 		<!-- Second page(s) -->
 		<!-- =================== -->
@@ -1214,10 +1185,9 @@
 					<xsl:call-template name="insertFootnoteSeparator"/>
 					
 					<xsl:call-template name="insertHeaderFooter">
+						<xsl:with-param name="num" select="$num"/>
 						<xsl:with-param name="document_id" select="$document_id"/>
 						<xsl:with-param name="title" select="$title"/>
-						<xsl:with-param name="copyright_year" select="$copyright_year"/>
-						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 						<xsl:with-param name="hideFooter"><xsl:if test="not(contains('amendment corrigendum erratum', $subdoctype) and $subdoctype != '')">false</xsl:if></xsl:with-param>
 					</xsl:call-template>
 					
@@ -1244,8 +1214,7 @@
 					<xsl:call-template name="insertFootnoteSeparator"/>
 					
 					<xsl:call-template name="insertHeaderFooter">
-						<xsl:with-param name="copyright_year" select="$copyright_year"/>
-						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+						<xsl:with-param name="num" select="$num"/>
 						<!-- <xsl:with-param name="hideHeader">true</xsl:with-param> -->
 						<xsl:with-param name="hideFooter">true</xsl:with-param>
 					</xsl:call-template>
@@ -1278,7 +1247,7 @@
 							<fo:block font-size="11pt" font-weight="bold" margin-top="4mm">
 								<!-- Sponsored by the
 									LAN/MAN Standards Committee -->
-								<xsl:for-each select="$enabler/mn:subdivision">
+								<xsl:for-each select="xalan:nodeset($enabler)/mn:subdivision">
 									<fo:block line-height="1.12"><xsl:value-of select="mn:subdivision/mn:name"/></fo:block>
 									<fo:block font-weight="normal" font-size="10pt">of the</fo:block>
 									<fo:block><xsl:value-of select="concat(../mn:abbreviation, ' ', mn:name)"/></fo:block>
@@ -1342,10 +1311,9 @@
 				<fo:page-sequence master-reference="document-draft-two-columns" force-page-count="no-force">
 					<xsl:call-template name="insertFootnoteSeparator"/>
 					<xsl:call-template name="insertHeaderFooter">
+						<xsl:with-param name="num" select="$num"/>
 						<xsl:with-param name="document_id" select="$document_id"/>
 						<xsl:with-param name="title" select="$title"/>
-						<xsl:with-param name="copyright_year" select="$copyright_year"/>
-						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
 					</xsl:call-template>
 					
 					<fo:flow flow-name="xsl-region-body">
@@ -1364,8 +1332,7 @@
 				<fo:page-sequence master-reference="document-nonstandard" force-page-count="no-force" font-family="Calibri Light">
 				
 					<xsl:call-template name="insertHeaderFooter">
-						<xsl:with-param name="copyright_year" select="$copyright_year"/>
-						<xsl:with-param name="copyright_holder" select="$copyright_holder"/>
+						<xsl:with-param name="num" select="$num"/>
 						<xsl:with-param name="hideHeader">true</xsl:with-param>
 					</xsl:call-template>
 					
@@ -3025,16 +2992,16 @@
 	
 	
 	<xsl:template name="insertHeaderFooter">
+		<xsl:param name="num"/>
 		<xsl:param name="document_id"/>
 		<xsl:param name="title"/>
-		
-		<xsl:param name="copyright_year"/>
-		<xsl:param name="copyright_holder"/>
-	
 		<xsl:param name="hideHeader" select="'false'"/>
 		<xsl:param name="hideFooter" select="'false'"/>
 		
 		<xsl:param name="orientation"/>
+		
+		<xsl:variable name="copyright_year" select="$variables/mnx:doc[@num = $num]/copyright_year"/>
+		<xsl:variable name="copyright_holder" select="$variables/mnx:doc[@num = $num]/copyright_holder"/>
 		
 		<xsl:variable name="header">
 			<fo:block font-family="Arial" font-size="8pt" text-align="center">
@@ -3348,14 +3315,16 @@
 	<!-- Cover Pages -->
 	<!-- =============================== -->
 	<xsl:template name="insertCoverPage_Standard">
-		<xsl:param name="title_main" />
-		<xsl:param name="society" />
-		<xsl:param name="committee" />
-		<xsl:param name="enabler" />
-		<xsl:param name="standard_number" />
-		<xsl:param name="history" />
-		<xsl:param name="cutoff_date" />
-		<xsl:param name="expiration_date" />
+		<xsl:param name="num"/>
+		
+		<xsl:variable name="standard_number" select="$variables/mnx:doc[@num = $num]/standard_number"/>
+		<xsl:variable name="history" select="$variables/mnx:doc[@num = $num]/history_text"/>
+		<xsl:variable name="enabler"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/enabler/node()"/></xsl:variable>
+		<xsl:variable name="committee" select="$variables/mnx:doc[@num = $num]/committee"/>
+		<xsl:variable name="society" select="$variables/mnx:doc[@num = $num]/society"/>
+		<xsl:variable name="title_main"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/title_main/node()"/></xsl:variable>
+		<xsl:variable name="cutoff_date" select="$variables/mnx:doc[@num = $num]/cutoff_date"/>
+		<xsl:variable name="expiration_date" select="$variables/mnx:doc[@num = $num]/expiration_date"/>
 		
 		<fo:page-sequence master-reference="cover-page" force-page-count="no-force">
 		
@@ -3453,7 +3422,7 @@
 									LAN/MAN Standards Committee -->
 								<xsl:value-of select="$sponsored_by"/>
 								<xsl:value-of select="$linebreak"/>
-								<xsl:for-each select="$enabler/mn:subdivision/mn:subdivision/mn:name">
+								<xsl:for-each select="xalan:nodeset($enabler)/mn:subdivision/mn:subdivision/mn:name">
 									<xsl:value-of select="."/>
 									<xsl:if test="position() != last()">
 										<xsl:value-of select="$linebreak"/>
@@ -3600,7 +3569,8 @@
 	</xsl:template> <!-- insertCoverPage_IndustryConnectionReport -->
 	
 	<xsl:template name="insertCoverPage_NonStandard">
-		<xsl:param name="title"/>
+		<xsl:param name="num"/>
+		<xsl:variable name="title"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/title/node()"/></xsl:variable>
 		<fo:page-sequence master-reference="cover-page-nonstandard" force-page-count="no-force">
 			<fo:static-content flow-name="header" role="artifact">
 				<fo:block-container position="absolute" left="65mm" id="__internal_layout__bluebox_{generate-id()}"> <!-- top="-2.6mm" -->

@@ -1255,7 +1255,8 @@
 	
 	<xsl:template match="mnx:item/text()" mode="bookmarks"/>
 	
-	<xsl:template match="*[local-name() = 'add'][starts-with(., $ace_tag)]" mode="bookmarks"/>
+	<!-- <xsl:template match="*[local-name() = 'add'][starts-with(., $ace_tag)]" mode="bookmarks"/> -->
+	<xsl:template match="*[local-name() = 'add'][starts-with(., 'ace-tag_')]" mode="bookmarks"/>
 	
 	<!-- Bookmarks -->
 	<xsl:template name="addBookmarks">

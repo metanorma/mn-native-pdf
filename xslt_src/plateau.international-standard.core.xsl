@@ -309,7 +309,7 @@
 				<!-- <xsl:for-each select="xalan:nodeset($current_document)"> -->
 				<xsl:for-each select="xalan:nodeset($updated_xml_with_pages)">
 				
-					<xsl:call-template name="cover-page">
+					<xsl:call-template name="cover-pages">
 						<xsl:with-param name="num" select="$num"/>
 					</xsl:call-template>
 					
