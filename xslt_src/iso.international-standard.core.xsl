@@ -269,11 +269,23 @@
 						<xsl:variable name="doctype"><xsl:call-template name="getDoctype"/></xsl:variable>
 						<doctype><xsl:value-of select="$doctype"/></doctype>
 						
-						<xsl:variable name="doctype_localized_" select="$contextNode/mn:ext/mn:doctype[@language = $lang]"/>
+						<xsl:variable name="doctype_localized_" select="normalize-space($contextNode/mn:ext/mn:doctype[@language = $lang])"/>
+						<!-- https://github.com/metanorma/mn-native-pdf/issues/1136 -->
+						<xsl:variable name="doctype_localized__">
+							<xsl:if test="$doctype_localized_ = '' and count($contextNode/mn:ext/mn:doctype) = 1 and normalize-space($contextNode/mn:ext/mn:doctype[not(@language)]) != ''">
+								<!-- example: <localized-string key="doctype_dict.international-standard" language="en">International Standard</localized-string> -->
+								<xsl:variable name="key"><xsl:value-of select="concat('doctype_dict.', $doctype)"/></xsl:variable>
+								<xsl:value-of select="/mn:metanorma/mn:localized-strings/mn:localized-string[@key = $key]"/>
+							</xsl:if>
+						</xsl:variable>
+						
 						<xsl:variable name="doctype_localized">
 							<xsl:choose>
 								<xsl:when test="$doctype_localized_ != ''">
 									<xsl:value-of select="translate(normalize-space($doctype_localized_),'-',' ')"/>
+								</xsl:when>
+								<xsl:when test="$doctype_localized__ != ''">
+									<xsl:value-of select="$doctype_localized__"/>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:value-of select="translate(normalize-space($doctype),'-',' ')"/>
@@ -290,7 +302,23 @@
 						<xsl:variable name="stagename_abbreviation" select="normalize-space($contextNode/mn:ext/mn:stagename/@abbreviation)"/>
 						<stagename_abbreviation><xsl:value-of select="$stagename_abbreviation"/></stagename_abbreviation>
 						
-						<xsl:variable name="stagename_localized" select="normalize-space($contextNode/mn:status/mn:stage[@language = $lang])"/>
+						
+						<xsl:variable name="stagename_localized_" select="normalize-space($contextNode/mn:status/mn:stage[@language = $lang])"/>
+						<!-- https://github.com/metanorma/mn-native-pdf/issues/1136 -->
+						<xsl:variable name="stagename_localized__">
+							<xsl:if test="$stagename_localized_ = '' and count($contextNode/mn:status/mn:stage) = 1">
+								<!-- example: <localized-string key="60.international-standard" language="en">International Standard</localized-string> -->
+								<xsl:variable name="key"><xsl:value-of select="concat(normalize-space($contextNode/mn:status/mn:stage[not(@language)]), '.', $doctype)"/></xsl:variable>
+								<xsl:value-of select="/mn:metanorma/mn:localized-strings/mn:localized-string[@key = $key]"/>
+							</xsl:if>
+						</xsl:variable>
+						<xsl:variable name="stagename_localized___">
+							<xsl:choose>
+								<xsl:when test="$stagename_localized_ != ''"><xsl:value-of select="$stagename_localized_"/></xsl:when>
+								<xsl:otherwise><xsl:value-of select="$stagename_localized__"/></xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<xsl:variable name="stagename_localized" select="normalize-space($stagename_localized___)"/>
 						<stagename_localized><xsl:value-of select="$stagename_localized"/></stagename_localized>
 						
 						<stagename_localized_coverpage><xsl:copy-of select="$contextNode/mn:status/mn:stage[@language = $lang and @type = 'coverpage']/node()"/></stagename_localized_coverpage>
