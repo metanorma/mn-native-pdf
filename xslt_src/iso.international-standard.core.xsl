@@ -1162,7 +1162,7 @@
 										</fo:inline>
 									</fo:block>
 									
-									<xsl:if test="$contextNode/mn:keyword">
+									<xsl:if test="normalize-space($contextNode/mn:keyword) != ''">
 										<fo:block margin-top="6pt">
 											<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/> : </fo:inline>
 											<xsl:call-template name="insertKeywords">
@@ -1811,7 +1811,7 @@
 								</fo:inline>
 							</fo:block>
 							
-							<xsl:if test="$contextNode/mn:keyword">
+							<xsl:if test="normalize-space($contextNode/mn:keyword) != ''">
 								<fo:block margin-top="10pt">
 									<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/> : </fo:inline>
 									<xsl:call-template name="insertKeywords">
@@ -2230,7 +2230,7 @@
 																<!-- </xsl:if>
 															
 																<xsl:if test="$doctype = 'amendment' and not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')"> -->
-																	<xsl:if test="$contextNode/mn:date[@type = 'updated']">																		
+																	<xsl:if test="normalize-space($contextNode/mn:date[@type = 'updated']) != ''">
 																		<fo:block font-size="18pt" font-weight="bold" margin-bottom="3mm">
 																			<xsl:value-of select="$contextNode/mn:date[@type = 'updated']"/>
 																		</fo:block>
@@ -3061,7 +3061,7 @@
 							
 							<fo:block-container text-align="right" role="SKIP">
 								<xsl:choose>
-									<xsl:when test="$contextNode/mn:docidentifier[@type = 'iso-tc']">
+									<xsl:when test="normalize-space($contextNode/mn:docidentifier[@type = 'iso-tc']) != ''">
 										<!-- 17301  -->
 										<fo:block font-size="14pt" font-weight="bold" margin-bottom="12pt">
 											<xsl:value-of select="$contextNode/mn:docidentifier[@type = 'iso-tc']"/>
@@ -3318,7 +3318,7 @@
 		<xsl:param name="content-height"/>
 		<xsl:variable name="contextNode" select="xalan:evaluate($bibdataContextNode)"/>
 		<xsl:choose>
-			<xsl:when test="$contextNode/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization">
+			<xsl:when test="normalize-space($contextNode/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization) != ''">
 				<xsl:for-each select="$contextNode/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization">
 				
 					<xsl:variable name="items">
@@ -3426,7 +3426,7 @@
 		<xsl:variable name="content-height">20</xsl:variable>
 		<xsl:variable name="contextNode" select="xalan:evaluate($bibdataContextNode)"/>
 		<xsl:choose>
-			<xsl:when test="$contextNode/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization[mn:abbreviation]">
+			<xsl:when test="normalize-space($contextNode/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization[mn:abbreviation]) != ''">
 				<xsl:for-each select="$contextNode/mn:contributor[mn:role[@type = 'author']/mn:description = 'committee']/mn:organization[mn:abbreviation]">
 					<xsl:variable name="items">
 						<xsl:call-template name="split_abbreviation"/>
@@ -3606,13 +3606,13 @@
 		<xsl:value-of select="$edition"/>
 		<xsl:variable name="date">
 			<xsl:choose>
-				<xsl:when test="($stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS' or $stagename_abbreviation = 'FDIS') and $contextNode/mn:version/mn:revision-date">
+				<xsl:when test="($stage-abbreviation = 'NWIP' or $stage-abbreviation = 'NP' or $stage-abbreviation = 'PWI' or $stage-abbreviation = 'AWI' or $stage-abbreviation = 'WD' or $stage-abbreviation = 'CD' or $stage-abbreviation = 'FDIS' or $stagename_abbreviation = 'FDIS') and normalize-space($contextNode/mn:version/mn:revision-date) != ''">
 					<xsl:value-of select="$contextNode/mn:version/mn:revision-date"/>
 				</xsl:when>
-				<xsl:when test="$stage-abbreviation = 'IS' and /mn:metanorma/mn:bibdata/mn:date[@type = 'published']">
+				<xsl:when test="$stage-abbreviation = 'IS' and normalize-space($contextNode/mn:date[@type = 'published']) != ''">
 					<xsl:value-of select="$contextNode/mn:date[@type = 'published']"/>
 				</xsl:when>
-				<xsl:when test="($stage-abbreviation = 'IS' or $stage-abbreviation = 'D') and $contextNode/mn:date[@type = 'created']">
+				<xsl:when test="($stage-abbreviation = 'IS' or $stage-abbreviation = 'D') and normalize-space($contextNode/mn:date[@type = 'created']) != ''">
 					<xsl:value-of select="$contextNode/mn:date[@type = 'created']"/>
 				</xsl:when>
 				<xsl:when test="$stage-abbreviation = 'IS' or $stage-abbreviation = 'PRF' or $stage_published = 'true'">
@@ -6159,7 +6159,7 @@
 							</xsl:choose> -->
 						</fo:block>
 						<xsl:variable name="font-size_footer_copyright"><xsl:call-template name="get_font-size_footer_copyright"><xsl:with-param name="num" select="$num"/></xsl:call-template></xsl:variable>
-						<xsl:if test="$contextNode/mn:keyword">
+						<xsl:if test="normalize-space($contextNode/mn:keyword) != ''">
 							<fo:block font-size="{$font-size_footer_copyright}" margin-bottom="6pt">
 								<fo:inline font-weight="bold"><xsl:value-of select="$i18n_descriptors"/>: </fo:inline>
 								<xsl:call-template name="insertKeywords">
