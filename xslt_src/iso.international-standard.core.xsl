@@ -588,9 +588,6 @@
 	</xsl:variable> <!-- END: contents_ -->
 	<xsl:variable name="contents" select="xalan:nodeset($contents_)"/>
 	
-	
-	<xsl:variable name="XML" select="/"/>
-	
 	<xsl:template name="layout-master-set">
 		<fo:layout-master-set>
 			
@@ -1258,6 +1255,7 @@
 													<!-- Example: title-intro fr -->
 													<xsl:call-template name="insertTitlesLangOther">
 														<xsl:with-param name="num" select="$num"/>
+														<xsl:with-param name="contextNode" select="$contextNode"/>
 														<xsl:with-param name="lang_other" select="$lang_other_"/>
 													</xsl:call-template>
 												</fo:block>
@@ -1920,6 +1918,7 @@
 									<!-- Example: title-intro fr -->
 									<xsl:call-template name="insertTitlesLangOther">
 										<xsl:with-param name="num" select="$num"/>
+										<xsl:with-param name="contextNode" select="$contextNode"/>
 										<xsl:with-param name="lang_other" select="$lang_other_"/>
 									</xsl:call-template>
 								</fo:block>
@@ -2008,6 +2007,7 @@
 												<!-- Example: title-intro fr -->
 												<xsl:call-template name="insertTitlesLangOther">
 													<xsl:with-param name="num" select="$num"/>
+													<xsl:with-param name="contextNode" select="$contextNode"/>
 													<xsl:with-param name="lang_other" select="$lang_other_"/>
 												</xsl:call-template>
 											</fo:block>
@@ -2169,10 +2169,11 @@
 											<fo:block-container font-family="Cambria" line-height="1.1" role="SKIP" height="110mm" id="{concat('__internal_layout__coverpage_p_title_', $num , '_', generate-id())}">
 												<!-- for role see coment https://github.com/pdf-association/extension-brotli/issues/5#issuecomment-3931742869 -->
 												<fo:block margin-right="3.5mm" role="P/Title"> <!-- role="SKIP" -->
+													
 													<fo:block font-size="18pt" font-weight="bold" margin-top="2.5mm" role="SKIP"> <!-- role="H1" -->
 														<xsl:call-template name="insertTitlesLangMain"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 													</fo:block>
-																
+													
 													<xsl:if test="not($stage-abbreviation = 'FDAMD' or $stage-abbreviation = 'FDAM')"> <!--  or $stage-abbreviation = 'PRF' -->
 														<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
 															<xsl:variable name="lang_other_" select="."/>
@@ -2181,6 +2182,7 @@
 																<!-- Example: title-intro fr -->
 																<xsl:call-template name="insertTitlesLangOther">
 																	<xsl:with-param name="num" select="$num"/>
+																	<xsl:with-param name="contextNode" select="$contextNode"/>
 																	<xsl:with-param name="lang_other" select="$lang_other_"/>
 																</xsl:call-template>
 															</fo:block>
@@ -2621,7 +2623,6 @@
 													<xsl:call-template name="insertTitlesLangMain"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 												</fo:block>
 												
-												
 												<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
 													<xsl:variable name="lang_other_" select="."/>
 												
@@ -2633,6 +2634,7 @@
 														<!-- Example: title-intro fr -->
 														<xsl:call-template name="insertTitlesLangOther">
 															<xsl:with-param name="num" select="$num"/>
+															<xsl:with-param name="contextNode" select="$contextNode"/>
 															<xsl:with-param name="lang_other" select="$lang_other_"/>
 														</xsl:call-template>
 													</fo:block>
@@ -2904,6 +2906,7 @@
 																					<!-- Example: title-intro fr -->
 																					<xsl:call-template name="insertTitlesLangOther">
 																						<xsl:with-param name="num" select="$num"/>
+																						<xsl:with-param name="contextNode" select="$contextNode"/>
 																						<xsl:with-param name="lang_other" select="$lang_other_"/>
 																					</xsl:call-template>
 																				</fo:block>
@@ -3024,7 +3027,7 @@
 											</xsl:if>
 											<xsl:call-template name="insertTitlesLangMain"><xsl:with-param name="num" select="$num"/></xsl:call-template>
 										</fo:block>
-											
+										
 										<xsl:for-each select="xalan:nodeset($lang_other)/mnx:lang">
 											<xsl:variable name="lang_other_" select="."/>
 											
@@ -3036,6 +3039,7 @@
 												<!-- Example: title-intro fr -->
 												<xsl:call-template name="insertTitlesLangOther">
 													<xsl:with-param name="num" select="$num"/>
+													<xsl:with-param name="contextNode" select="$contextNode"/>
 													<xsl:with-param name="lang_other" select="$lang_other_"/>
 												</xsl:call-template>
 											</fo:block>
@@ -3114,6 +3118,7 @@
 											<!-- Example: title-intro fr -->
 											<xsl:call-template name="insertTitlesLangOther">
 												<xsl:with-param name="num" select="$num"/>
+												<xsl:with-param name="contextNode" select="$contextNode"/>
 												<xsl:with-param name="lang_other" select="$lang_other_"/>
 											</xsl:call-template>
 										</fo:block>
@@ -3564,18 +3569,19 @@
 	
 	<xsl:template name="insertTitlesLangOther">
 		<xsl:param name="num"/>
+		<xsl:param name="contextNode"/>
 		<xsl:param name="lang_other"/>
-		<xsl:apply-templates select="$XML/mn:metanorma/mn:bibdata/mn:title[@language = $lang_other and @type = 'title-intro']"/>
-		<xsl:apply-templates select="$XML/mn:metanorma/mn:bibdata/mn:title[@language = $lang_other and @type = 'title-main']"/>
-		<xsl:apply-templates select="$XML/mn:metanorma/mn:bibdata/mn:title[@language = $lang_other and @type = 'title-complementary']"/>
-		<xsl:apply-templates select="$XML/mn:metanorma/mn:bibdata/mn:title[@language = $lang_other and @type = 'title-part']">
+		<xsl:apply-templates select="$contextNode/mn:title[@language = $lang_other and @type = 'title-intro']"/>
+		<xsl:apply-templates select="$contextNode/mn:title[@language = $lang_other and @type = 'title-main']"/>
+		<xsl:apply-templates select="$contextNode/mn:title[@language = $lang_other and @type = 'title-complementary']"/>
+		<xsl:apply-templates select="$contextNode/mn:title[@language = $lang_other and @type = 'title-part']">
 			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="curr_lang" select="$lang_other"/>
 		</xsl:apply-templates>
-		<xsl:apply-templates select="$XML/mn:metanorma/mn:bibdata/mn:title[@language = $lang_other and @type = 'title-amd']">
+		<xsl:apply-templates select="$contextNode/mn:title[@language = $lang_other and @type = 'title-amd']">
 			<xsl:with-param name="num" select="$num"/>
 			<xsl:with-param name="curr_lang" select="$lang_other"/>
-		</xsl:apply-templates>																
+		</xsl:apply-templates>
 	</xsl:template>
 	
 	<!-- for 1951 layout -->
@@ -4132,7 +4138,7 @@
 	<!-- ==================== -->
 	<!-- display titles       -->
 	<!-- ==================== -->
-	<xsl:template match="mn:bibdata/mn:title[@type = 'title-intro']">
+	<xsl:template match="mn:bibdata/mn:title[@type = 'title-intro'] | mn:bibdata//mn:relation/mn:bibitem/mn:title[@type = 'title-intro']">
 		<xsl:variable name="layoutVersion">
 			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
 		</xsl:variable>
@@ -4147,7 +4153,7 @@
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="mn:bibdata/mn:title[@type = 'title-main']">
+	<xsl:template match="mn:bibdata/mn:title[@type = 'title-main'] | mn:bibdata//mn:relation/mn:bibitem/mn:title[@type = 'title-main']">
 		<xsl:param name="body">false</xsl:param>
 		<xsl:variable name="layoutVersion">
 			<xsl:call-template name="getVariable"><xsl:with-param name="variable">layoutVersion</xsl:with-param></xsl:call-template>
@@ -4176,13 +4182,13 @@
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="mn:bibdata/mn:title[@type = 'title-complementary']">
+	<xsl:template match="mn:bibdata/mn:title[@type = 'title-complementary'] | mn:bibdata//mn:relation/mn:bibitem/mn:title[@type = 'title-complementary']">
 		<xsl:param name="body">false</xsl:param>
 		<xsl:value-of select="$nonbreak_space_em_dash_space"/>
 		<xsl:apply-templates />
 	</xsl:template>
 
-	<xsl:template match="mn:bibdata/mn:title[@type = 'title-part']">
+	<xsl:template match="mn:bibdata/mn:title[@type = 'title-part'] | mn:bibdata//mn:relation/mn:bibitem/mn:title[@type = 'title-part']">
 		<xsl:param name="num"/>
 		<xsl:param name="curr_lang" select="$lang"/>
 		<xsl:param name="isMainLang">false</xsl:param>
@@ -4270,7 +4276,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="mn:bibdata/mn:title[@type = 'title-amd']">
+	<xsl:template match="mn:bibdata/mn:title[@type = 'title-amd'] | mn:bibdata//mn:relation/mn:bibitem/mn:title[@type = 'title-amd']">
 		<xsl:param name="num"/>
 		<xsl:param name="isMainLang">false</xsl:param>
 		<xsl:param name="curr_lang" select="$lang"/>
