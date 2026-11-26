@@ -1349,8 +1349,30 @@
 		<xsl:choose>
 			<xsl:when test=".//*[local-name() = 'a'][*[local-name() = 'rect'] or *[local-name() = 'polygon'] or *[local-name() = 'circle'] or *[local-name() = 'ellipse']]">
 				<fo:block>
-					<xsl:variable name="width" select="java:replaceAll(java:java.lang.String.new(normalize-space(@width)), 'px$', '')"/>
-					<xsl:variable name="height" select="java:replaceAll(java:java.lang.String.new(normalize-space(@height)), 'px$', '')"/>
+					<!-- fallback for a size that is not a positive finite px number (missing, %, em, NaN, negative, huge):
+					     the svg_update default, i.e. the viewBox dimension, else 400 -->
+					<xsl:variable name="vb" select="normalize-space(@viewBox)"/>
+					<xsl:variable name="vb_width" select="number(substring-before(concat(substring-after(substring-after($vb, ' '), ' '), ' '), ' '))"/>
+					<xsl:variable name="vb_height" select="number(substring-before(concat(substring-after(substring-after(substring-after($vb, ' '), ' '), ' '), ' '), ' '))"/>
+
+					<!-- strip a case-insensitive px suffix, trim NBSP, accept only a positive finite number -->
+					<xsl:variable name="width_num" select="number(normalize-space(java:replaceAll(java:java.lang.String.new(normalize-space(translate(@width, '&#xA0;', ' '))), '(?i)px$', '')))"/>
+					<xsl:variable name="height_num" select="number(normalize-space(java:replaceAll(java:java.lang.String.new(normalize-space(translate(@height, '&#xA0;', ' '))), '(?i)px$', '')))"/>
+
+					<xsl:variable name="width">
+						<xsl:choose>
+							<xsl:when test="$width_num &gt; 0 and $width_num - $width_num = 0"><xsl:value-of select="$width_num"/></xsl:when>
+							<xsl:when test="$vb_width &gt; 0 and $vb_width - $vb_width = 0"><xsl:value-of select="round($vb_width)"/></xsl:when>
+							<xsl:otherwise>400</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<xsl:variable name="height">
+						<xsl:choose>
+							<xsl:when test="$height_num &gt; 0 and $height_num - $height_num = 0"><xsl:value-of select="$height_num"/></xsl:when>
+							<xsl:when test="$vb_height &gt; 0 and $vb_height - $vb_height = 0"><xsl:value-of select="round($vb_height)"/></xsl:when>
+							<xsl:otherwise>400</xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
 
 					<xsl:variable name="scale_x">
 						<xsl:choose>
