@@ -1620,13 +1620,26 @@
 		</xsl:copy>
 	</xsl:template>
 	
+	<!-- embedded svg length: keep a valid unitless or lowercase px value as written; write a positive finite
+	     px value without its unit (no NBSP/case/space residue); otherwise the svg_update default 400 (Batik rejects raw px/%/NBSP/negative) -->
+	<xsl:template name="svg_length">
+		<xsl:variable name="raw" select="normalize-space(translate(., '&#xA0;', ' '))"/>
+		<xsl:variable name="num" select="number(normalize-space(java:replaceAll(java:java.lang.String.new($raw), '(?i)px$', '')))"/>
+		<xsl:choose>
+			<xsl:when test="number($raw) &gt; 0 and number($raw) - number($raw) = 0"><xsl:value-of select="$raw"/></xsl:when>
+			<xsl:when test="$num &gt; 0 and $num - $num = 0 and substring($raw, string-length($raw) - 1) = 'px'"><xsl:value-of select="$raw"/></xsl:when>
+			<xsl:when test="$num &gt; 0 and $num - $num = 0"><xsl:value-of select="$num"/></xsl:when>
+			<xsl:otherwise>400</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
 	<xsl:template match="*[local-name() = 'svg']/@width" mode="svg_update">
 		<!-- image[@width]/svg -->
 		<xsl:variable name="parent_image_width" select="normalize-space(ancestor::*[2][self::mn:image]/@width)"/>
 		<xsl:attribute name="width">
 			<xsl:choose>
 				<xsl:when test="$parent_image_width != '' and normalize-space(java:matches(java:java.lang.String.new($parent_image_width), $regex_starts_with_digit)) = 'true'"><xsl:value-of select="$parent_image_width"/></xsl:when>
-				<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+				<xsl:otherwise><xsl:call-template name="svg_length"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:attribute>
 	</xsl:template>
@@ -1637,7 +1650,7 @@
 		<xsl:attribute name="height">
 			<xsl:choose>
 				<xsl:when test="$parent_image_height != '' and normalize-space(java:matches(java:java.lang.String.new($parent_image_height), $regex_starts_with_digit)) = 'true'"><xsl:value-of select="$parent_image_height"/></xsl:when>
-				<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+				<xsl:otherwise><xsl:call-template name="svg_length"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:attribute>
 	</xsl:template>
