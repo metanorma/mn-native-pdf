@@ -1349,9 +1349,9 @@
 		<xsl:choose>
 			<xsl:when test=".//*[local-name() = 'a'][*[local-name() = 'rect'] or *[local-name() = 'polygon'] or *[local-name() = 'circle'] or *[local-name() = 'ellipse']]">
 				<fo:block>
-					<xsl:variable name="width" select="@width"/>
-					<xsl:variable name="height" select="@height"/>
-					
+					<xsl:variable name="width" select="java:replaceAll(java:java.lang.String.new(normalize-space(@width)), 'px$', '')"/>
+					<xsl:variable name="height" select="java:replaceAll(java:java.lang.String.new(normalize-space(@height)), 'px$', '')"/>
+
 					<xsl:variable name="scale_x">
 						<xsl:choose>
 							<xsl:when test="$width &gt; $width_effective_px">
