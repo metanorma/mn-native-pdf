@@ -1,0 +1,2499 @@
+
+<!DOCTYPE html>
+<html lang="en" xml:lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><style>
+  <!--
+@charset "UTF-8";
+/*
+    0 CSS RESET
+*/
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  border: 0;
+  font-size: 100%;
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, tt, var,
+b, u, i, center,
+dl, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  vertical-align: baseline;
+}
+
+html, body, div, span, applet, object, iframe,
+p, blockquote,
+a, abbr, acronym, address, big, cite,
+del, dfn, em, img, ins, q, s,
+small, strike, strong, sub, sup, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  font-family: Lato,"Source Sans Pro",sans-serif;
+}
+
+code, pre, tt, kbd, samp {
+  font-family: "Source Code Pro",monospace;
+  font-variant-ligatures: none;
+}
+
+code *, pre *, tt *, kbd *, samp * {
+  font-family: "Source Code Pro",monospace !important;
+  font-variant-ligatures: none;
+}
+
+p code, dt code, li code, label code, legend code, caption code, th code, td code,
+p tt, dt tt, li tt, label tt, legend tt, caption tt, th tt, td tt,
+p kbd, dt kbd, li kbd, label kbd, legend kbd, caption kbd, th kbd, td kbd,
+p samp, dt samp, li samp, label samp, legend samp, caption samp, th samp, td samp {
+  font-size: 1.0em;
+}
+
+sub, sup {
+  font-size: 0.75em;
+}
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: Lato,"Source Sans Pro",sans-serif;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: Lato,"Source Sans Pro",sans-serif;
+}
+
+blockquote, q {
+  quotes: none;
+}
+blockquote::before, blockquote::after, q::before, q::after {
+  content: "";
+  content: none;
+}
+
+.h2Annex {
+  font-family: Lato,"Source Sans Pro",sans-serif;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: max-content auto;
+}
+dl dt p, dl dd p {
+  margin-top: 0;
+}
+dl dt {
+  grid-column-start: 1;
+}
+dl dd {
+  grid-column-start: 2;
+}
+
+b, strong {
+  font-weight: bold;
+}
+
+div.document-stage-band, div.document-type-band {
+  background-color: #333333;
+}
+
+a.FootnoteRef + a.FootnoteRef::before {
+  content: ", ";
+  vertical-align: super;
+}
+
+a.TableFootnoteRef + a.TableFootnoteRef::before {
+  content: ", ";
+  vertical-align: super;
+}
+
+a.TableFootnoteRef, span.TableFootnoteRef,
+a.FootnoteRef, span.FootnoteRef {
+  vertical-align: super;
+}
+
+.addition {
+  color: blue;
+}
+
+.deletion {
+  color: red;
+  text-decoration: line-through;
+}
+
+ruby {
+  ruby-position: over;
+  -webkit-ruby-position: before;
+}
+
+ruby ruby {
+  ruby-position: under;
+  -webkit-ruby-position: after;
+}
+
+/* code highlighting with line numbers */
+table.rouge-line-table td.rouge-gutter {
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  padding-right: 1em;
+}
+
+table.rouge-line-table td.rouge-code {
+  -moz-user-select: all;
+  -ms-user-select: all;
+  -webkit-user-select: all;
+  user-select: all;
+}
+
+table.rouge-line-table,
+table.rouge-line-table th,
+table.rouge-line-table td {
+  width: auto;
+  border: none;
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+}
+
+table.rouge-line-table pre {
+  margin: 0;
+  padding: 0;
+  overflow-x: visible;
+  font-size: 100%;
+}
+
+/* header § links */
+a.header {
+  color: inherit;
+  text-decoration: none;
+}
+
+a.header:hover {
+  color: #a53221 !important;
+  background: inherit;
+  box-shadow: none;
+}
+
+a.header:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+a.anchor {
+  position: absolute;
+  z-index: 1001;
+  width: 1.5ex;
+  margin-left: -1.5ex;
+  display: block;
+  text-decoration: none !important;
+  visibility: hidden;
+  text-align: center;
+  font-weight: 400;
+}
+
+a.anchor::before {
+  content: "§";
+  font-size: 0.85em;
+  display: block;
+  padding-top: 0.1em;
+}
+
+a.anchor:hover {
+  color: #a53221;
+  background: inherit;
+  box-shadow: none;
+}
+
+h1 > a.anchor:hover,
+h2 > a.anchor:hover,
+h3 > a.anchor:hover,
+h4 > a.anchor:hover,
+h5 > a.anchor:hover,
+h6 > a.anchor:hover,
+.inline-header > a.anchor:hover,
+h1:hover > a.anchor,
+h2:hover > a.anchor,
+h3:hover > a.anchor,
+h4:hover > a.anchor,
+h5:hover > a.anchor,
+h6:hover > a.anchor,
+.inline-header:hover > a.anchor {
+  visibility: visible;
+}
+
+/* collapsible snippets: collapsible before hidable */
+.hidable {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.collapsible {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 3px 0;
+  margin: 0;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.active, .collapsible:hover {
+  background-color: #555;
+}
+
+.collapsible:after {
+  content: "▼";
+  color: white;
+  font-weight: bold;
+  float: right;
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
+.active:after {
+  content: "▲";
+}
+
+/* collapsible: */
+.collapsible + .hidable {
+  margin-top: 0;
+}
+
+.collapsible:not(.active) + .hidable {
+  overflow: hidden;
+  padding: 0;
+}
+
+#standard-band {
+  background-color: #0AC442;
+}
+
+#standard {
+  border-bottom: solid 3px #0AC442;
+}
+
+#directive-band {
+  background-color: #540D6E;
+}
+
+#directive {
+  border-bottom: solid 3px #540D6E;
+}
+
+#guide-band {
+  background-color: #D183C9;
+}
+
+#guide {
+  border-bottom: solid 3px #D183C9;
+}
+
+#specification-band {
+  background-color: #65AFFF;
+}
+
+#specification {
+  border-bottom: solid 3px #65AFFF;
+}
+
+#report-band {
+  background-color: #3A405A;
+}
+
+#report {
+  border-bottom: solid 3px #3A405A;
+}
+
+#amendment-band {
+  background-color: #F26430;
+}
+
+#amendment {
+  border-bottom: solid 3px #F26430;
+}
+
+#corrigendum-band {
+  background-color: #C84630;
+}
+
+#corrigendum {
+  border-bottom: solid 3px #C84630;
+}
+
+#administrative-band {
+  background-color: #BFAE48;
+}
+
+#administrative {
+  border-bottom: solid 3px #BFAE48;
+}
+
+#advisory-band {
+  background-color: #BD9391;
+}
+
+#advisory {
+  border-bottom: solid 3px #BD9391;
+}
+
+#proposal-band {
+  background-color: #39A0ED;
+}
+
+#proposal {
+  border-bottom: solid 3px #39A0ED;
+}
+
+#working-draft-band {
+  background-color: #2D7393;
+}
+
+#working-draft {
+  border-bottom: solid 3px #2D7393;
+}
+
+#committee-draft-band {
+  background-color: #2A6B7C;
+}
+
+#committee-draft {
+  border-bottom: solid 3px #2A6B7C;
+}
+
+#draft-standard-band {
+  background-color: #1C7F7A;
+}
+
+#draft-standard {
+  border-bottom: solid 3px #1C7F7A;
+}
+
+#final-draft-band {
+  background-color: #53C170;
+}
+
+#final-draft {
+  border-bottom: solid 3px #53C170;
+}
+
+#published-band {
+  background-color: #069E2D;
+}
+
+#published {
+  border-bottom: solid 3px #069E2D;
+}
+
+#withdrawn-band {
+  background-color: #004E64;
+}
+
+#withdrawn {
+  border-bottom: solid 3px #004E64;
+}
+
+#cancelled-band {
+  background-color: #2E382E;
+}
+
+#cancelled {
+  border-bottom: solid 3px #2E382E;
+}
+
+body {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.4em;
+  color: #1d1d1d;
+  background-color: #ffffff;
+}
+body main {
+  margin: 0 3em 0 6em;
+}
+
+main {
+  margin: 0 3em 0 6em;
+}
+
+#toc, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) {
+  font-family: Lato,"Source Sans Pro",sans-serif;
+  font-weight: 400;
+}
+#toc ul, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+#toc ul li a, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) ul li a {
+  padding: 5px 10px;
+}
+#toc ul a, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) ul a {
+  color: #4D7EA5;
+  text-decoration: none;
+  display: block;
+}
+#toc ul a:hover, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) ul a:hover {
+  box-shadow: none;
+  color: #4D7EA5;
+}
+#toc .h2, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) .h2 {
+  padding-left: 30px;
+}
+#toc .h3, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) .h3 {
+  padding-left: 50px;
+}
+#toc .h4, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) .h4 {
+  padding-left: 70px;
+}
+#toc .h5, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) .h5 {
+  padding-left: 90px;
+}
+#toc .h6, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) .h6 {
+  padding-left: 110px;
+}
+#toc .toc-active, #toc li:hover, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) .toc-active, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) li:hover {
+  background: #4D7EA5;
+  box-shadow: inset -5px 0px 10px -5px #4D7EA5 !important;
+}
+#toc .toc-active a, #toc li:hover a, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) .toc-active a, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) li:hover a {
+  color: #4D7EA5;
+}
+@media print {
+  #toc .toc-active, #toc li:hover, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) .toc-active, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) li:hover {
+    background: white;
+    box-shadow: none !important;
+  }
+  #toc .toc-active a, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) .toc-active a {
+    color: #4D7EA5;
+  }
+  #toc li:hover a, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) li:hover a {
+    color: black;
+  }
+}
+@media screen and (max-width: 768px) {
+  #toc, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) {
+    padding: 0 1.5em;
+    overflow: visible;
+  }
+}
+#toc .toc-active a, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) .toc-active a {
+  color: white;
+}
+#toc li a, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) li a {
+  text-transform: none;
+}
+#toc ul a:hover, #toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) ul a:hover {
+  box-shadow: none;
+  color: white;
+}
+
+#toc > ul :is(.h1, .h2, .h3, .h4, .h5, .h6) {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 100%;
+}
+
+li {
+  margin-left: 1em;
+  list-style-position: outside;
+}
+
+@media screen and (min-width: 768px) {
+  nav {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 323px;
+    font-size: 0.9em;
+    overflow: auto;
+    padding: 0 0 0 30px;
+    background-color: #f7f7f7;
+  }
+}
+@media print {
+  nav {
+    position: relative;
+    width: auto;
+    font-size: 0.9em;
+    overflow: auto;
+    padding: 0;
+    margin-right: 0;
+    background-color: white;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  #toggle {
+    position: fixed;
+    height: 100%;
+    width: 30px;
+    background-color: #4D7EA5;
+    color: white !important;
+    cursor: pointer;
+    z-index: 100;
+  }
+  #toggle span {
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+  }
+}
+@media screen and (max-width: 768px) {
+  #toggle {
+    display: none;
+  }
+}
+@media print {
+  #toggle {
+    display: none;
+  }
+}
+
+/*
+    2. Responsive navigation layout
+*/
+@media screen and (min-width: 768px) {
+  .container {
+    padding-left: 360px;
+  }
+  .rule.toc {
+    display: none;
+  }
+  h1.toc-contents {
+    margin-top: 1em;
+  }
+  ul#toc-list, ul#toc-list > :is(.h1, .h2, .h3, .h4, .h5, .h6) {
+    padding: 0;
+    margin: 0;
+  }
+}
+/*
+    Document types + stages
+*/
+.document-type-band {
+  left: 0;
+  top: 180px;
+  height: 100%;
+  position: fixed;
+  display: block;
+  z-index: 102;
+}
+.document-type-band > :first-child {
+  position: relative;
+  width: 25px;
+  font-weight: 400;
+  color: white;
+  text-transform: uppercase;
+  font-size: 0.9em;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  margin: 0;
+  margin-left: 6px;
+  writing-mode: tb-rl;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  white-space: nowrap;
+  display: block;
+  bottom: 0;
+}
+@media print {
+  .document-type-band {
+    display: none;
+  }
+}
+.document-type-band .document-type {
+  top: 20px;
+}
+
+.document-stage-band {
+  left: 0;
+  top: 0;
+  height: 100%;
+  position: fixed;
+  display: block;
+  z-index: 101;
+  box-shadow: -5px 0px 10px #1d1d1d;
+}
+.document-stage-band > :first-child {
+  position: relative;
+  width: 25px;
+  font-weight: 400;
+  height: 160px;
+  color: white;
+  text-transform: uppercase;
+  font-size: 0.9em;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  margin: 0;
+  margin-left: 6px;
+  writing-mode: tb-rl;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  white-space: nowrap;
+  display: block;
+  bottom: 0;
+}
+@media print {
+  .document-stage-band {
+    display: none;
+  }
+}
+.document-stage-band > :first-child {
+  font-weight: 300;
+}
+
+p.document-stage {
+  position: relative;
+  width: 25px;
+  font-weight: 400;
+  height: 120px;
+  color: white;
+  text-transform: uppercase;
+  font-size: 0.9em;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  margin: 0;
+  margin-left: 6px;
+  writing-mode: tb-rl;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  white-space: nowrap;
+  display: block;
+  bottom: 0;
+}
+
+#governance-band p.document-type {
+  height: 230px !important;
+}
+
+p.document-stage {
+  font-weight: 300;
+  height: 160px;
+}
+
+dt {
+  font-weight: 500;
+}
+
+#standard-band {
+  color: #0ac442;
+  background: none;
+}
+
+#standard {
+  border-bottom: solid 3px #0ac442;
+}
+
+#governance {
+  border-bottom: solid 3px #750697;
+}
+
+#governance-band {
+  background-color: #750697;
+}
+
+#guide {
+  border-bottom: solid 3px #48a0e7;
+}
+
+#guide-band {
+  background-color: #48a0e7;
+}
+
+.coverpage-maturity {
+  font-family: Lato,"Source Sans Pro",sans-serif;
+  font-weight: 400;
+  font-size: 1em;
+  margin: 0 0 2em 0;
+  text-transform: uppercase;
+}
+
+#working-draft {
+  border-bottom: solid 3px #fda706;
+}
+
+#working-draft-band {
+  background: none;
+}
+#working-draft-band p {
+  color: #fda706;
+}
+
+#committee-draft {
+  border-bottom: solid 3px #fd06fd;
+}
+
+#committee-draft-band {
+  background-color: #fd06fd;
+}
+
+#draft-standard {
+  border-bottom: solid 3px #fdf906;
+}
+
+#draft-standard-band {
+  background-color: #fdf906;
+}
+
+#standard {
+  border-bottom: solid 3px #0ac442;
+}
+
+#obsolete {
+  border-bottom: solid 3px #7e0d13;
+}
+
+#obsolete-band {
+  background-color: #7e0d13;
+}
+
+/*
+3. TYPOGRAPHY
+*/
+/*
+3.1 Titles
+*/
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: Lato,"Source Sans Pro",sans-serif;
+  line-height: 1.2em;
+  color: black;
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.3em;
+}
+
+h1, .h1 {
+  font-size: 1.8em;
+  text-transform: uppercase;
+  /*  margin-top: 2em;*/
+}
+
+h1#content, .h1#content {
+  margin-top: 2em;
+}
+
+h2, .h2 {
+  font-size: 1.6em;
+}
+
+h3, .h3 {
+  font-size: 1.5em;
+}
+
+/*
+span[id^="toc"]::after {
+float: left;
+padding-right: 4px;
+margin-left: -20px;
+font-family: "Font Awesome 5 Free";
+font-weight: 900;
+font-size: 0.8em;
+color: #cfcfcf;
+content: "\f0c1";
+}
+*/
+.TermNum, .Terms, .AltTerms {
+  color: #00549f;
+  font-weight: 400;
+}
+
+p.TermNum {
+  font-size: 0.9em;
+  line-height: 1em;
+  margin: 0;
+  margin-top: 2em;
+}
+
+p.Terms {
+  font-size: 1.1em;
+  line-height: 1.7em;
+  margin: 0;
+}
+
+/*
+p.AltTerms {
+font-style: italic;
+margin: 0;
+}
+*/
+span.obligation {
+  font-weight: 400;
+}
+
+/*
+3.2 Links
+*/
+a, a:visited {
+  text-decoration: none;
+  color: #4D7EA5;
+}
+
+a:hover {
+  color: white;
+  background: #4D7EA5;
+  box-shadow: 3px 0 0 #4D7EA5, -3px 0 0 #4D7EA5;
+}
+
+*::selection {
+  background: #4D7EA5;
+  color: white;
+}
+
+*::-moz-selection {
+  background: #4D7EA5;
+  color: white;
+}
+
+/*
+3.3 Lists
+*/
+ul, ol {
+  margin-left: 1em;
+  list-style-position: inside;
+}
+
+#toc ul {
+  margin-bottom: 0.25em;
+}
+
+#toc li {
+  list-style-type: none;
+}
+
+/*
+3.4 Rules
+*/
+.rule {
+  width: 100%;
+  height: 1px;
+  background-color: #00427e;
+  margin: 2em 0;
+}
+
+/*
+h2 p,.h2 p {
+display: inline;
+}
+*/
+/*
+3.5 Bibliograhy
+*/
+p.Biblio, p.NormRef {
+  margin-top: 1em;
+  margin-left: 2em;
+  text-indent: -2em;
+}
+
+/*
+3.6 Source Code + figures
+*/
+pre {
+  font-family: "Source Code Pro",monospace;
+  font-variant-ligatures: none;
+}
+
+.figure,
+pre,
+.pseudocode {
+  color: rgb(91, 94, 95);
+  background-color: #F5F6F6;
+  font-size: 1.0em;
+  line-height: 1.6em;
+  padding: 1.5em;
+  margin: 2em 0 1em 0;
+  overflow: auto;
+  font-size: 1.0em;
+  border-left: solid 5px #B1B6B8;
+  padding: 1.2em 1.2em 1.2em 2.2em;
+  margin: 2em 0 2em -1em;
+}
+.figure .SourceTitle,
+pre .SourceTitle,
+.pseudocode .SourceTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center;
+}
+
+table div.figure {
+  padding: 0;
+  margin: 0;
+}
+
+.AdmonitionTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center;
+}
+
+.RecommendationTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center;
+}
+
+.ListTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center;
+  text-align: left;
+}
+
+.FigureTitle,
+.SourceTitle {
+  font-weight: 700;
+  font-size: 1em;
+  text-align: center;
+}
+
+/*
+3.7 Notes
+*/
+.Note {
+  background-color: #F5F6F6;
+  border-left: solid 5px #B1B6B8;
+  color: rgb(91, 94, 95);
+  padding: 0.5em 1em;
+}
+
+.Admonition {
+  background-color: #ffcccc;
+  border-left: solid 5px #B1B6B8;
+  color: rgb(91, 94, 95);
+  padding: 0.5em 1em;
+}
+
+.note_label {
+  font-weight: 700;
+}
+
+/*
+3.8 Examples
+*/
+td.example,
+td.example_label {
+  background-color: #F5F6F6;
+  color: rgb(91, 94, 95);
+  padding: 0;
+}
+
+td > p.example {
+  margin: 0;
+  border-left: solid 5px #B1B6B8;
+  padding: 1em;
+}
+
+td.example_label {
+  font-weight: 700;
+  font-size: 1.2em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: 0;
+}
+
+.example {
+  background-color: #F5F6F6;
+  padding: 0.5em;
+  margin: 2em 0 1em 0;
+  text-align: left;
+  color: #424242;
+  padding-left: 2em;
+  color: rgb(91, 94, 95);
+}
+.example p {
+  margin: 0;
+}
+.example .example-title {
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-left: -1.5em;
+}
+.example .example-title {
+  margin-top: 0;
+  font-size: 1.2em;
+}
+.example pre,
+.example .pseudocode {
+  background: none;
+}
+
+/*
+3.9 Tables
+*/
+table {
+  width: 100%;
+  font-weight: 300;
+  margin: 1em 0 2em 0;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: 2em;
+}
+table, table th, table td {
+  border: 1px solid black;
+  font-size: 0.95em;
+}
+table th, table td {
+  padding: 1em;
+}
+table td.header {
+  font-weight: 400;
+}
+
+table,
+th,
+td {
+  border: none !important;
+  font-size: 1em;
+}
+
+tr:nth-child(even) {
+  background-color: #FBF9F8;
+}
+
+thead {
+  background-color: #4D7EA5;
+  color: white;
+  border: none;
+}
+
+/*
+3.10 Footnotes
+*/
+a.footnote-number {
+  vertical-align: super;
+  font-size: 0.8em;
+}
+
+.footnote {
+  font-size: 0.9em;
+}
+
+/*
+3.11 Blockquotes
+*/
+.Quote {
+  background-color: #F5F6F6;
+  font-style: italic;
+  width: 80%;
+  padding: 1.5em;
+  margin-top: 2em;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1.2em 1.2em 1.2em 2.2em;
+  margin: 2em 0 2em -1em;
+  border-left: solid 5px #B1B6B8;
+}
+.Quote .QuoteAttribution {
+  text-align: right;
+}
+
+/*
+3.12 Formulas
+*/
+.formula, .Formula {
+  background-color: #F5F6F6;
+  border-left: solid 5px #B1B6B8;
+  color: rgb(91, 94, 95);
+  padding: 1.2em 1.2em 1.2em 2.2em;
+  margin: 2em 0 2em -1em;
+  text-align: center;
+}
+
+/*
+3.13 Contact Info
+*/
+.contact-info {
+  background-color: #f7f7f7;
+  padding: 2em;
+  margin-top: 5em;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
+.contact-info p,
+.contact-info a {
+  font-family: "Source Code Pro",monospace;
+  font-variant-ligatures: none;
+  font-weight: 400;
+}
+
+.contact-info .name {
+  font-weight: 700;
+  font-size: 1.2em;
+  margin-bottom: 0;
+}
+
+.contact-info .address {
+  font-size: 1em;
+  line-height: 1.3em;
+  margin-top: 0;
+}
+
+/*
+Keywords
+*/
+span.keyword {
+  font-weight: 400;
+}
+
+p {
+  font-size: 1.2em;
+  line-height: 1.5;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+/*
+Paragraphs
+*/
+p {
+  font-size: 1.2em;
+  line-height: 1.5;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+/* Admonitions */
+.Admonition, .admonition {
+  background-color: #ffb3b3;
+  /* color: #47430c;*/
+  padding: 0.5em;
+  margin: 1.5em 0 1.5em 0;
+  text-align: left;
+}
+
+.Admonition p, .admonition p {
+  margin: 0;
+}
+
+/*
+4.0 Page header
+*/
+/*
+4.1 Top Logo
+*/
+/*
+.wrapper-top {
+background-color: #0e1a85;
+background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAACXBIWXMAABYlAAAWJQFJUiTwAAADwUlEQVR4nO3YgQ2AMAwDwcAiWZ1NizrH30lIeIEq9nPOGSDqPgC7+93v/suy3Mmvhx+6VAAIcwFAmc4nyzYAIMgGAGEuACirdyBZtgEASTYACHMBQFm9A8myDQBIsgFAmAsAyuodSJZtAECSDQDCXABQVu9AsmwDAJJsABDmAoCyegeSZRsAkGQDgDAXAJTVO5As2wCAJBsAhLkAoKzegWTZBgAk2QAgzAUAZfUOJMs2ACDJBgBhLgAoq3cgWbYBAEk2AAhzAUBZvQPJsg0ASLIBQJgLAMrqHUiWbQBAkg0AwlwAUFbvQLJsAwCSbAAQ5gKAsnoHkmUbAJBkA4AwFwCU1TuQLNsAgCQbAIS5AKCs3oFk2QYAJNkAIMwFAGX1DiTLNgAgyQYAYS4AKKt3IFm2AQBJNgAIcwFAWb0DybINAEiyAUCYCwDK6h1Ilm0AQJINAMJcAFBW70CybAMAkmwAEOYCgLJ6B5JlGwCQZAOAMBcAlNU7kCzbAIAkGwCEuQCgrN6BZNkGACTZACDMBQBl9Q4kyzYAIMkGAGEuACirdyBZtgEASTYACHMBQFm9A8myDQBIsgFAmAsAyuodSJZtAECSDQDCXABQVu9AsmwDAJJsABDmAoCyegeSZRsAkGQDgDAXAJTVO5As2wCAJBsAhLkAoKzegWTZBgAk2QAgzAUAZfUOJMs2ACDJBgBhLgAoq3cgWbYBAEk2AAhzAUBZvQPJsg0ASLIBQJgLAMrqHUiWbQBAkg0AwlwAUFbvQLJsAwCSbAAQ5gKAsnoHkmUbAJBkA4AwFwCU1TuQLNsAgCQbAIS5AKCs3oFk2QYAJNkAIMwFAGX1DiTLNgAgyQYAYS4AKKt3IFm2AQBJNgAIcwFAWb0DybINAEiyAUCYCwDK6h1Ilm0AQJINAMJcAFBW70CybAMAkmwAEOYCgLJ6B5JlGwCQZAOAMBcAlNU7kCzbAIAkGwCEuQCgrN6BZNkGACTZACDMBQBl9Q4kyzYAIMkGAGEuACirdyBZtgEASTYACHMBQFm9A8myDQBIsgFAmAsAyuodSJZtAECSDQDCXABQVu9AsmwDAJJsABDmAoCyegeSZRsAkGQDgDAXAJTVO5As2wCAJBsAhLkAoKzegWTZBgAk2QAgzAUAZfUOJMs2ACDJBgBhLgAoq3cgWbYBAEk2AAhzAUBZvQPJsg0ASLIBQJgLAMrqHUiWbQBAkg0AwlwAUFbvQLJsAwCSbAAQ5gKAsnoHkmUbAJBkA4AwFwCU1TuQLNsAgCQbAFTNzA9ggAr9aahO8QAAAABJRU5ErkJggg==');
+color: #ffffff;
+padding: 2em 0;
+}
+*/
+.coverpage {
+  background: radial-gradient(#2D5D8E, #0D1E2B);
+  /*background-image: url("img/dots@2x.png");*/
+  color: #ffffff;
+  padding: 2em;
+  margin-left: 2em;
+}
+
+.doc-number {
+  font-size: 1em;
+  font-family: Lato,"Source Sans Pro",sans-serif;
+}
+
+.coverpage-title {
+  padding-bottom: 0.5em;
+  font-family: Lato,"Source Sans Pro",sans-serif;
+  font-size: 1.5em;
+  font-weight: 900;
+}
+
+.title-section1 {
+  padding: 0 2em 0 3em;
+}
+
+.prefatory-section {
+  padding: 0 3em 0 3em;
+}
+
+.zzSTDTitle1, .MsoCommentText {
+  display: none;
+}
+
+.coverpage {
+  text-align: center;
+}
+
+.coverpage-logo {
+  margin-bottom: 1em;
+}
+
+.coverpage-logo span, .coverpage-tc-name span {
+  font-family: Lato,"Source Sans Pro",sans-serif;
+  text-transform: uppercase;
+  font-weight: 300;
+  display: block;
+}
+
+.coverpage-tc-name {
+  font-size: 1.2em;
+  line-height: 1.2em;
+  margin: 0.25em 0;
+}
+
+.document-info {
+  padding: 2em;
+  text-align: center;
+  margin-left: 1em;
+}
+
+/*
+4.2 Document Identity
+*/
+.coverpage-doc-identity {
+  width: 100%;
+  height: 50px;
+  margin: 2em 0;
+}
+
+.title-first {
+  font-size: 3em;
+  line-height: 1.5em;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-decoration: underline solid #EE9C4F;
+  padding: 1em 0.5em;
+}
+
+.title-second {
+  font-size: 2em;
+  line-height: 2em;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+img.csa-logo {
+  height: 50px;
+  width: auto;
+  float: right;
+  margin-right: 2em;
+}
+
+.coverpage-title .title-second {
+  display: none;
+}
+
+.coverpage-stage-block {
+  font-family: Lato,"Source Sans Pro",sans-serif;
+  font-weight: 700;
+  font-size: 1em;
+  margin: 1em 0em 1em 0em;
+  text-transform: uppercase;
+}
+
+.section-title {
+  background: linear-gradient(#A5A8AB, #B1B6B8);
+  padding: 4em 2em 3em 5.5em;
+  margin: 4em -3em 3em -5em;
+  border-bottom: 8px solid #EE9C4F;
+}
+
+.section-title .super-title {
+  font-size: 2em;
+  font-weight: 100;
+  line-height: 1em;
+  margin: 0;
+  color: white;
+  text-transform: uppercase;
+}
+
+.section-title h1, .section-title .h1 {
+  font-size: 2em;
+  font-weight: 800;
+  line-height: 1em;
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  color: white;
+  text-transform: none;
+}
+
+h2, .h2 {
+  border-bottom: solid 1px #4D7EA5;
+  color: #4D7EA5;
+}
+
+h3, h4, h5, h6, .h3, .h4, .h5, .h6 {
+  color: #EE9C4F;
+}
+
+/*
+4.3 Draft Warning
+*/
+.coverpage-warning {
+  border-top: solid 1px #f36f36;
+  border-bottom: solid 1px #f36f36;
+  margin: 1em 2em;
+  color: #00549f;
+  padding: 1em;
+}
+
+.coverpage-warning .title {
+  color: #f36f36;
+  font-family: Lato,"Source Sans Pro",sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 1.2em;
+}
+
+/*
+4.4 Copyright
+*/
+.copyright {
+  padding: 1em;
+  font-size: 0.8em;
+  text-align: left;
+}
+
+.copyright .name, .copyright .address {
+  color: #00549f;
+}
+
+/*
+5.0 Other styles
+*/
+/*
+To top button
+*/
+#myBtn {
+  font-family: "Source Code Pro",monospace;
+  font-variant-ligatures: none;
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  font-size: 12px;
+  border: none;
+  outline: none;
+  background-color: #1f8ca0;
+  opacity: 0.15;
+  color: white;
+  cursor: pointer;
+  padding: 10px 15px 10px 15px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+#myBtn:hover {
+  opacity: 1;
+}
+@media print {
+  #myBtn {
+    display: none;
+  }
+}
+#myBtn a.anchorjs-link:hover {
+  background: none;
+  color: #4D7EA5;
+  box-shadow: none;
+}
+
+nav h1:hover a::after {
+  display: none;
+}
+
+.document-stage-band p {
+  color: #EE9C4F !important;
+}
+
+.document-type-band p {
+  color: #4D7EA5 !important;
+}
+
+.document-stage-band {
+  box-shadow: none;
+}
+
+@page {
+  margin: 1cm;
+}
+@media print {
+  .section-title, .document-info, nav {
+    page-break-before: always;
+  }
+  .coverpage {
+    height: 23cm;
+  }
+  .coverpage-doc-identity {
+    position: absolute;
+    bottom: 1cm;
+  }
+  #toggle, .document-stage-band,
+  .document-type-band {
+    display: none;
+  }
+  .container {
+    padding-left: 0;
+  }
+  #toc .toc-active a {
+    color: #4D7EA5;
+  }
+  #toc .toc-active, #toc li:hover {
+    background: white;
+    box-shadow: none !important;
+  }
+  #toc li:hover a {
+    color: black;
+  }
+  h1.toc-contents {
+    margin-top: 2em;
+  }
+}
+
+-->
+</style><style><!--pre.sourcecode table td { padding: 5px; }
+pre.sourcecode table pre { margin: 0; }
+pre.sourcecode, pre.sourcecode .w {
+  color: #444444;
+}
+pre.sourcecode .cp {
+  color: #CC00A3;
+}
+pre.sourcecode .cs {
+  color: #CC00A3;
+}
+pre.sourcecode .c, pre.sourcecode .ch, pre.sourcecode .cd, pre.sourcecode .cm, pre.sourcecode .cpf, pre.sourcecode .c1 {
+  color: #FF0000;
+}
+pre.sourcecode .kc {
+  color: #C34E00;
+}
+pre.sourcecode .kd {
+  color: #0000FF;
+}
+pre.sourcecode .kr {
+  color: #007575;
+}
+pre.sourcecode .k, pre.sourcecode .kn, pre.sourcecode .kp, pre.sourcecode .kt, pre.sourcecode .kv {
+  color: #0000FF;
+}
+pre.sourcecode .s, pre.sourcecode .sb, pre.sourcecode .sc, pre.sourcecode .ld, pre.sourcecode .sd, pre.sourcecode .s2, pre.sourcecode .se, pre.sourcecode .sh, pre.sourcecode .si, pre.sourcecode .sx, pre.sourcecode .sr, pre.sourcecode .s1, pre.sourcecode .ss {
+  color: #009C00;
+}
+pre.sourcecode .sa {
+  color: #0000FF;
+}
+pre.sourcecode .nb, pre.sourcecode .bp {
+  color: #C34E00;
+}
+pre.sourcecode .nt {
+  color: #0000FF;
+}
+
+--></style><title>Information Security Management through Reflexive Security — Six Pillars in the Integration of Security, Development and Operations</title>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!--TOC script import-->
+<script type="text/javascript" src="https://cdn.rawgit.com/jgallen23/toc/0.3.2/dist/toc.min.js"></script>
+<script type="text/javascript">function toclevel() { return "h1:not(:empty):not(.TermNum):not(.noTOC),h2:not(:empty):not(.TermNum):not(.noTOC)";}
+</script>
+
+<!--Google fonts-->
+<link rel="preconnect" href="https://fonts.gstatic.com" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i|Space+Mono:400,700" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700,900" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Rubik:300,300i,500" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,700,900" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,300;0,600;1,300;1,600=swap" rel="stylesheet" />
+<!--Font awesome import for the link icon-->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css" integrity="sha384-v2Tw72dyUXeU3y4aM2Y0tBJQkGfplr39mxZqlTBDUZAb9BGoC40+rdFCG0m10lXk" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/fontawesome.css" integrity="sha384-q3jl8XQu1OpdLgGFvNRnPdj5VIlCvgsDQTQB6owSOHWlAurxul7f+JpUOVdAiJ5P" crossorigin="anonymous" />
+<style class="anchorjs"></style>
+</head><body lang="EN-US" link="blue" vlink="#954F72" xml:lang="EN-US" class="container"><div class="title-section"><div class="document-stage-band" id="working-draft-band">
+    <p class="document-stage">Published</p>
+</div>
+
+<div class="document-type-band" id="standard-band">
+    <p class="document-type">CSA Standard</p>
+</div>
+
+<div id="toggle"> <span>•</span> </div>
+
+<header>
+
+<!--<div class="WordSection1">-->
+<div class="coverpage">
+
+  <div class="coverpage-logo">
+    <span>Cloud Security Alliance</span>
+  </div>
+
+  <div class="doc-number">
+    <span class="docnumber"></span>
+  </div>
+
+  <div class="title-first">Information Security Management through Reflexive Security — Six Pillars in the Integration of Security, Development and Operations</div>
+  <div class="title-second"></div>
+
+  <div class="coverpage-tc-name">
+    <span>XXXX</span>
+  </div>
+
+  
+
+      
+
+      <div class="coverpage-contributors">
+        
+        
+        <div class="group full-author">
+          
+          
+          <span class="person full-author">Michael Roza<span class="role"></span></span>
+          
+          <span class="person full-author">Sean Heide<span class="role"></span></span>
+          
+          <span class="person full-author">David Lewis<span class="role"></span></span>
+          
+          <span class="person full-author">Eric Gauthier<span class="role"></span></span>
+          
+          <div class="affiliation"></div>
+          
+        </div>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <div class="group editor">
+          
+          
+          <span class="person editor">Ronald Tse<span class="role">, Editor</span></span>
+          
+          <div class="affiliation"></div>
+          
+        </div>
+        
+        
+
+      </div>
+
+  <div class="coverpage-doc-identity">
+    <img class="csa-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAACPCAYAAADUSI02AAAACXBIWXMAAAsTAAALEwEAmpwYAAAGAGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDAgNzkuMTYwNDUxLCAyMDE3LzA1LzA2LTAxOjA4OjIxICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOCAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMTgtMDUtMTZUMDk6MTk6MjUtMDQ6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDE4LTA1LTIyVDEwOjQ0OjAxLTA0OjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDE4LTA1LTIyVDEwOjQ0OjAxLTA0OjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9InNSR0IgSUVDNjE5NjYtMi4xIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjNlMzJkMGI1LTljMjMtNDM2NS05NzcxLTJhMzVmYTMzMmU1MCIgeG1wTU06RG9jdW1lbnRJRD0iYWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOjRlY2I5MDg2LTFkNjYtMTQ0Yy1hNzQwLTlmOWE3YjAwYzNmYiIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOjhiY2NiNjMwLTcyODUtNGNmNC04ZmExLWYyMTYzMmZhMTk1ZCI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6OGJjY2I2MzAtNzI4NS00Y2Y0LThmYTEtZjIxNjMyZmExOTVkIiBzdEV2dDp3aGVuPSIyMDE4LTA1LTE2VDA5OjE5OjI1LTA0OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOCAoTWFjaW50b3NoKSIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6M2UzMmQwYjUtOWMyMy00MzY1LTk3NzEtMmEzNWZhMzMyZTUwIiBzdEV2dDp3aGVuPSIyMDE4LTA1LTIyVDEwOjQ0OjAxLTA0OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOCAoTWFjaW50b3NoKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4E7fdxAAA0UUlEQVR4nO2deZgdVZn/P013Q9KSjQaaDiEdAoFAxAxBFMImiEIYQWYANbigoriwiIriLILoIMPiiIgzKDLgDCKOQUAYVgf0RxCECIKGRAKxE7KxNNkgAdPh/P74Vnmrzq313qrbfW/O53nqSaq76pxTdW+f95x3bTPG4HC0OO3AscAA8MAQj6UV6AHeC/wMWD3EY3EMIVsN9QAcjhLpAmYDv0KT3WtDOprmpw84D3gEOA1YN7TDcQw1HUM9AIejJEYB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" alt="csa-logo" width="400" height="143">
+  </img>
+</div>
+
+<div class="title-section1">
+  <div class="document-info">
+    <div class="coverpage-stage-block">
+      <span class="coverpage-stage" id="standard">CSA Standard</span>
+    </div>
+
+    <div class="coverpage-stage-block">
+      <span class="coverpage-maturity" id="published"></span>
+    </div>
+
+
+
+
+    <div class="copyright">
+      <div class="year">
+              <div class="boilerplate-copyright">
+
+<div id="_165b9f00-4c63-850a-55f9-06a540098f5c">
+<p id="_9323b6c4-70de-9869-7132-f89214c59777">© 2019 Cloud Security Alliance, LLC.</p>
+</div>
+</div>
+              </div>
+
+      <div class="message">
+              <div class="boilerplate-legal">
+
+<div id="_7c9b34cc-5853-55f8-f0b6-1d5149135a25">
+<p id="_50bbfa02-61c3-8332-bad8-61e7389d1808">All rights reserved. Unless otherwise specified, no part of this publication may be reproduced or utilized otherwise in any form or by any means, electronic or mechanical, including photocopying, or posting on the internet or an intranet, without prior written permission. Permission can be requested from the address below.</p>
+</div>
+</div>
+      </div>
+
+      <div class="contact-info">
+              <div class="boilerplate-feedback">
+
+<div id="_d1453bea-e4ad-b63d-28cb-d89fb6b449ed">
+<p id="_bf2237bd-3623-4c84-d54e-82e2ad89e07a">Cloud Security Alliance</p>
+
+<p id="_6a7be366-d223-6826-a1c0-081a62584781" style="text-align:left;">2212 Queen Anne Ave N<br /> Seattle <br /> WA 98109 <br /> United States of America <br /> <br /> <a href="mailto:copyright@cloudsecurityalliance.com">copyright@cloudsecurityalliance.com</a><br /> <a href="https://www.cloudsecurityalliance.com">www.cloudsecurityalliance.com</a></p>
+</div>
+</div>
+      </div>
+    </div>
+
+    <div class="rule"></div>
+  </div>
+
+</div>
+</div></header></div><br /><div class="prefatory-section"><nav>
+  <div id="toc"><h1 class="IntroTitle"><a class="anchor" href="#_97ff9fdf-2bad-419b-a4aa-ab07a3a17e60"></a><a class="header" href="#_97ff9fdf-2bad-419b-a4aa-ab07a3a17e60">Table of contents</a></h1><ul><li class="h1"><a href="#_introduction">      
+  
+  Introduction
+</a></li>
+<li class="h2"><a href="#_background">      
+  
+  Background
+</a></li>
+<li class="h2"><a href="#_learning_from_the_collaborative_philosophy">      
+  
+  Learning from the Collaborative Philosophy
+</a></li>
+<li class="h2"><a href="#_application_to_security">      
+  
+  Application to security
+</a></li>
+<li class="h2"><a href="#_target_audience">      
+  
+  Target Audience
+</a></li>
+<li class="h1"><a href="#_scope">      
+  
+  1.  Scope
+</a></li>
+<li class="h1"><a href="#_811ba2da-ac52-4fa7-8c7c-f55f6f3a728b">      2.  Normative references</a></li>
+<li class="h1"><a href="#_terms_and_definitions">      
+  
+  3.  Terms and definitions
+</a></li>
+<li class="h1"><a href="#_reflexive_security">      
+  
+  4.  Reflexive Security
+</a></li>
+<li class="h2"><a href="#_general">      
+  
+  4.1.  General
+</a></li>
+<li class="h2"><a href="#_relationship_with_isms">      
+  
+  4.2.  Relationship with ISMS
+</a></li>
+<li class="h1"><a href="#_six_pillars_supporting_reflexive_security">      
+  
+  5.  Six Pillars Supporting Reflexive Security
+</a></li>
+<li class="h2"><a href="#_general_2">      
+  
+  5.1.  General
+</a></li>
+<li class="h2"><a href="#_responsible_collectively">      
+  
+  5.2.  Responsible collectively
+</a></li>
+<li class="h2"><a href="#_pragmatic">      
+  
+  5.3.  Pragmatic
+</a></li>
+<li class="h2"><a href="#_align_and_bridge">      
+  
+  5.4.  Align and bridge
+</a></li>
+<li class="h2"><a href="#_automate">      
+  
+  5.5.  Automate
+</a></li>
+<li class="h2"><a href="#_measure_and_improve">      
+  
+  5.6.  Measure and improve
+</a></li>
+<li class="h2"><a href="#_collaborate_and_integrate">      
+  
+  5.7.  Collaborate and integrate
+</a></li>
+<li class="h1"><a href="#_six_benefits_of_reflexive_security">      
+  
+  6.  Six Benefits of Reflexive Security
+</a></li>
+<li class="h2"><a href="#_general_3">      
+  
+  6.1.  General
+</a></li>
+<li class="h2"><a href="#_human_centric">      
+  
+  6.2.  Human-centric
+</a></li>
+<li class="h2"><a href="#_elastic">      
+  
+  6.3.  Elastic
+</a></li>
+<li class="h2"><a href="#_apt_and_holistic">      
+  
+  6.4.  Apt and holistic
+</a></li>
+<li class="h2"><a href="#_resilient">      
+  
+  6.5.  Resilient
+</a></li>
+<li class="h2"><a href="#_tailored">      
+  
+  6.6.  Tailored
+</a></li>
+<li class="h2"><a href="#_dynamic">      
+  
+  6.7.  Dynamic
+</a></li>
+<li class="h1"><a href="#_achieving_reflexive_security">      
+  
+  7.  Achieving Reflexive Security
+</a></li>
+<li class="h2"><a href="#_general_4">      
+  
+  7.1.  General
+</a></li>
+<li class="h2"><a href="#_securing_devops_practices">      
+  
+  7.2.  Securing DevOps practices
+</a></li>
+<li class="h2"><a href="#_implementing_security_operations_through_devops">      
+  
+  7.3.  Implementing security operations through DevOps
+</a></li>
+<li class="h2"><a href="#_securing_information_security_processes_with_devops">      
+  
+  7.4.  Securing information security processes with DevOps
+</a></li>
+<li class="h1"><a href="#_relevant_guidelines_for_implementing_reflexive_security">      
+  
+  8.  Relevant guidelines for implementing Reflexive Security
+</a></li>
+<li class="h2"><a href="#_general_8">      
+  
+  8.1.  General
+</a></li>
+<li class="h2"><a href="#_culture_shock">      
+  
+  8.2.  Culture Shock
+</a></li>
+<li class="h2"><a href="#_cross_train">      
+  
+  8.3.  Cross-train
+</a></li>
+<li class="h2"><a href="#_delegate">      
+  
+  8.4.  Delegate
+</a></li>
+<li class="h2"><a href="#_automate_with_purpose">      
+  
+  8.5.  Automate with purpose
+</a></li>
+<li class="h1"><a href="#_conclusion">      
+  
+  9.  Conclusion
+</a></li></ul></div>
+
+</nav>
+
+
+<div class="rule toc"></div>
+</div><br /><main class="main-section"><button onclick="topFunction()" id="myBtn" title="Go to top">Top</button><div class="authority">
+
+
+
+
+</div><br /><br /><div class="Section3" id="_introduction"><h1 class="IntroTitle" id="_e8901126-ba92-45d9-8778-d161081baa60"><a class="anchor" href="#_introduction"></a><a class="header" href="#_introduction">Introduction</a></h1><div id="_background"><h2 id="_4122b986-fac9-462b-b2a3-09076a0b25ac"><a class="anchor" href="#_background"></a><a class="header" href="#_background">Background</a></h2>
+
+<p id="_c79ec059-e2cc-371f-6c9a-c8d332105c32">In today’s hyper-competitive context with increasing cybersecurity threats, especially in the cloud, organizations are under strong pressure to streamline information security management processes. The age-old problem of resource limitations is exacerbated — the tradition of information security management systems (ISMS) is seemingly too rigid in structure, yet inadequate in responsiveness to new needs.</p>
+
+<p id="_c1cf45e6-04f5-636a-79a0-cdae8f8213c8">Organizations today are faced with a number of information security management issues, including:</p>
+
+<div class="ul_wrap"><ul id="_7140ed07-c132-90c7-f3db-a6f31a155e06"><li><p id="_72aa1113-4d56-fab8-2a68-f7fdcdb3744f">Spiralling compliance governance costs;</p>
+</li>
+<li><p id="_7ce8ed7b-e3fc-a20d-bdf4-a977de13850b">Global shortage of information security professionals, forcing more efficient utilization of staff;</p>
+</li>
+<li><p id="_dabd5f7b-545c-aa97-56ca-8100ea242f76">The notable disconnect between strategic security and operational security.</p>
+</li>
+</ul></div>
+
+<p id="_feb0063c-6e1a-96c9-b36d-304eb9f83be1">All of these factors pressure an organization’s information security processes to deliver more for less.</p>
+</div><div id="_learning_from_the_collaborative_philosophy"><h2 id="_ec17f72d-7853-4b97-8f06-e95108d4f66b"><a class="anchor" href="#_learning_from_the_collaborative_philosophy"></a><a class="header" href="#_learning_from_the_collaborative_philosophy">Learning from the Collaborative Philosophy</a></h2>
+
+<p id="_f30a80b2-4357-5667-d3e5-1739e960a348">DevOps, the practice of applying developmental best practices such as collective collaboration to infrastructure operations, has been shown to positively impact efficiencies of development and operations teams today, especially in the cloud environment.</p>
+
+<p id="_78f1de36-d968-2077-ab2b-66a6ef4872cb">Given its strengthening adoption, it is necessary to consider its impact on information security itself and look to apply those practices to the arena of information security management.</p>
+
+<p id="_ecf41f8c-33df-36a0-6e28-051cc0df9955">Distilling from the cultural and philosophical elements of such collaborative practices, as well as from the exemplary contexts where those practices were derived from, six major principles are described in this document to demonstrate the principles of achieving</p>
+</div><div id="_application_to_security"><h2 id="_948276fa-643f-49d1-a11c-f3d02fffab19"><a class="anchor" href="#_application_to_security"></a><a class="header" href="#_application_to_security">Application to security</a></h2>
+
+<p id="_f0239c96-9898-ef6b-f184-48438004066a">DevOps is now broadly practiced but it has been generally separated from security practices. There is currently no standardized term in industry that cater to this aspect. A number of terms have been proposed by members of the community, including “DevOpsSec”, “DevSecOps”, “SecDevOps”, to explain the intersection of security and DevOps, as well as the amalgamation of security, development and operations practices.</p>
+
+<p id="_e0ce17a3-e065-6044-8ddd-bb29999c8df7">These terms have been used interchangeably, but the meanings they convey can be vastly different. The definitions of these terms can also widely conflict with each other depending on the particular understanding of the reader. Moreover, there is no industry recognized definition for security automation, which is a core concept to the application of DevOps practices to security operations, leading to confusion and misinterpretations. It is therefore crucial to clarify and standardize such terms for a global and wider industry audience.</p>
+</div><div id="_target_audience"><h2 id="_3cd21d14-e2be-4cd3-ad60-8d7ee9dde4ef"><a class="anchor" href="#_target_audience"></a><a class="header" href="#_target_audience">Target Audience</a></h2>
+
+<p id="_862a347b-4295-6ceb-e80a-dcb8341a1cf7">The target audience of this document includes those involved in the management and operational functions of risk, information security and information technology. This includes the C-suite (CISO, CIO, CTO, CRO, COO, CEO), and especially to the individuals involved in the following functional areas: automation, DevOps, quality assurance, InfoSec, governance, risk management and compliance.</p>
+</div></div><div id="_scope"><h1 id="_186e5f13-f05f-456e-815d-55ee72472660"><a class="anchor" href="#_scope"></a><a class="header" href="#_scope">1.  Scope</a></h1><p id="_2fe3016a-7865-412e-da7e-057c69821a65">This document defines “Reflexive Security” as a new security management approach that is built upon the interrelationships between security, development and operations necessary for protecting the security stance and the deliverables of an organization.</p><p id="_03571448-d092-21c2-43d6-4d315c5e0acc">The benefits of combining security, development and operation practices for integrated management are also described.</p><p id="_3415123e-cc23-c31b-9ea0-91bf6cd5e59c">Several approaches to Reflexive Security are suggested to resolve the availability gap of cyber security professionals.</p></div><div><h1 id="_811ba2da-ac52-4fa7-8c7c-f55f6f3a728b">2.  Normative references</h1>
+<p id="_02b1c060-f2f9-4bc4-035d-e49887f749e3">The following documents are referred to in the text in such a way that some or all of their content constitutes requirements of this document. For dated references, only the edition cited applies. For undated references, the latest edition of the referenced document (including any amendments) applies.</p>
+
+
+
+<p id="iso27000" class="NormRef">ISO/IEC 27000:2018, International Organization for Standardization and International Electrotechnical Commission. <i>Information technology — Security techniques — Information security management systems — Overview and vocabulary</i>. Fifth edition. 2018. Geneva. <a href="https://www.iso.org/standard/73906.html">https://www.iso.org/standard/73906.html</a>.</p>
+</div><div id="_terms_and_definitions"><h1 id="_be1ee724-4ab3-47ba-99ad-52b5b41fd4d0"><a class="anchor" href="#_terms_and_definitions"></a><a class="header" href="#_terms_and_definitions">3.  Terms and definitions</a></h1>
+<p id="_dcc01114-4d03-3550-1347-4ba901bda94c">For the purposes of this document, the following terms and definitions apply.</p>
+
+<p id="_9459eb76-97c4-24c0-965b-00f828358e76">For the purposes of this document, the terms and definitions given in ISO 27000 and the following apply.</p>
+
+<p class="Terms" style="text-align:left;" id="term-DevOps"><strong>3.1.</strong> <b>DevOps</b></p>
+<p id="_cd9ff347-53a5-e6a1-c02f-05e6dad0300a">Application of software development methodologies to infrastructure operations.</p>
+
+
+<p class="Terms" style="text-align:left;" id="term-DevOpsSec"><strong>3.2.</strong> <b>DevOpsSec</b></p>
+<p id="_21cbd43d-2709-ff61-93ea-03b52fdece52">Application of information security principles and practices to protect processes that utilize DevOps culture, practices, and workflows</p>
+
+
+<p class="Terms" style="text-align:left;" id="term-DevSecOps-_DSO_"><strong>3.3.</strong> <b>DevSecOps (DSO)</b></p>
+<p id="_0c6c075e-b8b6-2331-abac-bf4cfb982075">The integration of continuous security principles, processes, and technologies into DevOps culture, practices, and workflows</p>
+
+
+<p class="Terms" style="text-align:left;" id="term-SecDevOps"><strong>3.4.</strong> <b>SecDevOps</b></p>
+<p id="_d6579ca1-8def-6e4f-7ce7-203fbf3c7fa9">Application of DevOps culture, practices, and workflows for the achievement of information security and compliance management</p>
+
+</div><div id="_reflexive_security"><h1 id="_64b8c212-bd51-485c-8fa8-bf61c59d02ef"><a class="anchor" href="#_reflexive_security"></a><a class="header" href="#_reflexive_security">4.  Reflexive Security</a></h1><div id="_general"><h2 id="_00621001-2a0e-4ff8-a4a5-cb123d1159fa"><a class="anchor" href="#_general"></a><a class="header" href="#_general">4.1.  General</a></h2>
+
+<p id="_5b2e7ae1-5e37-6482-2e9a-6578666454f6">Reflexive Security is an approach for information security management built upon the principles of Agile and DevOps. It is a non-prescriptive framework that is purely needs-based, emphasizes collective responsibility, and considers information security and its responses to be a holistic function of the organization.</p>
+
+<p id="_e72461c6-5e46-bab7-eab2-fc4cca269b24">The word “Reflexive” is used for its meaning from the reflexive relation in mathematical sets, where every element in a such a relation is related to itself. In Reflexive Security, every action taken is related to the context and needs of the organization itself.</p>
+
+<p id="_19b69493-7936-38a1-8e36-83b53978ae50">Reflexive Security emphasizes security across organizational roles that reacts to external and internal threats in an agile and dynamic way. It aims to be a new information security management strategy that is dynamic, interactive, effective and holistic.</p>
+</div><div id="_relationship_with_isms"><h2 id="_1d7d7cb0-4ab9-4d60-a594-41d8a8f8ce2d"><a class="anchor" href="#_relationship_with_isms"></a><a class="header" href="#_relationship_with_isms">4.2.  Relationship with ISMS</a></h2>
+
+<p id="_50196db2-b69f-637c-54f1-68d95389fa6f">Comparing to the traditional Information Security Management System (ISMS) approach, Reflexive Security aims to follow a similar spirit as Agile software development when compared to the Waterfall mindset.</p>
+
+<p id="_c90548fa-0e34-7844-951a-c262033563b0">Reflexive Security treasures dynamic information exchange within the organization. Like the immune system of the human body, information is immediately propagated to adjacent, potentially vulnerable functions given detection of a threat. A traditional ISMS approach is top-down: it requires threat information to be reported back to the higher functions, before any response can be made. In Reflexive Security, organization functions themselves are already integrated with security functions, and can provide an immediate response to address potential impact. A centralized response is important, but should not prohibit an immediate tactical approach.</p>
+
+<p id="_0105ae4f-0dda-4bb9-e619-c716b2857baa">The ISMS approach is about adopting best practices. However, often best practices that work in larger organizations do not work with smaller ones. In fact, they can create an unnecessary burden for smaller organizations, taking away precious time and effort and hence negatively affecting their information security stances.</p>
+
+<p id="_e5a75acf-6844-e0c3-3316-8bc90f59a81e">Reflexive Security also alleviates the security skills shortage paradox by promoting the idea of “hybrid domain-security experts”, by delegating risks and security responsibilities to organization functions.</p>
+
+<p id="_9b454b0d-f1f0-304d-707e-eceeef8df495">Top leadership commitment as required in an ISMS, while crucial, is insufficient. Top leadership has to understand the nature of information security and needs to be committed to integrating information security into each and every aspect of the organization. Top leadership must be themselves integrated into the information security function — fully understanding the risks and threats the organization faces (its risk profile) with regards to information security, setting clear bounds and requirements for personnel to adhere to.</p>
+
+<p id="_2a0439b5-73c0-0a12-6064-727434190ba7">The human link is often the weakest link in information security. Phishing, social engineering are all techniques to trick an unsuspecting individual to voluntarily compromise the security of an organization. Without full and active participation of the involved individuals, beyond awareness, information security simply cannot be achieved.</p>
+</div></div><div id="_six_pillars_supporting_reflexive_security"><h1 id="_9c792632-e8dd-4bc4-b241-433c4b8ffd7b"><a class="anchor" href="#_six_pillars_supporting_reflexive_security"></a><a class="header" href="#_six_pillars_supporting_reflexive_security">5.  Six Pillars Supporting Reflexive Security</a></h1><div id="_general_2"><h2 id="_ec661bd2-69b0-43a9-ab5b-74d538519670"><a class="anchor" href="#_general_2"></a><a class="header" href="#_general_2">5.1.  General</a></h2>
+
+<p id="_8c978097-218f-26f6-0ecc-892858ffce66">The six pillars can be abbreviated into the acronym RAMPAC (Responsible collectively, Automate, Measure, Pragmatic, Align and bridge, Collaborate and integrate).</p>
+</div><div id="_responsible_collectively"><h2 id="_ac3d1ba4-fc82-4114-97bc-3438ce57ef19"><a class="anchor" href="#_responsible_collectively"></a><a class="header" href="#_responsible_collectively">5.2.  Responsible collectively</a></h2>
+
+<p id="_2d0b0f21-e952-7916-befa-bdb3461f5dac">Security leadership plays a shepherding role for information security within an organization. However, everyone is responsible for an organization’s security. Each individual has their own security responsibility, and they must be aware of their own contribution (and potential problems) towards the organization’s security stance. Edge users not only have to be security-aware, they are the first line of defence for the organization.</p>
+</div><div id="_pragmatic"><h2 id="_925a9c74-64b1-4857-a7f9-827db395c979"><a class="anchor" href="#_pragmatic"></a><a class="header" href="#_pragmatic">5.3.  Pragmatic</a></h2>
+
+<p id="_65753427-0b20-7f1c-d40d-3293d0359cf5">Security should provide value, not a hindrance. For every security initiative or adopted security control, a cost-benefit should be prepared demonstrating the value of security. Without a pragmatic approach, it is easy for persons unaware of the benefits of security to dismiss security practices as mere overhead or unnecessary. A pragmatic approach provides crucial information in building business case evidence to convince stakeholders of the importance of security, giving them confidence that plans will be executed faithfully.</p>
+
+<p id="_9d3bf2e0-7e6b-e1a4-d92c-fd368085cbde">The traditional ISMS approach relies on a best practices approach which could easily lead to overhead. Rarely are organizations not resource-constrained, and it is necessary to balance tailoring requirements to the organization against the adoption of best practices. Requirements must be based on organizational risks and value for maximum effectiveness.</p>
+</div><div id="_align_and_bridge"><h2 id="_303cd558-3d83-4ac9-a0f5-2fd283df7d3e"><a class="anchor" href="#_align_and_bridge"></a><a class="header" href="#_align_and_bridge">5.4.  Align and bridge</a></h2>
+
+<p id="_dd2be94c-fd0a-13aa-2575-17cd7c173bc6">Organizational risks and requirements must be fully aligned in order to derive maximum effectiveness and value from security processes. Security requirements that misalign with organizational risks represent resources potentially wasted, or worse, attention that has been taken away from critical matters that could cause organizational harm. By carefully aligning requirements throughout the organizational context, such as contractual, regulatory, product, security and compliance requirements, it is possible to extract maximum value by condensing a set of core requirements for the organization, allowing the delegation of risk management at more tactical levels for more dynamic responses and efficient usage of resources.</p>
+</div><div id="_automate"><h2 id="_3c570923-c0bf-4be5-b947-87e934646fcc"><a class="anchor" href="#_automate"></a><a class="header" href="#_automate">5.5.  Automate</a></h2>
+
+<p id="_bc4b5017-5626-30f7-6cad-f91315de04bf">Automated security practices are the core of optimizing process efficiency. Processes that can be automated should be automated, and those that can’t should be transformed. Automation also creates its own set of problems but automated approaches to those problems are often possible. A mantra in software development says, if one does the same thing three times, it will be time to program it. This approach applies squarely to Reflexive Security.</p>
+</div><div id="_measure_and_improve"><h2 id="_9c08834d-da0f-47df-8760-9ce526d4c5ef"><a class="anchor" href="#_measure_and_improve"></a><a class="header" href="#_measure_and_improve">5.6.  Measure and improve</a></h2>
+
+<p id="_33db52f4-63c3-d343-dc2c-eb3595f324be">Performance that cannot be measured cannot be improved. Without measurements, there is no understandable evidence whether information security management is effective. Reflexive Security is about achieving results, and the results must be measurable for transparency and improvement.</p>
+</div><div id="_collaborate_and_integrate"><h2 id="_92ee0379-deaf-427f-b7a9-648cf949fd1d"><a class="anchor" href="#_collaborate_and_integrate"></a><a class="header" href="#_collaborate_and_integrate">5.7.  Collaborate and integrate</a></h2>
+
+<p id="_b7c48b0b-7ada-2b11-d923-3c9989f78336">Security can only be achieved through collaboration, not confrontation. A security aware and collaborative culture is necessary for everyone to feel comfortable reporting potential anomalies. The human factor is often the weakest link — most security incidents are caused by inadvertent human error. Security must be integrated into every aspect of business. Dedicated security personnel rarely have in-depth business domain expertise. No one else knows the business domain and its risks as well as those responsible for it. A team of dedicated security experts are likely oblivious of domain-specific security issues. Domain knowledge and security knowledge must be fused and co-exist in every organizational process for effective security management.</p>
+</div></div><div id="_six_benefits_of_reflexive_security"><h1 id="_14505ab7-2756-4673-afd9-99b1b5502151"><a class="anchor" href="#_six_benefits_of_reflexive_security"></a><a class="header" href="#_six_benefits_of_reflexive_security">6.  Six Benefits of Reflexive Security</a></h1><div id="_general_3"><h2 id="_98d9d70d-d16a-48e0-a2e1-0277f024f43c"><a class="anchor" href="#_general_3"></a><a class="header" href="#_general_3">6.1.  General</a></h2>
+
+<p id="_69963528-29f3-a475-4c22-70966c35e4b5">The six benefits can be explained with the acronym HEARTY (Human-centric, Elastic, Apt and holistic, Resilient, Tailored, Dynamic).</p>
+</div><div id="_human_centric"><h2 id="_6ab909ef-22d8-4e11-9ba4-ffaa3625b88d"><a class="anchor" href="#_human_centric"></a><a class="header" href="#_human_centric">6.2.  Human-centric</a></h2>
+
+<p id="_9dff390e-a8ca-8e2f-3221-99d650ff2c1b">Security is integrated and internalized as an aspect of everyone’s work, and requires mind-share within every employee. It is not an external responsibility enforced or required by a separate, dedicated, security function.</p>
+</div><div id="_elastic"><h2 id="_8376e468-aaa1-42c2-a9fa-86a07c23aef4"><a class="anchor" href="#_elastic"></a><a class="header" href="#_elastic">6.3.  Elastic</a></h2>
+
+<p id="_c4869c7a-dae7-1179-386c-db7c602cefde">Growing maturity of a Reflexive Security approach could lead to achievement of formal ISMS requirements, while being flexible enough to only target critical areas for maximum value based on actual risks. Its principles allow scaling according to organizational risks and needs, preventing permanent overhead in resource consumption.</p>
+</div><div id="_apt_and_holistic"><h2 id="_ebd0bcad-c0a7-4537-8f46-080274dae78f"><a class="anchor" href="#_apt_and_holistic"></a><a class="header" href="#_apt_and_holistic">6.4.  Apt and holistic</a></h2>
+
+<p id="_b84a85bc-7851-8232-08bc-008d74ac8131">Focused on business needs and responding to the actual risk context faced by the organization when compared to traditional information security management, from business goals to operational processes to humans, who often turn out to be the weakest link.</p>
+</div><div id="_resilient"><h2 id="_7791b1c5-33f9-4897-a912-ff7b6e5514ff"><a class="anchor" href="#_resilient"></a><a class="header" href="#_resilient">6.5.  Resilient</a></h2>
+
+<p id="_ed8b99cf-070b-2258-f9ed-68507668e9cf">Security no longer relies on a single security function, e.g. a single security department, but security practices are integrated with business processes and embedded throughout the organization. When compared to ISMS processes, an Reflexive Security approach often enables deeper security involvement amongst personnel, resulting in more resilient security activities.</p>
+</div><div id="_tailored"><h2 id="_9e244b53-e469-43b4-bf79-72ccda318dd5"><a class="anchor" href="#_tailored"></a><a class="header" href="#_tailored">6.6.  Tailored</a></h2>
+
+<p id="_50bd94f3-a79d-6f08-803a-fe8ee0460dea">Prioritized approach to provision stronger protection to core or more vulnerable processes over those less exploitable. The traditional ISMS approach often applies the same set of controls across all processes, leading to inefficient resource allocation.</p>
+</div><div id="_dynamic"><h2 id="_2722d096-346a-4fcc-94af-4a29bccb48f4"><a class="anchor" href="#_dynamic"></a><a class="header" href="#_dynamic">6.7.  Dynamic</a></h2>
+
+<p id="_8b841043-9e94-bd3b-a36d-21e426e057a0">The protection of business goals is performed by integrating security with business processes, often down to the tactical level. This allows the organization to react faster and more effectively to threats and incidents.</p>
+</div></div><div id="_achieving_reflexive_security"><h1 id="_e5f60c89-343f-469d-ba43-9ee48b48268a"><a class="anchor" href="#_achieving_reflexive_security"></a><a class="header" href="#_achieving_reflexive_security">7.  Achieving Reflexive Security</a></h1><div id="_general_4"><h2 id="_5e5c337a-3f85-4095-a89e-a9af39024dba"><a class="anchor" href="#_general_4"></a><a class="header" href="#_general_4">7.1.  General</a></h2>
+
+<p id="_5f7dac79-d8f4-b256-5435-ed97e7a75ee2">Reflexive Security can be considered as the amalgamation and integration of the DevSecOps, DevOpsSec and SecDevOps practices, placed within a holistic framework. These areas of practice all derive from the integration of security and DevOps principles, together with essential concepts from Agile.</p>
+
+<p id="_c2773133-428f-3733-d7bc-ada32fce6a17">Concepts made apparent by Agile software development practices (where “Agile” is the generic term including practices like Scrum), such as incremental development, collaborative authoring, test- or behavior-driven programming, and continuous integration, have given rise to infrastructure operation practices such as continuous delivery, software-defined infrastructure and infrastructure automation.</p>
+
+<p id="_cbceea94-ca1a-5fb4-489d-3021223b3039">These infrastructure-related practices are widely considered to be part of the “DevOps” repertoire,
+but with several conflicting definitions of what exactly the term represents, it is necessary to clarify
+and standardize its definition in order to evaluate and address its information security impact<a class="FootnoteRef" href="#fn:1" id="fnref:1"><sup>1</sup></a>.</p>
+
+<p id="_c4faeb83-8bbf-3c84-41e5-7db3aa85e039">Its practices can entail different processes and outcomes depending on organizational context.
+Its processes could provide organizational-wide benefits through empowering integration and
+interaction between development and operations (e.g., the “build” and “run” processes), or in some
+cases, have minimal impact in complex enterprise teams where logistics and governance controls
+limits the application of DevOps<a class="FootnoteRef" href="#fn:2" id="fnref:2"><sup>2</sup></a>.</p>
+
+<p id="_4e802f27-f208-6de3-bc7a-dfbf01c71cce">The application of Agile and DevOps practices and related tools clearly have blended borders between software development and service infrastructure automation. Information security management and operations can benefit from an identical approach, with even tighter integration since it already depends on both software development and infrastructure automation.</p>
+
+<p id="_c3b3a0ce-d35e-5dbb-59ab-9f386a4cbfdb">The practices of DevSecOps, DevOpsSec and SecDevOps, as described below, provide necessary insights for the achievement of Reflexive Security. The three major aspects of how Agile and DevOps principles can help achieve Reflexive Security for information security management are shown below:</p>
+
+<div class="ul_wrap"><ul id="_18ebc517-4e73-5cf7-0c73-8e087c15958b"><li><p id="_f813e290-f6ad-3861-a64d-a4dbaa536f3e">The impact of DevOps practices on information security</p>
+</li>
+<li><p id="_cacbcb33-83f6-4848-3846-14c2e0e9b0c5">The application of DevOps to security operations</p>
+</li>
+<li><p id="_af0acb91-5b5b-f3cf-88b3-69dade3eb4eb">The implementation of information security processes and compliance delivery through DevOps</p>
+</li>
+</ul></div>
+</div><div id="_securing_devops_practices"><h2 id="_21bf8d5b-e3b1-4cb8-a223-cf4cbc10808b"><a class="anchor" href="#_securing_devops_practices"></a><a class="header" href="#_securing_devops_practices">7.2.  Securing DevOps practices</a></h2>
+
+<div id="_general_5"><h3><a class="anchor" href="#_general_5"></a><a class="header" href="#_general_5">7.2.1.  GENERAL</a></h3>
+
+<p id="_776014e9-a89a-b6f1-5f95-e97babb10371">While DevOps practices can help improve the management and operations of information security processes in an organization, the execution of these practices have to be secured. Specifically, organizations have to ensure that DevOps practices introduced do not compromise information security. This aspect has been called “DevOpsSec”, or “DevOps security”. DevOps practices strongly impact existing infrastructure and operations on it. Inherent security requirements in DevOps processes must be considered in the adoption of DevOps within an organization.</p>
+</div>
+
+<div id="_implications"><h3><a class="anchor" href="#_implications"></a><a class="header" href="#_implications">7.2.2.  IMPLICATIONS</a></h3>
+
+<p id="_c2235f0f-e38f-3c3c-fe4c-92d5468ef5fd">A software-defined infrastructure is highly beneficial for the experienced infrastructure engineer, where software-defined instances, containers, and network devices are programmatically created or destroyed through fingertips on the keyboard.However, it is equally true that a novice engineer could have his fingertips spin things out of control.</p>
+
+<p id="_22442315-c7bc-ea04-e09e-014e5e6f17ae">Security vulnerabilities can be inadvertently created due to lack of consideration of all aspects surrounding the infrastructure, for example, lax firewall rulesets, default credentials or an increased attack surface. While software development and infrastructure operation skills are closely related, mastery in one may not necessarily translate into proficiency of the other.</p>
+</div>
+
+<div id="_example_practices"><h3><a class="anchor" href="#_example_practices"></a><a class="header" href="#_example_practices">7.2.3.  EXAMPLE PRACTICES</a></h3>
+
+<div class="ul_wrap"><ul id="_f8cd15fb-666d-a037-4d15-8d7e49c976b3"><li><p id="_5f22e1f7-0955-57e4-4b98-7e4a6714450f">Infrastructure</p>
+<div class="ul_wrap"><ul id="_ca6d8535-fc92-e3c6-ab01-f974f03064cc"><li><p id="_bcf4aa0c-0a18-919c-a4a2-de27d5aa7ebb">Security baseline checking on software-defined infrastructure</p>
+</li>
+<li><p id="_bcdb3e1e-00b9-31a4-a874-81b44abd0e86">Automated security checks on DevOps infrastructure</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_9c947bd0-8c59-ba8a-7c69-7faee164173a">Containers</p>
+<div class="ul_wrap"><ul id="_e2267b9a-77d5-829c-87bb-375247c7cc76"><li><p id="_d04cc400-29c7-8cf3-2a21-fb11d85a7d8f">Security baseline checking</p>
+</li>
+<li><p id="_ee3c7347-e25f-3879-10eb-1847b946622a">Automated hardening and management</p>
+</li>
+<li><p id="_dce76d29-19eb-5c53-700e-00984eb3153b">Vulnerability checks and file scans</p>
+</li>
+<li><p id="_91646889-dff3-db71-4b57-bc295c534447">Automated integrity and authenticity checking</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_7b45f337-d957-8197-c288-ff428114f47a">Operating Systems / VM images</p>
+<div class="ul_wrap"><ul id="_0c5e54db-c2df-cebe-8305-3ccf190ce464"><li><p id="_fd6f28da-778b-510b-19e3-4fb7463abd51">Automatic hardening during provisioning</p>
+</li>
+<li><p id="_79804b10-5dc7-e2f4-b91c-87e86ae034a8">Automated integrity and authenticity checking</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_9b6a884f-a8dc-4961-65ac-8e836f5ead15">Secure Coding and Testing</p>
+<div class="ul_wrap"><ul id="_809ef6db-5388-6d25-f04f-4feec99b50b6"><li><p id="_c3bc57d6-84f3-2cbe-dca6-0a466ebe37de">In-field compliance testing</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_55de504f-cf41-4928-e9ff-ff568effc4f2">Release Management</p>
+<div class="ul_wrap"><ul id="_2f1e1d49-f52e-5b65-b6cc-3cfd1048f745"><li><p id="_f2b7f62d-5bee-9cdc-661f-2cd5b0de565b">Automated vulnerability scans integrated with development and deployment workflow</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_3f2669ca-7476-ae81-8912-7f53657cf83d">Business Continuity</p>
+<div class="ul_wrap"><ul id="_45b3f89f-b55e-1763-7b61-54c6c6df6b95"><li><p id="_2cc2e20e-8ff9-f925-ceff-736433b014aa">Automated business continuity drills</p>
+</li>
+<li><p id="_feb9142c-6807-da97-859c-ac5b06859bb2">Automated tests for backup and restore processes</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_9843d849-8b4b-7b6e-e74a-4612859a02b9">SSL Certificates and Public Key Infrastructure</p>
+<div class="ul_wrap"><ul id="_7a4f7d05-6586-ecb2-9821-214492f53ee7"><li><p id="_b5fb0576-e684-fae8-900e-37af60e2dad7">Verification of certificate source and validity</p>
+</li>
+<li><p id="_d4406674-689c-1bb2-05db-6f72b30e1da5">Automated testing to ensure validity of issuer</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_b724bbf7-4496-7dee-5553-25ad92cf31ce">Identity and Access Management</p>
+<div class="ul_wrap"><ul id="_130ccd39-9997-8d66-a661-6c9f05139349"><li><p id="_96a5ada9-d153-72bf-e568-eaca62a4a035">Verification of account usage</p>
+</li>
+<li><p id="_a42fceb6-41de-9cfa-1520-36f22f943622">Continuous scans for inactive or suspicious accounts</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_7aa849a2-7798-afc3-22f6-32fe43c1aa66">Encryption</p>
+<div class="ul_wrap"><ul id="_9e2af2af-44fb-3159-29b9-7ee74b558be9"><li><p id="_3998d955-e762-d587-be0f-97ecd9f88fb0">Automated verification of data encryption processes</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+</div>
+</div><div id="_implementing_security_operations_through_devops"><h2 id="_354b4b66-cb43-4841-9a1e-4f34f5859c79"><a class="anchor" href="#_implementing_security_operations_through_devops"></a><a class="header" href="#_implementing_security_operations_through_devops">7.3.  Implementing security operations through DevOps</a></h2>
+
+<div id="_general_6"><h3><a class="anchor" href="#_general_6"></a><a class="header" href="#_general_6">7.3.1.  GENERAL</a></h3>
+
+<p id="_28f58494-3912-523d-37e2-a1c267f4006b">DevOps provides powerful concepts that link development and infrastructure operations, and its practices can be integrated to facilitate the achievement of information security within an organization. The field of “DevSecOps”, or “DevOps for Security Operations”, applies DevOps concepts to enhance the efficiency and effectiveness of information security processes. Its aim is to facilitate the comparable paradigm shift of DevOps on infrastructure operations to security operations, through the integration with development and infrastructure operations.</p>
+</div>
+
+<div id="_implications_2"><h3><a class="anchor" href="#_implications_2"></a><a class="header" href="#_implications_2">7.3.2.  IMPLICATIONS</a></h3>
+
+<p id="_4a926012-1bb9-7a05-4561-fab1d0d93a9c">On a tactical level, DSO represents the integration and automation of security controls through DevOps using automated toolchains. The CSO sets the policies following organizational goals, requirements and risk management, which could be applied programmatically.</p>
+</div>
+
+<div id="_example_practices_2"><h3><a class="anchor" href="#_example_practices_2"></a><a class="header" href="#_example_practices_2">7.3.3.  EXAMPLE PRACTICES</a></h3>
+
+<div class="ul_wrap"><ul id="_7ee606b6-aa1e-b49c-5565-ee772fef24ea"><li><p id="_17515123-11c2-7a3d-1ece-9a68199fb0a7">Infrastructure</p>
+<div class="ul_wrap"><ul id="_d46c6046-efd1-28e4-8652-1596388fe3ba"><li><p id="_39733873-a956-d666-15ab-585b37eced64">Immutable infrastructures</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_70615586-dc2c-f22a-febf-c9802c2ceac3">QA</p>
+<div class="ul_wrap"><ul id="_8e6cc3a9-6e0b-6468-d5fe-6c44f0632620"><li><p id="_50db3974-47fa-81b0-d060-8cdd48227dfc">Implementation of data masking of data used in development for testing</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_b10267c2-a4c7-7065-efd4-a56587b62880">Containers</p>
+<div class="ul_wrap"><ul id="_4620d9d3-2210-2667-807d-022d2904ecd2"><li><p id="_765bfff9-f5cb-91de-5419-1aae88c3cd33">Vulnerability scanning during building of container images</p>
+</li>
+<li><p id="_01ae5ea9-ff19-3bb2-90b0-60226cf7aab7">Patch management of applications and libraries inside containers</p>
+</li>
+<li><p id="_77c0d9e8-0db9-f90c-b2d1-bada77a89c49">Hardening / secure configuration, self-healing</p>
+</li>
+<li><p id="_a06ed9d3-ee59-aa2a-b9d8-a23774f86eb9">PKI / Digital signatures</p>
+</li>
+<li><p id="_2177295d-e291-1090-cb28-3b7e473ae715">Anti-virus scan during building of container images</p>
+</li>
+<li><p id="_c9b5b89d-3a85-71ba-153c-78d850a85dad">Certify container images</p>
+</li>
+<li><p id="_ccab1282-374c-dec4-2607-a926b2954036">Scan for embedded keys, hardcoded credentials, push for role based access technology, licensing compliance</p>
+</li>
+<li><p id="_629ee72c-dbfe-c4f4-186a-663d4752db34">Cryptographically sign and certify container images</p>
+</li>
+<li><p id="_e70e69a9-1611-7c4f-5c39-58db070f0a00">Runtime container security delivered by monitoring container activities</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_693378ee-c928-52fc-5d5a-71a740f438b3">Operating Systems / VM images</p>
+<div class="ul_wrap"><ul id="_0adbef97-e570-cdf3-46e3-59aafb0a9bd3"><li><p id="_0254b72e-3432-1735-deac-a6b2b5fb1be1">Vulnerability scanning during building of VM images</p>
+</li>
+<li><p id="_10535d86-7fb7-9a24-ec7a-5ae169815d69">Patch management of applications and libraries of the operating system</p>
+</li>
+<li><p id="_18f7be6b-6002-8b78-3ded-c1eec6a9c8da">Hardening / secure configuration, self-healing</p>
+</li>
+<li><p id="_5610fe1c-1843-d518-0eb3-a604032d7c1e">Anti-virus scan during building of VM images</p>
+</li>
+<li><p id="_6eb156f4-0044-2914-8e8d-470683993e94">Cryptographically sign and certify VM images</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_81cccf8d-bcab-e0d2-3ddf-908bf17749ec">Secure Coding and Testing</p>
+<div class="ul_wrap"><ul id="_db46cf25-2cbf-6bfe-fe1f-3c24738f6207"><li><p id="_a232dd70-a171-7e91-8e12-6009d7fd53b8">Inline analysis of code against top 10 OWASP vulnerabilities and provide real time feedback to developer</p>
+</li>
+<li><p id="_c17e45fd-250c-09f9-32e2-7c01ef581b9a">Static code analysis after code commits, builds or releases</p>
+</li>
+<li><p id="_834122d3-da55-8b30-bc42-50e46a60b845">Scanning for embedded keys, hardcoded credentials, push for role based access</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_74a37e00-9b18-3125-0bdb-eaa86ec611a6">Release Management</p>
+<div class="ul_wrap"><ul id="_b7cb17db-8f77-aed4-950d-2898c879de5d"><li><p id="_852813e8-2149-4125-49da-0332f81f74f8">Create new public/private keys for each release</p>
+</li>
+<li><p id="_a3237e6a-87e6-dcc8-175b-2d1c31e2cf00">Release approvals</p>
+</li>
+<li><p id="_2ce54431-a7e6-d687-c058-d2555f7a9e91">Security / compliance exception management based on the thresholds</p>
+</li>
+<li><p id="_a50a0132-83e9-1bf5-566c-291e2c803475">Only accept signed/certified container and OS images</p>
+</li>
+<li><p id="_f5c4d63c-c3e3-7c8d-6869-d88cc57c475d">Revocation of older SSL certificates / private keys / PKI after each release</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_637574ac-2b8d-80d1-7a30-fc6ce44f47ca">Measures</p>
+<div class="ul_wrap"><ul id="_e3c274c9-030c-e9f1-ad4d-17105bb83b0a"><li><p id="_517f452e-6f9a-8b27-1830-42aa100a7c17">Builds failed due to security issues</p>
+</li>
+<li><p id="_3ecf9ce9-ddcd-7aed-98cc-b2edf0b9c4e2">Releases with security exceptions</p>
+</li>
+<li><p id="_c8a9cc42-bda7-f5c9-2c87-977e9ffa3092">Deployment time and deployment frequency</p>
+</li>
+<li><p id="_c1bf71bc-0fa7-ba2d-7b24-47c41753374d">Releases bypassed security checks</p>
+</li>
+<li><p id="_ae0a120a-fffe-d8a2-0d8f-c6e075bec3e6">Code commits</p>
+</li>
+<li><p id="_38696106-8b1d-96ae-040c-747f34a3b010">Iteration length</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+</div>
+</div><div id="_securing_information_security_processes_with_devops"><h2 id="_76a592fc-cb48-41d7-a291-438dcfdcb025"><a class="anchor" href="#_securing_information_security_processes_with_devops"></a><a class="header" href="#_securing_information_security_processes_with_devops">7.4.  Securing information security processes with DevOps</a></h2>
+
+<div id="_general_7"><h3><a class="anchor" href="#_general_7"></a><a class="header" href="#_general_7">7.4.1.  GENERAL</a></h3>
+
+<p id="_c6ed89f4-b051-d43d-9365-1ce7c4c67e57">The practice of “SecDevOps”, or “Security DevOps”, aims to utilize DevOps practices to the implementation of information security processes. Similar to how DevOps concepts are able to improve the collaborative nature of development and infrastructure operations, SecDevOps integrates and facilitates collaboration of development with information security processes. A common result is the automation of information security processes (the “build”), accompanied by allowing development processes to be abreast of security implications and deliverable feedback.</p>
+</div>
+
+<div id="_implications_3"><h3><a class="anchor" href="#_implications_3"></a><a class="header" href="#_implications_3">7.4.2.  IMPLICATIONS</a></h3>
+
+<p id="_56142c3b-9116-0cc4-1914-2d60a3e7bdb4">“Security as Code” is not equivalent to security automation because it does not require the “programmatic” ability. For example, a scripted application of the DoD Security Technical Implementation Guides (STIG) may still have to be run manually during the installation of a server.</p>
+</div>
+
+<div id="_example_practices_3"><h3><a class="anchor" href="#_example_practices_3"></a><a class="header" href="#_example_practices_3">7.4.3.  EXAMPLE PRACTICES</a></h3>
+
+<div class="ul_wrap"><ul id="_7c81501e-5920-9d01-7738-e7e86228456b"><li><p id="_a7da933f-ffcf-1ae9-95f1-feb45cba7fc8">Business Continuity</p>
+<div class="ul_wrap"><ul id="_f605295c-d5f2-160f-7c39-62db423e5b02"><li><p id="_4790f682-3b94-c085-f255-98941f92b686">Automatic business continuity plan testing through Infrastructure as Code (IaC)</p>
+</li>
+<li><p id="_93635e20-5170-dc30-82f7-9bcefeca6b99">Continuous backup and restore testing with data masking</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_83685619-a7c3-eaf4-ce88-a7cc3ac82d42">SSL Certificates and Public Key Infrastructure</p>
+<div class="ul_wrap"><ul id="_4aa2cdeb-37fe-f117-2fbb-a4af1947e16f"><li><p id="_fc9d0f40-c832-3384-d0fe-d4704996c386">Monitoring and auto renewal of SSL certificates</p>
+</li>
+<li><p id="_5497c2a7-782b-8b3b-597d-15095004a5e6">Testing of expiry dates of SSL certificates</p>
+</li>
+<li><p id="_635584d6-33e9-d0a2-b061-f98a1c0da9b0">Private and public key rotation</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_744a990e-339b-7d23-fd8a-37f7853c036a">Identity and Access Management</p>
+<div class="ul_wrap"><ul id="_d288eaae-6644-41f1-5b12-959c2f6500d1"><li><p id="_6c7c33e5-9376-70a3-a6fe-f1947f392fbc">Secrets management to effectively manage passwords, keys, API, tokens for application, services across IT landscape</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_ea74125b-9696-c81d-04b3-31eb74c1441f">Infrastructure</p>
+<div class="ul_wrap"><ul id="_76d61484-05f1-9b0a-6ffb-8c8c1bfbe71e"><li><p id="_3e5da22a-8ea9-3b84-8436-3f7455d7edda">Vulnerability scanning of servers, VMs, containers, appliances during runtime</p>
+</li>
+<li><p id="_ba63339e-b629-d8ae-327d-c2dd8765eedf">Anti-virus scan during runtime</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_bd60bcac-db13-e924-70e8-72e4b3e98725">Encryption</p>
+<div class="ul_wrap"><ul id="_a132d295-f645-90c1-6092-4d68cc984435"><li><p id="_363bacd5-6677-80f3-af6f-c2c8608923f9">Encryption as a service for data in transit and data at rest</p>
+</li>
+</ul></div>
+</li>
+<li><p id="_f47af4e2-30c0-a169-2b5b-1d82e3745cae">Measures</p>
+<div class="ul_wrap"><ul id="_2dcb0948-d13b-b0a1-a57d-667a48c86765"><li><p id="_fdaae5c1-4bbf-de03-7c09-72a1012f83d3">Test coverage</p>
+</li>
+<li><p id="_623b059d-cae2-fa6e-35d3-4c666e497bdd">Coverage of unit/integration tests</p>
+</li>
+<li><p id="_db519ecd-2ce1-5269-add2-d4d4a7187e68">Coverage of functional/acceptance tests</p>
+</li>
+<li><p id="_12a8b927-40d6-884b-658c-64d1e41917e5">CIS Benchmark, Compliance Violations</p>
+</li>
+<li><p id="_f7bfa99f-fce4-d119-bed6-524682f734db">Time taken to achieve compliance for a new application</p>
+</li>
+<li><p id="_4e6603c4-2406-272e-4dcd-82153af3f231">Security issues discovered across stages (aspire to zero at production)</p>
+</li>
+<li><p id="_e3166912-7fa2-7f32-3bda-8ee8c928c386">Time to fix security issue</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+</div>
+</div></div><div id="_relevant_guidelines_for_implementing_reflexive_security"><h1 id="_4ad935e4-e945-475a-8dab-02dde0c5da82"><a class="anchor" href="#_relevant_guidelines_for_implementing_reflexive_security"></a><a class="header" href="#_relevant_guidelines_for_implementing_reflexive_security">8.  Relevant guidelines for implementing Reflexive Security</a></h1><div id="_general_8"><h2 id="_544eb49c-9147-4f74-b41b-dac4eb934582"><a class="anchor" href="#_general_8"></a><a class="header" href="#_general_8">8.1.  General</a></h2>
+
+<p id="_53df51ab-3b79-ef44-2ad8-aaaa370ff669">This clause provides some guidelines for organizations for the implementation of Reflexive Security. The guidelines below are meant to be indicative, not exhaustive.</p>
+</div><div id="_culture_shock"><h2 id="_a2f81509-d19a-495e-99b3-4b33f9a36529"><a class="anchor" href="#_culture_shock"></a><a class="header" href="#_culture_shock">8.2.  Culture Shock</a></h2>
+
+<p id="_9e80b9c2-a62f-32c6-715c-67dbfd3668e7">The goal of DevOps has been to write code and move product into production as fast as possible while maintaining a single source of truth, and removing or sidelining any barriers to their progress. The goal of security has always been too protect the organization internally and externally from access. Individually the goals are admirable until it gets to the point where DevOps deploys insecure software or security delays deployments to the point where the organization’s goals are affected.</p>
+
+<p id="_ba9c491e-d90b-65c0-4123-fa8538464258">Embedding Security into DevOps can be a shock to the traditional system. Plan to deal with the issues of DevOps and Security working closely with common goals and metrics. Plan for the personal effects of automation: changed, lost and or new positions.</p>
+</div><div id="_cross_train"><h2 id="_f674cd18-8724-4054-b2b7-2f15a4be7acc"><a class="anchor" href="#_cross_train"></a><a class="header" href="#_cross_train">8.3.  Cross-train</a></h2>
+
+<p id="_46682526-ada2-fc76-2889-930140e04879">Form an operational security function by selecting key persons that have an interest or background in security from each team and delegate security related tasks to those individuals. Make these persons a representative of the operational security teams.</p>
+
+<p id="_bed77857-36a2-e49a-a440-da39596ca3fe">The operational security teams know exactly what types of operating systems are used, applications are supported for the business, etc. In some organizations, this collaboration involves embedding IT operations specialists within software development teams, thus forming a cross-functional team. This effort may also be combined with a skills matrix.</p>
+</div><div id="_delegate"><h2 id="_d5ef74c0-827a-4877-a419-1ecd124eebcc"><a class="anchor" href="#_delegate"></a><a class="header" href="#_delegate">8.4.  Delegate</a></h2>
+
+<p id="_fd65ab62-c9fe-e6cd-05b7-e1c5a08675cb">Delegate risk management, maintenance of BCPs etc. to department heads. Freeing up resources of the dedicated security team so they can focus on the security process management and providing the framework(s). The department heads know exactly what they have in house, what risks there are.</p>
+
+<p id="_05d09c63-2c35-c290-19c0-d8f7248f89d0">Reflexive Security is process neutral. Organizations can use Agile, Scrum or any other development methodology. Have security engineers attend daily scrum meetings, make them part of the team.</p>
+</div><div id="_automate_with_purpose"><h2 id="_8f0b624a-8f83-41ee-bb6e-73edd2dd73b6"><a class="anchor" href="#_automate_with_purpose"></a><a class="header" href="#_automate_with_purpose">8.5.  Automate with purpose</a></h2>
+
+<p id="_32795f79-15db-ebbb-279d-d46aa2c88884">One of the primary rules of DevSecOps is to automate early and often with the goal to embed security into the process but don’t try to automate everything at once. Select those areas that will address the greatest risk for automation first. Also choose your automation tools using a selection method including testing that reflects the specifics of your environment.</p>
+</div></div><div id="_conclusion"><h1 id="_732e3c4f-f63e-4b9f-a4e1-452eb9bdae14"><a class="anchor" href="#_conclusion"></a><a class="header" href="#_conclusion">9.  Conclusion</a></h1><p id="_040521cf-83a0-de1a-7a30-a7efb18d3aaa">Reflexive Security is a newer information security management strategy that is dynamic, interactive, holistic, and effective. It represents an integrated culture extrapolated from the amalgamation of DevSecOps, DevOpsSec and SecDevOps concepts and practices, and promotes the exemplary contexts from which those best practices were derived from.</p><p id="_6f3caf71-892b-b38b-2a40-1a5163ca09d6">Reflexive Security provides a set of wide-implicating and easily understandable principles that affect an organization’s cybersecurity posture, especially suitable for operating under resource and personnel constraints in today’s fast-paced and challenging cybersecurity landscape.</p><p id="_182f3d50-30f0-460a-b6ea-1db6c9bb6ca1">The implementation of DevSecOps, DevOpsSec and SecDevOps concepts and practices in an organization provides an excellent start in attaining the benefits of Reflexive Security. It is also straightforward for organizations that utilize Reflexive Security to formally adopt an ISMS as appropriate, by integrating ISMS processes as part of the Reflexive Security strategy.</p></div><aside id="fn:1" class="footnote"><p id="_1a4568c7-1246-bb1f-9583-6d229dcdd10c"><a class="FootnoteRef" href="#fn:1"><sup>1</sup></a>For example, the Wikipedia article on DevOps defines it as “a set of practices that emphasizes the collaboration and communication of both software developers and information technology (IT) professionals while automating the process of software delivery and infrastructure changes”. This definition is too vague for evaluating the impact of DevOps on information security practices.</p>
+<a href="#fnref:1">↩</a></aside><aside id="fn:2" class="footnote"><p id="_99e7e00b-43c7-068e-9f43-7123ea588d43"><a class="FootnoteRef" href="#fn:2"><sup>2</sup></a><a href="https://devops.com/enterprise-devops-doesnt-make-sense/">https://devops.com/enterprise-devops-doesnt-make-sense/</a></p>
+<a href="#fnref:2">↩</a></aside></main><script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { preferredFont: "STIX" },
+    asciimath2jax: { delimiters: [['(#(', ')#)']] }
+ });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=MML_HTMLorMML-full" async="async"></script>
+  <script>
+    $("#toc").on('click', 'li', function(e) {
+    $(this).parent().find('li.toc-active').removeClass('toc-active');
+    $(this).addClass('toc-active');
+});
+  </script>
+
+  <script>
+    //TOC toggle animation
+    (function() {
+      const jqNav = $('nav');
+      const jqBody = $('body');
+      const jqToggle = $('#toggle');
+      const animationSpeed = 'slow';
+
+      jqToggle.on('click', function() {
+        const isNavVisible = jqNav.is(':visible');
+        const fullNavWidth = jqNav.outerWidth();
+        const navLeft = isNavVisible ? '-' + fullNavWidth + 'px' : '0px';
+        const bodyMarginLeft = isNavVisible ? '0px' : fullNavWidth + 'px';
+
+        // Stop current animations
+        jqNav.stop(true, true);
+        jqBody.stop(true, true);
+
+        if(!isNavVisible) {
+            jqNav.show();
+        }
+        jqNav.animate({'left': navLeft}, animationSpeed, function() {
+          if(isNavVisible) {jqNav.hide()}
+        });
+        jqBody.animate({'marginLeft': bodyMarginLeft}, animationSpeed);
+
+      });
+    })();
+  </script>
+
+<script>
+    // Scroll to top button
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+            document.getElementById("myBtn").style.display = "block";
+        } else {
+            document.getElementById("myBtn").style.display = "none";
+        }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+    </script>
+
+<script>
+/*
+  $(document).ready(function() {
+	  $('[id^=toc]').each(function ()
+	  {
+	     var currentToc = $(this);
+       var url = window.location.href;
+            currentToc.wrap("<a href='" + url + "#" + currentToc.attr("id") + "'></a>");
+	  });
+});
+*/
+</script>
+
+  <script>
+    document.querySelectorAll('*|svg a').forEach(function(item) {
+      var loc = item.getAttribute('href');
+      if (loc !== null && loc.startsWith('#')) {
+  item.setAttribute('href', location.pathname + loc);
+      }
+});
+  </script>
+
+
+<script>
+
+// jQuery Inline Footnotes v1.0.3
+// Copyright (c) 2011 Vesa Vänskä, released under the MIT License.
+
+// Generated by CoffeeScript 1.6.1
+(function() {
+
+  (function($) {
+    $.inlineFootnote = function(el, options) {
+      var _this = this;
+      this.el = $(el);
+      this.el.data("inlineFootnote", this);
+      this.initialize = function() {
+        this.options = $.extend({}, $.inlineFootnote.defaultOptions, options);
+        this.footnoteId = this.el.attr("href").match(/#(.*)/)[1];
+        if (this.footnoteId) {
+          this.el.mouseenter(this.openBox);
+          return $("body").mousemove(this.closeBox);
+        }
+      };
+      this.openBox = function(event) {
+        var footnoteContent, linkOffset;
+        if (!_this.box) {
+          footnoteContent = $("[id='" + _this.footnoteId + "']").children().filter(":not('" + _this.options.hideFromContent + "')");
+          linkOffset = _this.el.offset();
+          _this.box = $("<div />", {
+            id: _this.options.boxId,
+            html: footnoteContent.clone().find(_this.options.hideFromContent).remove().end(),
+            css: {
+              position: "absolute",
+              top: linkOffset.top,
+              left: linkOffset.left + _this.el.outerWidth()
+            }
+          }).appendTo("body");
+          return _this.positionBox();
+        }
+      };
+      this.closeBox = function(event) {
+        if (_this.box) {
+          if (_this.isHoveringFootnote(event)) {
+            clearTimeout(_this.closeTimeout);
+            return _this.closeTimeout = null;
+          } else {
+            if (!_this.closeTimeout) {
+              return _this.closeTimeout = setTimeout((function() {
+                _this.box.remove();
+                return _this.box = null;
+              }), _this.options.hideDelay);
+            }
+          }
+        }
+      };
+      this.isHoveringFootnote = function(event) {
+        return this.box.is(event.target) || $(event.target).closest(this.box).length > 0 || event.target === this.el[0];
+      };
+      this.positionBox = function() {
+        var boxHorizontalPadding, boxLeft, boxWidth, linkLeftOffset, windowWidth;
+        boxHorizontalPadding = parseInt(this.box.css("padding-left")) + parseInt(this.box.css("padding-right"));
+        linkLeftOffset = this.el.offset().left;
+        windowWidth = $(window).width();
+        if ((windowWidth / 2) > linkLeftOffset) {
+          boxLeft = linkLeftOffset + 20;
+          boxWidth = windowWidth - boxLeft - boxHorizontalPadding - this.options.boxMargin * 2;
+          if (boxWidth > this.options.maximumBoxWidth) {
+            boxWidth = this.options.maximumBoxWidth;
+          }
+        } else {
+          boxWidth = linkLeftOffset - boxHorizontalPadding - this.options.boxMargin * 2;
+          if (boxWidth > this.options.maximumBoxWidth) {
+            boxWidth = this.options.maximumBoxWidth;
+          }
+          boxLeft = linkLeftOffset - boxWidth - this.options.boxMargin * 2;
+        }
+        return this.box.css({
+          width: boxWidth,
+          left: boxLeft
+        });
+      };
+      return this.initialize();
+    };
+    $.inlineFootnote.defaultOptions = {
+      boxMargin: 20,
+      hideDelay: 200,
+      hideFromContent: "[rel=footnote]",
+      maximumBoxWidth: 500,
+      boxId: "footnote_box"
+    };
+    return $.fn.inlineFootnote = function(options) {
+      return this.each(function() {
+        return new $.inlineFootnote(this, options);
+      });
+    };
+  })(jQuery);
+
+}).call(this);
+</script>
+
+<script>
+      $(function() {
+        $("[rel=footnote]").inlineFootnote();
+        });
+</script>
+  <script>
+// @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&dn=expat.txt Expat
+//
+// AnchorJS - v4.2.2 - 2020-04-20
+// https://www.bryanbraun.com/anchorjs/
+// Copyright (c) 2020 Bryan Braun; Licensed MIT
+//
+// @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&dn=expat.txt Expat
+!function(A,e){"use strict";"function"==typeof define&&define.amd?define([],e):"object"==typeof module&&module.exports?module.exports=e():(A.AnchorJS=e(),A.anchors=new A.AnchorJS)}(this,function(){"use strict";return function(A){function f(A){A.icon=A.hasOwnProperty("icon")?A.icon:"",A.visible=A.hasOwnProperty("visible")?A.visible:"hover",A.placement=A.hasOwnProperty("placement")?A.placement:"right",A.ariaLabel=A.hasOwnProperty("ariaLabel")?A.ariaLabel:"Anchor",A.class=A.hasOwnProperty("class")?A.class:"",A.base=A.hasOwnProperty("base")?A.base:"",A.truncate=A.hasOwnProperty("truncate")?Math.floor(A.truncate):64,A.titleText=A.hasOwnProperty("titleText")?A.titleText:""}function p(A){var e;if("string"==typeof A||A instanceof String)e=[].slice.call(document.querySelectorAll(A));else{if(!(Array.isArray(A)||A instanceof NodeList))throw new Error("The selector provided to AnchorJS was invalid.");e=[].slice.call(A)}return e}this.options=A||{},this.elements=[],f(this.options),this.isTouchDevice=function(){return!!("ontouchstart"in window||window.DocumentTouch&&document instanceof DocumentTouch)},this.add=function(A){var e,t,i,n,o,s,a,r,c,h,l,u,d=[];if(f(this.options),"touch"===(l=this.options.visible)&&(l=this.isTouchDevice()?"always":"hover"),0===(e=p(A=A||"h2, h3, h4, h5, h6")).length)return this;for(!function(){if(null!==document.head.querySelector("style.anchorjs"))return;var A,e=document.createElement("style");e.className="anchorjs",e.appendChild(document.createTextNode("")),void 0===(A=document.head.querySelector('[rel="stylesheet"],style'))?document.head.appendChild(e):document.head.insertBefore(e,A);e.sheet.insertRule(".anchorjs-link{opacity:0;text-decoration:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}",e.sheet.cssRules.length),e.sheet.insertRule(":hover>.anchorjs-link,.anchorjs-link:focus{opacity:1}",e.sheet.cssRules.length),e.sheet.insertRule("[data-anchorjs-icon]::after{content:attr(data-anchorjs-icon)}",e.sheet.cssRules.length),e.sheet.insertRule('@font-face{font-family:anchorjs-icons;src:url(data:n/a;base64,AAEAAAALAIAAAwAwT1MvMg8yG2cAAAE4AAAAYGNtYXDp3gC3AAABpAAAAExnYXNwAAAAEAAAA9wAAAAIZ2x5ZlQCcfwAAAH4AAABCGhlYWQHFvHyAAAAvAAAADZoaGVhBnACFwAAAPQAAAAkaG10eASAADEAAAGYAAAADGxvY2EACACEAAAB8AAAAAhtYXhwAAYAVwAAARgAAAAgbmFtZQGOH9cAAAMAAAAAunBvc3QAAwAAAAADvAAAACAAAQAAAAEAAHzE2p9fDzz1AAkEAAAAAADRecUWAAAAANQA6R8AAAAAAoACwAAAAAgAAgAAAAAAAAABAAADwP/AAAACgAAA/9MCrQABAAAAAAAAAAAAAAAAAAAAAwABAAAAAwBVAAIAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAMCQAGQAAUAAAKZAswAAACPApkCzAAAAesAMwEJAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAQAAg//0DwP/AAEADwABAAAAAAQAAAAAAAAAAAAAAIAAAAAAAAAIAAAACgAAxAAAAAwAAAAMAAAAcAAEAAwAAABwAAwABAAAAHAAEADAAAAAIAAgAAgAAACDpy//9//8AAAAg6cv//f///+EWNwADAAEAAAAAAAAAAAAAAAAACACEAAEAAAAAAAAAAAAAAAAxAAACAAQARAKAAsAAKwBUAAABIiYnJjQ3NzY2MzIWFxYUBwcGIicmNDc3NjQnJiYjIgYHBwYUFxYUBwYGIwciJicmNDc3NjIXFhQHBwYUFxYWMzI2Nzc2NCcmNDc2MhcWFAcHBgYjARQGDAUtLXoWOR8fORYtLTgKGwoKCjgaGg0gEhIgDXoaGgkJBQwHdR85Fi0tOAobCgoKOBoaDSASEiANehoaCQkKGwotLXoWOR8BMwUFLYEuehYXFxYugC44CQkKGwo4GkoaDQ0NDXoaShoKGwoFBe8XFi6ALjgJCQobCjgaShoNDQ0NehpKGgobCgoKLYEuehYXAAAADACWAAEAAAAAAAEACAAAAAEAAAAAAAIAAwAIAAEAAAAAAAMACAAAAAEAAAAAAAQACAAAAAEAAAAAAAUAAQALAAEAAAAAAAYACAAAAAMAAQQJAAEAEAAMAAMAAQQJAAIABgAcAAMAAQQJAAMAEAAMAAMAAQQJAAQAEAAMAAMAAQQJAAUAAgAiAAMAAQQJAAYAEAAMYW5jaG9yanM0MDBAAGEAbgBjAGgAbwByAGoAcwA0ADAAMABAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAH//wAP) format("truetype")}',e.sheet.cssRules.length)}(),t=document.querySelectorAll("[id]"),i=[].map.call(t,function(A){return A.id}),o=0;o<e.length;o++)if(this.hasAnchorJSLink(e[o]))d.push(o);else{if(e[o].hasAttribute("id"))n=e[o].getAttribute("id");else if(e[o].hasAttribute("data-anchor-id"))n=e[o].getAttribute("data-anchor-id");else{for(c=r=this.urlify(e[o].textContent),a=0;void 0!==s&&(c=r+"-"+a),a+=1,-1!==(s=i.indexOf(c)););s=void 0,i.push(c),e[o].setAttribute("id",c),n=c}(h=document.createElement("a")).className="anchorjs-link "+this.options.class,h.setAttribute("aria-label",this.options.ariaLabel),h.setAttribute("data-anchorjs-icon",this.options.icon),this.options.titleText&&(h.title=this.options.titleText),u=document.querySelector("base")?window.location.pathname+window.location.search:"",u=this.options.base||u,h.href=u+"#"+n,"always"===l&&(h.style.opacity="1"),""===this.options.icon&&(h.style.font="1em/1 anchorjs-icons","left"===this.options.placement&&(h.style.lineHeight="inherit")),"left"===this.options.placement?(h.style.position="absolute",h.style.marginLeft="-1em",h.style.paddingRight="0.5em",e[o].insertBefore(h,e[o].firstChild)):(h.style.paddingLeft="0.375em",e[o].appendChild(h))}for(o=0;o<d.length;o++)e.splice(d[o]-o,1);return this.elements=this.elements.concat(e),this},this.remove=function(A){for(var e,t,i=p(A),n=0;n<i.length;n++)(t=i[n].querySelector(".anchorjs-link"))&&(-1!==(e=this.elements.indexOf(i[n]))&&this.elements.splice(e,1),i[n].removeChild(t));return this},this.removeAll=function(){this.remove(this.elements)},this.urlify=function(A){return this.options.truncate||f(this.options),A.trim().replace(/\'/gi,"").replace(/[& +$,:;=?@"#{}|^~[`%!'<>\]\.\/\(\)\*\\\n\t\b\v]/g,"-").replace(/-{2,}/g,"-").substring(0,this.options.truncate).replace(/^-+|-+$/gm,"").toLowerCase()},this.hasAnchorJSLink=function(A){var e=A.firstChild&&-1<(" "+A.firstChild.className+" ").indexOf(" anchorjs-link "),t=A.lastChild&&-1<(" "+A.lastChild.className+" ").indexOf(" anchorjs-link ");return e||t||!1}}});
+// @license-end
+  </script>
+    <script>
+  anchors.options = {
+  placement: 'left'
+};
+anchors.add('h1, h2, h3, h4');
+</script>
+
+<script>
+// use .collapsible element to toggle visibility of element following it
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.maxHeight){
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+    }
+  });
+}
+</script>
+
+</body></html>
