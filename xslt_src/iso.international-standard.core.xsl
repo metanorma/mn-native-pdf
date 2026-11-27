@@ -18,8 +18,9 @@
 	<xsl:output method="xml" encoding="UTF-8" indent="no"/>
 
 	<xsl:key name="kfn" match="mn:fn[not(ancestor::*[self::mn:table or self::mn:figure or self::mn:localized-strings] and not(ancestor::mn:fmt-name))]" use="@reference"/>
-	
 	<xsl:key name="kid" match="*" use="@id"/>
+	<xsl:key name="ktitle_caption_label" match="mn:fmt-title" use="translate(normalize-space(.//mn:span[@class = 'fmt-caption-label']), ' ()', '')"/>
+	<xsl:key name="kname_caption_label" match="mn:fmt-name" use="translate(normalize-space(.//mn:span[@class = 'fmt-caption-label']), ' ()', '')"/>
 	
 	<xsl:key name="attachments" match="mn:fmt-eref[java:endsWith(java:java.lang.String.new(@bibitemid),'.exp')]" use="@bibitemid"/>
 	<xsl:key name="attachments2" match="mn:fmt-eref[contains(@bibitemid,'.exp_')]" use="@bibitemid"/>
