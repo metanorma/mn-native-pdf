@@ -364,6 +364,7 @@
 			<xsl:if test="position() = 1 and $num = '1'">
 				<xsl:attribute name="initial-page-number">2</xsl:attribute>
 			</xsl:if>
+			<xsl:variable name="isIEV" select="$variables/mnx:doc[@num = $num]/isIEV"/>
 			<xsl:if test="$isIEV = 'true'">
 				<xsl:attribute name="format">I</xsl:attribute>
 			</xsl:if>
@@ -571,6 +572,8 @@
 				<xsl:text>document</xsl:text>
 				<xsl:call-template name="getPageSequenceOrientation"/>
 			</xsl:attribute>
+			<xsl:variable name="num" select="number(java:org.metanorma.fop.global.Variables.getVariable('num'))"/>
+			<xsl:variable name="isIEV" select="$variables/mnx:doc[@num = $num]/isIEV"/>
 			<xsl:if test="position() = 1 and $isIEV = 'true' and not(self::mn:indexsect)">
 				<xsl:attribute name="initial-page-number">1</xsl:attribute>
 			</xsl:if>
