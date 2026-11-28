@@ -1344,7 +1344,6 @@
 										<xsl:value-of select="mn:title[@language = $lang and @type = 'title-part']"/>
 									</xsl:when>
 									<xsl:when test="$namespace = 'ieee'">
-										<xsl:value-of select="$title_prefix"/>
 										<xsl:value-of select="mn:title"/>
 									</xsl:when>
 									<xsl:when test="$namespace = 'iho' or $namespace = 'csa' or $namespace = 'csd' or $namespace = 'rsd' or $namespace = 'ogc' or $namespace = 'ogc-white-paper' or $namespace = 'mpfd'">
