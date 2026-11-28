@@ -33,24 +33,31 @@
 			
 			<xsl:for-each select="xalan:nodeset($current_document)">
 				<mnx:doc num="{$num}">
-
-					<xsl:variable name="title-en"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en']/node()"/></xsl:variable>
-					<xsl:variable name="title-main"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'main']/node()"/></xsl:variable>
+				
+					<xsl:variable name="contextNode" select="xalan:evaluate($bibdataContextNode)"/>
+					<xsl:copy-of select="$contextNode"/>
+					
+					<metanorma_bibdata>
+						<xsl:copy-of select="/mn:metanorma/mn:bibdata"/>
+					</metanorma_bibdata>
+				
+					<xsl:variable name="title-en"><xsl:apply-templates select="$contextNode/mn:title[@language = 'en']/node()"/></xsl:variable>
+					<xsl:variable name="title-main"><xsl:apply-templates select="$contextNode/mn:title[@type = 'main']/node()"/></xsl:variable>
 					
 					<title_header>
 						<xsl:copy-of select="$title-main"/>
 						<xsl:if test="normalize-space($title-main) = ''"><xsl:copy-of select="$title-en"/></xsl:if>
 					</title_header>
 					
-					<xsl:variable name="docidentifier_parent" select="normalize-space(/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IHO-parent-document'])"/>
+					<xsl:variable name="docidentifier_parent" select="normalize-space($contextNode/mn:docidentifier[@type = 'IHO-parent-document'])"/>
 					<docidentifier>
 						<xsl:value-of select="$docidentifier_parent"/>
-						<xsl:if test="$docidentifier_parent = ''"><xsl:value-of select="/mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'IHO']"/></xsl:if>
+						<xsl:if test="$docidentifier_parent = ''"><xsl:value-of select="$contextNode/mn:docidentifier[@type = 'IHO']"/></xsl:if>
 					</docidentifier>
 					
-					<edition><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:edition[normalize-space(@language) = '']"/></edition>
+					<edition><xsl:apply-templates select="$contextNode/mn:edition[normalize-space(@language) = '']"/></edition>
 					
-					<month_year><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:date[@type = 'published']"/></month_year>
+					<month_year><xsl:apply-templates select="$contextNode/mn:date[@type = 'published']"/></month_year>
 					
 				</mnx:doc>
 			</xsl:for-each>
@@ -445,13 +452,14 @@
 	<xsl:template name="cover-page">
 		<xsl:variable name="num" select="number(java:org.metanorma.fop.global.Variables.getVariable('num'))"/>
 		
-		<xsl:variable name="title-en"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@language = 'en']/node()"/></xsl:variable>
-		<xsl:variable name="title-main_"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'main']/node()"/></xsl:variable>
-		<xsl:variable name="title-main"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-main']/node()"/></xsl:variable>
-		<xsl:variable name="title-appendix"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-appendix']/node()"/></xsl:variable>
-		<xsl:variable name="title-annex"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-annex']/node()"/></xsl:variable>
-		<xsl:variable name="title-part"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-part']/node()"/></xsl:variable>
-		<xsl:variable name="title-supplement"><xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:title[@type = 'title-supplement']/node()"/></xsl:variable>
+		<xsl:variable name="contextNode" select="xalan:evaluate($bibdataContextNode)"/>
+		<xsl:variable name="title-en"><xsl:apply-templates select="$contextNode/mn:title[@language = 'en']/node()"/></xsl:variable>
+		<xsl:variable name="title-main_"><xsl:apply-templates select="$contextNode/mn:title[@type = 'main']/node()"/></xsl:variable>
+		<xsl:variable name="title-main"><xsl:apply-templates select="$contextNode/mn:title[@type = 'title-main']/node()"/></xsl:variable>
+		<xsl:variable name="title-appendix"><xsl:apply-templates select="$contextNode/mn:title[@type = 'title-appendix']/node()"/></xsl:variable>
+		<xsl:variable name="title-annex"><xsl:apply-templates select="$contextNode/mn:title[@type = 'title-annex']/node()"/></xsl:variable>
+		<xsl:variable name="title-part"><xsl:apply-templates select="$contextNode/mn:title[@type = 'title-part']/node()"/></xsl:variable>
+		<xsl:variable name="title-supplement"><xsl:apply-templates select="$contextNode/mn:title[@type = 'title-supplement']/node()"/></xsl:variable>
 		
 		<!-- =========================== -->
 		<!-- Cover Page -->
@@ -512,7 +520,7 @@
 										<fo:table-row>
 											<fo:table-cell display-align="after" text-align="right">
 												<fo:block font-size="1">
-													<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:contributor/mn:organization/mn:logo[@type = 'mark']"/>
+													<xsl:apply-templates select="$contextNode/mn:contributor/mn:organization/mn:logo[@type = 'mark']"/>
 												</fo:block>
 											</fo:table-cell>
 											
@@ -590,12 +598,12 @@
 										<fo:table-row>
 											<fo:table-cell>
 												<fo:block font-size="1">
-													<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:contributor/mn:organization/mn:logo[@type = 'sign']"/>
+													<xsl:apply-templates select="$contextNode/mn:contributor/mn:organization/mn:logo[@type = 'sign']"/>
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell>
 												<fo:block font-size="1">
-													<xsl:apply-templates select="/mn:metanorma/mn:bibdata/mn:contributor/mn:organization/mn:logo[@type = 'desc']"/>
+													<xsl:apply-templates select="$contextNode/mn:contributor/mn:organization/mn:logo[@type = 'desc']"/>
 												</fo:block>
 											</fo:table-cell>
 											<fo:table-cell number-rows-spanned="2">
@@ -612,7 +620,7 @@
 											<fo:table-cell number-columns-spanned="2" padding-top="2mm">
 												<fo:block-container width="51.5mm">
 													<fo:block>
-														<xsl:for-each select="/mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'publisher']/mn:organization[not(mn:abbreviation = 'IHO')]">
+														<xsl:for-each select="$contextNode/mn:contributor[mn:role/@type = 'publisher']/mn:organization[not(mn:abbreviation = 'IHO')]">
 															<xsl:apply-templates select="mn:logo/mn:image">
 																<xsl:with-param name="logo_width">25.8mm</xsl:with-param>
 															</xsl:apply-templates>
@@ -1003,7 +1011,7 @@
 		<fo:inline><xsl:copy-of select="@id"/><xsl:apply-templates /></fo:inline>
 	</xsl:template>
 	
-	<xsl:template match="mn:metanorma/mn:bibdata/mn:edition">
+	<xsl:template match="mn:metanorma/mn:bibdata/mn:edition | mn:bibdata//mn:relation/mn:bibitem/mn:edition">
 		<xsl:call-template name="capitalize">
 			<xsl:with-param name="str">
 				<xsl:call-template name="getLocalizedString">
@@ -1015,7 +1023,7 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 	
-	<xsl:template match="mn:metanorma/mn:bibdata/mn:date[@type = 'published']">
+	<xsl:template match="mn:metanorma/mn:bibdata/mn:date[@type = 'published'] | mn:bibdata//mn:relation/mn:bibitem/mn:date[@type = 'published']">
 		<xsl:call-template name="convertDate">
 			<xsl:with-param name="date" select="."/>
 			<xsl:with-param name="format" select="'short'"/>
