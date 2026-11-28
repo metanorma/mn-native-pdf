@@ -30,73 +30,7 @@
 	<xsl:variable name="namespace">iec</xsl:variable>
 	
 	<xsl:variable name="debug">false</xsl:variable>
-	
-	<xsl:variable name="SDO">
-		<xsl:for-each select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:abbreviation">
-			<xsl:value-of select="."/><xsl:if test="position() != last()">/</xsl:if>
-		</xsl:for-each>
-	</xsl:variable>
-		
-	<xsl:variable name="copyrightSDO">
-		<xsl:text> </xsl:text>
-		<xsl:variable name="value" select="concat('© ', $SDO, ' ', //mn:metanorma/mn:bibdata/mn:copyright/mn:from)"/>
-		<fo:inline keep-together.within-line="always"><xsl:value-of select="$value"/></fo:inline>
-	</xsl:variable>
   
-	<xsl:variable name="ISOname" select="//mn:metanorma/mn:bibdata/mn:docidentifier[@type='iso' or @type='ISO']"/>
-	
-	<xsl:variable name="part" select="//mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number/@part"/>
-	
-	<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new(//mn:metanorma/mn:bibdata/mn:ext/mn:doctype[@language = $lang]))"/>
-		
-	<xsl:variable name="stage" select="number(//mn:metanorma/mn:bibdata/mn:status/mn:stage)"/>
-	<xsl:variable name="substage" select="number(//mn:metanorma/mn:bibdata/mn:status/mn:substage)"/>	
-	<xsl:variable name="stagename" select="normalize-space(//mn:metanorma/mn:bibdata/mn:ext/mn:stagename)"/>
-	<xsl:variable name="abbreviation" select="normalize-space(//mn:metanorma/mn:bibdata/mn:status/mn:stage/@abbreviation)"/>
-	<!-- https://github.com/metanorma/metanorma-csa/issues/329 -->
-	<!-- if stage >= 60 -->
-	<xsl:variable name="stage_published" select="normalize-space(//mn:metanorma/mn:metanorma-extension/mn:semantic-metadata/mn:stage-published)"/>
-	
-	<xsl:variable name="stage-abbreviation">
-		<xsl:choose>
-			<xsl:when test="$abbreviation != ''">
-				<xsl:value-of select="$abbreviation"/>
-			</xsl:when>
-			<xsl:when test="$stage = 0">NWIP</xsl:when> <!-- NWIP (NP, PWI) -->
-			<xsl:when test="$stage = 10">AWI</xsl:when>
-			<xsl:when test="$stage = 20">WD</xsl:when>
-			<xsl:when test="$stage = 30">CD</xsl:when>
-			<xsl:when test="$stage = 40">CDV</xsl:when>
-			<xsl:when test="$stage = 50">FDIS</xsl:when>
-			<xsl:when test="$stage = 60 and $substage = 0">IS</xsl:when>
-			<xsl:when test="$stage &gt;= 60">published</xsl:when>
-			<xsl:otherwise></xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-	
-	<xsl:variable name="stage-fullname-uppercased">
-		<xsl:choose>
-			<xsl:when test="$stagename != ''">				
-				<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename))"/>
-			</xsl:when>
-			<xsl:when test="$stage-abbreviation = 'NWIP' or
-															$stage-abbreviation = 'NP'">NEW WORK ITEM PROPOSAL</xsl:when>
-			<xsl:when test="$stage-abbreviation = 'PWI'">PRELIMINARY WORK ITEM</xsl:when>
-			<xsl:when test="$stage-abbreviation = 'AWI'">APPROVED WORK ITEM</xsl:when>
-			<xsl:when test="$stage-abbreviation = 'WD'">WORKING DRAFT</xsl:when>
-			<xsl:when test="$stage-abbreviation = 'CD'">COMMITTEE DRAFT</xsl:when>
-			<xsl:when test="$stage-abbreviation = 'CD-TSTR'">COMMITTEE DRAFT</xsl:when>
-			<xsl:when test="$stage-abbreviation = 'CDV'">COMMITTEE DRAFT FOR VOTE</xsl:when>
-			<xsl:when test="$stage-abbreviation = 'DTS'">DRAFT TECHNICAL SPECIFICATION</xsl:when>
-			<xsl:when test="$stage-abbreviation = 'DTR'">DRAFT TECHNICAL REPORT</xsl:when>
-			<xsl:when test="$stage-abbreviation = 'DPAS'">DRAFT PUBLICLY AVAILABLE SPECIFICATION</xsl:when>
-			<xsl:when test="$stage-abbreviation = 'DIS'">DRAFT INTERNATIONAL STANDARD</xsl:when>
-			<xsl:when test="$stage-abbreviation = 'FDIS'">FINAL DRAFT INTERNATIONAL STANDARD</xsl:when>
-			<xsl:otherwise><xsl:value-of select="$doctype_uppercased"/></xsl:otherwise>
-		</xsl:choose>
-	</xsl:variable>
-
-
 	<xsl:variable name="variables_">
 		<xsl:for-each select="//mn:metanorma">
 			<xsl:variable name="num"><xsl:number level="any" count="mn:metanorma"/></xsl:variable>
@@ -107,7 +41,88 @@
 			
 			<xsl:for-each select="xalan:nodeset($current_document)">
 				<mnx:doc num="{$num}">
-
+				
+					<xsl:variable name="contextNode" select="xalan:evaluate($bibdataContextNode)"/>
+					<xsl:copy-of select="$contextNode"/>
+					
+					<metanorma_bibdata>
+						<xsl:copy-of select="/mn:metanorma/mn:bibdata"/>
+					</metanorma_bibdata>
+					
+					<xsl:variable name="SDO">
+						<xsl:for-each select="$contextNode/mn:copyright/mn:owner/mn:organization/mn:abbreviation">
+							<xsl:value-of select="."/><xsl:if test="position() != last()">/</xsl:if>
+						</xsl:for-each>
+					</xsl:variable>
+					
+					<xsl:variable name="copyrightSDO">
+						<xsl:text> </xsl:text>
+						<xsl:variable name="value" select="concat('© ', $SDO, ' ', $contextNode/mn:copyright/mn:from)"/>
+						<fo:inline keep-together.within-line="always"><xsl:value-of select="$value"/></fo:inline>
+					</xsl:variable>
+					<copyrightSDO><xsl:copy-of select="$copyrightSDO"/></copyrightSDO>
+					
+					<xsl:variable name="ISOname" select="$contextNode/mn:docidentifier[@type='iso' or @type='ISO']"/>
+					<ISOname><xsl:value-of select="$ISOname"/></ISOname>
+					
+					<xsl:variable name="part" select="$contextNode/mn:ext/mn:structuredidentifier/mn:project-number/@part"/>
+					<part><xsl:value-of select="$part"/></part>
+					
+					<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new($contextNode/mn:ext/mn:doctype[@language = $lang]))"/>
+		
+					<xsl:variable name="stage" select="number($contextNode/mn:status/mn:stage)"/>
+					<xsl:variable name="substage" select="number($contextNode/mn:status/mn:substage)"/>	
+					<xsl:variable name="stagename" select="normalize-space($contextNode/mn:ext/mn:stagename)"/>
+					<xsl:variable name="abbreviation" select="normalize-space($contextNode/mn:status/mn:stage/@abbreviation)"/>
+					<!-- https://github.com/metanorma/metanorma-csa/issues/329 -->
+					<!-- if stage >= 60 -->
+					<xsl:variable name="stage_published" select="normalize-space(/mn:metanorma/mn:metanorma-extension/mn:semantic-metadata/mn:stage-published)"/>
+					<stage_published><xsl:value-of select="$stage_published"/></stage_published>
+					
+					<xsl:variable name="stage-abbreviation">
+						<xsl:choose>
+							<xsl:when test="$abbreviation != ''">
+								<xsl:value-of select="$abbreviation"/>
+							</xsl:when>
+							<xsl:when test="$stage = 0">NWIP</xsl:when> <!-- NWIP (NP, PWI) -->
+							<xsl:when test="$stage = 10">AWI</xsl:when>
+							<xsl:when test="$stage = 20">WD</xsl:when>
+							<xsl:when test="$stage = 30">CD</xsl:when>
+							<xsl:when test="$stage = 40">CDV</xsl:when>
+							<xsl:when test="$stage = 50">FDIS</xsl:when>
+							<xsl:when test="$stage = 60 and $substage = 0">IS</xsl:when>
+							<xsl:when test="$stage &gt;= 60">published</xsl:when>
+							<xsl:otherwise></xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<stage-abbreviation><xsl:value-of select="$stage-abbreviation"/></stage-abbreviation>
+					
+					<xsl:variable name="stage-fullname-uppercased">
+						<xsl:choose>
+							<xsl:when test="$stagename != ''">				
+								<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($stagename))"/>
+							</xsl:when>
+							<xsl:when test="$stage-abbreviation = 'NWIP' or
+																			$stage-abbreviation = 'NP'">NEW WORK ITEM PROPOSAL</xsl:when>
+							<xsl:when test="$stage-abbreviation = 'PWI'">PRELIMINARY WORK ITEM</xsl:when>
+							<xsl:when test="$stage-abbreviation = 'AWI'">APPROVED WORK ITEM</xsl:when>
+							<xsl:when test="$stage-abbreviation = 'WD'">WORKING DRAFT</xsl:when>
+							<xsl:when test="$stage-abbreviation = 'CD'">COMMITTEE DRAFT</xsl:when>
+							<xsl:when test="$stage-abbreviation = 'CD-TSTR'">COMMITTEE DRAFT</xsl:when>
+							<xsl:when test="$stage-abbreviation = 'CDV'">COMMITTEE DRAFT FOR VOTE</xsl:when>
+							<xsl:when test="$stage-abbreviation = 'DTS'">DRAFT TECHNICAL SPECIFICATION</xsl:when>
+							<xsl:when test="$stage-abbreviation = 'DTR'">DRAFT TECHNICAL REPORT</xsl:when>
+							<xsl:when test="$stage-abbreviation = 'DPAS'">DRAFT PUBLICLY AVAILABLE SPECIFICATION</xsl:when>
+							<xsl:when test="$stage-abbreviation = 'DIS'">DRAFT INTERNATIONAL STANDARD</xsl:when>
+							<xsl:when test="$stage-abbreviation = 'FDIS'">FINAL DRAFT INTERNATIONAL STANDARD</xsl:when>
+							<xsl:otherwise><xsl:value-of select="$doctype_uppercased"/></xsl:otherwise>
+						</xsl:choose>
+					</xsl:variable>
+					<stage-fullname-uppercased><xsl:value-of select="$stage-fullname-uppercased"/></stage-fullname-uppercased>
+					
+					<xsl:variable name="isIEV" select="normalize-space(($contextNode/mn:title[@language = 'en' and @type = 'title-main'] = 'International Electrotechnical Vocabulary') and 1 = 1)"/>
+					<isIEV><xsl:value-of select="$isIEV"/></isIEV>
+					
 				</mnx:doc>
 			</xsl:for-each>
 		</xsl:for-each>
@@ -151,8 +166,6 @@
 	
 	<xsl:variable name="color_blue">rgb(0, 90, 162)</xsl:variable>
 	<xsl:variable name="color_gray">rgb(157, 158, 160)</xsl:variable>
-	
-	<xsl:variable name="isIEV" select="normalize-space((//mn:metanorma/mn:bibdata/mn:title[@language = 'en' and @type = 'title-main'] = 'International Electrotechnical Vocabulary') and 1 = 1)"/>
 	
 	<xsl:template name="layout-master-set">
 		<fo:layout-master-set>
@@ -280,6 +293,7 @@
 					
 					<xsl:variable name="num"><xsl:number count="mn:metanorma" level="any"/></xsl:variable>
 					
+					<xsl:variable name="setVariable" select="java:org.metanorma.fop.global.Variables.setVariable('num', $num)"/>
 					
 					<xsl:variable name="updated_xml">
 						<xsl:for-each select="xalan:nodeset($current_document)">
@@ -357,6 +371,13 @@
 				</xsl:variable>
 				<xsl:variable name="updated_document2_boilerplate" select="xalan:nodeset($updated_document2_boilerplate_)"/>
 			
+				<xsl:variable name="contextNode" select="xalan:evaluate($bibdataContextNode)"/>
+			
+				<xsl:variable name="num" select="number(java:org.metanorma.fop.global.Variables.getVariable('num'))"/>
+				<xsl:variable name="stage_published" select="$variables/mnx:doc[@num = $num]/stage_published"/>
+				<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
+				<xsl:variable name="stage-fullname-uppercased" select="$variables/mnx:doc[@num = $num]/stage-fullname-uppercased"/>
+				
 				<!-- For 'Published' documents insert two cover pages -->
 				<xsl:if test="$stage_published = 'true'">
 				
@@ -365,7 +386,8 @@
 						<fo:static-content flow-name="left-region" >
 							<fo:block-container reference-orientation="90">
 								<fo:block font-size="7pt" margin-left="3.5mm" margin-top="5.5mm">
-									<xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:docidentifier[@type = 'iso-revdate']"/>
+									<!-- <xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:docidentifier[@type = 'iso-revdate']"/> -->
+									<xsl:value-of select="$variables/mnx:doc[@num = 1]/*/mn:docidentifier[@type = 'iso-revdate']"/>
 								</fo:block>
 							</fo:block-container>
 						</fo:static-content>
@@ -385,7 +407,7 @@
 					</xsl:call-template>
 				</xsl:if>
 				
-				<xsl:variable name="lang_second" select="(//mn:metanorma)[2]/mn:bibdata/mn:language[@current = 'true']"/>
+				<xsl:variable name="lang_second" select="$variables/mnx:doc[@num = 2]/*/mn:language[@current = 'true']"/>
 				<!-- For 'Published' documents insert 3rd Cover Page 
 						OR insert first Cover Page for FDIS -->
 				<xsl:if test="$stage_published = 'true' or $stage-abbreviation = 'FDIS'">
@@ -425,7 +447,7 @@
 									</xsl:if>
 								</fo:block-container>
 								
-								<xsl:variable name="price_code_value" select="//mn:metanorma/mn:bibdata/mn:ext/mn:price-code"/>
+								<xsl:variable name="price_code_value" select="$contextNode/mn:ext/mn:price-code"/>
 								<fo:table table-layout="fixed" width="102%" margin-top="-9mm" margin-bottom="2mm" id="__internal_layout__price_code">
 									<fo:table-column column-width="148mm"/>
 									<fo:table-column column-width="16mm"/>
@@ -434,15 +456,12 @@
 											<fo:table-cell font-size="8pt" text-align="right" display-align="center">
 												<fo:block padding-top="1mm">
 													<xsl:if test="normalize-space($price_code_value) != ''">
-														<fo:block color="{$color_blue}" margin-bottom="3pt">
+														<fo:block color="{$color_blue}" margin-bottom="3pt" text-transform="uppercase">
 															<!-- PRICE CODE -->
-															<xsl:variable name="price_code">
-																<xsl:call-template name="getLocalizedString">
-																	<xsl:with-param name="key">price-code</xsl:with-param>
-																	<xsl:with-param name="lang"><xsl:value-of select="$lang"/></xsl:with-param>
-																</xsl:call-template>
-															</xsl:variable>
-															<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code))"/>
+															<xsl:call-template name="getLocalizedString">
+																<xsl:with-param name="key">price-code</xsl:with-param>
+																<xsl:with-param name="lang"><xsl:value-of select="$lang"/></xsl:with-param>
+															</xsl:call-template>
 														</fo:block>
 														
 														<xsl:variable name="price_code_lang_second">
@@ -453,8 +472,8 @@
 															</xsl:call-template>
 														</xsl:variable>
 														<xsl:if test="normalize-space($price_code_lang_second) != ''">
-															<fo:block>
-																<xsl:value-of select="java:toUpperCase(java:java.lang.String.new($price_code_lang_second))"/>
+															<fo:block text-transform="uppercase">
+																<xsl:value-of select="$price_code_lang_second"/>
 															</fo:block>
 														</xsl:if>
 													</xsl:if>
@@ -467,7 +486,7 @@
 									</fo:table-body>
 								</fo:table>
 								<fo:block font-size="8pt" text-align-last="justify">
-									<xsl:for-each select="//mn:metanorma/mn:bibdata/mn:ext/mn:ics">
+									<xsl:for-each select="$contextNode/mn:ext/mn:ics">
 										<xsl:if test="position() = 1">ICS </xsl:if>
 										<xsl:value-of select="mn:code"/>
 										<xsl:if test="position() != last()"><xsl:text>; </xsl:text></xsl:if>
@@ -475,10 +494,10 @@
 									<xsl:text>&#xA0;</xsl:text>
 									<fo:inline keep-together.within-line="always"><fo:leader leader-pattern="space"/>
 										<xsl:text>&#xA0;</xsl:text>
-										<xsl:if test="//mn:metanorma/mn:bibdata/mn:docidentifier[@type='ISBN']">
+										<xsl:if test="normalize-space($contextNode/mn:docidentifier[@type='ISBN']) != ''">
 											<!-- Example: ISBN 978-2-8322-1532-6 -->
 											<xsl:text>ISBN </xsl:text>
-											<xsl:value-of select="//mn:metanorma/mn:bibdata/mn:docidentifier[@type='ISBN']"/>
+											<xsl:value-of select="$contextNode/mn:docidentifier[@type='ISBN']"/>
 										</xsl:if>
 									</fo:inline>
 								</fo:block>
@@ -486,16 +505,17 @@
 									<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 										<fo:block-container border="0.5pt solid black" font-size="10pt" margin-top="8mm" font-weight="bold" padding-left="1.5mm" padding-top="0.5mm" width="102%" height="11mm" display-align="center" id="__internal_layout__warning_block">
 											<fo:block margin-left="1mm">Warning! Make sure that you obtained this publication from an authorized distributor.</fo:block>
-											<xsl:if test="//mn:metanorma/mn:bibdata/mn:title[@language = 'fr']">
+											<xsl:if test="normalize-space($contextNode/mn:title[@language = 'fr']) != ''">
 												<fo:block margin-left="1mm" margin-top="3pt">Attention! Veuillez vous assurer que vous avez obtenu cette publication via un distributeur agréé.</fo:block>
 											</xsl:if>
 										</fo:block-container>
 									</fo:block-container>
 								</fo:block-container>
 								<fo:block font-size="6pt" margin-top="6mm" margin-left="1mm">
-									<xsl:if test="count((//mn:metanorma)[1]/mn:bibdata/mn:copyright) = 1">
+									<!-- <xsl:if test="count((//mn:metanorma)[1]/mn:bibdata/mn:copyright) = 1"> -->
+									<xsl:if test="count($variables/mnx:doc[@num = 1]/*/mn:copyright) = 1">
 										<fo:block>® Registered trademark of the International Electrotechnical Commission</fo:block>
-										<xsl:if test="//mn:metanorma/mn:bibdata/mn:title[@language = 'fr']">
+										<xsl:if test="normalize-space($contextNode/mn:title[@language = 'fr']) != ''">
 											<fo:block margin-left="2mm">Marque déposée de la Commission Electrotechnique Internationale</fo:block>
 										</xsl:if>
 									</xsl:if>
@@ -539,7 +559,7 @@
 								</xsl:if>
 								<fo:inline keep-together.within-line="always" font-size="18pt" font-weight="bold" baseline-shift="10mm"><fo:leader leader-pattern="space"/>
 									<!-- Ex: 34D/1511/FDIS -->
-									<xsl:value-of select="//mn:metanorma/mn:bibdata/mn:docidentifier[@type='iso-tc']"/>
+									<xsl:value-of select="$contextNode/mn:docidentifier[@type='iso-tc']"/>
 									<xsl:text>&#xA0;</xsl:text>
 								</fo:inline>
 							</fo:block>
@@ -565,7 +585,7 @@
 													</fo:block>
 													<fo:block font-size="9pt" font-weight="bold">
 														<xsl:call-template name="addLetterSpacing">
-															<xsl:with-param name="text"><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:ext/mn:structuredidentifier/mn:project-number"/></xsl:with-param>
+															<xsl:with-param name="text"><xsl:value-of select="$contextNode/mn:ext/mn:structuredidentifier/mn:project-number"/></xsl:with-param>
 														</xsl:call-template>
 													</fo:block>
 												</fo:table-cell>
@@ -579,7 +599,7 @@
 													</fo:block>
 													<fo:block font-size="9pt" font-weight="bold">
 														<xsl:call-template name="addLetterSpacing">
-															<xsl:with-param name="text"><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:date[@type ='circulated']/mn:on"/></xsl:with-param>
+															<xsl:with-param name="text"><xsl:value-of select="$contextNode/mn:date[@type ='circulated']/mn:on"/></xsl:with-param>
 														</xsl:call-template>
 													</fo:block>
 												</fo:table-cell>
@@ -592,7 +612,7 @@
 													<fo:block font-size="9pt" font-weight="bold">
 														<xsl:call-template name="addLetterSpacing">
 															<!-- 2019-12-06 -->
-															<xsl:with-param name="text"><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:date[@type='vote-ended']/mn:on"/></xsl:with-param>
+															<xsl:with-param name="text"><xsl:value-of select="$contextNode/mn:date[@type='vote-ended']/mn:on"/></xsl:with-param>
 														</xsl:call-template>
 													</fo:block>
 												</fo:table-cell>
@@ -607,7 +627,7 @@
 													<fo:block font-size="9pt" font-weight="bold">
 														<xsl:variable name="supersedes_documents">
 															<!-- <xsl:for-each select="//mn:metanorma/mn:bibdata/mn:relation[@type='supersedes']/mn:bibitem/mn:docnumber"> -->
-															<xsl:for-each select="//mn:metanorma/mn:bibdata/mn:relation[@type='obsoletes']/mn:bibitem/mn:docidentifier">
+															<xsl:for-each select="$contextNode/mn:relation[@type='obsoletes']/mn:bibitem/mn:docidentifier">
 																<xsl:value-of select="."/>
 																<xsl:if test="position() != last()">,</xsl:if>
 															</xsl:for-each>
@@ -633,7 +653,7 @@
 											<fo:table-row height="4mm">
 												<fo:table-cell number-columns-spanned="2" border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
 													<xsl:variable name="contributor_author_">
-														<xsl:copy-of select="//mn:metanorma/mn:bibdata/mn:contributor[mn:role[@type = 'author' and mn:description[normalize-space(@language) = ''] = 'committee']]/node()"/>
+														<xsl:copy-of select="$contextNode/mn:contributor[mn:role[@type = 'author' and mn:description[normalize-space(@language) = ''] = 'committee']]/node()"/>
 													</xsl:variable>
 													<xsl:variable name="contributor_author" select="xalan:nodeset($contributor_author_)"/>
 													<!-- https://github.com/metanorma/metanorma-iec/issues/440 -->
@@ -687,7 +707,7 @@
 													<fo:block font-size="9pt">
 														<xsl:call-template name="addLetterSpacing">
 															<!-- <xsl:with-param name="text" select="//mn:metanorma/mn:bibdata/mn:ext/mn:editorialgroup/mn:secretariat"/> -->
-															<xsl:with-param name="text" select="normalize-space(//mn:metanorma/mn:bibdata/mn:contributor[mn:role/mn:description = 'secretariat']/mn:organization/mn:subdivision)"/>
+															<xsl:with-param name="text" select="normalize-space($contextNode/mn:contributor[mn:role/mn:description = 'secretariat']/mn:organization/mn:subdivision)"/>
 														</xsl:call-template>
 													</fo:block>
 												</fo:table-cell>
@@ -700,7 +720,7 @@
 													<fo:block font-size="9pt">
 														<!-- Example: Ms Shanti Conn -->
 														<xsl:call-template name="addLetterSpacing">
-															<xsl:with-param name="text" select="//mn:metanorma/mn:bibdata/mn:ext/mn:secretary"/>
+															<xsl:with-param name="text" select="$contextNode/mn:ext/mn:secretary"/>
 														</xsl:call-template>
 													</fo:block>
 												</fo:table-cell>
@@ -717,7 +737,7 @@
 													</fo:block>
 													<fo:block font-size="9pt">
 														<xsl:call-template name="addLetterSpacing">
-															<xsl:with-param name="text" select="//mn:metanorma/mn:bibdata/mn:ext/mn:interest-to-committees"/>
+															<xsl:with-param name="text" select="$contextNode/mn:ext/mn:interest-to-committees"/>
 														</xsl:call-template>
 													</fo:block>
 												</fo:table-cell>
@@ -737,7 +757,7 @@
 														</fo:block>
 														<fo:block>
 															<xsl:choose>
-																<xsl:when test="//mn:metanorma/mn:bibdata/mn:ext/mn:horizontal = 'true'">
+																<xsl:when test="$contextNode/mn:ext/mn:horizontal = 'true'">
 																	<xsl:call-template name="insertCheckBoxOn"/>
 																</xsl:when>
 																<xsl:otherwise>
@@ -772,7 +792,7 @@
 														<!-- function: { emc | safety | environment | quality-assurance } -->
 														<fo:block font-size="6.5pt">
 															<xsl:choose>
-																<xsl:when test="//mn:metanorma/mn:bibdata/mn:ext/mn:function = 'emc'">
+																<xsl:when test="$contextNode/mn:ext/mn:function = 'emc'">
 																	<xsl:call-template name="insertCheckBoxOn"/>
 																</xsl:when>
 																<xsl:otherwise>
@@ -784,7 +804,7 @@
 															</xsl:call-template>
 															<fo:inline padding-right="33mm">&#xA0;</fo:inline>
 															<xsl:choose>
-																<xsl:when test="//mn:metanorma/mn:bibdata/mn:ext/mn:function = 'environment'">
+																<xsl:when test="$contextNode/mn:ext/mn:function = 'environment'">
 																	<xsl:call-template name="insertCheckBoxOn"/>
 																</xsl:when>
 																<xsl:otherwise>
@@ -800,7 +820,7 @@
 														<fo:block font-size="6.5pt" margin-bottom="6pt">&#xA0;</fo:block>
 														<fo:block font-size="6.5pt">
 															<xsl:choose>
-																<xsl:when test="//mn:metanorma/mn:bibdata/mn:ext/mn:function = 'quality-assurance'">
+																<xsl:when test="$contextNode/mn:ext/mn:function = 'quality-assurance'">
 																	<xsl:call-template name="insertCheckBoxOn"/>
 																</xsl:when>
 																<xsl:otherwise>
@@ -812,7 +832,7 @@
 															</xsl:call-template>
 															<fo:inline padding-right="13mm">&#xA0;</fo:inline>
 															<xsl:choose>
-																<xsl:when test="//mn:metanorma/mn:bibdata/mn:ext/mn:function = 'safety'">
+																<xsl:when test="$contextNode/mn:ext/mn:function = 'safety'">
 																	<xsl:call-template name="insertCheckBoxOn"/>
 																</xsl:when>
 																<xsl:otherwise>
@@ -833,7 +853,7 @@
 													<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
 														<fo:block font-size="6.5pt" margin-bottom="12pt">
 															<xsl:choose>
-																<xsl:when test="/mn:metanorma/mn:bibdata/mn:ext/mn:cen-processing = 'true'">
+																<xsl:when test="$contextNode/mn:ext/mn:cen-processing = 'true'">
 																	<xsl:call-template name="insertCheckBoxOn"/>
 																</xsl:when>
 																<xsl:otherwise>
@@ -851,7 +871,7 @@
 													<fo:table-cell border="1.5pt solid {$border-color}" padding="1.5mm" padding-bottom="0mm">
 														<fo:block font-size="6.5pt" margin-bottom="6pt">
 															<xsl:choose>
-																<xsl:when test="/mn:metanorma/mn:bibdata/mn:ext/mn:cen-processing = 'true'">
+																<xsl:when test="$contextNode/mn:ext/mn:cen-processing = 'true'">
 																	<xsl:call-template name="insertCheckBoxOff"/>
 																</xsl:when>
 																<xsl:otherwise>
@@ -890,7 +910,7 @@
 								</fo:block>
 								<fo:block font-size="9pt" font-weight="bold">
 									<xsl:call-template name="addLetterSpacing">
-										<xsl:with-param name="text"><xsl:value-of select="(//mn:metanorma)[1]/mn:bibdata/mn:title[@language = $lang and @type = 'main']"/></xsl:with-param>
+										<xsl:with-param name="text"><xsl:value-of select="$variables/mnx:doc[@num = 1]/*/mn:title[@language = $lang and @type = 'main']"/></xsl:with-param>
 									</xsl:call-template>
 								</fo:block>
 							</fo:block-container>
@@ -908,7 +928,7 @@
 											</xsl:with-param>
 										</xsl:call-template>
 										<!-- 2023 -->
-										<fo:inline font-size="9pt"><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:date[@type='unchanged']/mn:on"/></fo:inline>
+										<fo:inline font-size="9pt"><xsl:value-of select="$contextNode/mn:date[@type='unchanged']/mn:on"/></fo:inline>
 									</fo:block>
 								</fo:block-container>
 							</xsl:if>
@@ -926,7 +946,8 @@
 									</xsl:call-template>
 								</fo:block>
 								<!-- Example: This FDIS is the result of the discussion between the IEC SC21A experts WG 3 during the meeting held in -->
-								<xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:tc-sc-officers-note"/>
+								<!-- <xsl:apply-templates select="(//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:tc-sc-officers-note"/> -->
+								<xsl:apply-templates select="$variables/mnx:doc[@num = 1]/*/mn:ext/mn:tc-sc-officers-note"/>
 							</fo:block-container>
 							
 						</fo:flow>
@@ -934,7 +955,7 @@
 				</xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>
+	</xsl:template> <!-- END: cover-page -->
 
 	<xsl:template name="inner-cover-page">
 		<xsl:param name="updated_document1_boilerplate"/>
@@ -1059,13 +1080,18 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 	</xsl:template>
 	
 	<xsl:template name="insertCoverPart1">
+		<xsl:variable name="num" select="number(java:org.metanorma.fop.global.Variables.getVariable('num'))"/>
+		<xsl:variable name="stage_published" select="$variables/mnx:doc[@num = $num]/stage_published"/>
+		<xsl:variable name="stage-abbreviation" select="$variables/mnx:doc[@num = $num]/stage-abbreviation"/>
+		<xsl:variable name="stage-fullname-uppercased" select="$variables/mnx:doc[@num = $num]/stage-fullname-uppercased"/>
+		<xsl:variable name="contextNode" select="xalan:evaluate($bibdataContextNode)"/>
 		<xsl:variable name="lang_second">
 			<xsl:choose>
-				<xsl:when test="(//mn:metanorma)[2]/mn:bibdata/mn:language[@current = 'true']">
-					<xsl:value-of select="(//mn:metanorma)[2]/mn:bibdata/mn:language[@current = 'true']"/>
+				<xsl:when test="normalize-space($variables/mnx:doc[@num = 2]/*/mn:language[@current = 'true']) != ''">
+					<xsl:value-of select="$variables/mnx:doc[@num = 2]/*/mn:language[@current = 'true']"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="/mn:metanorma/mn:bibdata/mn:title[@language and @language != $lang and not(contains(@type, '-prefix'))]/@language"/>
+					<xsl:value-of select="$contextNode/mn:title[@language and @language != $lang and not(contains(@type, '-prefix'))]/@language"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
@@ -1073,12 +1099,12 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 			<xsl:call-template name="outputLogo"/>
 			<fo:inline font-size="8pt" padding-left="0.5mm" color="rgb(88, 88, 90)">
 				<xsl:choose>
-					<xsl:when test="count((//mn:metanorma)[1]/mn:bibdata/mn:copyright) = 1 and 
-					count((//mn:metanorma)[1]/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'committee']) &lt;=1">®</xsl:when>
+					<xsl:when test="count($variables/mnx:doc[@num = 1]/*/mn:copyright) = 1 and 
+					count($variables/mnx:doc[@num = 1]/*/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'committee']) &lt;=1">®</xsl:when>
 					<xsl:otherwise><xsl:attribute name="padding-left">1mm</xsl:attribute>&#xa0;</xsl:otherwise>
 				</xsl:choose>
 			</fo:inline>
-			<fo:inline keep-together.within-line="always" font-size="25pt" font-weight="bold" color="{$color_gray}" border-bottom="0.5pt solid {$color_gray}" padding-bottom="3.5mm" baseline-shift="5.5mm"><fo:leader leader-pattern="space"/><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:docidentifier[@type = 'iso-undated']"/></fo:inline>
+			<fo:inline keep-together.within-line="always" font-size="25pt" font-weight="bold" color="{$color_gray}" border-bottom="0.5pt solid {$color_gray}" padding-bottom="3.5mm" baseline-shift="5.5mm"><fo:leader leader-pattern="space"/><xsl:value-of select="$contextNode/mn:docidentifier[@type = 'iso-undated']"/></fo:inline>
 		</fo:block>
 		<fo:block font-size="10.5pt" text-align="right" margin-top="0.5mm">			
 			<xsl:call-template name="capitalize">
@@ -1090,7 +1116,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 			</xsl:call-template>
 			<xsl:text> </xsl:text>
 			<fo:inline>
-				<xsl:variable name="edition_" select="normalize-space(//mn:metanorma/mn:bibdata/mn:edition[normalize-space(@language) = ''])"/>
+				<xsl:variable name="edition_" select="normalize-space($contextNode/mn:edition[normalize-space(@language) = ''])"/>
 				<xsl:variable name="edition">
 					<xsl:choose>
 						<xsl:when test="$edition_ = ''">1</xsl:when>
@@ -1102,7 +1128,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 			</fo:inline>
 			<fo:inline padding-left="4mm">
 				<!-- Example 2014-05 -->
-				<xsl:value-of select="substring(//mn:metanorma/mn:bibdata/mn:version/mn:revision-date, 1, 7)"/>
+				<xsl:value-of select="substring($contextNode/mn:version/mn:revision-date, 1, 7)"/>
 			</fo:inline>
 			<fo:block>&#xA0;</fo:block>
 		</fo:block>
@@ -1118,8 +1144,10 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 								<xsl:text>PRE-RELEASE VERSION (FDIS)</xsl:text>
 							</xsl:when>
 							<xsl:when test="$stage_published = 'true'">
-								<xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new((//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:doctype[@language = $lang]))"/>
-								<xsl:value-of select="$doctype_uppercased"/>
+								<!-- <xsl:variable name="doctype_uppercased" select="java:toUpperCase(java:java.lang.String.new((//mn:metanorma)[1]/mn:bibdata/mn:ext/mn:doctype[@language = $lang]))"/>
+								<xsl:value-of select="$doctype_uppercased"/> -->
+								<xsl:attribute name="text-transform">uppercase</xsl:attribute>
+								<xsl:value-of select="$variables/mnx:doc[@num = 1]/*/mn:ext/mn:doctype[@language = $lang]"/>
 							</xsl:when>
 							<xsl:otherwise>
 								<xsl:value-of select="$stage-fullname-uppercased"/>
@@ -1129,15 +1157,16 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 					</fo:block>
 				</fo:block-container> 
 				
-				<xsl:if test="//mn:metanorma/mn:bibdata/mn:title[@language = $lang_second]">
+				<xsl:if test="normalize-space($contextNode/mn:title[@language = $lang_second]) != ''">
 					<fo:block-container height="26mm" margin-top="10pt" display-align="after">
 						<xsl:if test="$stage_published = 'true'">
 							<xsl:attribute name="width">100mm</xsl:attribute>
 						</xsl:if>
 						<fo:block color="{$color_gray}">
 							<xsl:if test="$stage_published = 'true'">
+								<xsl:attribute name="text-transform">uppercase</xsl:attribute>
 								<!-- <xsl:text>NORME INTERNATIONALE</xsl:text> -->
-								<xsl:value-of  select="java:toUpperCase(java:java.lang.String.new(//mn:metanorma/mn:bibdata/mn:ext/mn:doctype[@language = $lang_second]))"/>
+								<xsl:value-of select="$contextNode/mn:ext/mn:doctype[@language = $lang_second]"/>
 							</xsl:if>
 						</fo:block>
 					</fo:block-container>
@@ -1148,19 +1177,19 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 			<fo:block-container xsl:use-attribute-sets="reset-margins-style">
 				<fo:block-container height="6mm">
 					<fo:block text-align="right" margin-top="-4.5mm" margin-right="-1mm">
-						<xsl:if test="//mn:metanorma/mn:bibdata/mn:ext/mn:accessibility-color-inside = 'true'">
+						<xsl:if test="normalize-space($contextNode/mn:ext/mn:accessibility-color-inside) = 'true'">
 							<fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Colour-Inside))}" width="19mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC" fox:placement="Block"/>
 						</xsl:if>
 					</fo:block>
 				</fo:block-container>
 				<fo:block-container border-bottom="0.5pt solid {$color_gray}" margin-top="4mm" margin-bottom="16pt" height="14mm" display-align="center">
-					<fo:block font-size="10pt" color="{$color_blue}" margin-bottom="4pt">
+					<fo:block font-size="10pt" color="{$color_blue}" margin-bottom="4pt" text-transform="uppercase">
 						<xsl:choose>
-							<xsl:when test="//mn:metanorma/mn:bibdata/mn:ext/mn:horizontal = 'true'">
-								<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(//mn:metanorma/mn:bibdata/mn:ext/mn:horizontal[@language = $lang]))"/>
+							<xsl:when test="normalize-space($contextNode/mn:ext/mn:horizontal) = 'true'">
+								<xsl:value-of select="$contextNode/mn:ext/mn:horizontal[@language = $lang]"/>
 							</xsl:when>
 							<xsl:otherwise><!-- horizontal is false -->
-								<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(//mn:metanorma/mn:bibdata/mn:ext/mn:function[@language = $lang]))"/>
+								<xsl:value-of select="$contextNode/mn:ext/mn:function[@language = $lang]"/>
 							</xsl:otherwise>
 						</xsl:choose>
 						<!-- Example: BASIC EMC PUBLICATION -->
@@ -1170,14 +1199,14 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 						Basic Environment Publication
 						Basic Quality Assurance Publication -->
 					</fo:block>
-					<xsl:if test="//mn:metanorma/mn:bibdata/mn:title[@language = $lang_second]">
-						<fo:block font-size="10pt" margin-bottom="10pt">
+					<xsl:if test="normalize-space($contextNode/mn:title[@language = $lang_second]) != ''">
+						<fo:block font-size="10pt" margin-bottom="10pt" text-transform="uppercase">
 							<xsl:choose>
-								<xsl:when test="//mn:metanorma/mn:bibdata/mn:ext/mn:horizontal = 'true'">
-									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(//mn:metanorma/mn:bibdata/mn:ext/mn:horizontal[@language = $lang_second]))"/>
+								<xsl:when test="normalize-space($contextNode/mn:ext/mn:horizontal) = 'true'">
+									<xsl:value-of select="$contextNode/mn:ext/mn:horizontal[@language = $lang_second]"/>
 								</xsl:when>
 								<xsl:otherwise><!-- horizontal is false -->
-									<xsl:value-of select="java:toUpperCase(java:java.lang.String.new(//mn:metanorma/mn:bibdata/mn:ext/mn:function[@language = $lang_second]))"/>
+									<xsl:value-of select="$contextNode/mn:ext/mn:function[@language = $lang_second]"/>
 								</xsl:otherwise>
 							</xsl:choose>
 							<!-- Example: PUBLICATION FONDAMENTALE EN CEM -->
@@ -1195,12 +1224,12 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 						Part 4-5: Testing and measurement techniques – Surge immunity test
 					-->
 					<xsl:variable name="titles_first_">
-						<title-intro><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-intro']"/></title-intro>
-						<title-main><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-main']"/></title-main>
-						<title-part><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-part']"/></title-part>
+						<title-intro><xsl:value-of select="$contextNode/mn:title[@language = $lang and @type = 'title-intro']"/></title-intro>
+						<title-main><xsl:value-of select="$contextNode/mn:title[@language = $lang and @type = 'title-main']"/></title-main>
+						<title-part><xsl:value-of select="$contextNode/mn:title[@language = $lang and @type = 'title-part']"/></title-part>
 					</xsl:variable>
 					<xsl:variable name="titles_first" select="xalan:nodeset($titles_first_)"/>
-					<xsl:variable name="title_first_part_prefix" select="//mn:metanorma/mn:bibdata/mn:title[@language = $lang and @type = 'title-part-prefix']"/>
+					<xsl:variable name="title_first_part_prefix" select="$contextNode/mn:title[@language = $lang and @type = 'title-part-prefix']"/>
 					
 					<xsl:for-each select="$titles_first/*[normalize-space() != '']">
 						<xsl:if test="position() != 1">
@@ -1229,12 +1258,12 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 					choc -->
 					
 					<xsl:variable name="titles_second_">
-						<title-intro><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:title[@language = $lang_second and @type = 'title-intro']"/></title-intro>
-						<title-main><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:title[@language = $lang_second and @type = 'title-main']"/></title-main>
-						<title-part><xsl:value-of select="//mn:metanorma/mn:bibdata/mn:title[@language = $lang_second and @type = 'title-part']"/></title-part>
+						<title-intro><xsl:value-of select="$contextNode/mn:title[@language = $lang_second and @type = 'title-intro']"/></title-intro>
+						<title-main><xsl:value-of select="$contextNode/mn:title[@language = $lang_second and @type = 'title-main']"/></title-main>
+						<title-part><xsl:value-of select="$contextNode/mn:title[@language = $lang_second and @type = 'title-part']"/></title-part>
 					</xsl:variable>
 					<xsl:variable name="titles_second" select="xalan:nodeset($titles_second_)"/>
-					<xsl:variable name="title_second_part_prefix" select="//mn:metanorma/mn:bibdata/mn:title[@language = $lang_second and @type = 'title-part-prefix']"/>
+					<xsl:variable name="title_second_part_prefix" select="$contextNode/mn:title[@language = $lang_second and @type = 'title-part-prefix']"/>
 					
 					<xsl:for-each select="$titles_second/*[normalize-space() != '']">
 						<xsl:if test="position() != 1">
@@ -1242,6 +1271,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 						</xsl:if>
 						<xsl:if test="self::title-part">
 							<xsl:value-of select="$linebreak"/>
+							<xsl:variable name="part" select="$variables/mnx:doc[@num = $num]/part"/>
 							<xsl:if test="$part != ''">
 								<!-- <xsl:variable name="locality_part_lang_second">
 									<xsl:call-template name="getLocalizedString">
@@ -1278,10 +1308,10 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 	<xsl:template name="outputLogo">
 		<!-- <fo:external-graphic src="{concat('data:image/png;base64,', normalize-space($Image-Logo-IEC))}" width="18mm" content-height="scale-to-fit" scaling="uniform" fox:alt-text="Image Logo IEC"/> -->
 		<xsl:choose>
-			<xsl:when test="(//mn:metanorma)[1]/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'committee']/mn:organization/mn:abbreviation">
+			<xsl:when test="normalize-space($variables/mnx:doc[@num = 1]/*/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'committee']/mn:organization/mn:abbreviation) != ''">
 				<!-- https://github.com/metanorma/metanorma-iec/issues/190#issuecomment-3122029444 -->
-				<xsl:for-each select="(//mn:metanorma)[1]/mn:bibdata/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'committee']/mn:organization/mn:abbreviation">
-					<xsl:variable name="copyright_year" select="ancestor::mn:bibdata/mn:copyright/mn:from"/>
+				<xsl:for-each select="$variables/mnx:doc[@num = 1]/*/mn:contributor[mn:role[@type = 'author']/mn:description[normalize-space(@language) = ''] = 'committee']/mn:organization/mn:abbreviation">
+					<xsl:variable name="copyright_year" select="ancestor::*[self::mn:bibdata or self::mn:bibitem][1]/mn:copyright/mn:from"/>
 					<xsl:variable name="items">
 						<xsl:choose>
 							<!-- ISO/IEC -->
@@ -1309,9 +1339,10 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 				</xsl:for-each>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:for-each select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:abbreviation">
+				<!-- <xsl:for-each select="(//mn:metanorma)[1]/mn:bibdata/mn:copyright/mn:owner/mn:organization/mn:abbreviation"> -->
+				<xsl:for-each select="$variables/mnx:doc[@num = 1]/*/mn:copyright/mn:owner/mn:organization/mn:abbreviation">
 					<xsl:call-template name="insertLogoImage">
-						<xsl:with-param name="copyright_year" select="ancestor::mn:bibdata/mn:copyright/mn:from"/>
+						<xsl:with-param name="copyright_year" select="ancestor::*[self::mn:bibdata or self::mn:bibitem][1]/mn:copyright/mn:from"/>
 					</xsl:call-template>
 						<xsl:if test="position() != last()">
 							<fo:inline padding-right="1mm">&#xA0;</fo:inline>
@@ -1567,6 +1598,7 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 				<xsl:call-template name="insertFootnoteSeparatorCommon"/>
 				
 				<xsl:call-template name="insertHeaderFooter"/>
+				
 				<fo:flow flow-name="xsl-region-body">
 					
 					<!-- Main sections -->
@@ -1969,7 +2001,8 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 		<fo:page-sequence xsl:use-attribute-sets="page-sequence-main">
 			<xsl:call-template name="refine_page-sequence-main"/>
 			
-			<xsl:call-template name="insertHeaderFooter" />
+			<xsl:call-template name="insertHeaderFooter"/>
+				
 			<fo:flow flow-name="xsl-region-body">
 				<fo:block id="{@id}" span="all">
 					<xsl:apply-templates select="mn:fmt-title"/>
@@ -2011,6 +2044,14 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 	</xsl:template>
 	
 	<xsl:template name="insertHeader">
+		<xsl:call-template name="insertHeaderEven"/>
+		<xsl:call-template name="insertHeaderOdd"/>
+	</xsl:template>
+	
+	<xsl:template name="insertHeaderEven">
+		<xsl:variable name="num" select="number(java:org.metanorma.fop.global.Variables.getVariable('num'))"/>
+		<xsl:variable name="ISOname"><xsl:value-of select="$variables/mnx:doc[@num = $num]/ISOname"/></xsl:variable>
+		<xsl:variable name="copyrightSDO"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/copyrightSDO/node()"/></xsl:variable>
 		<fo:static-content flow-name="header-even" role="artifact">
 			<fo:block-container height="25mm" display-align="after">
 				<fo:table table-layout="fixed" width="100%">
@@ -2034,7 +2075,12 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 				</fo:table>
 			</fo:block-container>
 		</fo:static-content>
-		
+	</xsl:template>
+
+	<xsl:template name="insertHeaderOdd">
+		<xsl:variable name="num" select="number(java:org.metanorma.fop.global.Variables.getVariable('num'))"/>
+		<xsl:variable name="ISOname"><xsl:value-of select="$variables/mnx:doc[@num = $num]/ISOname"/></xsl:variable>
+		<xsl:variable name="copyrightSDO"><xsl:copy-of select="$variables/mnx:doc[@num = $num]/copyrightSDO/node()"/></xsl:variable>
 		<fo:static-content flow-name="header-odd" role="artifact">
 			<fo:block-container height="25mm" display-align="after">
 				<fo:table table-layout="fixed" width="100%">
@@ -2064,6 +2110,8 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 	</xsl:template>
 	
 	<xsl:template name="back-page">
+		<xsl:variable name="num" select="number(java:org.metanorma.fop.global.Variables.getVariable('num'))"/>
+		<xsl:variable name="stage_published" select="$variables/mnx:doc[@num = $num]/stage_published"/>
 		<xsl:if test="$stage_published = 'true'">
 			<fo:page-sequence master-reference="blank-page">
 				<fo:flow flow-name="xsl-region-body">
@@ -2071,15 +2119,16 @@ les coordonnées ci-après ou contactez le Comité national de l'IEC de votre pa
 				</fo:flow>
 			</fo:page-sequence>
 			
+			<xsl:variable name="contextNode" select="xalan:evaluate($bibdataContextNode)"/>
+			
 			<fo:page-sequence master-reference="back-page">
 				<fo:flow flow-name="xsl-region-body">
 					<fo:block-container margin-left="20mm" margin-top="19mm">
 						<fo:block-container xsl:use-attribute-sets="reset-margins-style" margin-top="0mm">
 							<fo:block font-size="11pt" color="{$color_blue}" margin-bottom="12pt" line-height="150%">
 								<fo:block-container width="42mm">
-									<fo:block>
-										<xsl:variable name="publisher" select="java:toUpperCase(java:java.lang.String.new(//mn:metanorma/mn:bibdata/mn:contributor[mn:role/@type = 'publisher']/mn:organization/mn:name))"/>
-										<xsl:value-of select="$publisher"/>
+									<fo:block text-transform="uppercase">
+										<xsl:value-of select="$contextNode/mn:contributor[mn:role/@type = 'publisher']/mn:organization/mn:name"/>
 									</fo:block>
 								</fo:block-container>
 							</fo:block>
